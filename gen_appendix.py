@@ -78,6 +78,8 @@ def main():
     section = build_section()
     html_text = INDEX.read_text(encoding="utf-8")
     assert html_text.count("<footer>") == 1, "expected exactly one <footer>"
+    # idempotent: strip a previously generated appendix before inserting
+    html_text = re.sub(r'<section id="appendix">.*?</section>\n*', "", html_text, flags=re.S)
     INDEX.write_text(html_text.replace("<footer>", section + "\n\n<footer>"), encoding="utf-8")
     print(f"OK: appendix with 103 skills inserted into {INDEX}")
 

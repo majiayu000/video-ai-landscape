@@ -706,6 +706,15 @@
   </div>
 </section>
 
+<link rel="stylesheet" href="/pagefind/pagefind-ui.css">
+<script src="/pagefind/pagefind-ui.js" defer></script>
+<div id="skill-search"></div>
+<script>
+window.addEventListener('DOMContentLoaded', function () {
+  new PagefindUI({ element: '#skill-search', baseUrl: '/', showSubResults: true,
+    translations: { placeholder: '搜索全部 466 篇技能文档…' } });
+});
+</script>
 <section id="appendix">
   <h2><span class="no">A</span>附录 · 技能全清单</h2>
   <p class="section-sub">7 个仓库里全部 <b>103 个 SKILL.md</b>，按厂商分组，点名称直达在线渲染页。</p>

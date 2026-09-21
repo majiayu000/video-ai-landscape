@@ -30,6 +30,18 @@ cp index.html site/
 ~/.bun/bin/wrangler pages deploy site --project-name=video-vendor-skills --branch=main --commit-dirty=true
 ```
 
+## 全文搜索
+
+技能库首页与报告附录带搜索框，基于 [pagefind](https://pagefind.app/) 静态索引。重建站点后跑一次：
+
+```bash
+npx -y pagefind --site site
+```
+
+## 自动更新（CI）
+
+`.github/workflows/refresh.yml` 每周一检查 7 个厂商仓库上游是否有新提交：有则把 `setup.sh` 的 pinned SHA 前移、重建站点、自动提交；若配置了 `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` 两个 Actions secret 还会自动部署。可在 Actions 页手动触发（可勾选强制重建）。
+
 ## 快照信息
 
 调研日期 2026-09-21。7 个仓库的克隆 SHA 固定在 `setup.sh`，厂商后续更新不影响本报告的可复现性。

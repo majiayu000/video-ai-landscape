@@ -5,6 +5,7 @@ Usage: uv run --with markdown python build_skills_site.py
 """
 import html as htmllib
 import re
+import shutil
 from pathlib import Path
 
 import markdown
@@ -91,19 +92,25 @@ CSS = """
 JS = "function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}"
 
 
-def page(title, crumb_repo, body, meta="", crumb_file=""):
+def page(title, crumb_repo, body, meta="", crumb_file="", search=False):
     crumb = f'<a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a>'
     if crumb_repo:
         crumb += f'<span class="crumb">/</span><a href="/skills/{crumb_repo}/">{crumb_repo}</a>'
     if crumb_file:
         crumb += f'<span class="crumb">/</span><span class="crumb">{crumb_file}</span>'
+    search_head = ('<link rel="stylesheet" href="/pagefind/pagefind-ui.css">'
+                   '<script src="/pagefind/pagefind-ui.js" defer></script>') if search else ""
+    search_box = '<div id="search"></div>' if search else ""
+    search_init = ("window.addEventListener('DOMContentLoaded',function(){"
+                   "new PagefindUI({element:'#search',baseUrl:'/',showSubResults:true,"
+                   "translations:{placeholder:'搜索全部技能文档…'}});});") if search else ""
     return f"""<!DOCTYPE html>
 <html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{htmllib.escape(title)}</title><style>{CSS}</style></head>
+<title>{htmllib.escape(title)}</title>{search_head}<style>{CSS}</style></head>
 <body><nav class="topbar">{crumb}<button onclick="t()">🌓</button></nav>
-<main>{meta}{body}</main>
+<main>{search_box}{meta}{body}</main>
 <footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
-<script>{JS}</script></body></html>"""
+<script>{JS}{search_init}</script></body></html>"""
 
 
 def split_fm(text):
@@ -206,7 +213,7 @@ def build():
             "<p style=\"color:var(--ink2)\">本地克隆的官方技能仓库全量渲染版，配套"
             "<a href=\"/\">《AI 视频厂商 CLI / Skill / MCP 全景对比》报告</a>阅读。</p>"
             f"<div class='cards'>{cards}</div>")
-    write(OUT / "index.html", page("技能库 · 视频厂商官方 Skills", "", body))
+    write(OUT / "index.html", page("技能库 · 视频厂商官方 Skills", "", body, search=True))
     total_s = sum(s[2] for s in stats.values()); total_d = sum(s[3] for s in stats.values())
     print(f"OK: {total_s} SKILL.md + {total_d} docs -> {OUT}")
 
