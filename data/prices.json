@@ -1,7 +1,505 @@
 {
   "$schema": "schema/prices.schema.json",
-  "as_of": null,
-  "entries": [],
-  "normalization_notes": "",
-  "sources": []
+  "as_of": "2026-09-22",
+  "entries": [
+    {
+      "vendor": "Google",
+      "model": "veo-3.1-generate-preview (Gemini API)",
+      "price": "$0.40/s（720p、1080p，含原生音频）",
+      "unit": "秒",
+      "currency": "USD",
+      "tiers": "4k：$0.60/s；无音频版本约 $0.20/s（fal/Runway 转售价印证）；时长 4/6/8s，1080p/4k 仅 8s",
+      "url_validity": "生成视频在服务器保留 2 天",
+      "source_url": "https://ai.google.dev/gemini-api/docs/pricing",
+      "confidence": "官方源，多源交叉（Runway 40cr/s、fal $0.40/s 同价印证）",
+      "notes": "延长视频按新生成计费并重置 2 天保留期"
+    },
+    {
+      "vendor": "Google",
+      "model": "veo-3.1-fast-generate-preview (Gemini API)",
+      "price": "720p $0.10/s、1080p $0.12/s、4k $0.30/s（定价页所示价，疑为无音频档）",
+      "unit": "秒",
+      "currency": "USD",
+      "tiers": "含音频档更高（fal 转售 720p 含音频 $0.15/s）",
+      "url_validity": "生成视频保留 2 天",
+      "source_url": "https://ai.google.dev/gemini-api/docs/pricing",
+      "confidence": "官方源",
+      "notes": "与标准版差价 4 倍，是官方性价比档"
+    },
+    {
+      "vendor": "Google",
+      "model": "veo-3.1-lite-generate-preview (Gemini API)",
+      "price": "720p $0.05/s；1080p $0.08/s",
+      "unit": "秒",
+      "currency": "USD",
+      "tiers": "无 4k 档",
+      "url_validity": "生成视频保留 2 天",
+      "source_url": "https://ai.google.dev/gemini-api/docs/pricing",
+      "confidence": "官方源",
+      "notes": "Veo 3.1 系列最低价档"
+    },
+    {
+      "vendor": "快手可灵",
+      "model": "Kling 2.5 Turbo（kling.ai 国际 API）",
+      "price": "0.3 Unit（$0.042）/s（720p）；0.5 Unit（$0.07）/s（1080p）",
+      "unit": "秒",
+      "currency": "USD",
+      "tiers": "按秒计费，无原生音频版",
+      "url_validity": "未载明",
+      "source_url": "https://kling.ai/document-api/pricing/base/video",
+      "confidence": "官方源",
+      "notes": "1 Unit=$0.14；fal 同款 Pro 档 $0.35/5s（$0.07/s）较官方 720p 高约 67%"
+    },
+    {
+      "vendor": "快手可灵",
+      "model": "Kling 2.6",
+      "price": "720p $0.042/s；1080p $0.07/s",
+      "unit": "秒",
+      "currency": "USD",
+      "tiers": "含原生音频：1080p $0.14/s（带语音控制 $0.168/s）；Motion Control 720p $0.07/s、1080p $0.112/s",
+      "url_validity": "未载明",
+      "source_url": "https://kling.ai/document-api/pricing/base/video",
+      "confidence": "官方源",
+      "notes": "RunPod 有 v2.6 标准运动控制端点 1-3s $0.21/次"
+    },
+    {
+      "vendor": "快手可灵",
+      "model": "Kling 3.0 / 3.0 Turbo / O1",
+      "price": "3.0：720p $0.084/s、1080p $0.112/s、4K $0.42/s（无音频）；含音频 720p $0.126/s、1080p $0.168/s",
+      "unit": "秒",
+      "currency": "USD",
+      "tiers": "3.0 Turbo：720p $0.112/s、1080p $0.14/s；O1：720p $0.084/s、1080p $0.112/s（含视频输入 $0.126/$0.168）；3.0 Omni 按是否含视频输入/音频分 6 档 $0.084-0.168/s",
+      "url_validity": "未载明",
+      "source_url": "https://kling.ai/document-api/pricing/base/video",
+      "confidence": "官方源",
+      "notes": "AtlasCloud 已上线 Kling 3.0 API（价格需登录控制台）"
+    },
+    {
+      "vendor": "快手可灵",
+      "model": "Avatar 数字人及辅助能力",
+      "price": "Avatar 0.4 Unit（$0.056）/s（720p）；0.8 Unit（$0.112）/s（1080p）",
+      "unit": "秒（TTS/识别按次）",
+      "currency": "USD",
+      "tiers": "TTS $0.007/次；Lip Sync $0.07/5s；Face/Image Recognition $0.007-0.014/次；文生音频/视频转音频 $0.035/次",
+      "url_validity": "未载明",
+      "source_url": "https://kling.ai/document-api/pricing/base/video",
+      "confidence": "官方源",
+      "notes": "国内站（app.klingai.com）为积分体系人民币计价，本次未采到公开价目页"
+    },
+    {
+      "vendor": "火山引擎",
+      "model": "doubao-seedance-2.5（方舟）",
+      "price": "70.00 元/百万token（480p/720p，无视频输入）；1080p 77.00 元/M",
+      "unit": "百万token",
+      "currency": "CNY",
+      "tiers": "输入含视频：480p/720p 42.00 元/M、1080p 46.00 元/M；官方折算：720p 16:9 5s≈7.56 元/条（1.51 元/s）、1080p 5s≈18.71 元/条",
+      "url_validity": "未载明",
+      "source_url": "https://www.volcengine.com/docs/82379/1099320",
+      "confidence": "官方源",
+      "notes": "token 用量=(输入+输出秒数)×宽×高×帧率/1024；输入含视频时有最低 token 用量限制；仅成功生成计费"
+    },
+    {
+      "vendor": "火山引擎",
+      "model": "doubao-seedance-2.0（方舟）",
+      "price": "46.00 元/百万token（480p/720p）；51.00（1080p）；26.00（4k）",
+      "unit": "百万token",
+      "currency": "CNY",
+      "tiers": "输入含视频：28/31/16 元/M；官方折算：720p 5s≈4.97 元/条（0.99 元/s）、1080p 5s≈12.39 元/条、4k 5s≈25.27 元/条",
+      "url_validity": "未载明",
+      "source_url": "https://www.volcengine.com/docs/82379/1099320",
+      "confidence": "官方源",
+      "notes": "隐性成本：版权 IP 生成加价——《长江七号》《食神》《喜剧之王》×1.1、《功夫女足》×1.5"
+    },
+    {
+      "vendor": "火山引擎",
+      "model": "doubao-seedance-2.0-fast / 2.0-mini（限时优惠）",
+      "price": "fast：刊例 37.00 元/M，限时 75 折；mini：刊例 23.00 元/M，限时 4 折",
+      "unit": "百万token",
+      "currency": "CNY",
+      "tiers": "仅 480p/720p；输入含视频：fast 22.00、mini 14.00 元/M；720p 折算约 fast 0.6 元/s、mini 0.2 元/s",
+      "url_validity": "未载明",
+      "source_url": "https://www.volcengine.com/docs/82379/1099320",
+      "confidence": "官方源",
+      "notes": "优惠期 2026-08-07 14:00 至 10-07 14:00（UTC+8），仅企业用户，达 token 用量上限后恢复刊例价"
+    },
+    {
+      "vendor": "火山引擎",
+      "model": "doubao-seedance-1.0-pro / 1.0-pro-fast",
+      "price": "pro 15.00 元/百万token；pro-fast 4.20 元/M",
+      "unit": "百万token",
+      "currency": "CNY",
+      "tiers": "离线推理半价：pro 7.50、pro-fast 2.10 元/M",
+      "url_validity": "未载明",
+      "source_url": "https://www.volcengine.com/docs/82379/1099320",
+      "confidence": "官方源",
+      "notes": "1.0 代旧模型，RunPod 转售 1.0 pro $0.12/5s(480p)、V1.5 Pro I2V $0.024/s 可作跨渠道参照"
+    },
+    {
+      "vendor": "阿里云百炼",
+      "model": "wan3.0-video",
+      "price": "480P 原价 0.3 元/秒（限时 7 折）、720P 0.6、1080P 1.2",
+      "unit": "秒",
+      "currency": "CNY",
+      "tiers": "wan3.0-video-prime：0.45 / 0.9 / 1.8 元/秒",
+      "url_validity": "未载明",
+      "source_url": "https://help.aliyun.com/zh/model-studio/model-pricing",
+      "confidence": "官方源（页面更新时间 2026-09-22）",
+      "notes": "隐性成本：输入视频+输出视频时长均计费；免费额度为输入+输出合计 30 秒（仅华北2北京等地域）"
+    },
+    {
+      "vendor": "阿里云百炼",
+      "model": "wan2.7-t2v / wan2.7-i2v / wan2.7-r2v",
+      "price": "720P 0.6 元/秒；1080P 1 元/秒",
+      "unit": "秒",
+      "currency": "CNY",
+      "tiers": "wan2.7 视频时长 2-15s，分辨率 720P/1080P；i2v/r2v 输出有声视频同价",
+      "url_validity": "未载明",
+      "source_url": "https://help.aliyun.com/zh/model-studio/model-pricing",
+      "confidence": "官方源",
+      "notes": "免费额度 50 秒；wan2.7-t2v/r2v 另有 2026-04-25、2026-06-12 快照版本同价；wan2.7-image-pro 是图像模型"
+    },
+    {
+      "vendor": "阿里云百炼",
+      "model": "wan2.5/2.2/2.1 及 happyhorse 系列",
+      "price": "wan2.5-t2v-preview：480P 0.3、720P 0.6、1080P 1 元/秒；wan2.2-t2v-plus：480P 0.14、1080P 0.70；happyhorse-1.1：0.45/0.9/1.2",
+      "unit": "秒",
+      "currency": "CNY",
+      "tiers": "wan2.2-i2v-flash 低至 480P 0.10 元/秒；wanx2.1-turbo 480P/720P 均 0.24 元/秒",
+      "url_validity": "未载明",
+      "source_url": "https://help.aliyun.com/zh/model-studio/model-pricing",
+      "confidence": "官方源",
+      "notes": "免费额度 50-200 秒不等（北京地域）；Together/RunPod 转售 HappyHorse 1.1 为 $0.14/条"
+    },
+    {
+      "vendor": "Runway",
+      "model": "gen4_turbo / gen4.5 / aleph2（API）",
+      "price": "gen4_turbo 5 credits/s（$0.05/s）；gen4.5 12 credits/s（$0.12/s）",
+      "unit": "秒（1 credit=$0.01）",
+      "currency": "USD",
+      "tiers": "aleph2 28 credits/s、每代最低 56 credits；act_two 5 credits/s",
+      "url_validity": "未载明",
+      "source_url": "https://docs.dev.runwayml.com/guides/pricing",
+      "confidence": "官方源",
+      "notes": "Gen-4.5/Aleph2 加 ProRes/PNG 序列 +5cr/s、10-bit/HDR +20cr/s（超 4MP 为 40cr/s）"
+    },
+    {
+      "vendor": "Runway",
+      "model": "veo3.1 / seedance2 系列（Runway 转售）",
+      "price": "veo3.1：40 credits/s（含音频=$0.40/s）、20 credits/s（无音频）；veo3.1_fast：15/10 credits/s",
+      "unit": "秒",
+      "currency": "USD",
+      "tiers": "seedance2：480/720p 36cr/s、1080p 40cr/s、4K 150cr/s；seedance2_fast 29cr/s；seedance2_mini 16cr/s（最低 64cr）；seedance2_5 输出 20/30/68cr/s 另加输入视频 10/15/34cr/s（最低 80cr）",
+      "url_validity": "未载明",
+      "source_url": "https://docs.dev.runwayml.com/guides/pricing",
+      "confidence": "官方源",
+      "notes": "与 Google/火山官方价基本持平，是 Runway 的聚合引流档"
+    },
+    {
+      "vendor": "Runway",
+      "model": "第三方聚合档（wan3/hailuo3/h3_max/grok 等）",
+      "price": "wan3：5/10/20 credits/s（480p/720p/1080p）；hailuo3：768P 10cr/s、2K 15cr/s（每参考图+2cr）",
+      "unit": "秒",
+      "currency": "USD",
+      "tiers": "h3_max 5/8cr/s；happyhorse_1_0 15/30cr/s；grok_imagine_1_5 10/16/29cr/s（每参考+1cr）；gemini_omni_flash 10cr/s（视频转视频输入另 11cr/s）",
+      "url_validity": "未载明",
+      "source_url": "https://docs.dev.runwayml.com/guides/pricing",
+      "confidence": "官方源",
+      "notes": "Runway 一站式转售竞品模型，含阿里 HappyHorse、MiniMax H3、Grok Imagine"
+    },
+    {
+      "vendor": "Luma",
+      "model": "Ray3.2（Dream Machine API）",
+      "price": "T2V/I2V 5s：540p $0.15、720p $0.30、1080p $1.20；10s：$0.45 / $0.90 / $3.60",
+      "unit": "条（按 5 秒块计）",
+      "currency": "USD",
+      "tiers": "V2V 5s $0.72/1.44/2.16；Reframe 每秒 $0.06/0.12/0.36；HDR=2×SDR、HDR+EXR=3×SDR",
+      "url_validity": "输入资产 CDN 预签名 URL 约 1 小时（输出视频有效期未载明）",
+      "source_url": "https://lumalabs.ai/api/pricing",
+      "confidence": "官方源",
+      "notes": "旧版 ray-2/ray-flash-2 已不在公开价目表，迁移价需联系商务"
+    },
+    {
+      "vendor": "MiniMax",
+      "model": "MiniMax-H3 / H3-Max（国际站按量付费）",
+      "price": "MiniMax-H3 768P $0.08/s、2K $0.13/s；H3-Max 480P $0.05/s",
+      "unit": "秒",
+      "currency": "USD",
+      "tiers": "AtlasCloud 转售 H3 Max T2V $0.38/s 起（其标注官方价 $0.4/s，与 MiniMax 站 480P $0.05/s 差异应为档位口径不同）",
+      "url_validity": "未载明",
+      "source_url": "https://platform.minimax.io/docs/guides/pricing-paygo",
+      "confidence": "官方源",
+      "notes": "H3 不支持 Video Points 资源包，需按量付费或联系销售"
+    },
+    {
+      "vendor": "MiniMax",
+      "model": "MiniMax-Hailuo-2.3 / Hailuo-02（按量付费）",
+      "price": "Hailuo-2.3：768P 6s $0.28/条、768P 10s $0.56、1080P 6s $0.49",
+      "unit": "条",
+      "currency": "USD",
+      "tiers": "2.3-Fast：$0.19/$0.32/$0.33；Hailuo-02 另有 512P 6s $0.10、10s $0.15",
+      "url_validity": "未载明",
+      "source_url": "https://platform.minimax.io/docs/guides/pricing-paygo",
+      "confidence": "官方源",
+      "notes": "Together 转售 Hailuo-02 $0.49/条（最低档口径一致）"
+    },
+    {
+      "vendor": "MiniMax",
+      "model": "Video Points 资源包（订阅制）",
+      "price": "Standard $1,000=3,760 点；Pro $2,500=9,920；Scale $4,500=18,900；Business $6,000=26,780",
+      "unit": "视频点/美元包",
+      "currency": "USD",
+      "tiers": "扣点标准：Hailuo-2.3 768P 6s=1 点、10s=2 点、1080P 6s=2 点；2.3-Fast 6s=0.7 点；Hailuo-02 512P 6s=0.3 点",
+      "url_validity": "未载明",
+      "source_url": "https://platform.minimax.io/docs/guides/pricing-video",
+      "confidence": "官方源",
+      "notes": "隐性成本：生成失败/审核拒绝不扣点，但资源包到期后剩余点数清零不结转；Standard 包约合 $0.266/点"
+    },
+    {
+      "vendor": "Vidu（生数科技）",
+      "model": "viduq3-pro / q3-turbo / q3-pro-fast / q3-mix（开放平台）",
+      "price": "1 积分=¥0.03125；viduq3-pro 1080p 24 积分/s（≈¥0.75/s）、720p 20 积分/s",
+      "unit": "秒（积分制）",
+      "currency": "CNY",
+      "tiers": "q3-turbo 1080p 13、720p 12 积分/s；q3-pro-fast 1080p 15、720p 12；q3-mix 1080p 29、720p 24（参考生视频不支持错峰）",
+      "url_validity": "未载明",
+      "source_url": "https://platform.vidu.cn/docs/pricing",
+      "confidence": "官方源",
+      "notes": "错峰价格为一半（q3-pro/turbo 需 audio=true）；充值 ¥500=16,000 积分，有效期 1 年"
+    },
+    {
+      "vendor": "Vidu（生数科技）",
+      "model": "viduq1 / Q2 系列（开放平台）",
+      "price": "viduq1 1080p 5s 80 积分（≈¥2.5/条）；Q2-pro 1080p 首秒 55 积分+15/秒；Q2-turbo 540P 首秒 6 积分+2/秒",
+      "unit": "条/秒（积分制）",
+      "currency": "CNY",
+      "tiers": "vidu2.0 4S 720p 40 积分、1080p 100 积分；错峰半价",
+      "url_validity": "未载明",
+      "source_url": "https://platform.vidu.cn/docs/pricing",
+      "confidence": "官方源",
+      "notes": "Together 转售 Vidu Q1 $0.22/条，低于官方人民币牌价折算"
+    },
+    {
+      "vendor": "PixVerse",
+      "model": "PixVerse v4.5（fal 渠道转售）",
+      "price": "$0.15/5s（360p、540p）；$0.2/5s（720p）；$0.4/5s（1080p）",
+      "unit": "条",
+      "currency": "USD",
+      "tiers": "按分辨率分档，$1 约可生成 2 次 720p",
+      "url_validity": "未载明",
+      "source_url": "https://fal.ai/models/fal-ai/pixverse/v4.5/text-to-video",
+      "confidence": "单一来源（第三方转售）；官方 API 控制台（platform.pixverse.ai）价格需登录，未采到公开价",
+      "notes": "Together 列 PixVerse v5 $0.30/条（最低档）；官方文档 docs.pixverse.ai 当前仅展示 Team Plan 订阅页"
+    },
+    {
+      "vendor": "Pika",
+      "model": "pika-2.5 text-to-video（官方 API）",
+      "price": "720p $0.04/s；1080p $0.09/s",
+      "unit": "秒",
+      "currency": "USD",
+      "tiers": "5s 视频约 $0.20（720p）/ $0.45（1080p）",
+      "url_validity": "未载明",
+      "source_url": "https://dev.pika.art/llms/pika/pika-2.5/text-to-video",
+      "confidence": "官方源",
+      "notes": "隐性成本：micro-USD 预付余额计费、无免费层、无测试环境，余额不足返回 insufficient_balance；仅成功生成计费；价格需经 quote 接口实时查询"
+    },
+    {
+      "vendor": "Pika",
+      "model": "消费者订阅及平台内第三方生成",
+      "price": "Starter $10/月 900 积分；Creator $35/月 3,150；Fancy $95/月起；充值 60 credits/$1",
+      "unit": "月/积分",
+      "currency": "USD",
+      "tiers": "年付 8 折；积分包 $25-1,000；Seedance 2.5 720p 5s 消耗 122 积分/次、Wan 3.0 同档 33 积分/次",
+      "url_validity": "未载明",
+      "source_url": "https://pika.art/pricing",
+      "confidence": "官方源",
+      "notes": "订阅积分不结转，充值积分永久有效"
+    },
+    {
+      "vendor": "fal",
+      "model": "fal-ai/kling-video/v2.5-turbo/pro/text-to-video",
+      "price": "$0.35/5s，超出部分 $0.07/附加秒",
+      "unit": "条+按秒",
+      "currency": "USD",
+      "tiers": "基础档 5 秒",
+      "url_validity": "未载明",
+      "source_url": "https://fal.ai/models/fal-ai/kling-video/v2.5-turbo/pro/text-to-video",
+      "confidence": "官方源（fal 定价页）",
+      "notes": "同模型可灵官方 720p 为 $0.042/s（$0.21/5s），fal 加价约 67%；与其 1080p 官方价（$0.07/s）持平——fal 的可灵加价模式实锤"
+    },
+    {
+      "vendor": "fal",
+      "model": "fal-ai/veo3.1",
+      "price": "$0.20/s（无音频）/ $0.40/s（含音频，720p、1080p）；4k $0.40 / $0.60",
+      "unit": "秒",
+      "currency": "USD",
+      "tiers": "fast 档：无音频 $0.10/s、含音频 $0.15/s；4k fast $0.30/$0.35",
+      "url_validity": "未载明",
+      "source_url": "https://fal.ai/models/fal-ai/veo3.1",
+      "confidence": "官方源，多源交叉（与 Google 官方价一致）",
+      "notes": "示例：5s 1080p 含音频=$2.00；fal 对 Veo 零加价、对可灵加价，策略性差异"
+    },
+    {
+      "vendor": "Replicate",
+      "model": "google/veo-3",
+      "price": "$0.40/s（含音频）；$0.20/s（无音频）",
+      "unit": "秒",
+      "currency": "USD",
+      "tiers": "25 秒输出=$10",
+      "url_validity": "未载明",
+      "source_url": "https://replicate.com/google/veo-3",
+      "confidence": "官方源（Replicate 定价页）",
+      "notes": "旧旗舰 Veo3 仍挂官方价；veo-3.1 系应同口径，页面未再列"
+    },
+    {
+      "vendor": "Replicate",
+      "model": "kwaivgi/kling-v2.1-master",
+      "price": "$0.28/s",
+      "unit": "秒",
+      "currency": "USD",
+      "tiers": "约 35 秒=$10",
+      "url_validity": "未载明",
+      "source_url": "https://replicate.com/kwaivgi/kling-v2.1-master",
+      "confidence": "官方源（Replicate 定价页）",
+      "notes": "可灵官方 2.5/2.6 仅 $0.042-0.07/s，旧版 Master 在 Replicate 溢价 4-7 倍，跨厂商差价最大案例"
+    },
+    {
+      "vendor": "Together",
+      "model": "视频模型聚合（Seedance/Kling/Veo/Sora/Hailuo 等）",
+      "price": "Seedance 2.5 $0.115/条；Seedance 2.0 $0.16；Seedance 1.0 Pro $0.57；Kling 2.1 Master $0.92；Kling 2.1 Std $0.18；Kling 1.6 Std $0.19；Veo 2.0 $2.50；Sora 2 $0.80；Hailuo-02 $0.49",
+      "unit": "条",
+      "currency": "USD",
+      "tiers": "PixVerse v5 $0.30；Vidu Q1 $0.22；HappyHorse 1.0/1.1 各 $0.24/$0.14（T2V/I2V/R2V 同价）",
+      "url_validity": "未载明",
+      "source_url": "https://www.together.ai/pricing",
+      "confidence": "官方源（Together 定价页）",
+      "notes": "页脚注明均为最低分辨率/时长档价格；Together 主打 Seedance 2.5 低价（$0.115/条 vs 火山官方折算约 $1.05/条 720p，口径需核对档位）"
+    },
+    {
+      "vendor": "RunPod",
+      "model": "Public Endpoints 视频模型",
+      "price": "Kling O1 R2V $0.112/s；Kling v2.6 标准运动控制 1-3s $0.21/次；Wan 2.6 T2V/I2V $0.50/5s；Wan 2.5 I2V $0.25/5s；Wan 2.2/2.1 720p $0.30/5s；Seedance 1.0 pro $0.12/5s（480p）；Seedance V1.5 Pro I2V $0.024/s；Sora 2 I2V $0.40/4s、Sora 2 Pro $1.20/4s",
+      "unit": "条或秒",
+      "currency": "USD",
+      "tiers": "InfiniteTalk 数字人 $0.25/720p/次",
+      "url_validity": "未载明",
+      "source_url": "https://www.runpod.io/pricing",
+      "confidence": "官方源（RunPod 定价页）",
+      "notes": "GPU 租赁：RTX 4090 $0.34（社区云）-0.74/hr、H100 $2.69-3.49/hr、B200 $6.79/hr、B300 $7.89/hr——自建部署 vs API 采购的成本分界参考"
+    },
+    {
+      "vendor": "AtlasCloud",
+      "model": "MiniMax H3 Max T2V 等",
+      "price": "H3 Max 文生视频 $0.38/s 起（其标注官方价 $0.4/s，-5%）",
+      "unit": "秒",
+      "currency": "USD",
+      "tiers": "复合计费示例：总价=$1.1 基础 + $0.00168×参考图数 + $0.0261×参考视频数；宣称 Seedance 2.0 Mini/Fast 全网最低、最高 68% off 官方价",
+      "url_validity": "未载明",
+      "source_url": "https://www.atlascloud.ai/pricing/models",
+      "confidence": "官方源（AtlasCloud 自有定价页，具体明细需登录计算器）",
+      "notes": "按需付费无订阅；已覆盖 Veo 3.1、Kling 3.0、Seedance 2.5/2.0、Wan 3.0/2.7、MiniMax H3、Grok Imagine"
+    },
+    {
+      "vendor": "硅基流动 SiliconFlow",
+      "model": "Wan-AI/Wan2.2-T2V-A14B / Wan2.2-I2V-A14B",
+      "price": "¥2.00/条（T2V 与 I2V 同价）",
+      "unit": "条",
+      "currency": "CNY",
+      "tiers": "视频模型专区当前仅此两款开源 Wan2.2",
+      "url_validity": "未载明",
+      "source_url": "https://siliconflow.cn/pricing",
+      "confidence": "官方源",
+      "notes": "开源权重托管路线：¥2/条显著低于百炼 wan2.2-plus（0.14-0.7 元/s×5s=0.7-3.5 元/条）的中位，但模型代际旧"
+    }
+  ],
+  "normalization_notes": "建议数据集统一视图以 usd_per_second_720p 为主键列，同时保留原值五元组（price/unit/currency/tier/as_of）。换算规则：1) 按条价 ÷ 档位时长折每秒（本表缺省 5s，Vidu Q1 为 5s、RunPod Sora 2 为 4s、Gemini Veo 为 4-8s，需在 duration_basis 字段注明）；2) 积分/credits/点数先折货币：Runway 1 credit=$0.01、Vidu 1 积分=¥0.03125、Pika micro-USD÷1,000,000、MiniMax video point 按所购资源包内含单价折算（Standard 包 ≈$0.266/点）、可灵 1 Unit=$0.14，再除以秒数；3) 火山 token 计价不要用像素公式自行换算，直接采用官方\"元/个、元/s\"示例表（720p 16:9 基准）；4) 人民币计价（百炼、Vidu、硅基流动）折美元需引入 fx_rate + as_of 字段记录抓取日汇率，建议不与美元价混算而是双列展示；5) 分辨率至少保留 720p/1080p 两列，限时折扣写入 discount 字段并带有效期（火山 mini 4 折、fast 75 折至 2026-10-07 且仅企业用户；百炼 wan3.0-video 7 折；AtlasCloud Seedance 最高 68% off）；6) 隐性成本单列 hidden_cost 字段：输入视频是否计费（百炼 wan3.0/r2v 输入+输出、Runway seedance2_5 输入另计、火山含输入 token 更贵且设最低 token 用量）、最低计费单位（Runway aleph2 56cr、seedance2_mini 64cr、可灵 Lip Sync 按 5s）、失败是否计费（MiniMax/Vidu/百炼/火山均失败不计费，Vidu 审核拒绝也扣点为例外）、余额门槛（火山\"≥200 元\"说法未能在官方定价文档验证，未采信）、余额/积分有效期（Vidu 充值积分 1 年、MiniMax 资源包到期清零、Pika 订阅积分不结转）、产物 URL 有效期（Gemini 2 天、Luma 输入资产约 1h，其余官方页未载明，建议字段留空而非补猜）。",
+  "sources": [
+    {
+      "title": "Gemini Developer API Pricing（Veo 3.1 各档官方价）",
+      "url": "https://ai.google.dev/gemini-api/docs/pricing"
+    },
+    {
+      "title": "Gemini API Veo 文档（生成视频保留 2 天、分辨率/时长档位）",
+      "url": "https://ai.google.dev/gemini-api/docs/veo"
+    },
+    {
+      "title": "Kling AI Open Platform — Video API Pricing（可灵国际站官方价目）",
+      "url": "https://kling.ai/document-api/pricing/base/video"
+    },
+    {
+      "title": "火山方舟模型价格（Seedance 2.5/2.0/fast/mini/1.0 token 单价与元/个折算、限时优惠、版权 IP 加价）",
+      "url": "https://www.volcengine.com/docs/82379/1099320"
+    },
+    {
+      "title": "阿里云百炼模型调用价格（wan3.0-video、wan2.7、wan2.5/2.2、happyhorse，2026-09-22 更新）",
+      "url": "https://help.aliyun.com/zh/model-studio/model-pricing"
+    },
+    {
+      "title": "阿里云百炼模型选择页（确认 wan3.0-video 与 wan2.7 系列存在）",
+      "url": "https://help.aliyun.com/zh/model-studio/models"
+    },
+    {
+      "title": "Runway API Pricing（credits 单价 $0.01 与全系模型每秒 credits）",
+      "url": "https://docs.dev.runwayml.com/guides/pricing"
+    },
+    {
+      "title": "Luma Dream Machine API Pricing（Ray3.2 分辨率/时长价、HDR 倍率、资产 URL 1 小时）",
+      "url": "https://lumalabs.ai/api/pricing"
+    },
+    {
+      "title": "MiniMax API 按量付费定价（H3/H3-Max 每秒、Hailuo 系按条）",
+      "url": "https://platform.minimax.io/docs/guides/pricing-paygo"
+    },
+    {
+      "title": "MiniMax 视频资源包定价（Video Points 扣点表、到期清零规则）",
+      "url": "https://platform.minimax.io/docs/guides/pricing-video"
+    },
+    {
+      "title": "Vidu 开放平台产品定价（积分单价 ¥0.03125、q3/q1/Q2 全表、错峰半价、充值套餐）",
+      "url": "https://platform.vidu.cn/docs/pricing"
+    },
+    {
+      "title": "fal.ai — Kling 2.5 Turbo Pro（$0.35/5s 加价样本）",
+      "url": "https://fal.ai/models/fal-ai/kling-video/v2.5-turbo/pro/text-to-video"
+    },
+    {
+      "title": "fal.ai — Veo 3.1（与 Google 官方同价）",
+      "url": "https://fal.ai/models/fal-ai/veo3.1"
+    },
+    {
+      "title": "fal.ai — PixVerse v4.5（PixVerse 唯一可公开采到的转售价）",
+      "url": "https://fal.ai/models/fal-ai/pixverse/v4.5/text-to-video"
+    },
+    {
+      "title": "Replicate — google/veo-3（$0.40/s、无音频 $0.20/s）",
+      "url": "https://replicate.com/google/veo-3"
+    },
+    {
+      "title": "Replicate — kwaivgi/kling-v2.1-master（$0.28/s 溢价样本）",
+      "url": "https://replicate.com/kwaivgi/kling-v2.1-master"
+    },
+    {
+      "title": "Together AI Pricing（视频模型聚合价目、最低档口径说明）",
+      "url": "https://www.together.ai/pricing"
+    },
+    {
+      "title": "RunPod Pricing（公共端点视频模型价 + GPU 小时价）",
+      "url": "https://www.runpod.io/pricing"
+    },
+    {
+      "title": "AtlasCloud AI API Pricing（H3 Max $0.38/s、Seedance 2.0 最高 68% off、复合计费）",
+      "url": "https://www.atlascloud.ai/pricing/models"
+    },
+    {
+      "title": "SiliconFlow 硅基流动定价（Wan2.2-A14B 视频模型 ¥2.00/条）",
+      "url": "https://siliconflow.cn/pricing"
+    },
+    {
+      "title": "Pika API 模型规格页 — pika-2.5 text-to-video（720p $0.04/s、1080p $0.09/s、micro-USD 计费）",
+      "url": "https://dev.pika.art/llms/pika/pika-2.5/text-to-video"
+    },
+    {
+      "title": "Pika 消费者定价（订阅套餐与积分包）",
+      "url": "https://pika.art/pricing"
+    }
+  ]
 }
