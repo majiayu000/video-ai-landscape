@@ -1,6 +1,6 @@
 # 前瞻调研 · 主要厂商近 90 天布局与空位（2026-09-22）
 
-> 方法：4 路 schema 约束 agent 真实网络调研（fal / AtlasCloud / 第二梯队 / 开发者需求侧；Higgsfield+Runway 路因限流待补跑，其信号已部分由需求侧覆盖）。
+> 方法：5 路 schema 约束 agent 真实网络调研（fal / AtlasCloud / Higgsfield+Runway / 第二梯队 / 开发者需求侧）。
 > 规则：以 2026-09-22 为"现在"，只看近 90 天动作 + 未来信号；gaps 为核心产出。
 > 原始结构化输出：workflow run wf_30803c52-a09。
 
@@ -196,215 +196,317 @@ AtlasCloud 近 90 天的重心很清晰：模型目录自动化扩张（52 天�
 
 ---
 
-## 第二梯队（Pika / MiniMax / Vidu / Kling / Luma / ElevenLabs）
+## Higgsfield + Runway
 
-近 90 天（2026-06-22～09-22）第二梯队的 agent 集成格局已从"提供 REST API"升级为"直接把产品面开在 agent 里"，且分化成三种打法：Pika 最激进——砍掉旧 Developer API（dk_ key 全部失效），把全部开发者入口迁到托管 MCP（mcp.pika.me，58 个原子工具、OAuth）+ 9 个 /pika:* skills + Claude/Cursor/Codex 三套插件清单；MiniMax 和 Vidu 走"CLI 即技能"——MiniMax 的 mmx-cli（9/19 仍在加 ASR 功能）自带 agent skill、双区端点，Vidu 的 vidu-cli+vidu-skills 支持 npx skills 和 ClawHub 双分发且是唯一做"提交前成本预估"的厂商；Kling 没有统一协议，而是给各个 agent 生态逐个做官方插件（openclaw 9/16、deepseek 8/31、pi 8/19），可灵官方 Skill 挂 ClawHub 但认证仍靠 AK/SK。真正的缺席者是：Luma（有官方 Go CLI 和三语言 SDK 但无 MCP 无 skills，功能开发停在 6 月 v0.3.0）和可灵/海螺的 MCP 层（可灵完全没有，海螺的官方 MCP 视频模型枚举还停在 Hailuo-02，落后于已发布的 H3）。最大的空位不在"有没有接入层"，而在接入层之上的三件事：全行业除 Vidu 外无人做生成前成本报价、除社区项目外无人做生成前校验、除 Pika 外无人把多供应商聚合做进 agent 工具面——这正是 contract-first 多供应商 CLI 可以整体占据的生态位。
+90 天窗口内两家走向明显分化：Higgsfield 的"UX 剧本"技能路线仍在加码（higgsfield-ai/skills 7/8–9/11 高频迭代出 websites/game/brandkit/explainer/Ad Multiplier 一整套"应用工厂"技能，MCP 以免 API key 方式铺进 ChatGPT/GPT-6 Astra/Claude/Cursor 等 7+ 客户端），但重心已从 CLI 转向 ChatGPT 分发和无代码 app，计费"坑"没修反而更碎（credits、All Unlimited、Bonus Seconds、MCP 专属 credits、console API 五套面并存，官方 9 月连发两篇解释文）；CLI 仓库 8 月零提交、release 多为 docs 空转，进入维护态。Runway 则把 Developer Platform 做成明示主线：8/28 skills 仓库重构让 runway-dev-* 成为唯一集成路径、MCP 服务器 7 月连获远程 HTTP/模型目录/媒体预览更新、API changelog 90 天 15+ 次上新（Model Router→容量回退→路由历史三连击、Task Cost API、ACEScg/ProRes 专业交付），同时招聘 Founding DX Lead 与 Dev Platform 产品/设计岗，域名迁 runway.com 并向企业（SSO/审计/Team Plan）、Adobe 插件和日本市场扩张。最大空位在"契约层"：Runway 无官方 CLI 且开源 MCP 只有 9 个工具、高频弃用无迁移工具；Higgsfield 技能无版本化、计费无编程化查询接口；两家都没有确定性评测基准和产物契约——这正是一个契约优先多厂商 CLI 的立足点。
 
 ### 近 90 天时间线
 
-- **2026-06-24** — Vidu 官方 vidu-skills 发布 v1.4.15（同期 vidu-cli 以 npm+cargo 双分发），skills 支持 npx skills 与 ClawHub 双安装（https://github.com/shengshu-ai/vidu-skills/commits）
-- **2026-06-25** — Pika-Labs/Pika-Experiments 推送：官方 agent 原型工作坊（'给 agent 一张脸和一个声音'），并弃用 Pika-Director-Suite（https://github.com/Pika-Labs/Pika-Experiments）
-- **2026-07-15** — Pika-Skills 仓库归档：官方宣布旧 Developer API（pika.me/dev，dk_ 密钥）已停用，正在重建面向 PikaStream 1.0 的平台无关访问（https://github.com/Pika-Labs/Pika-Skills）
-- **2026-07-20** — Pika-Plugins 同步 20 个漂移 skill（源自第三方 Mellis-Labs marketplace），插件含 58 工具 MCP + 9 skills + Claude 插件三表面（https://github.com/Pika-Labs/Pika-Plugins）
-- **2026-07-21** — Vidu 官方 dify-plugins 推送，Dify 生态插件上线（https://github.com/shengshu-ai/dify-plugins）
-- **2026-08-03～08-20** — elevenlabs-mcp 连续安全修复（本地文件越权读写）并发布 0.12.2；8/20 README 加弃用声明，指向官方托管 MCP（https://github.com/elevenlabs/elevenlabs-mcp/commits）
-- **2026-08-19** — 可灵官方 klingai-dev/pi-plugin 推送，为 pi coding agent 出官方插件（https://github.com/klingai-dev/pi-plugin）
-- **2026-08-20** — MiniMax-MCP 迁移 MCP SDK v2 并下线 Music 工具；同日 MiniMax 平台公告：音乐付费 API 对新用户关闭（https://github.com/MiniMax-AI/MiniMax-MCP/commits）
-- **2026-08-31** — ElevenLabs 官方 CLI 升级 v1.1.0（命令级归因 User-Agent cmd/<command>）；音乐端点支持 music_v2_5（https://elevenlabs.io/docs/changelog/2026/8/31.md）
-- **2026-08-31** — 可灵官方 klingai-dev/deepseek-plugin 推送，为 DeepSeek 生态出官方插件（https://github.com/klingai-dev/deepseek-plugin）
-- **2026-09-11** — Vidu 官方新模型仓库 Motus2 推送（https://github.com/shengshu-ai/Motus2）
-- **2026-09-14** — ElevenLabs CLI v1.3.0：API 命令加 --intent 元数据，并新增 elevenlabs feedback missing-capability 反馈命令（https://elevenlabs.io/docs/changelog/2026/9/14.md）
-- **2026-09-15** — Vidu 官方 openclaw-vidu-s 推送：Vidu S 实时数字人 Avatar + 实时流编辑（风格渲染/换人/换背景/虚拟试穿）接入 OpenClaw（https://github.com/shengshu-ai/openclaw-vidu-s）
-- **2026-09-16** — 可灵官方 klingai-dev/openclaw-plugin 推送（配合 ClawHub 上的 Kling AI Skill v1.1.0：意图自动路由 video/image/element）（https://github.com/klingai-dev/openclaw-plugin）
-- **2026-09-17** — Luma 四个官方仓库（luma-agents-cli/-go/-python/-typescript）有推送，但最新功能提交停在 6/8 的 v0.3.0（https://github.com/lumalabs/luma-agents-cli）
-- **2026-09-18** — vidu-skills 更新中国大陆（vidu.cn）与海外（vidu.com）双区 token 获取指南（https://github.com/shengshu-ai/vidu-skills/commits）
-- **2026-09-19** — MiniMax mmx-cli 新增 mmx speech transcribe（asr-1.0，支持 srt/vtt/流式），仓库 2167 stars 持续高频迭代（https://github.com/MiniMax-AI/cli/commits）
-- **2026-09-20** — Vidu 官方 Vidu-S 仓库推送（实时数字人/实时视频编辑模型）（https://github.com/shengshu-ai/Vidu-S）
+- **2026-07-02** — Runway 上线 Agent Skills：一条命令生成广告 campaign、商业片等；7/8 开放 Custom Agent Skills（用户可自建并共享技能）——技能路线写入产品主 changelog（https://runway.com/changelog）
+- **2026-07-04** — Higgsfield Unlimited Models Marketplace 扩展至 Team/Scale（按席位购买、不可转让）——计费面继续增项（https://higgsfield.ai/changelog）
+- **2026-07-07** — Higgsfield Apps 发布：无代码生成完整 generative app，可经 MCP 从 Claude/Cursor 构建；同日 App Contest 明确'第三方 API 接入生成取消参赛资格'，说明 API 与平台双轨（https://higgsfield.ai/changelog）
+- **2026-07-08** — Higgsfield skills 仓库进入高频迭代期：higgsfield-websites 技能持续重构（动画默认、deploy-first、反 slop、hermes 同步），7/16 新增浏览器游戏技能与 CLI video explainer 技能（https://github.com/higgsfield-ai/skills/commits/main/）
+- **2026-07-13** — Higgsfield After Effects 插件接入 Supercomputer 与 MCP（bridge.higgsfield.ai/mcp），agent 可直接操作合成/图层/关键帧（https://higgsfield.ai/changelog）
+- **2026-07-16** — Runway 开源 MCP 服务器两天两更：新增远程 HTTP 传输、模型目录与按工具覆盖、内联媒体预览、MCP_TOOL_TIMEOUT 配置（https://github.com/runwayml/runway-api-mcp-server/commits/main/）
+- **2026-07-20** — Higgsfield 上线 All Unlimited 通行证（图像/视频/音频顶级模型一张通行证、共享并发、一次一任务）（https://higgsfield.ai/changelog）
+- **2026-07-23** — Runway 发布 Model Router API：configId 保存路由配置、成本/延迟/质量偏好、允许/拒绝列表、每模态 credit 上限、dryRun；7/30 追加并发达上限时自动回退次优模型，7/30 同日上线 Task Cost API（响应内含每任务 credit 成本）（https://docs.dev.runwayml.com/api-details/api_changelog/）
+- **2026-07-28** — Runway 新增企业端点：org usage 与 audit_logs API（https://docs.dev.runwayml.com/api-details/api_changelog/）
+- **2026-08-03** — Runway Model Router 路由历史上线：记录每次路由决策及原因，可经公开 API 获取——'多模型调度层'三周内三连击（https://runway.com/changelog）
+- **2026-08-03** — Higgsfield skills 新增 Brandkit 与 YouTube Thumbnail 技能；8/7 将 game-generation 并入 higgsfield-websites（游戏定为第三种产品类型）（https://github.com/higgsfield-ai/skills/commits/main/）
+- **2026-08-05** — Runway 开启第三方模型高频聚合：90 天内陆续上新 Hailuo 3.0、Grok Imagine、WAN 3.0、Seedance 2.5、MiniMax H3 Max、GPT Image 2.5 等 15+ 次模型更新（https://docs.dev.runwayml.com/api-details/api_changelog/）
+- **2026-08-14** — Higgsfield Seedance 2.5 推出 Bonus Seconds：按秒计费的独立池、不扣 credits、30 天有效——计费体系再添一层（https://higgsfield.ai/changelog）
+- **2026-08-17** — Runway org 入库 runway-api-mcp-server 与 avatars-sdk-react（代号 GWM-1）（https://github.com/orgs/runwayml/repositories）
+- **2026-08-19** — Higgsfield for Enterprise：SOC 2 与 SSO、无限席位、按团队分配 credits（https://higgsfield.ai/changelog）
+- **2026-08-20** — Runway MCP 支持工作流：agent 可列出/编辑/运行 Workflows；同日 Ruby SDR→HDR 调色模型覆盖 Tool Mode、Workflows 与 Runway Dev（https://runway.com/changelog）
+- **2026-08-22** — Higgsfield Grok Bot 进 MCP：新用户验卡得 3 天试用 + 100 个 MCP 专属 credits，未取消自动续为月付 Plus——'MCP 专属 credits'与平台 credits 并存（https://higgsfield.ai/changelog）
+- **2026-08-26** — Higgsfield Supercomputer 免费模型 Ox Alpha 被证实为智谱 GLM-5.3 Flash 并转为消耗 credits；8/27 MCP 调用故障修复（https://higgsfield.ai/changelog）
+- **2026-08-28** — Runway skills 仓库同日三个 commit（#19/#20/#21）：新增 MCP-aware Dev Platform 集成技能，并将 runway-dev-*（models/model-routers/characters/recipes/workflows）定为唯一集成路径（https://github.com/runwayml/skills/commits/main/）
+- **2026-08-31** — Runway 专业交付格式连续上线：ACEScg OpenEXR 序列（8/31）、video_to_hdr 支持 alpha 通道（9/11）、帧率增强（9/17）——瞄准专业制片管线（https://docs.dev.runwayml.com/api-details/api_changelog/）
+- **2026-09-07** — Higgsfield MCP 登陆 GPT-6 Astra 并发布 Games 2.0（changelog 9/4 已先上线 GPT-6 Astra 与 3D Jutsu）——分发重心转向 ChatGPT 生态（https://higgsfield.ai/blog）
+- **2026-09-10** — Higgsfield 连发《Why Your AI Video Credits Run Out Faster Than You Expect》（9/10）与《Credits vs Unlimited Plans》（9/15）——官方下场解释计费混乱（https://higgsfield.ai/blog）
+- **2026-09-11** — Higgsfield skills 默认模型统一切到 GPT Image 2.5 / Seedance 2.5（直接改 main，无版本号）；同日 higgsfield-ai/cli 最后一次功能性 commit 也只是 docs 模型默认值更新，8 月该仓库零提交（https://github.com/higgsfield-ai/skills/commits/main/）
+- **2026-09-16** — Higgsfield 首波 API 公开推送：同日发布《Meet the Higgsfield API》《How To Generate AI Videos Straight From the Higgsfield API》《Inside Higgsfield #2: Supercomputer》三篇（https://higgsfield.ai/blog）
+- **2026-09-04** — Runway 上线自助 Team Plan（每席位 6,900 credits 共享池、最多 9 人）；9/8 发布 Runway Plugins for Adobe（Premiere/After Effects 面板）；9/4 sdk-python/sdk-node 更新；9/10 入库 runway-characters-meet（https://runway.com/changelog）
+- **2026-09-22（窗口内持续）** — Runway 招聘确认 Dev Platform 主线：Founding Developer Experience Lead、Dev Platform 产品总监/资深 PM/资深产品设计师、MTS Backend API、EM API，另有 Robotics Engineer (Research) 与 GM Japan（https://runway.com/careers）
 
 ### Roadmap 信号
 
-- **Pika 将发布新的平台无关开发者平台（面向 PikaStream 1.0 及后续模型），官方原话'当新平台就绪时会公布更新的 API 访问、商业条款和迁移指南'——即 Pika 的 REST API 将回归，且以 agent 优先**（置信：官方明示；https://github.com/Pika-Labs/Pika-Skills）
-- **ElevenLabs 接入层全面托管化：本地开源 MCP 已加弃用声明（8/20），托管 MCP（api.elevenlabs.io/v1/mcp，OAuth，CIMD，三区域端点）成为唯一官方路径；推断后续工具面会逐步从本地迁移到托管**（置信：多源交叉；https://github.com/elevenlabs/elevenlabs-mcp/commits）
-- **Kling 正在多 agent 生态铺设官方插件（openclaw/deepseek/pi 三个仓库 40 天内接连推送）但始终不走 MCP 协议——推断其策略是绑定 ClawHub/OpenClaw 生态而非中立协议，短期不会出官方 MCP**（置信：多源交叉；https://github.com/klingai-dev/openclaw-plugin）
-- **MiniMax 官方文档 Tip 明确引导开发者'使用 MiniMax CLI 而非 MCP'，CLI 迭代频率（近 30 天 4+ 次功能提交）远高于 MCP（8/20 后无提交）——接入层重心已从 MCP 转向 CLI+skill 分发**（置信：官方明示；https://platform.minimax.io/docs/guides/mcp-guide.md）
-- **MiniMax 与 fal.ai 深度绑定：H3 Max 视频模型由 fal.ai 后训练（官方模型页原话），音乐能力转向 Hugging Face 开源（Music 3.0）——MiniMax 正把分发外包给聚合平台**（置信：官方明示；https://platform.minimax.io）
-- **Luma 以'Agents API'命名其生成 API 并铺齐 CLI+三语言 SDK（2026-05-04 同日创建四个仓库），但无 MCP/skills 且功能开发停在 6 月——推断其 agent 策略是借道分销伙伴（fal、Freepik、Krea、Lovart 等 9 家已在合作列表），自有 agent 面投入在收缩**（置信：推断；https://docs.agents.lumalabs.ai）
-- **Vidu 战略重心转向实时：Vidu S（实时数字人 Avatar+实时流编辑，9 月连推三仓库）+官方 OpenClaw 集成，传统异步生成接口的 agent 面（vidu-mcp）已 15 个月未更新——推断离线视频生成的接入层投入将集中在 skills 路线**（置信：多源交叉；https://github.com/shengshu-ai/openclaw-vidu-s）
+- **Runway 把 Developer Platform 确立为公司下一主线：在招 Founding Developer Experience Lead（founding 级）、Dev Platform 产品总监 + 资深 PM + 资深产品设计师、MTS Backend API、EM API——一个子系统同时招齐 DX、产品、设计、工程四条线**（置信：官方明示；https://runway.com/careers）
+- **Runway 技能路线收敛到 Dev MCP 优先：8/28 三个 commit 把 runway-dev-* 定为唯一集成路径并标注 MCP-aware，未来 skills 生态将围绕 Dev Platform MCP 而非裸 REST 教程展开**（置信：官方明示；https://github.com/runwayml/skills/commits/main/）
+- **Runway 正在把自己建成'多模型调度层'：Model Router（7/23）→ 容量自动回退（7/30）→ 路由历史 API（8/3）三周三连击，下一步大概率是路由策略市场/跨厂商路由（已聚合 7+ 第三方模型）**（置信：官方明示；https://docs.dev.runwayml.com/api-details/api_changelog/）
+- **Runway 向企业+国际化扩张：SSO 默认化、配置告警、Team Plan 自助化、GM Japan + Founding Deployment Lead Japan 在招、域名迁移 runway.com**（置信：官方明示；https://runway.com/changelog）
+- **Runway 在角色/虚拟人/实体方向埋点：avatars-sdk-react（代号 GWM-1）8/17 入库、runway-characters-meet 9/10 入库、Robotics Engineer (Research) 在招、Runway Studios 创意岗位扩张——可能孵化独立角色产品线**（置信：推断；https://github.com/orgs/runwayml/repositories）
+- **Higgsfield 分发押注 ChatGPT/GPT-6 Astra：MCP 上 GPT-6 Astra（9/7）、ChatGPT 内直接生成视频（8/14）、Grok Bot 常驻（8/22）、3D Jutsu 捆绑 GPT-6 Astra（9/4）——多篇文章与 changelog 交叉印证'宿主 agent 承载 UI'路线**（置信：多源交叉；https://higgsfield.ai/blog）
+- **Higgsfield 产品重心从'视频效果'转向'应用工厂'：websites/game/explainer/brandkit/Apps/3D Jutsu 连续落地，Supercomputer 升级为中枢（Projects 共享工作区 8/23、GPT-6 Astra 多步工作流 9/4）**（置信：多源交叉；https://higgsfield.ai/changelog）
+- **Higgsfield 开始公开经营 API 招牌：9/16 同日三篇 API 文章（产品介绍+教程+基建幕后），console.higgsfield.ai 以'50+ 模型一个 API'独立售卖——API 会成为下一阶段的显性产品线**（置信：多源交叉；https://higgsfield.ai/blog）
+- **Higgsfield 计费短期不会收敛反而继续增项：9/3 Scale 无限模型、8/14 Bonus Seconds、8/22 MCP 专属 credits、8/26 免费模型转收费——每个新面都是独立池，碎片化是产品策略而非过渡态**（置信：官方明示；https://higgsfield.ai/changelog）
+- **Higgsfield CLI 进入维护态：8 月零提交、9 月仅 docs 默认值更新、v1.1.19–v1.1.24 多个 release 指向同一 commit（docs 空转），核心人力已转向 skills 与 ChatGPT 分发**（置信：推断；https://github.com/higgsfield-ai/cli/commits/main/）
 
 ### 做得好的
 
-- Pika 的三表面分发设计：同一个托管 MCP（58 原子工具）+ npx skills（经 vercel-labs/skills 覆盖 50+ agent）+ Claude/Cursor/Codex 原生插件清单，'一次身份、一次授权、一张账单'跨所有 agent——这是目前全行业最完整的 agent 分发矩阵，值得直接对标
-- MiniMax 的 CLI 即技能哲学：mmx-cli 一个二进制覆盖 text/image/video/speech/vision/search，README 第一行安装命令就是 npx skills add MiniMax-AI/cli -y -g（为 agent 而非人为优先），且双区端点（api.minimax.io / api.minimaxi.com）无缝切换；官方文档明确建议'用 CLI 代替 MCP 以获得更简单配置'
-- Vidu 是唯一做'提交前成本预估'的厂商：vidu-skills 内置 Cost Estimation（video/image/TTS/lip-sync 任务提交前估算积分成本）+ 配额查询工具——把计费透明度做进了 agent 工具面
-- ElevenLabs 的工程纪律：每周 changelog 节奏、CLI 有命令级归因和 missing-capability 反馈闭环、托管 MCP 用 OAuth+CIMD（'API 密钥不复制进客户端'）、EU/印度/新加坡区域端点
-- Kling 的意图路由设计：官方 Skill 按用户意图自动选择 video/image/element 子命令并路由到对应 API 端点，中国/全球端点自动探测缓存
-- 中国厂商的文档 LLM 化：Kling 提供 llms.txt + 每页 .md 版本（'This content is optimized for LLMs'），MiniMax 提供 171 行全量 llms.txt 索引——降低了 agent 抓取门槛
+- Higgsfield 技能迭代速度惊人：两个月内从 websites 到 game、brandkit、YouTube thumbnail、Ad Multiplier 铺出完整'应用工厂'技能矩阵（skills 仓库 1.1k stars、89 commits），且每个技能都对应可展示的成品而非 API 文档
+- Higgsfield MCP 零门槛分发：mcp.higgsfield.ai/mcp 免 API key 直连，覆盖 ChatGPT/Claude Code/Cursor/Grok Bot/OpenClaw/Hermes 等 7+ 客户端，把分发做成了默认动作；Adobe AE、Blender、DaVinci 三套创意工具桥接也全部走 MCP
+- Higgsfield 用营销闭环养技能：$1M 电影节、$100k App Contest、Create in Public credits 资助，让技能产出有真实受众和传播素材
+- Runway 把成本做成 API 一等公民：Task Cost API（7/30）在响应里直接返回每任务 credit 成本（运行中估算+完成时终值），Model Router 路由历史可 API 拉取审计——这是两家唯一把'可预测成本'产品化的
+- Runway skills 仓库工程化最规范：runway-dev-* 家族结构清晰（models/routers/characters/recipes/workflows），8/28 敢于做破坏性收敛（'唯一集成路径'），MIT 许可 + 双安装通道（npx skills add / claude plugin marketplace）
+- Runway API 聚合节奏行业最快：90 天 15+ 次模型上新，第三方模型（Seedance/WAN/Hailuo/Grok/GPT Image）全部经统一 API 暴露，同时保住 HDR/ACEScg/ProRes 专业交付差异化
+- Runway 企业端点补齐迅速：org usage、audit_logs（7/28）、SSO 默认化与配置告警（8/24）、Team Plan 自助化（9/4），从创作者工具向组织采购平滑过渡
 
 ### 空位与切入姿势
 
-- **可灵完全没有官方 MCP server——官方 agent 面只有 ClawHub Skill（AK/SK 认证）和零散的 per-agent 插件；全球流量最大的视频模型在 Claude/Cursor 里没有中立协议入口**
-  - 证据：kling.ai/llms.txt 全文 grep 仅命中一个 Skills 页（2026/04/01 更新），无任何 MCP 条目；klingai-dev org 下是 openclaw-plugin/deepseek-plugin/pi-plugin 三个孤立插件而非统一协议实现；官方 Skill 文档写明'暂时无法通过 API Key 访问，预计六月内支持'
-  - 切入：为可灵做第三方 MCP/skills 网关：内置中国/全球双区端点探测、AK/SK→OAuth 封装、3.0 Omni 音视频同步参数映射、积分预估——把可灵官方 skill 没做好的认证和计费体验补齐，以 npm 包+托管端点双形态分发
-- **MiniMax 官方 MCP 的视频工具严重滞后于 API：generate_video 模型枚举只有 Hailuo-02/T2V-01 系列，不含已发布的 H3/H3 Max；且 8/20 下线 Music 工具后 agent 无法再调用音乐能力**
-  - 证据：platform.minimax.io/docs/guides/mcp-guide.md 模型枚举为 [MiniMax-Hailuo-02, T2V-01-Director, ...] 无 H3；同页 Tip 建议改用 CLI；platform.minimax.io 公告 8/20 起音乐付费 API 对新用户关闭
-  - 切入：在多供应商 CLI 里以最新 API 契约（含 H3/H3 Max、4-15s、2K）直接封装海螺视频，绕过其官方 MCP 的滞后枚举；音乐空档则路由到其他厂商的音乐 API（如 ElevenLabs music_v2_5）做成跨厂商回退链
-- **全行业（除 Vidu 的 skills 和 Pika 的个别参数外）没有厂商在 agent 工具面做'生成前成本报价'；Luma/MiniMax/Vidu API 全部是轮询制且无公开 webhook，agent 每次轮询都烧 token**
-  - 证据：Luma 文档明确 Submit→Poll→Download 三步无 webhook；MiniMax MCP 只有 query_video_generation 轮询工具；Vidu skills 是唯一内置 Cost Estimation 的官方集成；社区项目 smart-token-guard（'Stop burning credits on broken AI video'）的存在反证了官方层缺位
-  - 切入：把'dry-run 报价 + 统一任务编排'做成 contract-first CLI 的核心卖点：每家厂商维护一份机器可读定价/时长/分辨率合约，生成前返回全供应商比价表，后台代管轮询/webhook，agent 只收最终结果——这是所有厂商都没占的生态位
-- **ElevenLabs 接入层托管化后工具面反而收窄：托管 MCP 只覆盖 ElevenAgents 管理+TTS，音乐/音效/语音克隆/视频转音乐（video-to-music）全部不在托管版里，而开源本地版已弃用**
-  - 证据：hosted-mcp.md 安全范围原话'OAuth permissions covering ElevenAgents read and write operations and Text to Speech'，未提及 music/sound effects/video；elevenlabs-mcp README 8/20 弃用声明指向托管版
-  - 切入：做跨厂商统一本地 MCP/CLI，专门收录'被托管化抛弃'的能力（ElevenLabs 音效/克隆/配乐 + 各家视频），对厌恶把凭据交给托管 OAuth 的专业用户形成差异化
-- **Pika 旧 Developer API 用户被整体抛弃：dk_ 密钥全部失效、新平台无时间表、无迁移路径，其 skills 还依赖第三方 Mellis-Labs marketplace 同步（供应链不透明）**
-  - 证据：Pika-Skills README：'Existing Developer Keys no longer work, and new keys can no longer be created'、'Future programmatic access details will be announced when the new platform launches'；Pika-Plugins 提交记录显示 skills 源自 Mellis-Labs/pika-creative-plugin-marketplace 自动同步
-  - 切入：承接 Pika 出逃用户：提供 pika 风格 skill 语义（podcast/explainer/ugc-ads 三类工作流）但路由到用户自选的模型供应商；同时 Pika MCP 的多供应商聚合参数设计（generate_video 带 kling/veo3/sora/minimax 各自旋钮）证明了该形态有真实需求，可以做得更中立
-- **中国厂商的 agent 面在国际一致性上残缺：可灵文档是 JS 渲染 SPA（llms.txt 缓解但 Skill 文档停在 4 月）、认证是 AK/SK 而非行业惯例的 API Key/OAuth、MiniMax MCP 指南完全不提 CN/Global 双区差异、Vidu 同时存在 vidu.cn/.com/.io/.studio 四个域名**
-  - 证据：kling.ai/document-api 经 Playwright 渲染才可见正文；kling-skills 页写明 AK/SK 手动导入命令且 API Key 'expected to support within June'；MiniMax mcp-guide.md '未提及任何中国大陆平台与国际平台差异'（仅 mmx-cli README 提及双区）；Vidu 双区端点要靠用户手设 VIDU_BASE_URL
-  - 切入：独立开发者做'中国模型国际接入规范层'：统一凭据模型（一处配置自动映射各家中英文平台）、双区端点自动探测、数据出境/合规提示、英文文档与状态页——这是中国厂商自己不会优先做、国际 agent 开发者又最痛的一层
-- **没有任何官方集成做'生成前校验'（prompt 合约、关键帧可用性、模型能力矩阵匹配），错误要到任务提交后才发现并扣费**
-  - 证据：官方 skills 全部是提交-轮询两段式；唯一做预检的是社区项目 smart-token-guard（'Check every keyframe and clip before you pay for the next render'）；Luma 文档承认 legacy API 误路由问题（HDR 请求误发 Ray 3 的 FAQ）说明参数路由确实易错
-  - 切入：在 CLI 合约层内置静态校验：分辨率/时长/关键帧数/模型能力矩阵在提交前对账，错误零成本拦截——把 Higgsfield 的 evals 思路从模型层下沉到接入层
+- **Runway 没有官方 CLI**
+  - 证据：runwayml org 下 63 个仓库全是 SDK/MCP/skills/演示，无 CLI 仓库；skills 的用法是让 agent 读 SKILL.md 后自行拼 REST 调用，Model Router configId、Task Cost、路由历史这些 API 一等公民没有任何命令行入口
+  - 切入：做契约优先的 Runway CLI：`router create/dry-run/apply`、`task cost --history`、`routes export`，把 Model Router 配置文件化（JSON 契约进 git）、成本报表命令化；也可给 runwayml/skills 提 PR 补 CLI 层借官方流量
+- **Runway 开源 MCP 只有 9 个工具，远窄于其真实能力面**
+  - 证据：runway-api-mcp-server 仅 listModels/generateVideo/generateImage/upscaleVideo/editVideo/generateAudio/getTask/cancelTask/getOrg；Recipes、Workflows、Model Router 管理都不在其中（Workflows 只进了产品内闭源 Agent MCP，见 8/20 changelog），且 24 commits 无 release、无语义版本
+  - 切入：独立维护超集 MCP/CLI：Recipe 执行器、Router 配置管理、routing-history 拉取做成本/质量报表——官方 9 工具与文档能力面之间的差集就是产品定义
+- **Runway 高频上新+弃用但零迁移工具**
+  - 证据：90 天内 Gen-3 Alpha Turbo/Gen-4 Aleph 弃用（7/30）、默认模型反复切换、15+ 模型上新；docs 只有按日流水 changelog，无弃用 RSS/webhook、无参数兼容矩阵、无 codemod——依赖它的自动化管线每次都要人工扫 changelog
+  - 切入：做跨厂商模型目录 diff 与弃用告警服务：定期快照各厂商模型目录（模型/参数/价格/弃用状态），机器可读 diff + webhook 通知 + 旧→新参数映射建议，直接嵌入用户 CLI 的 CI 流程
+- **Higgsfield 技能无版本化、无机器可读契约**
+  - 证据：higgsfield-ai/skills 89 个 commit 直接改 main 的 SKILL.md，无 semver、无 CHANGELOG；9/11 一次 commit 把全库默认模型切到 GPT Image 2.5/Seedance 2.5，`npx skills add higgsfield-ai/skills` 拉的是漂移中的 main 头——技能产出不可复现
+  - 切入：做技能注册表 + 版本锁：fork 官方技能集并打语义版本与参数 schema（类似 package-lock），提供'锁定版技能集'供 CI 消费；对漂移出 diff 报告。这与'契约优先'定位天然同构
+- **Higgsfield 计费碎片化且无编程化查询接口**
+  - 证据：90 天 changelog 中计费类条目 12+ 条：All Unlimited（7/20）、存储按 1GB=2.5 credits（7/8）、Bonus Seconds 独立池（8/14）、MCP 专属 credits + 自动转付费 Plus（8/22）、免费模型 GLM 转收费（8/26）、Scale 无限（9/3）；/cli 页宣称'同一 credit 体系'但 MCP 又有专属 credits；无公开 balance/usage API，官方需连发两篇博文（9/10、9/15）向用户解释
+  - 切入：做统一计费聚合器：一个本地 ledger/CLI 子命令，把订阅 credits、Bonus Seconds、MCP credits、console API 余额汇总查询、用量预警和成本归因（哪个 agent 会话烧掉了多少）——多厂商 CLI 的天然模块，Higgsfield 自身不会做（暴露内部池不利营销）
+- **Higgsfield 订阅与 console API 双轨依旧，且互相对立**
+  - 证据：console.higgsfield.ai 独立售卖'50+ 模型一个 API、最优价格'；官方 changelog 无任何 API 条目；7/7 App Contest 明文'经第三方 API 接入生成取消参赛资格'，说明 API 用户与平台用户是两个世界；9/16 才发第一波 API 教程
+  - 切入：做双轨路由与实测对比：同一 prompt/参数在订阅 credits（MCP/CLI）与 console API 两条轨上跑成本/延迟/质量实测并发布对比数据，CLI 里做 `--track subscription|api` 自动选便宜轨——帮开发者把'坑'变成可计算的决策
+- **两家都没有确定性评测与回归基准**
+  - 证据：Runway/Higgsfield 的 changelog 与博客全是能力宣传：无公开 eval 集、无 seed 复现说明、无参数稳定性承诺、无模型间横向基准；Higgsfield skills 的'质量'靠 anti-slop 提示词约定，Runway 靠 recipes 人工经验
+  - 切入：建跨厂商提示词回归集：固定 prompt+seed+参数定期跑分，发布横向对比报告（成本/时长/一致性），以 CLI 插件形式让用户在自家场景上跑私有基准——评测是厂商不便自证、第三方最有话语权的空位
+- **两家技能层都缺 agent 输入校验与产物契约**
+  - 证据：Runway skills 要求预充值 $10 + 环境变量即用，无输入 schema 校验层；Higgsfield 技能直接产出网站/游戏成品但无产物 manifest（部署 URL、资产清单、成本记录均不落盘）——agent 管线断点恢复和审计无从做起
+  - 切入：把 JSON contract 层做成两家 skills 之上的公共包装器：统一输入校验、产物 manifest、断点恢复与重放——这正是把已有工程实践（agent 输入/恢复/产物契约硬化）产品化为跨厂商中间层
 
 ### 未解问题
 
-- 可灵是否会在 2026 下半年推出官方 MCP 或统一 CLI？其官方 Skill 承诺的'API Key 认证六月内支持'是否已兑现（文档页停留在 4 月，未见更新声明）
-- Pika 新开发者平台（PikaStream 1.0）的发布时间、商业条款和是否保留托管 MCP 三表面并存
-- ElevenLabs 托管 MCP 是否会扩容到 music/sound effects/voice clone/video-to-music，还是这些能力永久留在被弃用的本地版
-- Luma 'Agents API' 的命名是否预示真正的 agent 编排能力（多步骤、工具调用），还是纯营销改名；CLI 0.3.0 之后是否还有投入
-- MiniMax Video Agent（模板化视频任务）API 何时进入 MCP/skills 层，与通用 generate_video 的割裂是否是长期设计
-- Vidu 的 shengshu-ai/vidu-mcp 无弃用声明但 15 个月未更新，官方是否已默认由 vidu-skills 取代
-- Pika MCP 内的 sora_edit 工具在第三方模型（Sora）上的商业授权模式是否可持续（2026 年 9 月 Sora 生态变动后）
+- Higgsfield《Higgsfield Unlimited MCP》（7/28 博文）的具体权益边界（覆盖哪些模型、是否限速、与 All Unlimited 的关系）未能验证——目标 URL 404，真实 slug 未知
+- runway-characters-meet 仓库的实际用途（是新角色产品 GWM-1 的落地页还是开源工具）未读取内容，角色方向信号目前仅靠入库时间与 avatars-sdk-react 代号推断
+- Higgsfield console API 与订阅 credits 是否完全隔离、有无互通额度或促销，未从一手定价文档确认（pricing 页 JS 渲染抓不到）
+- Runway skills 安装要求的 '$10 prepay' 是最低充值还是月费、RUNWAYML_API_SECRET 与平台订阅 credits 的关系未验证
+- Higgsfield CLI 8 月零提交是团队人力转移还是单纯稳定期，无法从外部仓库证据区分；若为前者，CLI 生态位可能被官方进一步边缘化
+- Runway 开源 MCP（runway-api-mcp-server）与闭源产品内 Agent MCP 的功能边界（Workflows 仅在后者）未来是否会收敛，无官方表态
 
 ### 来源
 
-- [Luma Agents API 官方文档（Ray3.2/uni-1.1、CLI/SDK、无 MCP）](https://docs.agents.lumalabs.ai)
-- [Luma API 产品页（Ray3.2 能力与定价、合作伙伴列表）](https://lumalabs.ai/api)
-- [lumalabs/luma-agents-cli（官方 CLI，v0.3.0 停于 2026-06-08）](https://github.com/lumalabs/luma-agents-cli)
-- [MiniMax-AI/MiniMax-MCP（官方 MCP，2026-08-20 迁移 SDK v2 并下线 Music 工具）](https://github.com/MiniMax-AI/MiniMax-MCP)
-- [MiniMax-AI/cli（官方 mmx-cli，2026-09-19 新增 speech transcribe）](https://github.com/MiniMax-AI/cli)
-- [MiniMax 官方 MCP 指南（视频模型枚举滞后、建议改用 CLI）](https://platform.minimax.io/docs/guides/mcp-guide.md)
-- [MiniMax 平台文档总索引（H3/H3 Max、音乐 API 关停公告、Video Agent API）](https://platform.minimax.io/docs/llms.txt)
-- [elevenlabs/elevenlabs-mcp（官方 MCP，2026-08-20 加弃用声明转向托管版）](https://github.com/elevenlabs/elevenlabs-mcp)
-- [ElevenLabs Hosted MCP server 官方文档（OAuth/CIMD、仅 Agents+TTS 范围）](https://elevenlabs.io/docs/eleven-agents/operate/hosted-mcp.md)
-- [ElevenLabs CLI 官方文档（voice agents as code）](https://elevenlabs.io/docs/eleven-agents/operate/cli.md)
-- [ElevenLabs Changelog 2026-09-14（CLI v1.3.0、music_v2_5）](https://elevenlabs.io/docs/changelog/2026/9/14.md)
-- [ElevenLabs Changelog 2026-08-31（CLI v1.1.0、music v2.5）](https://elevenlabs.io/docs/changelog/2026/8/31.md)
-- [Kling AI 官方 Skill 文档（ClawHub v1.1.0、AK/SK 认证、意图路由）](https://kling.ai/document-api/api/get-started/kling-skills)
-- [kling.ai llms.txt（模型演进到 3.0 Omni、海外收入 70%）](https://kling.ai/llms.txt)
-- [klingai-dev/openclaw-plugin（可灵官方 OpenClaw 插件，2026-09-16）](https://github.com/klingai-dev/openclaw-plugin)
-- [shengshu-ai/vidu-skills（官方 Agent Skill，成本预估/双区 token，2026-09-18 更新）](https://github.com/shengshu-ai/vidu-skills)
-- [shengshu-ai/vidu-cli（官方 CLI，npm+cargo 双分发）](https://github.com/shengshu-ai/vidu-cli)
-- [shengshu-ai/vidu-mcp（官方 MCP，2025-06-26 后停止更新）](https://github.com/shengshu-ai/vidu-mcp)
-- [shengshu-ai/openclaw-vidu-s（Vidu S 实时数字人/流编辑的 OpenClaw 集成）](https://github.com/shengshu-ai/openclaw-vidu-s)
-- [Pika-Labs/Pika-Plugins（官方 Claude 插件：58 工具托管 MCP + 9 skills 三表面）](https://github.com/Pika-Labs/Pika-Plugins)
-- [Pika-Labs/Pika-Skills（官方宣布旧 Developer API 停用、PikaStream 1.0 新平台在建）](https://github.com/Pika-Labs/Pika-Skills)
-- [Pika-Labs/Pika-Experiments（官方 agent 原型工作坊）](https://github.com/Pika-Labs/Pika-Experiments)
+- [Runway API Changelog（docs.dev.runwayml.com）](https://docs.dev.runwayml.com/api-details/api_changelog/)
+- [Runway 产品 Changelog](https://runway.com/changelog)
+- [runwayml/skills 仓库（runway-dev-* 技能族）](https://github.com/runwayml/skills)
+- [runwayml/skills 提交历史（8/28 唯一路径重构）](https://github.com/runwayml/skills/commits/main/)
+- [runwayml/runway-api-mcp-server（9 工具 MCP）](https://github.com/runwayml/runway-api-mcp-server)
+- [runwayml org 仓库列表（63 仓库）](https://github.com/orgs/runwayml/repositories)
+- [Runway Careers（Founding DX Lead、Dev Platform、Robotics、Japan）](https://runway.com/careers)
+- [Higgsfield 产品 Changelog（计费/MCP/CLI 条目）](https://higgsfield.ai/changelog)
+- [higgsfield-ai/cli 仓库](https://github.com/higgsfield-ai/cli)
+- [higgsfield-ai/cli 提交历史（8 月空窗）](https://github.com/higgsfield-ai/cli/commits/main/)
+- [higgsfield-ai/cli Releases（v1.1.17–v1.1.26）](https://github.com/higgsfield-ai/cli/releases)
+- [higgsfield-ai/skills 仓库（应用工厂技能矩阵）](https://github.com/higgsfield-ai/skills)
+- [higgsfield-ai/skills 提交历史（7/8–9/11）](https://github.com/higgsfield-ai/skills/commits/main/)
+- [Higgsfield MCP 页（免 API key、7+ 客户端、FAQ 计费）](https://higgsfield.ai/mcp)
+- [Higgsfield CLI 页（'same credit system' 表述、35 技能）](https://higgsfield.ai/cli)
+- [Higgsfield Blog（9/16 API 三连发、9/10 与 9/15 计费解释文、9/7 GPT-6 Astra）](https://higgsfield.ai/blog)
+
+---
+
+## 第二梯队（Pika / MiniMax / Vidu / Kling / Luma / ElevenLabs）
+
+90 天内六家分成三个梯队：MiniMax 与 ElevenLabs 已建成官方全栈 agent 面（MCP+CLI+skills，且 ElevenLabs 完成“本地 MCP→托管 MCP、REST 示例→CLI”的架构切换）；可灵与 Vidu 是最关键的刚入场者——可灵 6/15 才建 skills 仓、8 月 10 天内连发 Claude/Cursor/WorkBuddy 三端官方 plugin 并上线托管 MCP（klingai.com/mcp，官方优先推荐 CLI），Vidu 7 月推出 OpenClaw 系官方 Vidu Agent 并高频维护 vidu-skills（但官方 vidu-mcp 已停更 15 个月）；Luma 停在 API+官方 CLI 层（CLI 默认分支自 6/9 停更），其“Luma Skills”是产品内工作流而非可安装 agent 技能，全站无 MCP；Pika 转型 API Club 聚合门户（OpenAPI 3.1+llms.txt+/agent 提示词页），无任何协议级集成。统一 CLI 的下一步方向：provider 适配器优先对准“官方 API 强、agent 面空白”的 Luma Agents API 与国际版 Kling API。最大空位：可灵的 agent 集成被锁在中国消费者会员生态（klingai.com 中文+会员计费），国际开发者门户 kling.ai/document-api 零 agent 集成；且全行业没有跨厂商统一契约——成本预估仅 Vidu 一家实现，这正是 contract-first 多厂商 CLI 的入口。
+
+### 近 90 天时间线
+
+- **2026-06-24** — Vidu：官方 vidu-cli 与 vidu-skills 同日更新至 v1.4.15（TTS/唇同步/字幕能力）；vidu-cli 为 npm 分发的官方命令行（https://github.com/shengshu-ai/vidu-skills）
+- **2026-07-02** — Vidu：同日创建 vidu-s-api（Vidu-S 实时交互数字人 API 的集成指南与技能）与 openclaw-vidu-s（OpenClaw 集成）；官方 Vidu Agent（自称首个基于 OpenClaw 的营销 agent，由 Vidu Q3 驱动）于 vidu.com/vidu-claw 上线（https://github.com/shengshu-ai/vidu-s-api）
+- **2026-07-07** — 可灵：kling-cli 消费者技能升级 v0.1.3（响应字段统一 camelCase）；该 skills 仓 6/15 才创建（自述“kling-skills 分发镜像仓”），90 天内持续演进（https://github.com/klingai-tech/skills）
+- **2026-07-10** — Luma：docs.lumalabs.ai 更新 Dream Machine API→Luma Agents API 迁移通知；新文档站（docs.agents.lumalabs.ai）提供 llms.txt 与每页 .md，含 Ray3.2/uni-1 路由与 video_edit/reframe 端点，但无任何 MCP/skills 章节（https://docs.lumalabs.ai）
+- **2026-08-05 至 08-14** — 可灵：10 天内连发三个官方 plugin 仓——cursor-plugin（08-05）、workbuddy-plugin（08-06）、claude-plugin（08-13），完成 Claude/Cursor/WorkBuddy 三端覆盖（https://github.com/klingai-tech/claude-plugin）
+- **2026-08-06** — Luma：官方上架第三方模型“MiniMax H3 Available Now”与“Seedance 2.5: Now Live in Luma”，平台转向模型聚合/路由（https://lumalabs.ai/news）
+- **2026-08-15** — MiniMax：开源视频模型 MiniMax-H3（原生立体声、2K/15s、开源权重），仓库自带 9 个技能（含 Prompt Writing Skill），后续发布 awesome-minimax-h3-integration 生态列表（09-17）（https://github.com/MiniMax-AI/MiniMax-H3）
+- **2026-08-20** — ElevenLabs：归档本地 elevenlabs-mcp，切换到托管 MCP（https://api.elevenlabs.io/v1/mcp，OAuth 授权），README 明示本地版由托管版取代（https://github.com/elevenlabs/elevenlabs-mcp）
+- **2026-08-25** — ElevenLabs：官方 skills 仓库将全部 REST 示例改为 CLI 调用（提交信息：“The ElevenLabs CLI just shipped”）；随后 09-01 增加 npm 安装选项、09-07 增加 Cursor 托管 MCP connector 配置、09-09 再从 changelog 同步技能（https://github.com/elevenlabs/skills）
+- **2026-08-21 至 09-19** — MiniMax：mmx-cli 五个版本（v1.0.22→v1.0.26）：08-31 自动安装缺失的 coding agents、09-02 检测 Codex runtime、09-19 新增语音转写 asr-1.0；CLI 本身可用 npx skills add MiniMax-AI/cli 作为 agent 技能安装，支持双区 API（https://github.com/MiniMax-AI/cli）
+- **2026-09-10** — 可灵：kling-cli skill v0.2.0，新增主体库与动作控制（对齐 3.0 系模型能力）；09-11 workbuddy-plugin 跟进更新（https://github.com/klingai-tech/skills）
+- **2026-09-14 至 09-20** — Vidu：vidu-s-api（09-14）、openclaw-vidu-s（09-15）、vidu-skills（09-18，更新 vidu.cn/vidu.com 双区 token 文档）、Vidu-S 主仓（09-20）密集推送（https://github.com/shengshu-ai/vidu-skills）
+- **2026-09-18** — ElevenLabs：skills 仓库最后一次推送（90 天内第 5 次从 changelog 自动同步，最后一次同步 09-07 changelog）（https://github.com/elevenlabs/skills）
+- **2026-09-20** — Pika：官网主推 API Club 聚合门户（dev.pika.art：固定目录、provider 托管、REST+OpenAPI 3.1+llms.txt+/agent onboarding 提示词页、micro-USD 预付费报价、无免费层），全站无 MCP/CLI/skills；同日 api-evangelist 档案更新确认其主域无第一方生成 API（https://dev.pika.art）
+- **2026-09-21** — MiniMax：开源终端编码 agent minimax-code（约 1.7k stars），agent 战略从“被 agent 调用”扩展到“自带 agent 运行时”（https://github.com/MiniMax-AI/minimax-code）
+- **90 天内（负证据）** — Luma：官方 luma-agents-cli 默认分支最后 commit 停在 2026-06-09（v0.3.0），窗口内零动作；旧官方 luma-api-mcp 停更于 2025-04 且指向已废弃 API；官方 MCP/可安装 skills 均不存在（https://github.com/lumalabs/luma-agents-cli）
+- **90 天内（负证据）** — Vidu：官方 vidu-mcp 停更于 2025-06-26，未覆盖 Q3/Vidu S 新能力；可灵国际站 kling.ai/document-api（Kling 3.0 Omni/Turbo、Motion Control、Virtual Try-On）全站无 MCP/CLI/skills 入口，agent 集成仅存在于 klingai.com 中国消费者站（https://github.com/shengshu-ai/vidu-mcp）
+
+### Roadmap 信号
+
+- **可灵 agent 生态将加速扩张：klingai-tech org 6-9 月连续创建 4 个仓库，9/10 的 skill v0.2.0 刚加入“主体库与动作控制”（与 3.0 系模型能力同步），commit 节奏跟随模型发布；下一步大概率覆盖 3.0 Omni 全部能力并补国际版**（置信：官方明示；https://github.com/klingai-tech/skills）
+- **MiniMax 走向“自带 agent 运行时”：mmx-cli 七周五个版本（自动安装 coding agents、检测 Codex runtime）+开源 minimax-code+H3 仓库自带 9 技能，从被调用方进化为运行时提供方**（置信：官方明示；https://github.com/MiniMax-AI/cli）
+- **托管 MCP（OAuth、零本地配置）取代本地 stdio MCP 成为默认：ElevenLabs 8/20 归档本地 MCP 切换 api.elevenlabs.io/v1/mcp；可灵直接以托管端点 klingai.com/mcp+提示词分发；MiniMax 亦有官方 MCP 双实现**（置信：多源交叉；https://github.com/elevenlabs/elevenlabs-mcp）
+- **Luma 平台化聚合第三方模型（8/6 上架 MiniMax H3 与 Seedance 2.5），向模型路由演进；但官方对 MCP/agent skills 零表态，agent 面短期大概率继续缺位**（置信：推断；https://lumalabs.ai/news）
+- **Vidu 押注 OpenClaw 生态而非 MCP：vidu-claw 官方营销 agent+openclaw-vidu-s+skills 均只提 Vidu Agent/OpenClaw/Claude Code，官方 vidu-mcp 一年未动——出现中国厂商“OpenClaw 优先”路线**（置信：推断；https://www.vidu.com/vidu-claw）
+- **Pika 以 agent 友好文档替代协议集成：llms.txt+/agent onboarding 面向 coding agent 的 API 消费，但目录固定、provider 托管、无自有算力出口，短期不会出现第一方模型专用 agent 工具**（置信：推断；https://dev.pika.art）
+
+### 做得好的
+
+- MiniMax 全栈样本：官方 MCP（Python+JS 双实现，7 个工具含 generate_video）、mmx-cli 明确“为 AI agent 构建”（npm 分发、npx skills add 安装、双区 api.minimax.io/api.minimaxi.com、自动检测 Codex/Claude 等运行时）、开源 H3 仓库自带 9 个技能——把 fal 式“CLI 即运行时”推到极致
+- ElevenLabs 工程纪律：每 5-10 天把 changelog 自动同步进 skills 仓；托管 MCP+OAuth 消灭本地配置；CLI 定位“Agents as Code”（agent 配置文件化+全 API 子命令）；skills 仓内置 evals
+- 可灵消费者 agent 化打法：一句中文提示词让任意 agent 自动配置托管 MCP（klingai.com/mcp）并完成授权；npx skills add 一行分发（声明支持 40+ agent）；三端 plugin+电商/短剧/门店三场景视频教程
+- Vidu skills 实用性最强：提交前成本估算（cost estimation）、配额/积分查询、vidu.cn/vidu.com 双区 token 文档、同一技能适配 Vidu Agent/OpenClaw/Claude Code 三运行时
+- Luma 文档对机器最友好：llms.txt+每页 .md+Python/TS/Go 三语言 SDK+官方 Go CLI；Agents API 的 uni-1 统一路由与 video_edit/reframe 端点设计值得契约层借鉴
+- Pika 的 agent 友好文档：公开 OpenAPI 3.1 规范+免鉴权实时报价目录（micro-USD 计价）+专门的 /agent onboarding 提示词页
+
+### 空位与切入姿势
+
+- **Luma Agents API 无官方 MCP、无可安装 agent skill，官方 CLI 停更超过 3 个月**
+  - 证据：docs.agents.lumalabs.ai（2026-07-10 更新版）全站无 MCP/skills 章节；github.com/lumalabs/luma-agents-cli 默认分支最后 commit 2026-06-09（v0.3.0）；官方 luma-api-mcp 停更于 2025-04 且指向已废弃的旧 Dream Machine API
+  - 切入：独立维护 luma-agents-mcp：封装 Ray3.2 生成+video_edit/reframe/uni-1 路由（异步轮询+presigned 下载语义清晰），并按 agentskills.io 规范发布可 npx skills add 安装的技能，正好补上 MiniMax-MCP/vidu-mcp 在 Luma 的空位；CLI 维护真空可由 fork+补 release 占位
+- **可灵 agent 集成只覆盖中国消费者会员生态，国际开发者 API 门户零 agent 面**
+  - 证据：klingai.com/app/mcp 为中文页面、FAQ 围绕会员计费与充值，托管端点 https://klingai.com/mcp 面向消费者账号；而国际门户 kling.ai/document-api（Kling 3.0 Omni/Turbo、Motion Control、Virtual Try-On 完整 REST 文档）全站无 MCP/CLI/skills；GitHub 上 klingai-tech 四仓均为中文消费者侧，国际版 key 用户无任何 agent 工具
+  - 切入：为国际版 API（kling.ai key 体系）做双语 skill+MCP：复刻 vidu-skills 的双区模式（vidu.cn/vidu.com 各自 token），第一批占位国际版 Kling agent 集成；官方中文 kling-cli 不认国际 key，两端用户都缺工具
+- **Vidu 官方 MCP 停更 15 个月，Q3（16s 音视频）与 Vidu S（实时交互）新能力无 MCP 覆盖**
+  - 证据：github.com/shengshu-ai/vidu-mcp pushed_at 2025-06-26；同期 vidu-skills（2026-09-18）、vidu-s-api（09-14）、openclaw-vidu-s（09-15）高度活跃，说明官方资源押在 skills/OpenClaw 侧，协议层被放弃
+  - 切入：社区 vidu-mcp 复活：直接包一层官方维护的 npm vidu-cli 为 MCP server，自动继承其能力表（含独家成本估算），零 API 维护成本补上官方不做的协议层
+- **Pika 无第一方生成 API 出口，自有模型（Pika 2.5、Soundtrack/Music/SFX）只能经聚合门户或 fal 访问，且无任何协议级 agent 集成**
+  - 证据：dev.pika.art 自述“The catalog is fixed and provider-hosted”、无免费层；pika.art 全站无 MCP/CLI/skills；api-evangelist/pika-labs（2026-09-20 更新）确认主域无第一方 REST API，历史上经由 fal.ai 等聚合器
+  - 切入：在统一 CLI 中把 Pika API Club 做成一个 provider 适配器——它公开 OpenAPI 3.1+llms.txt+免鉴权实时报价目录，contract 可自动生成，是六家中接入成本最低的多模型聚合源；顺带覆盖其目录里的 Seedance 2.5/Wan 3.0/H3 等第三方模型
+- **全行业无跨厂商统一视频生成契约；提交前成本预估仅 Vidu 一家实现**
+  - 证据：六家异步语义各异：Luma 任务+presigned URL、MiniMax /v2/video_generation+/query 轮询、Pika job+签名 webhook+micro-USD 报价、可灵消费者 MCP 与开发者 API 双体系、Vidu 双区 base URL；各官方 CLI/MCP 均只封装自家，无一家做跨厂商抽象
+  - 切入：用户在建的 contract-first 多厂商 CLI 就是空位本身：以 Vidu cost estimation 与 Pika micro-USD 报价为参照，实现“提交前跨厂商报价+统一任务/轮询/下载契约”，再用单个 skill（npx skills add）同时分发到 40+ agent——任何官方单厂商技能都做不到这一点
+- **可灵官方 skills 仓库只是极简分发镜像，“能装但没教”**
+  - 证据：github.com/klingai-tech/skills README 全文仅一行安装命令（npx skills add klingai-tech/skills），自述“分发镜像仓”；官方配套只有 3 个场景视频教程，无文本工作流、无最佳实践库
+  - 切入：第三方深度工作流技能库：分镜/多镜头一致性/主体库批量/动作控制组合玩法，补官方镜像仓之上的方法论层——这是“技能即文档”（AtlasCloud 式）哲学尚未被任何视频厂商占据的位子
+- **ElevenLabs 式“changelog→skills 自动同步”纪律在视频厂商中零复制**
+  - 证据：elevenlabs/skills 90 天内 5 次以“Update skills from changelog”为名的同步提交；而 Kling 3.0 Omni、MiniMax H3、Vidu Q3 等新模型能力均未同步进各自技能（可灵 skill v0.2.0 仅到主体库/动作控制，H3 未进 MiniMax-MCP 的 generate_video 工具清单）
+  - 切入：对独立 CLI 项目本身：建立“厂商 changelog→provider 契约→skill 再生成”自动化管道作为差异化卖点——新模型发布一处更新、多厂商技能同时生效，这是 Sixty 四家官方都没做的元能力
+
+### 未解问题
+
+- klingai.com/mcp 托管端点的工具清单、鉴权细节与计费口径（会员积分还是 API 费用）未公开文档化——页面仅提供提示词与 FAQ
+- 可灵国际版（kling.ai）是否会获得与 klingai.com/app/mcp 同等的 agent 入口；klingai-tech 四仓均面向中文消费者侧
+- MiniMax mmx-cli 的 video generate 当前支持的模型清单：H3/H3-Max 是否已进入 CLI 与官方 MCP 的工具参数（官方 MCP 文档仍写 Hailuo-02）
+- Luma Agents API 的 GA 时间线与是否有 MCP/可安装技能计划（官方新闻与文档零表态）
+- shengshu-ai/vidu-mcp 会被复活，还是被 vidu-cli+skills 路线正式取代
+- Pika API Club 的上线日期与其自有模型（Pika 2.5）是否经此出口——页面无任何日期信息
+- 可灵 skills 仓自述“分发镜像仓”，其上游原始仓库（kling-skills）位置不明，难以追踪真实发版节奏
+
+### 来源
+
+- [MiniMax-AI/MiniMax-MCP（官方 MCP，7 工具含 generate_video）](https://github.com/MiniMax-AI/MiniMax-MCP)
+- [MiniMax-AI/cli（mmx-cli，为 AI agent 构建的官方 CLI，可作技能安装）](https://github.com/MiniMax-AI/cli)
+- [MiniMax-AI/MiniMax-H3（开源视频模型，自带 9 技能）](https://github.com/MiniMax-AI/MiniMax-H3)
+- [MiniMax 平台视频生成文档（H3/H3-Max 异步 API，llms.txt）](https://platform.minimax.io/docs/guides/video-generation)
+- [elevenlabs/elevenlabs-mcp（已归档，README 指向托管 MCP）](https://github.com/elevenlabs/elevenlabs-mcp)
+- [elevenlabs/skills（官方技能仓，changelog 同步记录）](https://github.com/elevenlabs/skills)
+- [elevenlabs/cli（Agents as Code 官方 CLI）](https://github.com/elevenlabs/cli)
+- [可灵官方 MCP/CLI/Skill 入口页（托管端点 klingai.com/mcp，npx skills add klingai-tech/skills）](https://klingai.com/app/mcp)
+- [klingai-tech/skills（可灵官方技能分发镜像仓，v0.2.0 于 09-10）](https://github.com/klingai-tech/skills)
+- [klingai-tech/claude-plugin（可灵官方 Claude 插件，08-13 创建）](https://github.com/klingai-tech/claude-plugin)
+- [kling.ai 国际开发者门户（Kling 3.0 Omni/Turbo API，无 agent 集成）](https://kling.ai/document-api/guides/get-started/overview)
+- [shengshu-ai/vidu-skills（Vidu 官方技能，含成本估算与双区文档）](https://github.com/shengshu-ai/vidu-skills)
+- [shengshu-ai/vidu-mcp（Vidu 官方 MCP，2025-06 后停更）](https://github.com/shengshu-ai/vidu-mcp)
+- [Vidu Agent（基于 OpenClaw 的官方营销 Agent）](https://www.vidu.com/vidu-claw)
+- [docs.agents.lumalabs.ai（Luma Agents API 文档，无 MCP/skills）](https://docs.agents.lumalabs.ai)
+- [lumalabs/luma-agents-cli（官方 CLI，2026-06-09 后停更）](https://github.com/lumalabs/luma-agents-cli)
+- [Luma 新闻页（Ray3.2、Luma Skills、MiniMax H3 上架时间线）](https://lumalabs.ai/news)
+- [Luma Skills 公告（产品内工作流技能，2026-06-16）](https://lumalabs.ai/news/luma-skills)
+- [dev.pika.art（Pika API Club 聚合门户：OpenAPI 3.1+llms.txt+/agent onboarding）](https://dev.pika.art)
+- [api-evangelist/pika-labs（第三方 API 面档案：主域无第一方 REST API）](https://github.com/api-evangelist/pika-labs)
 
 ---
 
 ## 开发者需求侧（90 天社区信号）
 
-近 90 天（2026-06-22 至 09-22）的开发者侧声音呈现清晰格局：fal 生态是"计费信任重灾区"（锁号 bug 连环 11+ 条 issue、执行时长计费故障、USDC 入账丢失，且官方在 GitHub 上几乎 0 回复）；Runway 把 skills 战略性升级为"Dev Platform 唯一集成路径"（8-28 官方 commit 明示 MCP-aware 方向）；Higgsfield 消费端 UX 强但开发者集成面缺失，9-21 一天内有 3+ 个第三方 CLI/ComfyUI 集成冒出，其 MCP 被抱怨幻觉。最关键的需求验证来自 9-16 上线的 VideoRouter（"OpenRouter for video"）：同一视频模型在不同供应商间价差 5-10 倍，路由/比价层已被独立开发者验证为真需求。对正在自研 contract-first 多供应商 CLI 的读者，最大空位是：厂商都没把"计费可信、任务生命周期、幂等重试"做成一等契约——webhook 验签、断点恢复、预算护栏全靠集成者自己造轮子，这正是 contract-first CLI 的用武之地。
+近 90 天开发者吐槽呈三条主线：一是 fal 的计费/账户信任黑洞——同一个"余额充足仍自动锁号"bug 三个月内至少 7 个 issue（充值即锁、工单无人回、一笔 10,272 秒误计费直接变成 $40,500 并吞掉充值），且官方修 SDK 代码很快、对计费集群却零处理；二是 Higgsfield 的 agent 集成质量欠账——MCP OAuth 对 Claude Code 等客户端断了 5 周（官方两次宣称修复、用户 9/19 仍在复现）、MCP 生成工具广告不透明 schema、官方 skills 过不了 Codex 校验；三是结构性痛点"同模型跨厂商价差 5-10 倍 + 提交无幂等"——已有创业者连发两次 Show HN 做 VideoRouter，还有开发者想在 Higgsfield CLI 上造预算管控系统却连"一次调用是否恰好一个计费任务"都问不到。厂商侧动向是 Runway 把 Dev MCP 收敛为唯一集成路径并上线 Model Routers/自动计费，MiniMax 和 Luma 冲进 CLI/多语言 SDK 战场。最大空位：所有厂商都缺"计费可信层"（预算硬上限、幂等提交、账单对账、误计费防护）——这是吐槽最密、已有开发者被迫自建、而厂商因利益冲突结构性不会做的一层，独立开发者可以用一个本地"预算闸门 + 任务对账"CLI 切入。
 
 ### 近 90 天时间线
 
-- **2026-06-26** — fal issue #1094：付费成功后账号立即被锁，开启 90 天内连环'锁号'投诉潮（#1072/#1108/#1112/#1147/#1162/#1163/#1168 等，多数 0 官方回复，用户互相交叉引用同一 unlock bug）（https://github.com/fal-ai/fal/issues/1094）
-- **2026-07-13** — fal issue #1112：正余额仍显示'Exhausted balance'锁号，确认与 #489/#922 同一自动解锁 bug——问题已持续多个季度（https://github.com/fal-ai/fal/issues/1112）
-- **2026-08-14** — fal issue #1146：fal_client 同步 MultipartUpload.save 从第二个分片起上传空字节——数据静默损坏类 bug（https://github.com/fal-ai/fal/issues/1146）
-- **2026-08-22** — HN 用户 echelon 公开批评 Higgsfield'unethical'并列举 dark patterns 文章（同日讨论串中也有人指出其定位 UGC 创作者、开发者被忽视）（https://news.ycombinator.com/item?id=49401031）
-- **2026-08-24** — Replicate replicate-javascript issue #382：'CRITICAL BILLING BUG: Infrastructure Deadlock on Disabled Deployment'——计费/部署状态机死锁（https://github.com/replicate/replicate-javascript/issues/382）
-- **2026-08-27** — 社区项目 Videoai PR #12：把 fal queue 句柄持久化到磁盘、拆分 submit/poll 以支持重启恢复——集成者自造长任务生命周期管理（https://github.com/FarrukhGulomov/Videoai/pull/12）
-- **2026-08-28** — Runway 官方 skills 仓库三连 commit：'add MCP-aware Dev Platform integration skills'、'make Dev Platform skills sole integration path'——skills 成为官方钦定集成路径（https://github.com/runwayml/skills）
-- **2026-08-29** — corsair issue #1369：向社区项目请求 fal 队列提交+queue status+webhook 支持——再次证明长任务等待体验要靠第三方补（https://github.com/corsairdev/corsair/issues/1369）
-- **2026-08-31** — fal 发布 H3 Max（自训练 MiniMax 变体，'5 秒视频不到 3 秒生成'），HN 帖'Faster than real-time video generation'——fal 从聚合器转向自有模型变体（https://news.ycombinator.com/item?id=49505580）
-- **2026-09-09** — fal-js issue #238：queue.submit 无视 retry.maxRetries:0 并重放传输失败的 POST——用户明确要求'文档化服务端幂等保证'，暴露提交无幂等键（https://github.com/fal-ai/fal-js/issues/238）
-- **2026-09-11** — VideoRouter 作者在'Save 80% for video generations'帖中阐述：同一模型各供应商 $/秒价差巨大，需按价格/可用性自动路由，首批支持 Atlascloud/Fal/Replicate/WaveSpeed（https://news.ycombinator.com/item?id=49667081）
-- **2026-09-14** — HN 用户 bmau5：使用 Higgsfield MCP 与 Figma 直连集成时'反复遇到产品尺寸等幻觉'——厂商 agent 集成质量问题被点名；同日 fal #1168 又一条正余额锁号投诉（https://news.ycombinator.com/item?id=49705458）
-- **2026-09-16** — VideoRouter 正式上 HN：'prices can differ by 5-10× depending on the provider'——统一视频模型路由层作为品类被公开验证（https://news.ycombinator.com/item?id=49733974）
-- **2026-09-17** — 三件事同日：fal #1175 投诉 80 秒视频被按 10,272 秒执行时长计费（ alleged $40,500）；V2EX 帖 '接入了 Seedance 系列模型——效果是真的好，贵也是真的贵'；社区项目 Komamotion PR 演示需自行实现 fal JWKS/ED25519 与 Replicate Svix webhook 验签（https://github.com/fal-ai/fal/issues/1175）
-- **2026-09-18** — V2EX 帖'商汤悄悄更新的这几个 skills 还挺好用的'：SenseNova-Skills 用 Motion HTML 串图片+Seedance 视频——中文厂商也在卷 agent skills；fal #1172：$70 USDC Solana 充值最终确认但未入账（https://www.v2ex.com/t/1243083）
-- **2026-09-19** — V2EX 帖'libTV 本地开源平替：画布+剪辑一体，任何 MCP Agent 都能全程操控'（29 个 MCP 工具），回复中追问'有没有比 wan3 便宜的视频模型 API'——成本敏感+MCP 化工作流是中文开发者当前热点（https://www.v2ex.com/t/1243225）
-- **2026-09-21** — Higgsfield 第三方集成同日爆发：HiggsfieldAPI-CLI（Python CLI 管理图片/视频生成）、ComfyUI-Higgsfield（目录驱动 API 集成）、nk-studio（local-first API studio）——官方开发者工具缺位，社区自己上（https://github.com/rk-research/HiggsfieldAPI-CLI）
+- **2026-08-13** — MiniMax 生态信号：MiniMax-AI/awesome-minimax-h3-integration 创建（376★），社区开始围绕 H3 开源权重自发攒集成资料（https://github.com/MiniMax-AI/awesome-minimax-h3-integration）
+- **2026-08-14** — Higgsfield Python SDK：upload_file() S3 上传 100% 失败（缺 x-amz-tagging 头），与 CLI #65 同根因（https://github.com/higgsfield-ai/higgsfield-client/issues/2）
+- **2026-08-15** — fal #1147：确认充值 $10 后账户仍被锁 Exhausted balance，自述与更早的 #914/#922 同根因，只能发帖求人工解锁（至今 open）（https://github.com/fal-ai/fal/issues/1147）
+- **2026-08-17 ~ 2026-09-19** — Higgsfield CLI MCP OAuth 断裂集群（#67/#68/#70/#75/#76）：RFC 9207 issuer 不匹配导致 Claude Code/Codex 全部无法完成 MCP 认证；#68 积 7 条评论、多人跨 5 周复现——官方 9/3 称已修复，9/5、9/13、9/19 用户仍在复现（https://github.com/higgsfield-ai/cli/issues/68）
+- **2026-08-24 ~ 2026-08-25** — Higgsfield CLI 整个 website 命令面返回 Session expired（#71/#72），marketplace 内部 x-api-key 被拒（https://github.com/higgsfield-ai/cli/issues/71）
+- **2026-08-27** — Higgsfield 官方 changelog 承认当日 Higgsfield MCP 调用大面积失败并修复——官方亲自确认了 agent 集成面的脆弱（https://higgsfield.ai/changelog）
+- **2026-08-28** — Runway 官方 skills 仓库重构：'make Dev Platform skills sole integration path'（#19/#20），把托管 Dev MCP（dev.runwayml.com/mcp）定为唯一 agent 集成路径（https://github.com/runwayml/skills）
+- **2026-08-31 ~ 2026-09-04** — Higgsfield changelog 密集上新：MiniMax H3 Max（768p 换速度）、Gemini Omni 1.1 Flash、Genjutsu 对象替换、Scale 档'无限模型'（首购后仅 7 天无限）——模型路由面持续扩张（https://higgsfield.ai/changelog）
+- **2026-09-03 ~ 2026-09-04** — Runway sdk-python 发 5.20.0：新增模型、图像选项与 audit-log actions（Stainless 生成式 SDK 持续演进）（https://github.com/runwayml/sdk-python）
+- **2026-09-04** — Higgsfield CLI #80：官方 skills 无法通过当前 Codex 的 frontmatter 校验——官方 skill 质量跟不上客户端演进（https://github.com/higgsfield-ai/cli/issues/80）
+- **2026-09-05 ~ 2026-09-21** — fal 锁号集群爆发期：#1162（充值后锁）、#1163（余额 $110.83 仍锁、扣费照走）、#1168（$47.40 余额被锁、客服无回应）、#1172（Solana USDC 到账不入账）、#1183（新号首充即锁，工单一周无人回）——同一 bug 五周内至少 4 个新 issue（https://github.com/fal-ai/fal/issues/1163）
+- **2026-09-09** — fal-js #238：queue.submit() 无视 retry.maxRetries=0、传输错误后重放提交 POST——重复生成/重复扣费风险的精确报告，12 天 0 官方回复（https://github.com/fal-ai/fal-js/issues/238）
+- **2026-09-10 ~ 2026-09-14** — runwayml 四个仓库（sdk-python/sdk-node/skills）被同一用户 30+ 条无分诊 issue 淹没，其中两条正文直接贴出明文 API key（sdk-node #205/#222），官方零分诊、零回复（https://github.com/runwayml/sdk-node/issues/222）
+- **2026-09-11** — VideoRouter 首次 Show HN：'同一底层视频模型在不同 provider 价差 5-10 倍'，做统一 API 按price/availability 路由——供给侧创业者对'价格不透明'的真金白银投票（https://news.ycombinator.com/item?id=49667080）
+- **2026-09-16 ~ 2026-09-17** — VideoRouter 换文案再发（'OpenRouter for video and image generation APIs'）；同日 HN 用户追问 Seedance 2.5 的 reference images/角色一致性是否可用、无人能答；fal #1175：80 秒视频被记 10,272s 执行时长、误扣 $40,500 并锁号吞掉 $100 自动充值（https://news.ycombinator.com/item?id=49733974）
+- **2026-09-19 ~ 2026-09-21** — Higgsfield CLI #91：开发者自建'生成审批+预算管控系统'，被迫开 issue 公开求计费语义（一次调用=几个计费任务？有无幂等键？）；#93：MCP generate_video 广告空 schema、校验却要求嵌套 params，schema 驱动客户端 100% 失败；fal #1183 新号首充即锁；MiniMax CLI #249 中文开发者求配额 API 返回小数（当前整数百分比把 2.8% 显示成 3%）（https://github.com/higgsfield-ai/cli/issues/91）
 
 ### Roadmap 信号
 
-- **Runway 将把 Dev Platform skills 作为唯一官方集成路径持续投入（8-28 一天三个 commit：MCP-aware skills → 设为 sole integration path），未来第三方直接调 API 的玩法会被引导收敛到 skills/MCP 通道**（置信：官方明示；https://github.com/runwayml/skills）
-- **fal 正从'聚合器'转向'自有模型变体'：8-27 发布自训练 H3 Max、9-17 发推理 deep-dive，'faster than real-time'成为其视频侧主打叙事；这会挤压纯比价路由层的模型同质化空间**（置信：官方明示；https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/）
-- **'OpenRouter for video'成为被验证的品类：VideoRouter 9-11/9-16 两次发帖，首批即接入 Atlascloud/Fal/Replicate/WaveSpeed；HN 同期讨论提及 fal 估值 $8B、Stripe 收购 OpenRouter $7B+——通用模型路由被资本确认后，视频垂类路由是被看好的下位替代**（置信：多源交叉；https://news.ycombinator.com/item?id=49733974）
-- **Higgsfield 开发者生态将被动补课：9-21 同日 3+ 个第三方 CLI/ComfyUI 集成出现，说明其 API 有需求但官方工具缺位；若继续只服务 UGC 创作者，开发者侧会被聚合器和第三方 CLI 接管**（置信：推断；https://github.com/rk-research/HiggsfieldAPI-CLI）
-- **中文厂商入场 agent skills（商汤 SenseNova-Skills 串图片+Seedance 视频成页）+ 中文社区 MCP 化视频工作流兴起（libTV 29 个 MCP 工具），中文市场的'skill+MCP 工作流'窗口正在打开**（置信：多源交叉；https://www.v2ex.com/t/1243083）
+- **Runway 把托管 Dev MCP（dev.runwayml.com/mcp）定为唯一 agent 集成路径，skills 只负责教接入；配套文档新增 Model Routers（模型路由 API 化）与 Usage & Billing / Autobilling / Usage tiers 章节**（置信：官方明示；https://github.com/runwayml/skills）
+- **Runway 产品与 ARR 双线扩张（9/8 HN 帖 'Runway Reaches 200M ARR'），集成面从生成向工具调用/虚拟形象/会议摄像头延伸（Tool calling、Custom Voices、Avatars SDK）**（置信：多源交叉；https://docs.dev.runwayml.com/）
+- **Higgsfield 持续加码'聚合路由'定位：changelog 近 90 天密集接入第三方旗舰模型（MiniMax H3 Max、Gemini Omni 1.1 Flash、Recraft V4、GPT-6 Astra），导航常驻 MCP API 与 ChatGPT Plugin 入口**（置信：官方明示；https://higgsfield.ai/changelog）
+- **MiniMax 全面转向 agent 终端分发：官方 CLI 高频发版、官方插件注册表、H3 开源权重带动 8/13 新建的 376★ 社区集成库——它在复制 fal 的'CLI 即运行时'路线并用开源权重补内容面**（置信：多源交叉；https://github.com/MiniMax-AI/cli）
+- **Luma 新开 Agents 产品线并一次补齐四语言 SDK（含 Go），从 Dream Machine SDK 切换重心**（置信：官方明示；https://github.com/lumalabs/luma-agents-cli）
+- **fal 处于资本扩张期（HN 8/16 评论：估值 $8b、流量不及 OpenRouter 却更高估值；8/29 评论指其单日 $4,000 赞助渲染），但计费信任问题集群全部挂起未动**（置信：多源交叉；https://news.ycombinator.com/item?id=49324121）
+- **Higgsfield 5.6k★ '核心仓库开源'（HN 9/17 有人发帖质疑动机）更像 GitHub 品牌运营：仓库 created 2018、描述是 GPU 训练框架，与视频生成核心无关**（置信：推断；https://news.ycombinator.com/item?id=49744855）
 
 ### 做得好的
 
-- fal：推理性能工程一流——H3 Max 宣称 5 秒视频 3 秒内生成并登顶人类偏好评测（9-17 官方 deep-dive），加上此前的 sub-second Ideogram、FlashPack 加载技术；对开发者最有价值的资产是其'工程透明'博客文化，deep-dive 本身就是获客渠道
-- Runway：集成战略最清晰——8-28 官方 commit 把 Dev Platform skills 定为'唯一集成路径'并做了 MCP-aware 改造，skills 仓库同时分发 Claude/Cursor 双 marketplace，等于官方下场做 agent 生态
-- Higgsfield：消费端增长机器——HN 讨论承认'Higgsfield 和字节证明了后进者能赢'；其 UX 剧本（CLI+规则+模型路由树+evals）在四家架构哲学里对 agent 最友好；社区一天内冒出 3+ 第三方集成说明 API 需求真实存在
-- AtlasCloud：已被 VideoRouter 列入首批支持供应商（与 Fal/Replicate/WaveSpeed 并列）——说明其 API 在聚合生态里被当作一等公民；中英双语+嵌入式 API 参考的 skill 形态在中文市场是差异化
-- Replicate：Cog 生态（自托管模型容器化）和 Svix webhook 验签等基础设施细节被社区项目反向引用为范本（Komamotion PR 同时实现 fal JWKS 与 Replicate Svix）
+- Runway：文档即接口的标杆——docs.dev.runwayml.com 每页自带 'Copy for LLM / View as Markdown / Open in Claude / Connect to Cursor'，Dev MCP 是 Get Started 一等公民；8/28 果断把 skills 收敛为 Dev Platform 单一集成路径，主动消灭碎片化
+- Runway：SDK 工程化成熟——Stainless 生成的 sdk-python/sdk-node 持续发版（9/3-9/4 发 5.20.0：新模型+audit-log actions），另有 openapi 仓库对外开放规格
+- fal：代码层响应极快——#1146 的 multipart 上传 bug（8/14 报）9/16 修复（#1170）、#1165 端口冲突（9/10 报）9/21 修复（#1166），还给 CLI 加了 backup domains（9/18）提升弱网可用性
+- Higgsfield：agent 全家桶铺货速度罕见——CLI（569★）+ skills（1087★）+ JS/Python 双 SDK + cursor-plugin + Homebrew tap 全在近两周内有 push，且官方 changelog 连 MCP 故障都公开披露
+- MiniMax：终端+开源组合拳——MiniMax-AI/cli（2168★，2026-03 创建、9/19 仍在 push）配官方插件注册表 MiniMax-Code-Plugins 和社区 awesome 库，中文 issue 区有真实维护者响应（#254 附提交关闭）
+- Luma：9/17 同日 push luma-agents-cli 与 ts/python/go 三个 SDK 仓库，Go 官方 SDK 在视频厂商中少见
+- 厂商集体在把'能被 agent 调用'当作一级发布物（CLI/MCP/skills/插件注册表），说明独立开发者做兼容层/对齐层的时机窗口正开着
 
 ### 空位与切入姿势
 
-- **计费可信层：没有任何厂商把'成本可预估、账单可对账、异常可护栏'做成契约。fal 90 天内 11+ 条'正余额仍锁号'连环 bug 且 GitHub 上基本 0 回复，#1175 声称 80 秒视频按 10,272 秒计费，#1172 USDC 入账丢失；Replicate 有'部署禁用仍计费死锁'；HN 用户抱怨 fal preflight 成本检查'极不可靠，预期与实际成本差数量级'**
-  - 证据：https://github.com/fal-ai/fal/issues/1175 、https://github.com/replicate/replicate-javascript/issues/382 、https://github.com/fal-ai/fal/issues/1163
-  - 切入：在 contract-first CLI 里内置：每 run 预算护栏（spend guard，超限熔断）、本地账本与供应商账单自动对账、提交幂等键、执行时长/计费时长偏差告警。这些全是多供应商场景的公约数，单厂商永远不会替你做。吐槽密度极高（90 天 15+ 条 issue），但第三方付费意愿属中等——适合作为 CLI 的信任卖点而非独立收费点
-- **长任务生命周期契约缺失：webhook 验签（fal JWKS/ED25519、Replicate Svix）、断点恢复（queue 句柄持久化）、submit/poll 拆分、重试语义，全部由集成者在各项目里重复造轮子**
-  - 证据：Komamotion PR 自实现两家验签（https://github.com/nexulys/Komamotion/pull/2）；Videoai PR 持久化 fal queue 句柄支持重启恢复（https://github.com/FarrukhGulomov/Videoai/pull/12）；corsair issue 请求 queue status+webhook（https://github.com/corsairdev/corsair/issues/1369）；fal-js #238 证明连 retry:maxRetries:0 都不生效、且无法确认服务端是否幂等去重
-  - 切入：把'任务句柄'抽象为多供应商统一契约：本地持久化 job id→崩溃恢复、统一 webhook 验签库、统一超时/退避/幂等策略、'提交失败后不知道任务是否已创建'的显式 unresolved 状态机。动手迹象极强（至少 4 个独立项目在 90 天内自造），是 CLI 最硬的差异化模块
-- **统一路由/比价层刚被验证但远未成熟：同一视频模型在不同供应商间价差 5-10 倍，开发者需手动选商、手动因价格切换；fal/Higgsfield/Replicate 各自只推自家，无人提供中立比价**
-  - 证据：VideoRouter 作者原话'prices can differ by 5–10× depending on the provider'，并追问规模化用户如何选商（https://news.ycombinator.com/item?id=49667081）；V2EX 回复追问'比 wan3 便宜的视频模型 API'（https://www.v2ex.com/t/1243225）；HN 用户在 Seedance 2.5 讨论中说'愿意为更多控制和更低成本接受画质小损'（https://hn.algolia.com/api/v1/search_by_date?query=fal.ai&tags=comment）
-  - 切入：两个姿势：(a) 在 CLI 内做 provider-agnostic 路由策略 + 开源价格表数据文件（社区可 PR，天然传播）；(b) 做'开源/本地优先的 VideoRouter'——先发者 franklin_yao 的产品刚上线（HN 1 分 1 评）、闭源且托管，开源+可自托管+不抽成是清晰差异位。付费意愿已被直接验证（'Save 80%'是卖点）
-- **一致性与可控性没有契约化：厂商把'角色一致性/镜头控制'当消费端功能卖点，API 侧开发者只能各显神通；社区产品反过来把'稳定可控角色'当核心卖点营销**
-  - 证据：V2EX'全链路 AI 短剧工具'强调'稳定、可控的角色'（https://www.v2ex.com/t/1242811）；fal 官方博客亲自写 3D-to-AI 'total control' 管线教程——等于承认 API 不内置可控性（https://blog.fal.ai/from-clay-3d-render-to-a-real-action-short-a-3d-to-ai-pipeline-with-total-control/）；Higgsfield MCP 被抱怨产品尺寸幻觉（https://news.ycombinator.com/item?id=49705458）
-  - 切入：把一致性做成跨供应商原语：reference 图+seed+角色描述的标准化契约、同一 prompt 多供应商并跑的 eval 对比报告、一致性回归测试集。这是读者此前调研确认四家都未契约化的点，且中文短剧/电商场景付费意愿最明确
-- **agent skill/MCP 生态质量参差且无质检：Higgsfield MCP 幻觉被点名；Runway skills 仓库被同一账号 25 条 spam issue 淹没无人清理、且 8-28 一次性破坏性重构集成路径；AtlasCloud 公共 agent-skills 仓库自 2 月底停更 7 个月**
-  - 证据：runwayml/sdk-python issues 全是 iid7oom21 刷屏、0 官方清理（https://github.com/runwayml/sdk-python/issues/272）；bmau5 的 MCP 幻觉抱怨（https://news.ycombinator.com/item?id=49705458）；AtlasCloudTeam/agent-skills 最后 commit 2026-02-24（https://github.com/AtlasCloudTeam/agent-skills/commits）
-  - 切入：做'第三方 skill 质检与兼容层'：带 evals、SHA256 完整性校验、版本化破坏性迁移警告的多供应商 skill 套件；再叠加 skill 兼容性测试（厂商改契约即报警）。Runway 把 skills 定为唯一路径反而放大了这个空位——路径唯一意味着质量竞争者稀少
-- **错误语义不统一、可观测性缺位：Replicate'500 但任务实际成功'、fal 上传分片静默损坏、MP4 音频流截断——失败/成功的判定都要用户自己兜底**
-  - 证据：replicate-javascript #381'api call failed with 500 but training job actually went through'（https://github.com/replicate/replicate-javascript/issues/381）；fal #1146 分片上传空字节（https://github.com/fal-ai/fal/issues/1146）；fal #1092 音频流早断（https://github.com/fal-ai/fal/issues/1092）
-  - 切入：统一错误分类学+run 级本地遥测：每次生成记录成本/时长/失败类别，跨供应商聚合出'哪家哪类失败率高'的实测数据——这既是 CLI 功能，也是可公开的内容资产（类似 fal 的 State of Generative Media 报告，但中立、多供应商）
+- **计费可信层整体缺位（最大空位）：没有任何厂商提供预算硬上限、自助解锁、误计费防护与账单对账**
+  - 证据：fal 同一根因的锁号 issue 横跨 3 个月至少 7 条（#914/#922/#1147/#1162/#1163/#1168/#1183），充值即锁、客服一周不回、$40,500 误计费直接吞充值（#1175）；需求强度最强：同一 bug 五周内 4 个新 issue，用户除了公开求人工解锁毫无手段
+  - 切入：做本地'预算闸门'sidecar/CLI 插件：per-job 成本预估、硬性花费上限（超限熔断）、本地账本逐条核对执行时长↔扣费（#1175 那种 10,272s→$40,500 在本地立即拦截）、月度对账单导出。先支持 fal（痛点最深），再扩 Higgsfield/MiniMax
+- **提交无幂等、任务语义不透明：厂商都没回答'一次调用是否恰好一个计费任务、超时后是否重试'**
+  - 证据：fal-js #238：queue.submit 无视 maxRetries=0、传输错误后重放 POST（重复扣费风险，官方 12 天未回）；Higgsfield CLI #91：开发者为给公司造审批+预算管控系统，被迫在 issue 区问幂等键与计费语义——需求强度的直接证据是有人已经动手自建这层
+  - 切入：跨厂商 job orchestrator：统一任务表、幂等提交键、webhook 事件归一、断点恢复、失败重试策略显式化，定位'视频生成的轻量任务层'，CLI 优先、可被 CI/agent 调用
+- **agent 集成质量无对齐层：官方 MCP/skills 在真实客户端里大规模不可用，且无人做跨客户端一致性验证**
+  - 证据：Higgsfield MCP OAuth 对 Claude Code 断 5 周（#67/#68/#75/#76，官方称修复后 9/19 仍复现）；MCP generate_video 广告空 schema 导致 schema 驱动客户端 100% 失败（#93）；官方 skills 过不了 Codex 校验（#80）；Windows 路径引号 bug（#83）；安装脚本不校验和（#69/#73）。Runway 侧则是 SDK 仓库 30+ issue 零分诊、明文 key 无人处理
+  - 切入：维护一套在 Claude Code/Codex/Cursor 三端实测过的视频生成 MCP + skills 套件，公开 conformance 测试矩阵和认证结果——把 Higgsfield 自己的'evals 哲学'反过来评测所有厂商的 agent 面；顺带吃下 OAuth/Windows 这类脏活的信任红利
+- **价格不透明、路由不可控：同一模型在不同渠道价差 5-10 倍，且开发者无法知道扣费怎么算出来的**
+  - 证据：VideoRouter 创始人 9/11 与 9/16 两度 Show HN 主打'同模型价差 5-10 倍'；Higgsfield 的'unlimited'档藏着'首购后仅 7 天无限'条款，CLI #91 的作者连'能否自动走免费额度'都要开 issue 问
+  - 切入：不做全量代理（撞巨头），做'路由回执+账单审计'：每次生成记录价格快照与计费依据，生成可审计的对账报告；可与预算闸门合并为同一产品的差异化能力
+- **一致性控制停留在消费端，API/CLI 侧没有角色一致性工作流**
+  - 证据：9/16 HN 用户追问 Seedance 2.5 的 reference images/角色设定表是否真正可用、无人能答；Higgsfield 9/1 上的消费端 Genjutsu（对象替换+30 参考图）反证需求真实；第三方 seedance-skill（Claude Code skill，4 月创建）已攒 104★ 证明分发渠道存在
+  - 切入：做 character-sheet→多镜头一致性的 skill/工作流模板（参考图管理、种子与参数复现、跨镜头身份锁定），以 Claude Code skills 形式发布，蹭 Runway/Higgsfield skills 生态的分发位
+- **SDK 语言矩阵缺口：头部视频厂商里 Kling 官方 GitHub 近乎空壳，多数厂商只有 JS/Python**
+  - 证据：kling-ai 组织仅有 .github 一个仓库且 2025-03 后无任何 push；Luma 直到 9/17 才补 Go；fal 官方只有 JS/Python/Swift（React Native 只是示例仓库）
+  - 切入：给无 SDK 厂商做 OpenAPI→多语言（Go/Rust/Kotlin）生成与类型契约发布——对标 Runway 用 Stainless 的做法把它带给缺位厂商；也可并入统一 CLI 作为底层库
+- **配额/用量可观测性粗糙：积分余量、重置时间、扣费明细的粒度都不够开发者用**
+  - 证据：MiniMax CLI #248/#249（中文开发者）：配额 API 只回整数百分比（2.8% 显示成 3%）、求小数与重置倒计时，官方 API 端点 /v1/token_plan/remains 精度不足；Runway SDK issues 里全是无上下文的裸错误（PermissionDeniedError 等）
+  - 切入：跨厂商用量仪表盘/费用告警 CLI（进度条级配额、按模型/项目的成本归集），作为预算闸门产品的轻量入口；单独做太薄，建议并入第一条
 
 ### 未解问题
 
-- Reddit（r/aivideo、r/StableDiffusion、r/LocalLLaMA）一手吐槽未能抓取：pullpush.io 与 Reddit 均持续 429 限流，Reddit 侧的抱怨密度和付费意愿直接证据缺失——需放开 WebSearch 额度（本会话 200/200 已耗尽）或人工抽查确认
-- 'Higgsfield 开源核心仓库'说法未证实：HN 9-17 有帖但无链接无讨论（1 分 0 评），GitHub 的 higgsfield 账号实为深度 RL 教程作者个人号，与公司无关；不得作为事实引用
-- fal 锁号问题的真实支持响应率：GitHub issue 几乎 0 回复，但不排除工单渠道正常处理——锁号是 bug 还是风控策略、是否已有修复计划，需进一步证据
-- Higgsfield 是否有公开的开发者 API 文档/SDK 及其语言覆盖：本次仅从第三方集成侧反推其 API 存在，官方文档面未核验
-- V2EX 上'贵'的吐槽是否转化为付费工具消费：#1242784 等帖 0 回复，未见明确的'愿意为省多少钱付多少'表达，中文市场付费强度需即刻/知乎侧补充
-- Runway 'Dev Platform skills 唯一集成路径'迁移的官方公告原文与迁移指南：仅从 commit message 推断，未找到对应 changelog/blog
-- 即刻、知乎两个中文渠道完全未覆盖（无可用的直接抓取路径），其中可能存在的集成吐槽未计入
+- Reddit 三个版（r/aivideo、r/StableDiffusion、r/LocalLLaMA）原帖本轮未能采样：WebSearch 会话额度（200/200）已耗尽，reddit.com 直接抓取返回 'Prove your humanity' 人机验证墙——需求强度评估目前主要锚定 GitHub issues 与 HN，Reddit 侧吐槽浓度待补测
+- 即刻与知乎无法程序化访问；V2EX 近 90 天相关帖多为 0 回复的作品/推广帖（含中转站送码帖，如 v2ex.com/t/1242388），中文开发者真实痛点浓度可能被低估——MiniMax CLI 中文 issue 区（#249/#259 等）是唯一已验证的中文一手吐槽源
+- fal 此前调研记录的'社区 skills 仓库'（run "<prompt>" 智能路由、index.json+SHA256）本次在 GitHub fal-ai 组织下未能重新定位（组织内无 skills/agent/route 相关仓库），是否改名、转私有或内置于 CLI 待确认
+- Higgsfield 5.6k★ '核心开源仓库'（created 2018，描述为 GPU 训练框架）的真实开放范围、与视频生成核心的关系、开源动作背后的运营目的
+- VideoRouter 的真实采用与留存数据（HN 仅 1-2 条评论，两次发帖间隔 5 天，创始人供给端认定需求但需求侧验证缺失）
+- Runway 'Model Routers' 与 Autobilling/Usage tiers 的具体 API 语义与计费规则（本轮只核对了文档目录结构，未逐页核对）
 
 ### 来源
 
-- [fal-ai/fal issue #1094：付费后账号锁定（连环锁号投诉起点）](https://github.com/fal-ai/fal/issues/1094)
-- [fal-ai/fal issue #1175：80 秒视频被按 10,272 秒计费](https://github.com/fal-ai/fal/issues/1175)
-- [fal-ai/fal issue #1163：正余额仍锁号（自动解锁 bug 复现）](https://github.com/fal-ai/fal/issues/1163)
-- [fal-ai/fal issue #1172：$70 USDC 充值未入账](https://github.com/fal-ai/fal/issues/1172)
-- [fal-ai/fal-js issue #238：queue.submit 无视 retry 配置并重放 POST（幂等缺失）](https://github.com/fal-ai/fal-js/issues/238)
-- [fal-ai/fal issue #1146：MultipartUpload 上传空字节](https://github.com/fal-ai/fal/issues/1146)
-- [replicate-javascript issue #382：部署禁用仍计费死锁](https://github.com/replicate/replicate-javascript/issues/382)
-- [replicate-javascript issue #381：API 返回 500 但训练任务实际成功](https://github.com/replicate/replicate-javascript/issues/381)
-- [HN：VideoRouter – OpenRouter for video and image generation APIs](https://news.ycombinator.com/item?id=49733974)
-- [HN 评论：VideoRouter 作者阐述供应商价差 5-10 倍（Save 80% 帖）](https://news.ycombinator.com/item?id=49667081)
-- [HN 评论：Higgsfield MCP/直连集成幻觉抱怨（bmau5）](https://news.ycombinator.com/item?id=49705458)
-- [HN 评论：Higgsfield dark patterns 批评（echelon）](https://news.ycombinator.com/item?id=49401031)
-- [HN：Faster than real-time video generation（fal H3 Max）](https://news.ycombinator.com/item?id=49505580)
-- [fal 博客：H3 Max Built with fal Inference and Training（9-17）](https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/)
-- [fal 博客：Introducing H3 Max by fal（8-27）](https://blog.fal.ai/introducing-h3-max-by-fal/)
-- [fal 博客：3D-to-AI pipeline with total control（7-13）](https://blog.fal.ai/from-clay-3d-render-to-a-real-action-short-a-3d-to-ai-pipeline-with-total-control/)
-- [runwayml/skills 官方仓库：8-28 'Dev Platform skills sole integration path' 等三连 commit](https://github.com/runwayml/skills)
-- [runwayml/sdk-python：spam issue 刷屏无人清理的样例](https://github.com/runwayml/sdk-python/issues/272)
-- [Komamotion PR：自实现 fal JWKS 与 Replicate Svix webhook 验签](https://github.com/nexulys/Komamotion/pull/2)
-- [Videoai PR：fal queue 句柄持久化与 submit/poll 拆分](https://github.com/FarrukhGulomov/Videoai/pull/12)
-- [corsair issue #1369：请求 fal queue status + webhook 支持](https://github.com/corsairdev/corsair/issues/1369)
-- [V2EX：接入 Seedance 系列模型——'效果是真的好，贵也是真的贵'](https://www.v2ex.com/t/1242784)
-- [V2EX：libTV 本地 MCP 视频工作流（29 个 MCP 工具，回复追问比 wan3 便宜的 API）](https://www.v2ex.com/t/1243225)
-- [V2EX：商汤 SenseNova-Skills（Motion HTML 串图片+Seedance 视频）](https://www.v2ex.com/t/1243083)
-- [V2EX：全链路 AI 短剧工具（主打稳定可控角色）](https://www.v2ex.com/t/1242811)
-- [GitHub：rk-research/HiggsfieldAPI-CLI（9-21 创建的第三方 Higgsfield CLI）](https://github.com/rk-research/HiggsfieldAPI-CLI)
-- [GitHub：PRYX-STUDIO/ComfyUI-Higgsfield（9-21 创建的 ComfyUI 集成）](https://github.com/PRYX-STUDIO/ComfyUI-Higgsfield)
-- [GitHub：AtlasCloudTeam/agent-skills（公共仓库最后 commit 2026-02-24）](https://github.com/AtlasCloudTeam/agent-skills)
-- [GitHub：AtlasCloudTeam org 仓库列表（VideoRouter 首批支持的供应商之一）](https://api.github.com/orgs/AtlasCloudTeam/repos)
-- [HN Algolia：fal.ai 近 90 天评论区检索（成本预估不可靠等抱怨）](https://hn.algolia.com/api/v1/search_by_date?query=fal.ai&tags=comment&hitsPerPage=15&numericFilters=created_at_i%3E1753200000)
+- [fal-ai/fal #1183：新账号首充即被锁（2026-09-21）](https://github.com/fal-ai/fal/issues/1183)
+- [fal-ai/fal #1175：80 秒视频被记 10,272s、误扣 $40,500 并锁号（2026-09-17）](https://github.com/fal-ai/fal/issues/1175)
+- [fal-ai/fal #1163：余额 $110.83 仍被锁、扣费照走（2026-09-08）](https://github.com/fal-ai/fal/issues/1163)
+- [fal-ai/fal #1147：充值后锁号，同 #914/#922 根因（2026-08-15）](https://github.com/fal-ai/fal/issues/1147)
+- [fal-js #238：queue.submit 无视 maxRetries=0 重复提交（2026-09-09）](https://github.com/fal-ai/fal-js/issues/238)
+- [Higgsfield CLI #68：MCP OAuth RFC 9207 断裂，5 周多人复现](https://github.com/higgsfield-ai/cli/issues/68)
+- [Higgsfield CLI #93：MCP 生成工具广告空 schema（2026-09-20）](https://github.com/higgsfield-ai/cli/issues/93)
+- [Higgsfield CLI #91：预算管控系统开发者公开求计费语义（2026-09-19）](https://github.com/higgsfield-ai/cli/issues/91)
+- [Higgsfield CLI #80：官方 skills 过不了 Codex 校验（2026-09-04）](https://github.com/higgsfield-ai/cli/issues/80)
+- [runwayml/skills：8/28 重构为 Dev Platform 唯一集成路径](https://github.com/runwayml/skills)
+- [Runway Dev 文档：Dev MCP、Model Routers、Usage & Billing/Autobilling](https://docs.dev.runwayml.com/)
+- [runwayml SDK 仓库 issue 分诊缺位与明文 key 泄露（2026-09-14）](https://github.com/runwayml/sdk-node/issues/222)
+- [VideoRouter Show HN：同模型跨厂商价差 5-10 倍（2026-09-11）](https://news.ycombinator.com/item?id=49667080)
+- [VideoRouter 再发：OpenRouter for video and image generation（2026-09-16）](https://news.ycombinator.com/item?id=49733974)
+- [MiniMax CLI #249：配额百分比精度不足（中文开发者，2026-08-31）](https://github.com/MiniMax-AI/cli/issues/249)
+- [Higgsfield 官方 Changelog：MCP 故障公告与模型路由扩张（2026-08~09）](https://higgsfield.ai/changelog)
+- [MiniMax-AI/cli：官方多模态 CLI（2168★，2026-09-19 仍在 push）](https://github.com/MiniMax-AI/cli)
+- [lumalabs/luma-agents-cli 与四语言 SDK（2026-09-17 同日 push）](https://github.com/lumalabs/luma-agents-cli)
+- [HN：fal 估值 $8b 与 OpenRouter 对比讨论（2026-08-16）](https://news.ycombinator.com/item?id=49324121)
+- [HN：Seedance 2.5 角色一致性（reference images/char sheets）无人能答（2026-09-16）](https://news.ycombinator.com/item?id=49734117)
 
 ---
-
-> **Higgsfield + Runway 路未跑成**（429 限流）。已从需求侧获得的信号：Runway 8-28 把 skills 升级为 Dev Platform 唯一集成路径（官方 commit，MCP-aware 方向）；Higgsfield 消费端强、开发者集成面缺失（9-21 一天 3+ 个第三方 CLI 冒出、MCP 被抱怨幻觉）。待补跑后更新本文件。
