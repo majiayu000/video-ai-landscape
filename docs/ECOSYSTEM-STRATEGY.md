@@ -1,115 +1,130 @@
-# 生态推演与战略 · Ecosystem Strategy
+# 生态推演与战略 · 前瞻版（v2）
 
-> 生成日期：2026-09-22 · 方法：9 路并行 agent 真实网络调研（5 路生态维度 + 4 路深挖）+ 交叉合成
-> 本文是《AI 视频厂商 CLI / Skill / MCP 全景对比》的续篇：从"厂商怎么接 agent"拉高到"生态往哪走、我们站哪"。
-> 置信度标注：**[官方源]** > **[多源交叉]** > **[单一来源]** > *推断*。商业数字多为第三方转述，决策时建议打 3-5 折。
+> 生成：2026-09-22 · 方法：**21 路 schema 约束 agent 真实网络调研**（5 路生态维度 + 4 路 Sora 深挖 + 5 路厂商前瞻 + 6 路全域扩展 + 8 路第二轮深挖，含 2 路限流补跑）+ 交叉合成。
+> 本文回答一个问题：**他们哪里做得好、未来要做什么、没做什么我们能做。**
+> 置信度：**[官方源]** > **[多源交叉]** > **[单一来源]** > *推断*。机器可读数据见 `data/`（价格 34 条、能力矩阵 13 条，as_of 2026-09-22）。逐路原始发现见 `docs/research-*.md`。
 
 ## 0. 核心判断（TL;DR）
 
-标准战争已经打完（MCP + SKILL.md + AGENTS.md 收敛）；价值正沿六层栈持续上移；平台死亡成为常态（Sora 从爆红到全线关停不足一年半）；下一场战争在**分发/信任层**与**编排/验收层**。我们的位置：**跨厂商中立的可信工具层 + 中西桥**——每个巨头都因立场坐不上去的位置。
+1. **接入层战争的形态已经定型**：SKILL.md + MCP + CLI 三件套。**PixVerse（中国唯一全做齐的厂商）、Tavus（机器可读全家桶）、Runway（官方托管视频 MCP 第一家）** 已亲自验证路线可行——这不再是判断，是既成事实。
+2. **但厂商集体收缩回围墙**：fal 全押 fal Agent + 双 MCP（CLI/skills 通道战略放弃）；Higgsfield 转向 ChatGPT 宿主分发；HeyGen 把渲染收拢进 Hyperframes 并 10-31 日落 v1/v2 API；Pika 砍掉旧 Developer API。**每一家都只覆盖自己，跨厂商公共层无人做**。
+3. **纯"路由/聚合"正在失去护城河**：Runway 三周连击把自己做成多模型调度层（Model Router→容量回退→路由历史）；VideoRouter 上线但零牵引（HN 1 分 1 评）且收 2% 平台费；Hedra 从应用层转身做 75+ 模型聚合；腾讯混元代销 Vidu/Kling。**聚合在垂直分层挤入，中立层必须退守到"契约 + 验收 + 一致性资产"——聚合站做不了的三件事。**
+4. **价值正沿六层栈上移**（L3 标准已定局 → L4 分发/信任、L5 编排/验收开战），而 90 天证据显示 **L5 的三个具体空位——跨厂商任务契约、生成后判片闭环、角色一致性资产——没有任何一家能做**（利益冲突 + 立场限制），这是结构性而非暂时性的空位。
 
-## 1. 六层栈：更高的生态
+## 1. 六层栈（90 天后的更新）
 
 ```
-L5 编排/验收层      ← 空位：跨厂商一致性、video CI、生成资产版本化
-L4 分发/信任层      ← 正在打的仗：skills.sh 榜单、官方目录 verified 徽章、技能审计
-L3 标准层 ✅ 已定局  MCP=连接层 · SKILL.md=能力封装层 · AGENTS.md=仓库约定层
-L2 聚合/路由层      OpenRouter ~5% 抽成年化 ~$1.6 亿 [多源交叉]；fal 传闻 ~$4 亿 run-rate [单一来源]
-L1 模型层           结构性分化：商品档年降 5-10 倍；"导演级"按可用率提价（Seedance 2.0 ≈ 1.0 Pro 的 4.6 倍）
-L0 算力/电力        CoreWeave 积压订单 $99.4B 但 GPU 年折旧 30-40%，资产负债表脆弱
+L5 编排/验收层      ← 空位确认扩大：任务契约/判片闭环/角色资产/分镜契约 无人做（本文第 2C 节）
+L4 分发/信任层      ← skills.sh 哑铃型（厂商级技能 vs 聚合技能差两个数量级）+ 榜单数据毒性 + Audits 仅覆盖 50/150 万
+L3 标准层 ✅ 已定局  MCP（Tasks 扩展演进中）· SKILL.md（~40 产品采纳，规范仍未捐入中立基金会）· AGENTS.md
+L2 聚合/路由层      ← 竞争烈度骤升：fal $4B→$8B、OpenRouter 入场视频、Runway Model Router、VideoRouter、Hedra 转型、腾讯代销
+L1 模型层           美国两强（Veo/Grok）+ 中国两强（Kling/Seedance）+ 开源只剩 Wan2.2 一家活跃
+L0 算力/电力        训练侧：4090 Community $0.34/hr，Wan2.2 LoRA 24GB 可训——个人可承受
 ```
 
-三条全维度交叉验证的主线：
+90 天最重要的三条交叉验证主线：
 
-1. **价值持续上移**。每层标准化后，租金流向上一层。L3 收敛后，下一波在 L4（信任是稀缺品：36% 公开技能含提示注入 [单一来源 Snyk 转引]、52% 公开 MCP server 已被遗弃 [单一来源]）和 L5（跨厂商中立编排无人占位）。
-2. **平台死亡是常态**。Sora 全线关停（App 2026-04-26、API 2026-09-24，无替代品）**[官方源]**；Gemini CLI 被谷歌单方面迁往闭源 Antigravity（2026-06）**[官方源]**。唯一对冲 = contract-first 多供应商设计 + 跨平台可移植（纯 SKILL.md 标准格式、少用平台私有扩展）。
-3. **中西生态"单向透明"**。中国开源权重西向畅通（中系模型占 OpenRouter 路由流量约 46% [单一来源]）；可灵海外收入占 75% 直接直销全球 [融资材料转述]；反向有墙（Kling 不进美国超大云、百炼国内外 Key 不通用）。**桥位有结构性租金，但政策风险同向放大。**
+1. **"厂商官方亲自下场"密集出现**：Runway 官方托管 MCP（9-11）、ComfyUI 官方 comfy-mcp + comfy-skills（7-01）、Higgsfield MCP 铺进 7+ 宿主、Synthesia 入场（8 月底）。**信号：agent 面从"第三方包装"进入"官方基建"阶段**——第三方单点包装的窗口正在关闭，跨厂商层的窗口正开着。
+2. **平台死亡与断契约成为常态**：Sora 全周期退场（12 个月）[官方源]；Pika 砍 dk_ 密钥；HeyGen 日落 v1/v2；MiniMax MCP 枚举落后自家 API 一代；Azure 比 OpenAI 更早下架 Sora。**每一起都是"契约层必须把供应商死亡当常态假设"的论据。**
+3. **中国"一家独走、四家缺位"**：PixVerse 三件套（CLI+MCP+SKILL.md，execution-contract 设计与我们同构）独走；火山/阿里/腾讯/智谱官方视频 MCP/Skill 数量为零。**为四家做"官方没有的第一方体验"是被验证过的空位。**
 
-## 2. 五个维度的关键发现
+## 2. 机会地图（本文核心）
 
-### 2.1 标准层（standards）
+### 2A. 做得好——可借力
 
-- **[官方源]** MCP 于 2025-12-09 捐入 Linux Foundation 旗下 Agentic AI Foundation（AAIF，OpenAI/Anthropic/Block 共同创立）；AGENTS.md 同入 AAIF。
-- **[官方源]** OpenAI Apps SDK 构建 在 MCP 之上；Codex/ChatGPT 采纳 SKILL.md 格式——两层都"兼容而非另起炉灶"，收敛锁定。
-- **[多源交叉]** SKILL.md 已被 ~40 款产品采纳（agentskills.io showcase）；**但规范本身尚未捐入中立基金会**，Anthropic 仍握主导权——潜在变数。
-- **[官方源]** 中国轨道：GB/Z 185—2026《人工智能 智能体互联》2026-07 发布，官方口径明确不以 MCP/A2A 为终点；但企业实践（蚂蚁 Agentar MCP 广场）事实兼容 MCP——**双轨并行**。
-- **推断**：MCP 2026-07-28 版的 **Tasks 扩展**（长任务 task handle）是视频生成异步任务的标准归宿；按新规范（无状态核心，弃用 Roots/Sampling/Logging）起步 = 后发优势。
+| 谁 | 做了什么 | 我们怎么借 |
+|---|---|---|
+| **PixVerse** | 全球最完整的单厂商 agent 三件套：execution-contract.md / prompt-contract.md / `capabilities --json` 离线能力查询 / `--no-wait` 超时不等于失败语义 / 非零退出可带部分成功 | **直接照抄契约语义**，从单厂商升级为五厂商统一层；其源码结构证明该模式可被厂商官方采纳（甚至反向 PR） |
+| **Tavus** | llms.txt + openapi.yaml + skill.md 机器可读全家桶；PAL 可委派第三方 MCP | 发现层不依赖注册表：CLI 内置 `--discover` 直接拉厂商自描述文件 |
+| **Runway（skills 层）** | SKILL.md 内置每模型 credit 价格表、输出行带成本、`get_credit_balance` 前置检查 | **计费透明做成契约一等公民**的范本（vs Higgsfield 五套计费池不透明——两极中透明那极的写法照抄） |
+| **火山 Seedance 2.0** | 任务契约最完整：callback_url、execution_expires_after 可配、任务 ID 保留 7 天、priority 队列、flex 离线半价、draft 样片模式、return_last_frame 串联多镜头 | 统一任务层的目标契约形态——把它做成跨厂商抽象 |
+| **ComfyUI 官方** | comfy-mcp（本地 40 工具）+ Comfy Cloud MCP + comfy-skills | 本地路径的官方形态已立：`--provider local-comfyui` 与云同构调用有了对齐对象 |
+| **HeyGen HyperFrames** | 免费本地渲染技能（HTML→MP4）拿下 52K stars / 60 万安装 | **免费/本地入口 → 计费 API 升级层**的分发漏斗模型（免费技能与计费技能安装量差 100 倍，入口必须免费） |
+| **Vidu** | 全行业唯一做"提交前成本预估"的厂商 | dry-run 报价的方向被厂商背书；我们做成跨厂商版 |
+| **fal 双 MCP** | Run MCP（造东西）+ Platform MCP（只读运维）分权设计 | agent 权限分层的参考架构 |
+| **Higgsfield skills frontmatter** | 「Use when 触发词 + NOT for 反向路由 + Chain with 链式声明」 | 技能间路由的最优写法，零机制成本，直接采纳 |
 
-### 2.2 平台层（platforms）
+### 2B. 将要做——可搭车
 
-- **[多源交叉]** "应用商店时刻"已发生，但形态是三层：平台官方目录（信任层，Anthropic verified 徽章 + 安装量展示 + 封锁名称抢注）+ 水平注册表（skills.sh，`npx skills add` 支持 ~20 个 agent）+ Git 仓库（存储层）。
-- **[多源交叉]** 分发红利归两端：默认入口（平台）与发现聚合（注册表）。**技能作者直接收入天花板低**（头部 $500-3k/月 [第三方估计]）——技能必须设计为**获客漏斗**而非产品。
-- **[多源交叉]** 榜单证据：find-skills 3.5M 安装居首（元工具最好卖）；发行商前三 open.feishu.cn 16.4M / microsoft 5.9M / larksuite 5.8M——**大厂都在做分发，不在卖技能文件**。
-- **[单一来源]** 公开技能平均质量 6.2/12（SkillsBench）；"2-3 个聚焦技能 +18.6 分、单个巨型技能 -2.9 分"——**铺量策略会反噬**。
+| 谁 | 将做什么 | 信号强度 | 我们怎么搭 |
+|---|---|---|---|
+| **Runway** | Dev Platform 成公司主线（Founding DX Lead + 产品/设计/工程四条线同招）；skills 收敛到 runway-dev-* 唯一路径；Model Router 或扩展成跨厂商路由市场 | [官方明示] | 它做"Runway 内的多模型"，我们做"跨厂商的 Runway 接入"——官方流量可蹭（给 runwayml/skills 提 CLI 层 PR） |
+| **fal** | fal Agent GA（文档树已备全：memory/skills/sandbox/training/video-sequences/spending-caps）；/agent-v2 路由已现 | [官方明示] | Agent 正式收费前，契约 CLI 是"不进围墙用同一批能力"的出口 |
+| **腾讯** | 混元→TokenHub 迁移（OpenAI 兼容协议 + 代销 Kling/Vidu） | [多源交叉] | TokenHub 新平台 = 新接入面 = 文档/工具真空期，第一时间做适配器 |
+| **HeyGen** | 全部渲染收拢 Hyperframes；v1/v2 API 10-31 日落 | [官方明示] | 迁移窗口内容：受影响开发者的迁移工具 + 内容 |
+| **Google** | agentic 视频理解（自导航时间线省 88% token）+ Genmedia MCP servers | [官方明示] | 判片层的大脑供给已就位——judge 步骤直接接 |
+| **智谱** | Managed Agents 全套 Skill/MCP/部署 API，视频未接入但基建就绪 | [官方明示] | cogvideox-3（4K/60fps/首尾帧，国产闭源独有参数）是"能力强但没人接"的洼地，第一批适配目标 |
+| **MCP 规范** | Tasks 扩展（长任务 task handle）演进 | [官方明示] | 视频异步任务的标准归宿——按新规范起步，不做旧的 |
 
-### 2.3 模型层（models）
+### 2C. 没做——可占位（按确定性排序）
 
-- **[官方源]** Sora 全线关停：App/Web 2026-04-26 停服，Sora 2 + Videos API **2026-09-24 移除**，无替代品，权重不开放。教训：**无分发绑定的横向视频模型无法存续**。
-- **[官方源]** 价格结构性分化：Veo 3 标准 $0.75→$0.40/s、Fast $0.40→$0.15/s（商品档）；Seedance 2.0 定价 ≈ 1.0 Pro 的 4.6 倍，理由是可用率 20%→90%（按**可用片段**折算实际成本反而降）。
-- **[多源交叉]** 存活者三种形态：内容社区绑定（可灵/即梦）、平台绑定（Google/YouTube）、开源生态绑定（阿里/腾讯/MiniMax）。
-- **[官方源]** 开源是有边界的：Wan 2.2 Apache 2.0 开源（TI2V-5B 可跑 RTX 4090），但 Wan 2.5/2.6/3.0 均 API-only 闭源——**开源是获客手段不是承诺**。
-- **推断**：世界模型（Genie 3/Cosmos/Atlas）主攻具身智能与交互环境，与创意视频生成是分叉的两条路线，36 个月内不要把视频工具路线图押在上面。
+1. **跨厂商统一任务契约**（确定性：最高）
+   五家中国协议各异 + webhook 验签各家一套 + 断线恢复全无 + 产物 URL 24h-30 天过期。90 天内至少 4 个独立项目在自造轮子（需求侧证据）。
+   → 本地 task store + 统一句柄（submit/poll/cancel/resume/artifact manifest）+ 到期前自动归档到用户自有存储 + 幂等键 + unresolved 状态机。**这是 CLI 的地基。**
+2. **生成后判片/验收闭环**（结构性空位：厂商不愿给自己的生成打分）
+   VBench 16 维体系已开源（但 flickering 等维度 VLM 低帧率下不可见——需按"VLM 可判性"重新分层）；VideoFeedback 33.6k 带 5 维整数分先例；Claude 无视频输入（GIF 取首帧）→ 抽帧方案是必要件。
+   → judge 步骤一等公民：抽帧 → 便宜 VLM（Gemini 3.8 Flash / GLM-5.3-Flash / DeepSeek V4.1-Flash）→ 结构化 verdict JSON（维度分 + 失败分类枚举 + 建议动作 retry/换模型/改 prompt）→ 驱动重试策略。
+3. **角色一致性资产契约 + 视频 LoRA 训练串联**（七家训练设施全缺位）
+   三条断路：厂商 reference API（无持久资产）/ RunPod 外挂 LoRA URL（得自己去别处训）/ Modal 自管代码。开源侧已可行：musubi-tuner 官方支持 Wan2.2 LoRA，fp8+block swap 下 720×1280 图像训练仅 24GB 显存 [官方文档]；4090 Community $0.34/hr → 24 小时约 $8-18。
+   → `character_id` = 数据集 + 权重引用 + trigger 词 + 一致性评测集 + 各家端点适配器；一条命令：训练（spot GPU）→ 托管（HF/Volume）→ 推理（RunPod/Replicate/厂商 API）。
+4. **计费可信层**（痛点密度最高：fal 90 天 11+ 条锁号 bug、#1175 80 秒按 10,272 秒计费、官方 0 回复）
+   → per-generation 成本账本 + 预算熔断（超限降级）+ 本地账本与供应商账单对账 + 执行时长/计费时长偏差告警。Higgsfield 五套计费池同理需要一个编程化查询口。
+5. **供应商寿命预警**（每起断契约都是论据）
+   → 定期快照各厂商模型目录（模型/参数/价格/弃用状态），机器可读 diff + 弃用页监测 + 旧→新参数映射建议，嵌进用户 CI。
+6. **skills.sh 厂商级技能矩阵**（哑铃型空端：veo 474 / sora 916 / runway 300-500 安装 vs 聚合技能 60 万）
+   → 每厂商一个 skill + 总路由 skill，官方调研级质量差异化；**别追安装数**（genmedia-labs 13★/60 万安装、superpowers 集群刷量嫌疑、Zenity 170 万安装恶意家族）。
+7. **中国厂商国际接入规范层**：双区端点探测、AK/SK→OAuth 封装、凭据一处配置多平台映射、英文文档——中国厂商不做、国际开发者最痛。
+8. **分镜 JSON 契约**：镜头/角色/一致性约束/每镜目标厂商与参数，可版本化——把 LTX Studio 的封闭体验开放化；fal Agent 的 video-sequences 锁在围墙内，开放版空着。
+9. **合规字段**（中国《标识办法》+ GB 45438-2025 已生效：显式+隐式双层义务；实测四家视频 API watermark 默认 false、无一家文档化隐式元数据输出——**合规责任系统性落在调用方**）
+   → 契约字段：label_required / implicit_metadata / c2pa / 责任划分；commercial-safe 路由（license_tier：Marey FULLY LICENSED 档无处表达）。
+10. **不做清单**：纯路由/聚合（Runway+VideoRouter+Hedra 三方挤压）、薄 API 包装 skill、低代码编排（OpenAI 弃用 Agent Builder 证明退潮）、押注世界模型、绑定单一厂商。
 
-### 2.4 聚合/算力层（infra）
-
-- **[多源交叉]** 聚合层没被压扁，在壮大并分化：轻路由（OpenRouter ~5% 抽成）与重推理（fal：2025-12 红杉领投 $140M @ $4.5B，2026 年上半年传闻 Series E-2 @ $8B、年化收入 $4 亿 [多源交叉]）。
-- **[多源交叉]** 上游双向挤压：模型厂商直销（可灵 API 收入占 60%）+ 超大云 catalog（Bedrock 110+ 模型）。中立聚合的缝隙 = 跨生态搬运（Kling 不进美国超大云）。
-- **[官方源]** LLM 路由层正向视频扩张：OpenRouter 2026-08-25 发布官方视频生成 API 指南，将 Seedance、Veo、Wan 等纳入统一目录——「LLM router 做视频聚合」这条路已被大玩家踩实，中立工具层必须做出聚合站做不了的东西（契约/验收/一致性资产）才有生存空间。
-- **[多源交叉]** 通缩不均匀：a16z "LLMflation" 单价年降 ~10 倍（商品档），但 2025 年后超七成中国厂商涨价回潮、高端保留定价权——**"一切都会变便宜"是线性外推的幻觉**。
-- **[单一来源]** 算力层（neocloud）看着赚钱实则脆弱（GPU 年折旧 30-40%、循环融资争议），上游波动会以突发涨价/降配传导到聚合层毛利。
-
-### 2.5 空白点（gaps）
-
-- **真实缺口（按确定性排序）**：① 跨厂商一致性/编排层（社区持续抱怨角色漂移、重试地狱；现有方案全是单厂商内）② 评测/验收层（只有 VBench 等学术基准，没有 agent 流水线的 CI 级逐镜头验收）③ 技能分发占位（skills.sh 2026-01 上线 6 小时头部技能 2 万安装，Remotion 早期占位拿到"agent 视频默认入口"心智）。
-- **看似机会实为坑**：计费抽象（横向玩家占满）、薄 API 包装 skill（52% MCP server 死亡是统计规律）、框架级重抽象（LangChain 陷阱：**契约抽象路由与验收，绝不抽象模型能力**）、通用聚合站（已商品化）。
-- **"git for generated assets"**（prompt/seed/模型的版本化仓库）是编排与一致性的底座，应作为 CLI 子系统而非独立产品。
-
-## 3. 12-36 个月推演
+## 3. 12-36 个月推演（90 天证据修正版）
 
 | 窗口 | 高确定性事件 | 含义 |
 |---|---|---|
-| 0-12 月 | MCP 2026-07-28 破坏性升级（无状态 + Tasks）；迁移潮消化；技能注册表洗牌；商品档逼近开源自托管成本线 | 按**新**规范起步；垂直类目占位窗口**就是现在** |
-| 12-24 月 | 协议层商品化完成，价值移向发现/信任/验证（签名技能、供应链扫描、企业 MCP 网关）；GB/Z 双轨显形 | 技能要设计成"可审计的可信包"；中国桥接保持观察哨 |
-| 24-36 月 | 双栈风险（国际栈 vs 国内合规栈）或分发被单平台 App-Store 化 | 永远保持跨平台可移植；多注册表分发对冲 |
+| 0-12 月 | 官方 MCP/skills 基建化完成（Runway 已开、其余厂商跟进）；skills.sh 信任机制升级（Audits 扩容、签名）；TokenHub/HeyGen 日落制造迁移窗口；判片先例出现 | **契约层 + 判片层现在占位，6 个月后就是"已有标准"**；迁移工具常态化 |
+| 12-24 月 | 编排层争夺战：fal Agent/Runway Router/OpenAI Agents API 三线撞车（全部绑自家）；规范层 SKILL.md 治理变数 | 中立契约层成为各家编排的公共底座或被平台吞噬——**跨厂商是唯一防线** |
+| 24-36 月 | 分发 App-Store 化 vs 多注册表并存定型；视频 LoRA 训练服务化（七家中会有厂商补位） | 押注"可审计的可信包 + 可移植"；角色资产格式若成事实标准即护城河 |
 
-## 4. 行动建议：四张牌
+## 4. 行动建议（更新版）
 
-资产盘点：contract-first 视频 CLI（在建）+ 调研报告与 103 个 SKILL.md 源码级分析（内容与信誉）+ 双语与中国市场位置。
+资产盘点：contract-first 视频 CLI（在建）+ 调研报告与 103 个 SKILL.md 源码级分析 + **活数据层 `data/`（价格 34 条/能力矩阵 13 条，周更新鲜度检查）** + 双语与中国市场位置。
 
-1. **本周 · 冲 skills.sh 差异化占位**（成本≈0）：~~视频类目尚空~~ **[2026-09-22 修正：类目已有大玩家]**——genmedia-labs（video-edit 598K 全站 #48、seedance-2-5、wan-3-0）、prime-skills/runcomfy（kling-3-0 396K）、heygen/hyperframes（general-video 324K）均已是 25-60 万安装量级。**剩余空位**：veo/sora/runway/luma/fal 厂商级技能全部缺席；Topics 无视频类目；现有玩家全是第三方单点包装，无"跨厂商中立矩阵 + 编排层"技能。每厂商一个 skill + 一个总路由 skill，`npx skills add` 一次铺 ~20 个 agent，以"官方调研级质量 + 编排契约"差异化。技能是漏斗不是产品。
-2. **一个月内 · 做"静默断裂"修复位**（时间敏感，API 9-24 物理消失）：~~"吃迁移潮"~~ **[2026-09-22 深挖修正：迁移潮是弱证据，头部厂商零承接]**。真实痛点是 9-24 后 workflow 报错的**被动修复**场景——Replicate 各家被动合规不一致、n8n 模板还在诱导接入死 API，没有任何一方提供"同一份 prompt/contract 一键切换供应商"。主打故障恢复：契约层把 provider 标记 EOL + 明确报错 + 迁移指引，配套一手工程向内容（如 "n8n Sora 工作流如何迁移"，现有同类全是转售商软文）。错过 9 月窗口，转长期"供应商寿命预警"功能（内置弃用公告监测——Sora 12 个月全周期退场就是最强论据）。
-3. **3-6 月主线 · CLI 契约层三件套**：成本感知路由（同级差价 10 倍+）+ 可用率工程（N 选 1 自动判片——"挑片"才是用户真实成本大头）+ 跨厂商一致性资产格式（可导出中立格式 = 聚合层不愿维护的护城河）。
-4. **不要做**：计费抽象、通用聚合站、框架级重抽象、押注世界模型、绑定单一平台/厂商。
+1. **本周 · skills.sh 厂商级矩阵占位**（成本≈0）：避开聚合赛道（RunComfy 系 60 万安装是刷量嫌疑的营销阵地，别对标它的打法），做厂商级 contract-first 技能（veo/kling/seedance/wan/cogvideo 各一 + 总路由一）+ 免费/本地入口技能（HyperFrames 模型：免费技能 install 是计费技能的 100 倍）。技能是漏斗不是产品。
+2. **一个月内 · "静默断裂"修复位**：9-24 Sora API 物理消失后的一手故障修复内容 + 迁移工具（n8n 模板仍在诱导接入死 API）；长期做成"供应商寿命预警"功能（见 2C-5）。
+3. **3-6 月主线 · CLI 三支柱**（2C-1/2/3 落地为产品）：
+   - **任务契约层**：统一 submit/poll/resume/artifact 归档（地基）
+   - **判片闭环**：judge rubric + verdict schema（差异化，`docs/research-deep-dive-2` 已有设计输入）
+   - **角色资产**：character_id 契约 + Wan2.2 LoRA 训练串联（七家全缺位，$8-18/次成本已验证）
+   三支柱之上才是路由（价格数据已有 `data/prices.json`：同模型跨渠道价差 67%-700%）。
+4. **持续 · 数据即基础设施**：`data/*.json` 每月实采刷新（as_of 纪律），价格表 + 能力矩阵 + 供应商健康指数是 CLI 的数据底座，也是别人会引用的公共品。
+5. **不要做**：纯路由层、通用聚合站、低代码编排、薄包装 skill、绑定单一厂商、追 skills.sh 安装数。
 
-**生态位一句话：跨厂商中立的可信工具层 + 中西桥。**
+**生态位一句话：厂商做"自家围墙内的垂直整合"，我们做"跨厂商的契约、验收与角色资产"——聚合站与厂商都因立场坐不上去的位置。**
 
-## 5. Sora 事件验证记录
+## 5. Sora 事件验证记录（存档）
 
 **已直接验证 [官方源]**（2026-09-22）：
 - OpenAI Deprecations 页：Sora 2 模型与 Videos API 2026-09-24 移除（developers.openai.com）
-- OpenAI 帮助中心 "What to know about the Sora discontinuation"：App/Web 2026-04-26 停服（help.openai.com）
-- Make 帮助中心：下架 Sora 模块、催用户 9-24 前迁移（help.make.com）
-- 社区请愿开放权重未果（community.openai.com）；自托管迁移指南涌现（Spheron，2026-08）
+- OpenAI 帮助中心：App/Web 2026-04-26 停服（help.openai.com）
+- 社区开放权重请愿被官方拒绝（2026-09-08"没有发布计划或时间表"）
 
-**深挖已完成**（wf_b3382967，4 路，2026-09-22 回收）：
-
-- **"迁移潮"是弱证据**：HN 热度 3-24 当天 1142 分 851 评论（峰值），8-9 月归零（最高 7 分）；GitHub 2026-03 后创建的 sora migration 仓库数为 **0**，"sora alternative" 结果最高 23 星且多为 SEO 垃圾仓；头部厂商零承接动作（仅 WaveSpeed/MiraFlow 等小平台内容营销）。真实图景 = **一批被动断裂的工作流 + 内容农场的 SEO 流量捕获**，量级都被叙事放大了。
-- **平台方各自不一致的被动合规**：Replicate 挂通知不删页、fal 静默移除列表且无公告、Make 发退役公告、n8n 完全不作为（模板仍在诱导用户接入 9-24 后死亡的 API）、Zapier 从未上架。Azure OpenAI 的 Sora 预览 6-06 就退了，比上游还快。
-- **格局未被改变**：分食者全是既有玩家（Veo / Grok Imagine / Kling / Seedance / Runway）。Sora 需求早于关停即崩塌（下载量 2025-11 峰值 333 万 → 2026-02 跌至 113 万，活跃跌破 50 万），官宣只是追认既成事实。真正变化的三个次级层面：① 开放权重层真空（开源旗舰停在 Wan 2.2，Wan 3.0 转 API-only）② 聚合层资本化提速（fal 估值半年 $4B→$8B、年化收入 $4 亿；OpenRouter 8-25 正式上线视频目录）③ 榜单营销战（阿里匿名 "Happy Horse" 登顶 Arena 后自曝）。
-- **skills.sh 结构性机会确认 + 数据毒性警示**：视频类目呈**哑铃型**——通用聚合技能（genmedia-labs video-edit 598K）与厂商级 API 技能（veo 类最高 474、openai 官方 sora 技能 916、runwayml 官方全系 300-500）相差**两个数量级**，空的正是厂商级一端。但榜单安装数是 CLI 遥测聚合值（不去重、可刷）：genmedia-labs 13 stars 对 60 万安装、仓库描述 "incremental publish test" 的 runcomfy 42 万安装、9 月新组织集群 "superpowers"（~20 个 0-4 stars 组织）占 Trending 前 60 名约 20 席、Zenity 曝光恶意技能家族累计 170 万安装。信任层极薄：Audits 仅覆盖 50 个技能（全站约 150 万条）。**结论：别追安装数，用官方调研级质量 + 真实分发（让安装命令出现在别人的工作流里）占厂商级矩阵位。**
+**深挖结论**（wf_b3382967）："迁移潮"是弱证据（HN 热度归零、GitHub 零迁移仓库、头部厂商零承接）；真实痛点 = 9-24 后 workflow 静默断裂的被动修复。格局未被改变：分食者全是既有玩家；三个次级变化 = 开放权重真空（Wan 3.0 转 API-only）、聚合层资本化（fal $8B）、榜单营销战（阿里匿名 Happy Horse 登顶后自曝）。
 
 ## 6. 主要来源
 
-AAIF (aaif.io) · MCP 官方博客 (blog.modelcontextprotocol.io) · OpenAI Deprecations (developers.openai.com) · OpenAI 帮助中心 (help.openai.com) · Anthropic Agent Skills 公告 (anthropic.com) · agentskills.io · skills.sh · Google Developers Blog（Antigravity 迁移） · Linux Foundation（A2A） · 网信办实施意见 (cac.gov.cn) · GB/Z 185—2026 解读（21经济网） · Vercel skills 文档 · Snyk ToxicSkills 报告 · The Information / TechCrunch / NBC（Sora 关停报道） · a16z（LLMflation / 基础设施配置） · 各厂商官方定价页
+官方：PixVerse CLI/Skills 仓库 · Tavus 文档 · Runway docs.dev.runwayml.com · fal docs/changelog · skills.sh(+API) · OpenAI Deprecations · Comfy-Org · 火山方舟文档 · 阿里百炼文档 · 腾讯云文档 · kling.ai · musubi-tuner/diffusion-pipe · VBench/VideoFeedback · GB 45438-2025 与《标识办法》条文
+媒体/研究：The Information · CNBC · WSJ · SCMP · Zenity Labs · Socket · a16z · HN(Algolia API 一手数据) · GitHub API 一手数据
 
-> 完整逐条来源见各研究路的结构化输出（workflow run: wf_328d5117 / wf_b3382967）。二手转述的商业数字已标注，未经审计。
+> 完整逐条来源见各研究路的结构化输出（workflow runs: wf_328d5117 / wf_b3382967 / wf_30803c52-a09 / wf_354c2d89-361 / wf_1b079cd9-5e7）及 `docs/research-*.md` 三份笔记。二手转述的商业数字已标注，未经审计。
 
 ## 7. 新鲜度日志（Freshness Log）
 
-本生态的数据半衰期以**天**计，本文所有时效性判断以此日志为准持续修正：
-
 - **2026-09-21**：5 路生态研究（wf_328d5117）完成，形成初版分析。
-- **2026-09-22 上午**：直接验证 Sora 关停（官方源确认，见第 5 节）；**实测 skills.sh 榜单，推翻"视频类目空着"的初判**——genmedia-labs / runcomfy / heygen 三组发行商已有 25-60 万安装量级玩家；剩余空位修正为"厂商级技能缺口（veo/sora/runway/luma/fal）+ 编排层 + Topics 类目缺位"。行动建议第 1 张牌已同步改写。
-- **2026-09-22 下午 · Sora 深挖回收**（wf_b3382967）：①"迁移潮"降级为弱证据（HN 热度归零、GitHub 零迁移仓库、头部厂商零承接），行动牌 2 从"吃迁移潮"改写为"静默断裂修复位"；② skills.sh 确认**哑铃型**结构——厂商级 API 技能（veo 474 / sora 916 / runway 300-500 安装）与通用聚合技能（60 万级）差两个数量级，空的正是厂商端；③ 榜单数据毒性实证（genmedia-labs 13 stars/60 万安装、"superpowers" 疑似刷量集群、Zenity 170 万安装恶意家族、Audits 仅覆盖 50/150 万）——**结论：别追安装数，占厂商级矩阵位**；④ fal $4B→$8B、OpenRouter 入场视频目录：聚合层是半年最大赢家，CLI 应把 fal/OpenRouter 作为 meta-provider 接入。
+- **2026-09-22 上午**：直接验证 Sora 关停；实测 skills.sh 推翻"视频类目空着"初判，行动牌 1 改写。
+- **2026-09-22 下午**：Sora 深挖回收（迁移潮降级为弱证据、skills.sh 哑铃型确认、榜单毒性实证）；行动牌 2 改写为"静默断裂修复位"。
+- **2026-09-22 晚 · 全域扩展 + 第二轮深挖回收（13 路）**：本文重写为前瞻版 v2。关键修正：① Runway Model Router 证明纯路由不设防，中立层定位改为"契约+验收+角色资产"；② genmedia-labs 确认为 RunComfy 营销马甲（源码级证据）；③ 七家训练设施厂商"视频 LoRA 训练即服务"全缺位 + musubi-tuner 24GB 配方使个人训练可行；④ 中国"一家独走四家缺位"（PixVerse 唯一）；⑤《标识办法》实测：API 侧水印默认关、隐式元数据无人做——合规责任在调用方；⑥ 价格/能力数据入库 `data/`（as_of 2026-09-22）。
+- **待补**：资本路数图路（wf_1b079cd9-5e7 的 money-map，网络故障）回收后补充第 2B 节资金面信号。
 
-**方法论修正**：在这类生态里，任何"窗口判断"必须在行动前 24 小时内用一手数据（榜单实抓、官方页面实抓）复核一次，不能依赖研究汇总。
+**方法论**：任何"窗口判断"必须在行动前 24 小时内用一手数据复核；价格/能力数据超 30 天由 CI 标黄。
