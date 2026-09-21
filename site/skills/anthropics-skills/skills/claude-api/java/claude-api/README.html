@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>README · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/java/claude-api/README.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Claude API - Java</h1>
+<blockquote>
+<p><strong>Note:</strong> The Java SDK supports the Claude API and beta tool use with annotated classes. Agent SDK is not yet available for Java.</p>
+</blockquote>
+<h2>Package Reference</h2>
+<p>Types are organized by package. If a class you need isn't shown in an example below, locate it via this table first - don't block on fetching SDK source over the network.</p>
+<table>
+<thead>
+<tr>
+<th><code>import</code> prefix</th>
+<th>Contains</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>com.anthropic.client</code> / <code>com.anthropic.client.okhttp</code></td>
+<td><code>AnthropicClient</code>, <code>AnthropicOkHttpClient</code></td>
+</tr>
+<tr>
+<td><code>com.anthropic.models.messages</code></td>
+<td>non-beta request/response types - <code>MessageCreateParams</code>, <code>Model</code>, <code>Message</code>, <code>TextBlockParam</code>, <code>ContentBlockParam</code>, <code>ToolUseBlockParam</code>, <code>ToolResultBlockParam</code>, <code>CacheControlEphemeral</code>, <code>Tool*</code> (e.g. <code>ToolBash20250124</code>, <code>ToolTextEditor20250728</code>), <code>StopReason</code>, <code>StructuredMessage*</code></td>
+</tr>
+<tr>
+<td><code>com.anthropic.models.messages.batches</code></td>
+<td>Batch API - <code>BatchResultsParams</code>, <code>MessageBatchIndividualResponse</code></td>
+</tr>
+<tr>
+<td><code>com.anthropic.models.beta</code></td>
+<td><code>AnthropicBeta</code> (beta-flag constants)</td>
+</tr>
+<tr>
+<td><code>com.anthropic.models.beta.messages</code></td>
+<td>beta-endpoint types - <code>MessageCreateParams</code>, <code>BetaMessage</code>, <code>BetaStopReason</code>, <code>BetaContextManagementConfig</code>, <code>BetaMcpToolset</code>, <code>BetaRequestMcpServerUrlDefinition</code>, <code>BetaTool*</code></td>
+</tr>
+<tr>
+<td><code>com.anthropic.core</code></td>
+<td><code>JsonValue</code>, <code>JsonField</code>, <code>JsonSchemaLocalValidation</code>, <code>com.anthropic.core.http.StreamResponse</code></td>
+</tr>
+<tr>
+<td><code>com.anthropic.errors</code></td>
+<td>typed exceptions - <code>AnthropicServiceException</code>, <code>RateLimitException</code>, <code>NotFoundException</code>, etc. (see <code>shared/error-codes.md</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><code>client.messages()</code> uses <code>com.anthropic.models.messages.*</code>; <code>client.beta().messages()</code> uses <code>com.anthropic.models.beta.messages.*</code>. Both packages define a <code>MessageCreateParams</code> - import the one matching the client path you call.</p>
+<h3>Key types per feature</h3>
+<p>Write from this table instead of <code>javap</code>/jar inspection. Endpoint column tells you whether to use <code>client.messages()</code> or <code>client.beta().messages()</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Endpoint</th>
+<th>Key Java types / builder calls</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>User profiles</td>
+<td>beta</td>
+<td><code>client.beta().userProfiles().create(...)</code> / <code>.retrieve(id)</code> / <code>.list()</code>. Pass the returned profile id on the beta <code>MessageCreateParams</code>. Requires a beta header - check the SDK's beta-headers reference for the current flag.</td>
+</tr>
+<tr>
+<td>Agent Skills</td>
+<td>beta</td>
+<td><code>BetaContainerParams</code>, <code>BetaSkillParams</code>, <code>BetaCodeExecutionTool20250825</code>. <code>.addBeta("code-execution-2025-08-25")</code> (Skills is out of beta - no <code>skills-2025-10-02</code>). Download the output via <code>client.beta().files().download(fileId)</code>.</td>
+</tr>
+<tr>
+<td>Cache diagnostics</td>
+<td>beta</td>
+<td><code>BetaDiagnosticsParam</code>, <code>BetaCacheControlEphemeral</code></td>
+</tr>
+<tr>
+<td>Context editing</td>
+<td>beta</td>
+<td><code>.contextManagement(BetaContextManagementConfig.builder()...)</code>. The edit strategy is a <code>BetaClearToolUses20250919Edit</code> (or <code>BetaClearThinking20251015Edit</code>); its trigger is a <code>BetaInputTokensTrigger</code> built separately and passed to the edit's builder - there is no direct <code>.inputTokensTrigger(N)</code> shortcut on the edit builder. <code>javap</code> the edit and trigger classes for the exact setter names.</td>
+</tr>
+<tr>
+<td>Memory tool</td>
+<td>non-beta</td>
+<td><code>.addTool(MemoryTool20250818.builder().build())</code> from <code>com.anthropic.models.messages</code></td>
+</tr>
+<tr>
+<td>Programmatic tool calling</td>
+<td>non-beta</td>
+<td><code>CodeExecutionTool20260120</code>, <code>Tool</code>, <code>ContentBlockParam</code></td>
+</tr>
+<tr>
+<td>Strict tool use</td>
+<td>non-beta</td>
+<td><code>Tool</code>, <code>Tool.InputSchema</code></td>
+</tr>
+<tr>
+<td>Task budgets</td>
+<td>beta</td>
+<td><code>.outputConfig(BetaOutputConfig.builder().taskBudget(BetaTokenTaskBudget.builder()...))</code></td>
+</tr>
+<tr>
+<td>Tool search</td>
+<td>non-beta</td>
+<td><code>.addTool(ToolSearchToolRegex20251119.builder()...)</code> from <code>com.anthropic.models.messages</code></td>
+</tr>
+<tr>
+<td>Web search</td>
+<td>non-beta</td>
+<td><code>WebSearchTool20260209</code> from <code>com.anthropic.models.messages</code> - the latest variant with dynamic filtering (Claude Fable 5.1 + Claude Opus 5 + Opus 4.8/4.7/4.6 + Claude Sonnet 5 + Sonnet 4.6). For older models or Vertex, use <code>WebSearchTool20250305</code></td>
+</tr>
+</tbody>
+</table>
+<h3>Discovering type and member names</h3>
+<p>If a class or builder method you need isn't in the tables above, <code>jar tf &lt;anthropic-java-core jar&gt; | grep -i &lt;term&gt;</code> or <code>javap -classpath &lt;jar&gt; com.anthropic.models....</code> is fast enough to locate names. <strong>Do not compile and run a separate reflection program</strong> to enumerate members - the first build is slow enough to be backgrounded in many environments, trapping you in a polling loop. Write the script with the names you found and let the compiler error (<code>cannot find symbol</code>) point at any wrong member.</p>
+<h2>Installation</h2>
+<p>Maven:</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.anthropic&lt;/groupId&gt;
+    &lt;artifactId&gt;anthropic-java&lt;/artifactId&gt;
+    &lt;version&gt;2.34.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>Gradle:</p>
+<pre><code class="language-groovy">implementation(&quot;com.anthropic:anthropic-java:2.34.0&quot;)
+</code></pre>
+<h2>Client Initialization</h2>
+<pre><code class="language-java">import com.anthropic.client.AnthropicClient;
+import com.anthropic.client.okhttp.AnthropicOkHttpClient;
+
+// Default (reads ANTHROPIC_API_KEY from environment)
+AnthropicClient client = AnthropicOkHttpClient.fromEnv();
+
+// Explicit API key
+AnthropicClient client = AnthropicOkHttpClient.builder()
+    .apiKey(&quot;your-api-key&quot;)
+    .build();
+</code></pre>
+<hr />
+<h2>Basic Message Request</h2>
+<pre><code class="language-java">import com.anthropic.models.messages.MessageCreateParams;
+import com.anthropic.models.messages.Message;
+
+MessageCreateParams params = MessageCreateParams.builder()
+    .model(&quot;claude-opus-5&quot;)  // .model(String) overload - use it for ids with no typed Model constant yet
+    .maxTokens(16000L)
+    .addUserMessage(&quot;What is the capital of France?&quot;)
+    .build();
+
+Message response = client.messages().create(params);
+response.content().stream()
+    .flatMap(block -&gt; block.text().stream())
+    .forEach(textBlock -&gt; System.out.println(textBlock.text()));
+</code></pre>
+<hr />
+<h2>Thinking</h2>
+<p><strong>Adaptive thinking is the recommended mode for Claude 4.6+ models.</strong> Claude decides dynamically when and how much to think. The builder has a direct <code>.thinking(ThinkingConfigAdaptive)</code> overload - no manual union wrapping.</p>
+<blockquote>
+<p><strong>Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking (below). <code>ThinkingConfigEnabled.builder().budgetTokens(N)</code> is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<strong>Claude Opus 5:</strong> thinking is on by default - omitting <code>.thinking(...)</code> runs adaptive (<code>ThinkingConfigAdaptive</code> is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. <code>ThinkingConfigDisabled</code> is accepted only at effort <code>HIGH</code> or lower; pairing it with <code>XHIGH</code>/<code>MAX</code> returns a 400.
+<strong>Older models:</strong> Use <code>.thinking(ThinkingConfigEnabled.builder().budgetTokens(N).build())</code> (budget must be &lt; <code>maxTokens</code>, min 1024).</p>
+</blockquote>
+<pre><code class="language-java">import com.anthropic.models.messages.ContentBlock;
+import com.anthropic.models.messages.MessageCreateParams;
+import com.anthropic.models.messages.Model;
+import com.anthropic.models.messages.ThinkingConfigAdaptive;
+
+MessageCreateParams params = MessageCreateParams.builder()
+    .model(Model.CLAUDE_SONNET_4_6)
+    .maxTokens(16000L)
+    .thinking(ThinkingConfigAdaptive.builder().build())
+    .addUserMessage(&quot;Solve this step by step: 27 * 453&quot;)
+    .build();
+
+for (ContentBlock block : client.messages().create(params).content()) {
+    block.thinking().ifPresent(t -&gt; System.out.println(&quot;[thinking] &quot; + t.thinking()));
+    block.text().ifPresent(t -&gt; System.out.println(t.text()));
+}
+</code></pre>
+<p><code>ContentBlock</code> narrowing: <code>.thinking()</code> / <code>.text()</code> return <code>Optional&lt;T&gt;</code> - use <code>.ifPresent(...)</code> or <code>.stream().flatMap(...)</code>. Alternative: <code>isThinking()</code> / <code>asThinking()</code> boolean+unwrap pairs (throws on wrong variant).</p>
+<hr />
+<h2>Effort Parameter</h2>
+<p>Effort is nested inside <code>OutputConfig</code> - there is NO <code>.effort()</code> directly on <code>MessageCreateParams.Builder</code>.</p>
+<pre><code class="language-java">import com.anthropic.models.messages.OutputConfig;
+
+.outputConfig(OutputConfig.builder()
+    .effort(OutputConfig.Effort.HIGH)  // or LOW, MEDIUM, XHIGH, MAX
+    .build())
+</code></pre>
+<p>Combine with <code>Thinking = ThinkingConfigAdaptive</code> for cost-quality control.</p>
+<hr />
+<h2>Prompt Caching</h2>
+<p>System message as a list of <code>TextBlockParam</code> with <code>CacheControlEphemeral</code>. Use <code>.systemOfTextBlockParams(...)</code> - the plain <code>.system(String)</code> overload can't carry cache control. For placement patterns and the silent-invalidator audit checklist, see <code>shared/prompt-caching.md</code>.</p>
+<pre><code class="language-java">import com.anthropic.models.messages.TextBlockParam;
+import com.anthropic.models.messages.CacheControlEphemeral;
+
+.systemOfTextBlockParams(List.of(
+    TextBlockParam.builder()
+        .text(longSystemPrompt)
+        .cacheControl(CacheControlEphemeral.builder()
+            .ttl(CacheControlEphemeral.Ttl.TTL_1H)  // optional; also TTL_5M
+            .build())
+        .build()))
+</code></pre>
+<p>There's also a top-level <code>.cacheControl(CacheControlEphemeral)</code> on <code>MessageCreateParams.Builder</code> and on <code>Tool.builder()</code>.</p>
+<p>Verify hits via <code>response.usage().cacheCreationInputTokens()</code> / <code>response.usage().cacheReadInputTokens()</code>.</p>
+<hr />
+<h2>Token Counting</h2>
+<pre><code class="language-java">import com.anthropic.models.messages.MessageCountTokensParams;
+
+long tokens = client.messages().countTokens(
+    MessageCountTokensParams.builder()
+        .model(Model.CLAUDE_SONNET_4_6)
+        .addUserMessage(&quot;Hello&quot;)
+        .build()
+).inputTokens();
+</code></pre>
+<hr />
+<h2>PDF / Document Input</h2>
+<p><code>DocumentBlockParam</code> builder has source shortcuts. Wrap in <code>ContentBlockParam.ofDocument()</code> and pass via <code>.addUserMessageOfBlockParams()</code>.</p>
+<pre><code class="language-java">import com.anthropic.models.messages.DocumentBlockParam;
+import com.anthropic.models.messages.ContentBlockParam;
+import com.anthropic.models.messages.TextBlockParam;
+
+DocumentBlockParam doc = DocumentBlockParam.builder()
+    .source(Base64PdfSource.builder().data(base64String).build())
+    // or .source(UrlPdfSource.builder().url(&quot;https://...&quot;).build())
+    .title(&quot;My Document&quot;)        // optional
+    .build();
+</code></pre>
+<p>For <strong>Files API</strong> document references, use the beta path and beta types - see <code>files-api.md</code>: <code>BetaRequestDocumentBlock.builder().source(BetaFileDocumentSource.builder().fileId(id).build())</code>.</p>
+<pre><code class="language-java">.addUserMessageOfBlockParams(List.of(
+    ContentBlockParam.ofDocument(doc),
+    ContentBlockParam.ofText(TextBlockParam.builder().text(&quot;Summarize this&quot;).build())))
+</code></pre>
+<hr />
+<h2>Stop Details</h2>
+<p>When <code>stopReason()</code> is <code>"refusal"</code>, the response includes structured <code>stopDetails()</code>:</p>
+<pre><code class="language-java">response.stopDetails().ifPresent(details -&gt; {
+    System.out.println(&quot;Category: &quot; + details.category());
+    System.out.println(&quot;Explanation: &quot; + details.explanation());
+});
+</code></pre>
+<p><strong>Refusal fallbacks (Claude Fable 5.1) - opt in by default.</strong> Fallbacks are opt-in: without them a refused request simply stops. New <code>claude-fable-5-1</code> code should include the server-side <code>fallbacks</code> parameter (beta header <code>server-side-fallback-2026-06-01</code>, fallback model <code>claude-opus-4-8</code>, on the beta messages call) by default. The exact Java builder methods (and the client-side middleware for providers without server-side support) are not documented here - WebFetch the Java SDK repo's <code>examples/</code> from <code>shared/live-sources.md</code>; full semantics in <code>shared/model-migration.md</code> -&gt; Migrating to Claude Fable 5.1 -&gt; <code>refusal</code> stop reason.</p>
+<hr />
+<h2>Error Type</h2>
+<p><code>AnthropicServiceException</code> exposes <code>.errorType()</code> returning <code>Optional&lt;ErrorType&gt;</code> for programmatic error classification:</p>
+<pre><code class="language-java">try {
+    client.messages().create(params);
+} catch (AnthropicServiceException e) {
+    e.errorType().ifPresent(type -&gt;
+        System.out.println(&quot;Error type: &quot; + type)  // RATE_LIMIT_ERROR, OVERLOADED_ERROR, etc.
+    );
+}
+</code></pre>
+<hr /></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

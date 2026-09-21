@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>editing-and-extension · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/seedance-2-5-skill/references/editing-and-extension.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Editing and extension</h1>
+<p>Three jobs that all start from existing video. What they share: the source video
+is the authority, and the prompt's job is to say precisely <strong>what changes and what
+must not.</strong></p>
+<p>Editing and extension also lock some parameters automatically based on the input.
+Check <a href="capabilities.html">capabilities</a> before promising an aspect ratio or duration.</p>
+<h2>Editing an existing video</h2>
+<pre><code class="language-text">[Edit goal]
+Edit @video1. Within &lt;the whole video | a time range&gt;, &lt;add | remove | replace |
+adjust&gt; &lt;object, region, or audio category&gt;.
+
+[Source role]
+@video1 is the sole editing master. It defines &lt;characters, scene, actions,
+composition, camera movement, occlusion relationships, audio, event order&gt;.
+
+[Target material role]
+@image1 defines &lt;the specified attributes of the target&gt;.
+  Do not use &lt;its background, composition, or unrelated objects&gt;.
+
+[Edit scope]
+Modify only &lt;object, region, time range, or audio category&gt;.
+
+[Preserve]
+Keep &lt;everything that must not change&gt; from @video1.
+</code></pre>
+<p>Four things make this work:</p>
+<p><strong>Sole editing master.</strong> Say it. Without it, supplied reference images compete
+with the source for control of composition and staging.</p>
+<p><strong>Scope stated twice</strong> — once as what to change, once as what to keep. The second
+half is not redundant; it is what stops collateral changes.</p>
+<p><strong>Target count.</strong> When replacing an object, state how many exist:
+<code>exactly one white lamp appears throughout; replace only the original yellow one</code>.</p>
+<p><strong>Timeline inheritance.</strong> A replaced object inherits everything the original did:</p>
+<pre><code class="language-text">The white lamp inherits every appearance, rotation, hand occlusion, and exit of
+the original yellow lamp, including timing, path, and speed changes.
+</code></pre>
+<p>Without that line the replacement often appears correctly but moves differently.</p>
+<h3>Natural responses are allowed</h3>
+<p>Scope should not be so tight that the result looks pasted. When changing light
+colour, allow skin tone to respond: <code>change only the light colour on the right
+wall and the area it illuminates; allow the character's skin tone to respond
+naturally to the environmental light.</code></p>
+<h3>Audio can be edited separately</h3>
+<p>Dialogue, language, voice, music, and effects are independently addressable. Name
+the speaker or sound category, the change, and what must stay:</p>
+<pre><code class="language-text">Edit @video1. Remove only the original background music. Keep the character
+dialogue, lip sync, ambience, and action sound effects; preserve the visuals,
+camera treatment, and editing rhythm from @video1.
+</code></pre>
+<h2>Forward extension — after the source</h2>
+<p>Describe the boundary state first, then what happens next.</p>
+<pre><code class="language-text">Extend @video1 forward. The first frame of the extended segment continues directly
+from the last frame of @video1. Maintain continuity in &lt;subject pose and
+orientation&gt;, &lt;prop position&gt;, &lt;background and spatial relationships&gt;, &lt;camera
+position and composition&gt;, &lt;lighting&gt;, and &lt;motion direction&gt;.
+
+Then, &lt;the new action, event, camera treatment, or audio&gt;.
+
+Throughout, maintain &lt;character identity and clothing&gt;, &lt;key props&gt;, &lt;background
+layout&gt;, and &lt;axis of action&gt;. Keep each subject one continuous instance: do not
+duplicate or split it.
+</code></pre>
+<p>This is the context where seam defaults are correct: <strong>require natural
+continuation, smooth motion connection, no rigid cut, no objects appearing from
+nowhere.</strong> Those constraints belong here, not globally — see
+<a href="transitions.html">transitions</a>.</p>
+<h2>Backward extension — before the source</h2>
+<p>The direction that goes wrong, and the reason is specific.</p>
+<p>Describe the new content first, then state the source's <strong>first frame as the
+explicit end state</strong> of what you are generating:</p>
+<pre><code class="language-text">Extend @video1 backward. Before the source begins, &lt;the preceding action or event&gt;.
+
+The last frame of the extended segment connects naturally to the first frame of
+@video1: &lt;subject pose and orientation&gt;, &lt;prop position and state&gt;, &lt;other
+subjects' positions&gt;. Match the &lt;camera position and composition&gt;, &lt;lighting&gt;, and
+&lt;motion direction&gt; of @video1's first frame.
+
+&lt;Materials that should only appear after the source begins&gt; must not appear early
+in the backward extension.
+</code></pre>
+<p><strong>Writing only "then it connects to the source video" is the failure mode.</strong> Two
+things go wrong: characters or effects that belong <em>after</em> the source show up
+early, and the image keeps changing after it has already reached the target state.
+Both are fixed by treating the source's first frame as a stated end state — the
+same device that carries staged long video.</p>
+<p>The last line matters when references are supplied. Say which materials are for the
+preceding segment and which must wait.</p>
+<h2>Chaining</h2>
+<p>For an action longer than one request supports:</p>
+<ul>
+<li>Split where a stage genuinely ends, not mid-action.</li>
+<li>Feed the <strong>real generated tail</strong> forward — not the tail you intended.</li>
+<li>Generate chained segments in order; they depend on each other.</li>
+<li>Generate cut-separated shots independently and assemble in the edit.</li>
+</ul>
+<p>A chain is an alignment aid, not a guarantee of an invisible seam.</p>
+<h2>Review</h2>
+<p>Boundary frames connect <strong>visually</strong>. They are not pixel-identical splices, and
+expecting that leads to endless regeneration of acceptable output.</p>
+<p>Check, in order:</p>
+<ol>
+<li>Both sides of the boundary — pose, props, light, motion direction</li>
+<li>The complete extended segment, not only the seam</li>
+<li>Whether anything appeared early (backward extension) or persisted wrongly</li>
+<li>Audio continuity across the boundary; the extended segment's level may differ
+   slightly from the source</li>
+</ol>
+<p>Fix the failed segment only.</p>
+<h2>Related</h2>
+<ul>
+<li><a href="long-video.html">long video</a> — the end-state device this reuses</li>
+<li><a href="transitions.html">transitions</a> — where seam constraints belong</li>
+<li><a href="capabilities.html">capabilities</a> — what these tasks lock automatically</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>managed-agents · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/curl/managed-agents.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Managed Agents - cURL / Raw HTTP</h1>
+<p>Use these examples when the user needs raw HTTP requests or is working without an SDK.</p>
+<h2>Setup</h2>
+<pre><code class="language-bash">export ANTHROPIC_API_KEY=&quot;your-api-key&quot;
+
+# Common headers
+HEADERS=(
+  -H &quot;Content-Type: application/json&quot;
+  -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot;
+  -H &quot;anthropic-version: 2023-06-01&quot;
+  -H &quot;anthropic-beta: managed-agents-2026-04-01&quot;
+)
+</code></pre>
+<hr />
+<h2>Create an Environment</h2>
+<pre><code class="language-bash">curl -X POST https://api.anthropic.com/v1/environments \
+  &quot;${HEADERS[@]}&quot; \
+  -d '{
+    &quot;name&quot;: &quot;my-dev-env&quot;,
+    &quot;config&quot;: {
+      &quot;type&quot;: &quot;cloud&quot;,
+      &quot;networking&quot;: { &quot;type&quot;: &quot;unrestricted&quot; }
+    }
+  }'
+</code></pre>
+<h3>With restricted networking</h3>
+<pre><code class="language-bash">curl -X POST https://api.anthropic.com/v1/environments \
+  &quot;${HEADERS[@]}&quot; \
+  -d '{
+    &quot;name&quot;: &quot;restricted-env&quot;,
+    &quot;config&quot;: {
+      &quot;type&quot;: &quot;cloud&quot;,
+      &quot;networking&quot;: {
+        &quot;type&quot;: &quot;limited&quot;,
+        &quot;allow_package_managers&quot;: true,
+        &quot;allow_mcp_servers&quot;: true,
+        &quot;allowed_hosts&quot;: [&quot;api.example.com&quot;]
+      }
+    }
+  }'
+</code></pre>
+<hr />
+<h2>Create an Agent (required first step)</h2>
+<blockquote>
+<p>Warning: <strong>There is no inline agent config.</strong> Under <code>managed-agents-2026-04-01</code>, <code>model</code>/<code>system</code>/<code>tools</code> are top-level fields on <code>POST /v1/agents</code>, not on the session. Always create the agent first - the session only takes <code>"agent": {"type": "agent", "id": "..."}</code>.</p>
+</blockquote>
+<h3>Minimal</h3>
+<pre><code class="language-bash"># 1. Create the agent
+curl -X POST https://api.anthropic.com/v1/agents \
+  &quot;${HEADERS[@]}&quot; \
+  -d '{
+    &quot;name&quot;: &quot;Coding Assistant&quot;,
+    &quot;model&quot;: &quot;claude-opus-5&quot;,
+    &quot;tools&quot;: [{ &quot;type&quot;: &quot;agent_toolset_20260401&quot; }]
+  }'
+# -&gt; { &quot;id&quot;: &quot;agent_abc123&quot;, ... }
+
+# 2. Start a session
+curl -X POST https://api.anthropic.com/v1/sessions \
+  &quot;${HEADERS[@]}&quot; \
+  -d '{
+    &quot;agent&quot;: { &quot;type&quot;: &quot;agent&quot;, &quot;id&quot;: &quot;agent_abc123&quot;, &quot;version&quot;: 1 },
+    &quot;environment_id&quot;: &quot;env_abc123&quot;
+  }'
+# -&gt; { &quot;id&quot;: &quot;sesn_abc123&quot;, ... }
+# Trace: https://platform.claude.com/workspaces/default/sessions/sesn_abc123  (swap 'default' for your workspace ID if the API key is not in the Default workspace)
+</code></pre>
+<h3>With system prompt, custom tools, and GitHub repo</h3>
+<pre><code class="language-bash"># 1. Create the agent
+curl -X POST https://api.anthropic.com/v1/agents \
+  &quot;${HEADERS[@]}&quot; \
+  -d '{
+    &quot;name&quot;: &quot;Code Reviewer&quot;,
+    &quot;model&quot;: &quot;claude-opus-5&quot;,
+    &quot;system&quot;: &quot;You are a senior code reviewer. Be thorough and constructive.&quot;,
+    &quot;tools&quot;: [
+      { &quot;type&quot;: &quot;agent_toolset_20260401&quot; },
+      {
+        &quot;type&quot;: &quot;custom&quot;,
+        &quot;name&quot;: &quot;run_linter&quot;,
+        &quot;description&quot;: &quot;Run the project linter on a file&quot;,
+        &quot;input_schema&quot;: {
+          &quot;type&quot;: &quot;object&quot;,
+          &quot;properties&quot;: {
+            &quot;file_path&quot;: { &quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Path to lint&quot; }
+          },
+          &quot;required&quot;: [&quot;file_path&quot;]
+        }
+      }
+    ]
+  }'
+
+# 2. Start a session with the repo mounted
+curl -X POST https://api.anthropic.com/v1/sessions \
+  &quot;${HEADERS[@]}&quot; \
+  -d '{
+    &quot;agent&quot;: { &quot;type&quot;: &quot;agent&quot;, &quot;id&quot;: &quot;agent_abc123&quot;, &quot;version&quot;: 1 },
+    &quot;environment_id&quot;: &quot;env_abc123&quot;,
+    &quot;title&quot;: &quot;Code review session&quot;,
+    &quot;resources&quot;: [
+      {
+        &quot;type&quot;: &quot;github_repository&quot;,
+        &quot;url&quot;: &quot;https://github.com/owner/repo&quot;,
+        &quot;mount_path&quot;: &quot;/workspace/repo&quot;,
+        &quot;authorization_token&quot;: &quot;ghp_...&quot;,
+        &quot;branch&quot;: &quot;feature-branch&quot;
+      }
+    ]
+  }'
+</code></pre>
+<h3>With a session budget</h3>
+<pre><code class="language-bash"># Create a session with a hard $25.00 spend cap (list-priced; USD only; create-only).
+# amount is in minor units (cents) as an integer string: &quot;2500&quot; = $25.00
+curl -X POST https://api.anthropic.com/v1/sessions \
+  &quot;${HEADERS[@]}&quot; \
+  -d '{
+    &quot;agent&quot;: { &quot;type&quot;: &quot;agent&quot;, &quot;id&quot;: &quot;agent_abc123&quot; },
+    &quot;environment_id&quot;: &quot;env_abc123&quot;,
+    &quot;budget&quot;: {
+      &quot;type&quot;: &quot;limit&quot;,
+      &quot;max_list_cost&quot;: { &quot;amount&quot;: &quot;2500&quot;, &quot;currency&quot;: &quot;USD&quot; }
+    }
+  }'
+
+# Change the cap - higher or lower, but it must exceed the consumed list cost.
+# An accepted update resumes work paused at budget_reached
+curl -X POST https://api.anthropic.com/v1/sessions/$SESSION_ID \
+  &quot;${HEADERS[@]}&quot; \
+  -d '{ &quot;budget&quot;: { &quot;type&quot;: &quot;limit&quot;, &quot;max_list_cost&quot;: { &quot;amount&quot;: &quot;4000&quot;, &quot;currency&quot;: &quot;USD&quot; } } }'
+
+# Remove the cap entirely - one-way; a removed budget can never be re-added
+curl -X POST https://api.anthropic.com/v1/sessions/$SESSION_ID \
+  &quot;${HEADERS[@]}&quot; \
+  -d '{ &quot;budget&quot;: null }'
+</code></pre>
+<p>See <code>shared/managed-agents-core.md</code> § Session budgets for list-cost composition, the settle-event allowlist at the cap, and multiagent semantics.</p>
+<hr />
+<h2>Send a User Message</h2>
+<pre><code class="language-bash">curl -X POST https://api.anthropic.com/v1/sessions/$SESSION_ID/events \
+  &quot;${HEADERS[@]}&quot; \
+  -d '{
+    &quot;events&quot;: [
+      {
+        &quot;type&quot;: &quot;user.message&quot;,
+        &quot;content&quot;: [{ &quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;Review the auth module for security issues&quot; }]
+      }
+    ]
+  }'
+</code></pre>
+<hr />
+<h2>Stream Events (SSE)</h2>
+<pre><code class="language-bash">curl -N https://api.anthropic.com/v1/sessions/$SESSION_ID/events/stream \
+  &quot;${HEADERS[@]}&quot;
+</code></pre>
+<p>Response format:</p>
+<pre><code>event: session.status_running
+data: {&quot;type&quot;:&quot;session.status_running&quot;,&quot;id&quot;:&quot;sevt_...&quot;,&quot;processed_at&quot;:&quot;...&quot;}
+
+event: agent.message
+data: {&quot;type&quot;:&quot;agent.message&quot;,&quot;id&quot;:&quot;sevt_...&quot;,&quot;content&quot;:[{&quot;type&quot;:&quot;text&quot;,&quot;text&quot;:&quot;I'll review...&quot;}],&quot;processed_at&quot;:&quot;...&quot;}
+
+event: session.status_idle
+data: {&quot;type&quot;:&quot;session.status_idle&quot;,&quot;id&quot;:&quot;sevt_...&quot;,&quot;processed_at&quot;:&quot;...&quot;}
+</code></pre>
+<hr />
+<h2>Poll Events</h2>
+<pre><code class="language-bash"># Get all events
+curl https://api.anthropic.com/v1/sessions/$SESSION_ID/events \
+  &quot;${HEADERS[@]}&quot;
+
+# Paginated - get next page of events
+curl &quot;https://api.anthropic.com/v1/sessions/$SESSION_ID/events?page=page_abc123&quot; \
+  &quot;${HEADERS[@]}&quot;
+</code></pre>
+<hr />
+<h2>Provide Custom Tool Result</h2>
+<p>When the agent calls a custom tool, send the result back:</p>
+<pre><code class="language-bash">curl -X POST https://api.anthropic.com/v1/sessions/$SESSION_ID/events \
+  &quot;${HEADERS[@]}&quot; \
+  -d '{
+    &quot;events&quot;: [
+      {
+        &quot;type&quot;: &quot;user.custom_tool_result&quot;,
+        &quot;custom_tool_use_id&quot;: &quot;sevt_abc123&quot;,
+        &quot;content&quot;: [{ &quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;No linting errors found.&quot; }]
+      }
+    ]
+  }'
+</code></pre>
+<hr />
+<h2>Interrupt a Running Session</h2>
+<pre><code class="language-bash">curl -X POST https://api.anthropic.com/v1/sessions/$SESSION_ID/events \
+  &quot;${HEADERS[@]}&quot; \
+  -d '{
+    &quot;events&quot;: [
+      {
+        &quot;type&quot;: &quot;user.interrupt&quot;
+      }
+    ]
+  }'
+</code></pre>
+<hr />
+<h2>Get Session Details</h2>
+<pre><code class="language-bash">curl https://api.anthropic.com/v1/sessions/$SESSION_ID \
+  &quot;${HEADERS[@]}&quot;
+</code></pre>
+<hr />
+<h2>List Sessions</h2>
+<pre><code class="language-bash">curl https://api.anthropic.com/v1/sessions \
+  &quot;${HEADERS[@]}&quot;
+</code></pre>
+<hr />
+<h2>Delete a Session</h2>
+<pre><code class="language-bash">curl -X DELETE https://api.anthropic.com/v1/sessions/$SESSION_ID \
+  &quot;${HEADERS[@]}&quot;
+</code></pre>
+<hr />
+<h2>Upload a File</h2>
+<pre><code class="language-bash">curl -X POST https://api.anthropic.com/v1/files \
+  -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
+  -H &quot;anthropic-version: 2023-06-01&quot; \
+  -H &quot;anthropic-beta: files-api-2025-04-14&quot; \
+  -F &quot;file=@path/to/file.txt&quot; \
+  -F &quot;purpose=agent&quot;
+</code></pre>
+<hr />
+<h2>List and Download Session Files</h2>
+<p>List files the agent wrote to <code>/mnt/session/outputs/</code> during a session, then download them.</p>
+<pre><code class="language-bash"># List files associated with a session
+curl &quot;https://api.anthropic.com/v1/files?scope_id=$SESSION_ID&quot; \
+  -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
+  -H &quot;anthropic-version: 2023-06-01&quot; \
+  -H &quot;anthropic-beta: files-api-2025-04-14,managed-agents-2026-04-01&quot;
+
+# Download a specific file
+curl &quot;https://api.anthropic.com/v1/files/$FILE_ID/content&quot; \
+  -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
+  -H &quot;anthropic-version: 2023-06-01&quot; \
+  -H &quot;anthropic-beta: files-api-2025-04-14,managed-agents-2026-04-01&quot; \
+  -o downloaded_file.txt
+</code></pre>
+<hr />
+<h2>List Agents</h2>
+<pre><code class="language-bash">curl https://api.anthropic.com/v1/agents \
+  &quot;${HEADERS[@]}&quot;
+</code></pre>
+<hr />
+<h2>MCP Server Integration</h2>
+<pre><code class="language-bash"># 1. Agent declares MCP server (no auth here - auth goes in a vault)
+curl -X POST https://api.anthropic.com/v1/agents \
+  &quot;${HEADERS[@]}&quot; \
+  -d '{
+    &quot;name&quot;: &quot;MCP Agent&quot;,
+    &quot;model&quot;: &quot;claude-opus-5&quot;,
+    &quot;mcp_servers&quot;: [
+      { &quot;type&quot;: &quot;url&quot;, &quot;name&quot;: &quot;my-tools&quot;, &quot;url&quot;: &quot;https://my-mcp-server.example.com/sse&quot; }
+    ],
+    &quot;tools&quot;: [
+      { &quot;type&quot;: &quot;agent_toolset_20260401&quot; },
+      { &quot;type&quot;: &quot;mcp_toolset&quot;, &quot;mcp_server_name&quot;: &quot;my-tools&quot; }
+    ]
+  }'
+
+# 2. Session attaches vault containing credentials for that MCP server URL
+curl -X POST https://api.anthropic.com/v1/sessions \
+  &quot;${HEADERS[@]}&quot; \
+  -d '{
+    &quot;agent&quot;: &quot;agent_abc123&quot;,
+    &quot;environment_id&quot;: &quot;env_abc123&quot;,
+    &quot;vault_ids&quot;: [&quot;vlt_abc123&quot;]
+  }'
+</code></pre>
+<p>See <code>shared/managed-agents-tools.md</code> §Vaults for creating vaults and adding credentials.</p>
+<hr />
+<h2>Tool Configuration</h2>
+<pre><code class="language-bash">curl -X POST https://api.anthropic.com/v1/agents \
+  &quot;${HEADERS[@]}&quot; \
+  -d '{
+    &quot;name&quot;: &quot;Restricted Agent&quot;,
+    &quot;model&quot;: &quot;claude-opus-5&quot;,
+    &quot;tools&quot;: [
+      {
+        &quot;type&quot;: &quot;agent_toolset_20260401&quot;,
+        &quot;default_config&quot;: { &quot;enabled&quot;: true },
+        &quot;configs&quot;: [
+          { &quot;name&quot;: &quot;bash&quot;, &quot;enabled&quot;: false }
+        ]
+      }
+    ]
+  }'
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

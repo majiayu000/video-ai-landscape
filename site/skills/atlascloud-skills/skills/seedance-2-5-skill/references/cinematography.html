@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cinematography · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/seedance-2-5-skill/references/cinematography.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Cinematography vocabulary: camera, light, and composition</h1>
+<p>Use this vocabulary to describe how a shot is filmed. It is a creative library,
+not an API parameter list or an outcome guarantee.</p>
+<h2>Working rules</h2>
+<ol>
+<li>Pick one primary movement per shot. Composite movement is valid when
+   direction, subject relation, and speed form one intention.</li>
+<li>Use <code>Shot 1</code>, <code>Shot 2</code>, and <code>Shot 3</code> for storyboard order; set duration in
+   provider controls instead of writing a timestamp schedule in the prompt.</li>
+<li>Tight close-ups combined with large rotations are less stable than wider
+   framing or a planned cut.</li>
+<li>Choose the frame ratio and safe areas for the user's actual delivery context.</li>
+</ol>
+<h2>Uncommon terms: keep the term, add the description</h2>
+<p>Terms whose recognition varies — niche vocabulary, terms with inconsistent
+industry usage, anything named after a film, director, or platform trend — get
+written twice:</p>
+<pre><code class="language-text">&lt;term&gt; + &lt;target subject&gt; + &lt;visible change&gt; + &lt;foreground/background relation&gt;
+      + &lt;direction or speed&gt;
+</code></pre>
+<pre><code class="language-text">rack focus: shift focus from the foreground leaves to the person behind them.
+  The leaves go soft while the face resolves from soft to sharp.
+
+bullet time: freeze the moment bat meets ball; the camera orbits clockwise
+  around the contact point while debris hangs in the air.
+</code></pre>
+<p>A model that knows the term takes the shortcut; one that does not follows the
+description. The same prompt then works on both, which is why this is preferable
+to maintaining a per-model vocabulary list.</p>
+<p><strong>Usually safe unqualified:</strong> shot scales, the basic moves in the table below,
+basic positions (low angle, overhead, first-person).</p>
+<p><strong>Usually needs the description:</strong> dolly zoom, bullet time, speed ramp, bounce
+ramp, rack focus, whip-pan transition, match cut.</p>
+<p>Aperture, focal length, and shutter values are allowed, but the intended visible
+result controls more reliably than a number alone.</p>
+<h2>Camera</h2>
+<h3>Shot scale</h3>
+<table>
+<thead>
+<tr>
+<th>Scale</th>
+<th>What it shows</th>
+<th>Typical use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Extreme close-up</td>
+<td>Eye, mouth, droplet, texture</td>
+<td>Tension or a key material detail</td>
+</tr>
+<tr>
+<td>Close-up</td>
+<td>Face or one object</td>
+<td>Emotion, decision, product texture</td>
+</tr>
+<tr>
+<td>Medium close-up</td>
+<td>Head and shoulders</td>
+<td>Dialogue and expression</td>
+</tr>
+<tr>
+<td>Medium shot</td>
+<td>Waist-up subject</td>
+<td>Everyday action and expression</td>
+</tr>
+<tr>
+<td>Wide shot</td>
+<td>Full person and setting</td>
+<td>Space and full-body action</td>
+</tr>
+<tr>
+<td>Extreme wide / establishing shot</td>
+<td>Whole environment</td>
+<td>Opening tone, scale, or release</td>
+</tr>
+</tbody>
+</table>
+<p>Move wide to close to concentrate attention; move close to wide to release or
+finish. Open with a scale that reads immediately, such as a strong detail or
+an establishing shot with clear scale.</p>
+<h3>Camera angle</h3>
+<ul>
+<li>Eye level: objective, equal, natural.</li>
+<li>Low angle: power, heroism, pressure.</li>
+<li>High angle: vulnerability, overview, observation.</li>
+<li>Top-down: pattern, layout, preparation, spatial explanation.</li>
+<li>First-person view: participation and immersion.</li>
+</ul>
+<h3>Movement</h3>
+<table>
+<thead>
+<tr>
+<th>Movement</th>
+<th>Effect</th>
+<th>Best use</th>
+<th>Caution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Slow push-in</td>
+<td>Focus and rising emotion</td>
+<td>Reveal, decision, key detail</td>
+<td>Avoid combining with a large orbit</td>
+</tr>
+<tr>
+<td>Slow pull-out</td>
+<td>Release and closure</td>
+<td>Ending, spatial reveal</td>
+<td>Keep the subject readable</td>
+</tr>
+<tr>
+<td>Smooth lateral move</td>
+<td>Smooth display or accompaniment</td>
+<td>Product sweep, side-following walk</td>
+<td>Avoid unexplained speed changes</td>
+</tr>
+<tr>
+<td>Tracking shot</td>
+<td>Motion and immersion</td>
+<td>Run, walk, drive</td>
+<td>Excessive handheld shake can distract</td>
+</tr>
+<tr>
+<td>Pan or tilt</td>
+<td>Guide attention and reveal</td>
+<td>Move from A to B</td>
+<td>Fast moves can blur</td>
+</tr>
+<tr>
+<td>Crane move</td>
+<td>Scale and emotional rise/fall</td>
+<td>Opening lift, ending descent</td>
+<td>Preserve a clear subject anchor</td>
+</tr>
+<tr>
+<td>Smooth orbit</td>
+<td>Three-dimensional display</td>
+<td>Product or medium/wide character</td>
+<td>Avoid large close-up face rotations</td>
+</tr>
+<tr>
+<td>Handheld drift</td>
+<td>Documentary tension or realism</td>
+<td>Street, suspense, lived-in scene</td>
+<td>Avoid for polished product work</td>
+</tr>
+<tr>
+<td>Static camera</td>
+<td>Stability and observation</td>
+<td>Dialogue, still life, atmosphere</td>
+<td>Give a person a subtle natural action</td>
+</tr>
+</tbody>
+</table>
+<p>Examples of coherent composite movement: <code>track the person with a steady
+rightward lateral move</code>; <code>slowly push in while rising slightly to reveal the
+subject</code>. Do not stack unrelated push-ins, orbits, and pans without a shared
+purpose.</p>
+<h3>Lens, depth, and transitions</h3>
+<ul>
+<li>Shallow depth of field: isolates the subject and gives texture or intimacy.</li>
+<li>Deep focus: keeps environment and subject clear for documentary or landscape.</li>
+<li>Wide lens feeling: spatial energy, perspective, slight distortion.</li>
+<li>Long-lens feeling: compressed space and background separation.</li>
+<li>Hard cut: rhythm, energy, process montage.</li>
+<li>Dissolve: genuine change of time or place.</li>
+<li>One take: one continuous movement chain with compatible segment boundaries.</li>
+</ul>
+<h2>Lighting</h2>
+<h3>Lighting setups</h3>
+<ul>
+<li>Three-point lighting: key, fill, and rim; a reliable dimensional baseline.</li>
+<li>Rembrandt light: a 45-degree side key with a small cheek triangle; dramatic portraiture.</li>
+<li>Butterfly light: high frontal key; beauty and fashion.</li>
+<li>Backlit silhouette: light behind the subject; atmosphere, emotion, epic scale.</li>
+<li>Low key: mostly dark with controlled highlights; suspense, force, luxury.</li>
+<li>High key: bright, low-shadow image; clean, fresh, commerce.</li>
+<li>Practical light: a visible source such as lamp, stove, neon, or window; natural atmosphere.</li>
+</ul>
+<p>Use one or two visual anchors in a video prompt: for example, <code>warm practical
+light from the stove, soft rim light</code> or <code>cool neon backlight with a magenta
+accent</code>. Keep key direction and warm/cool relationships consistent across shots
+that share one place and time.</p>
+<h3>Palette and mood</h3>
+<table>
+<thead>
+<tr>
+<th>Palette</th>
+<th>Visual anchor</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Golden hour</td>
+<td>Warm key, deep-blue shadows</td>
+<td>Warmth, romance, final release</td>
+</tr>
+<tr>
+<td>Blue hour</td>
+<td>Cool environment, small warm points</td>
+<td>Quiet, solitude, night opening</td>
+</tr>
+<tr>
+<td>Noon hard light</td>
+<td>Bright highlights, hard shadows</td>
+<td>Reality, sport, documentary</td>
+</tr>
+<tr>
+<td>Overcast soft light</td>
+<td>Diffuse grey-white light, low saturation</td>
+<td>Poetic, subdued, gentle</td>
+</tr>
+<tr>
+<td>Neon night</td>
+<td>Magenta and cyan contrast</td>
+<td>Cyber city, fashion, nightlife</td>
+</tr>
+<tr>
+<td>Warm kitchen</td>
+<td>Yellow practical light, wood brown</td>
+<td>Food, comfort, home</td>
+</tr>
+<tr>
+<td>Cool technology</td>
+<td>Cool white key, restrained brand colour</td>
+<td>Clean product or finance</td>
+</tr>
+</tbody>
+</table>
+<h2>Composition</h2>
+<ul>
+<li>Rule of thirds: stable general-purpose placement.</li>
+<li>Central symmetry: ritual, product hero, confrontation.</li>
+<li>Leading lines: direct attention with architecture, props, or light.</li>
+<li>Frame within a frame: use doorways, windows, or foreground objects for depth.</li>
+<li>Diagonal or triangular arrangement: movement or stable multi-subject layout.</li>
+<li>Foreground, midground, and background: plan three layers to avoid a flat image.</li>
+<li>One visual centre: one brightest, sharpest, or most active focal point.</li>
+<li>Negative space: leave room when simplicity and focus are the goal.</li>
+</ul>
+<p>For a key product moment, place the decisive detail clearly in the composition,
+give it a compatible light cue, and use a restrained push-in. Never impose a
+single frame ratio or universal safe-area percentage; determine both from the
+user's intended delivery context.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

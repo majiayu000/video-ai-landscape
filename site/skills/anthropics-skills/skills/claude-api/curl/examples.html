@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>examples · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/curl/examples.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Claude API - cURL / Raw HTTP</h1>
+<p>Use these examples when the user needs raw HTTP requests or is working in a language without an official SDK.</p>
+<h2>Setup</h2>
+<pre><code class="language-bash">export ANTHROPIC_API_KEY=&quot;your-api-key&quot;
+</code></pre>
+<hr />
+<h2>Basic Message Request</h2>
+<pre><code class="language-bash">curl https://api.anthropic.com/v1/messages \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
+  -H &quot;anthropic-version: 2023-06-01&quot; \
+  -d '{
+    &quot;model&quot;: &quot;claude-opus-5&quot;,
+    &quot;max_tokens&quot;: 16000,
+    &quot;messages&quot;: [
+      {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is the capital of France?&quot;}
+    ]
+  }'
+</code></pre>
+<h3>Parsing the response</h3>
+<p>Use <code>jq</code> to extract fields from the JSON response. Do not use <code>grep</code>/<code>sed</code> -
+JSON strings can contain any character and regex parsing will break on quotes,
+escapes, or multi-line content.</p>
+<pre><code class="language-bash"># Capture the response, then extract fields
+response=$(curl -s https://api.anthropic.com/v1/messages \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
+  -H &quot;anthropic-version: 2023-06-01&quot; \
+  -d '{&quot;model&quot;:&quot;claude-opus-5&quot;,&quot;max_tokens&quot;:16000,&quot;messages&quot;:[{&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:&quot;Hello&quot;}]}')
+
+# Print the first text block (-r strips the JSON quotes)
+echo &quot;$response&quot; | jq -r '.content[0].text'
+
+# Read usage fields
+input_tokens=$(echo &quot;$response&quot; | jq -r '.usage.input_tokens')
+output_tokens=$(echo &quot;$response&quot; | jq -r '.usage.output_tokens')
+
+# Read stop reason (for tool-use loops)
+stop_reason=$(echo &quot;$response&quot; | jq -r '.stop_reason')
+
+# Extract all text blocks (content is an array; filter to type==&quot;text&quot;)
+echo &quot;$response&quot; | jq -r '.content[] | select(.type == &quot;text&quot;) | .text'
+</code></pre>
+<hr />
+<h2>Streaming (SSE)</h2>
+<pre><code class="language-bash">curl https://api.anthropic.com/v1/messages \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
+  -H &quot;anthropic-version: 2023-06-01&quot; \
+  -d '{
+    &quot;model&quot;: &quot;claude-opus-5&quot;,
+    &quot;max_tokens&quot;: 64000,
+    &quot;stream&quot;: true,
+    &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Write a haiku&quot;}]
+  }'
+</code></pre>
+<p>The response is a stream of Server-Sent Events:</p>
+<pre><code>event: message_start
+data: {&quot;type&quot;:&quot;message_start&quot;,&quot;message&quot;:{&quot;id&quot;:&quot;msg_...&quot;,&quot;type&quot;:&quot;message&quot;,...}}
+
+event: content_block_start
+data: {&quot;type&quot;:&quot;content_block_start&quot;,&quot;index&quot;:0,&quot;content_block&quot;:{&quot;type&quot;:&quot;text&quot;,&quot;text&quot;:&quot;&quot;}}
+
+event: content_block_delta
+data: {&quot;type&quot;:&quot;content_block_delta&quot;,&quot;index&quot;:0,&quot;delta&quot;:{&quot;type&quot;:&quot;text_delta&quot;,&quot;text&quot;:&quot;Hello&quot;}}
+
+event: content_block_stop
+data: {&quot;type&quot;:&quot;content_block_stop&quot;,&quot;index&quot;:0}
+
+event: message_delta
+data: {&quot;type&quot;:&quot;message_delta&quot;,&quot;delta&quot;:{&quot;stop_reason&quot;:&quot;end_turn&quot;},&quot;usage&quot;:{&quot;output_tokens&quot;:12}}
+
+event: message_stop
+data: {&quot;type&quot;:&quot;message_stop&quot;}
+</code></pre>
+<hr />
+<h2>Tool Use</h2>
+<pre><code class="language-bash">curl https://api.anthropic.com/v1/messages \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
+  -H &quot;anthropic-version: 2023-06-01&quot; \
+  -d '{
+    &quot;model&quot;: &quot;claude-opus-5&quot;,
+    &quot;max_tokens&quot;: 16000,
+    &quot;tools&quot;: [{
+      &quot;name&quot;: &quot;get_weather&quot;,
+      &quot;description&quot;: &quot;Get current weather for a location&quot;,
+      &quot;input_schema&quot;: {
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;properties&quot;: {
+          &quot;location&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;City name&quot;}
+        },
+        &quot;required&quot;: [&quot;location&quot;]
+      }
+    }],
+    &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is the weather in Paris?&quot;}]
+  }'
+</code></pre>
+<p>When Claude responds with a <code>tool_use</code> block, send the result back:</p>
+<pre><code class="language-bash">curl https://api.anthropic.com/v1/messages \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
+  -H &quot;anthropic-version: 2023-06-01&quot; \
+  -d '{
+    &quot;model&quot;: &quot;claude-opus-5&quot;,
+    &quot;max_tokens&quot;: 16000,
+    &quot;tools&quot;: [{
+      &quot;name&quot;: &quot;get_weather&quot;,
+      &quot;description&quot;: &quot;Get current weather for a location&quot;,
+      &quot;input_schema&quot;: {
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;properties&quot;: {
+          &quot;location&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;City name&quot;}
+        },
+        &quot;required&quot;: [&quot;location&quot;]
+      }
+    }],
+    &quot;messages&quot;: [
+      {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is the weather in Paris?&quot;},
+      {&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: [
+        {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;Let me check the weather.&quot;},
+        {&quot;type&quot;: &quot;tool_use&quot;, &quot;id&quot;: &quot;toolu_abc123&quot;, &quot;name&quot;: &quot;get_weather&quot;, &quot;input&quot;: {&quot;location&quot;: &quot;Paris&quot;}}
+      ]},
+      {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: [
+        {&quot;type&quot;: &quot;tool_result&quot;, &quot;tool_use_id&quot;: &quot;toolu_abc123&quot;, &quot;content&quot;: &quot;72°F and sunny&quot;}
+      ]}
+    ]
+  }'
+</code></pre>
+<hr />
+<h2>Prompt Caching</h2>
+<p>Put <code>cache_control</code> on the last block of the stable prefix. See <code>shared/prompt-caching.md</code> for placement patterns and the silent-invalidator audit checklist.</p>
+<pre><code class="language-bash">curl https://api.anthropic.com/v1/messages \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
+  -H &quot;anthropic-version: 2023-06-01&quot; \
+  -d '{
+    &quot;model&quot;: &quot;claude-opus-5&quot;,
+    &quot;max_tokens&quot;: 16000,
+    &quot;system&quot;: [
+      {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;&lt;large shared prompt...&gt;&quot;, &quot;cache_control&quot;: {&quot;type&quot;: &quot;ephemeral&quot;}}
+    ],
+    &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Summarize the key points&quot;}]
+  }'
+</code></pre>
+<p>For 1-hour TTL: <code>"cache_control": {"type": "ephemeral", "ttl": "1h"}</code>. Top-level <code>"cache_control"</code> on the request body auto-places on the last cacheable block. Verify hits via the response <code>usage.cache_creation_input_tokens</code> / <code>usage.cache_read_input_tokens</code> fields.</p>
+<hr />
+<h2>Extended Thinking</h2>
+<blockquote>
+<p><strong>Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking. <code>budget_tokens</code> is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<strong>Claude Opus 5:</strong> thinking is on by default - omitting <code>"thinking"</code> runs adaptive (<code>{"type": "adaptive"}</code> is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. <code>{"type": "disabled"}</code> is accepted only at effort <code>high</code> or lower; pairing it with <code>xhigh</code>/<code>max</code> returns a 400.
+<strong>Older models:</strong> Use <code>"type": "enabled"</code> with <code>"budget_tokens": N</code> (must be &lt; <code>max_tokens</code>, min 1024).</p>
+</blockquote>
+<pre><code class="language-bash"># Fable 5 / Claude Opus 5 / Opus 4.8 / 4.7 / 4.6: adaptive thinking (recommended)
+curl https://api.anthropic.com/v1/messages \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
+  -H &quot;anthropic-version: 2023-06-01&quot; \
+  -d '{
+    &quot;model&quot;: &quot;claude-opus-5&quot;,
+    &quot;max_tokens&quot;: 16000,
+    &quot;thinking&quot;: {
+      &quot;type&quot;: &quot;adaptive&quot;,
+      &quot;display&quot;: &quot;summarized&quot;
+    },
+    &quot;output_config&quot;: {
+      &quot;effort&quot;: &quot;high&quot;
+    },
+    &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Solve this step by step...&quot;}]
+  }'
+</code></pre>
+<hr />
+<h2>Refusal Fallbacks (Claude Fable 5.1) - opt in by default</h2>
+<p>On <code>claude-fable-5-1</code>, safety classifiers may decline a request (HTTP 200 with <code>stop_reason: "refusal"</code>). Fallbacks are <strong>opt-in</strong>: without them the request simply stops. Include the <code>fallbacks</code> parameter and its beta header by default - on a policy decline the API re-runs the same request on the fallback model inside the same call. A decline before any output isn't billed (a mid-stream decline bills the streamed partial); the rescue bills at the fallback model's own rates.</p>
+<pre><code class="language-bash">response=$(curl -s https://api.anthropic.com/v1/messages \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
+  -H &quot;anthropic-version: 2023-06-01&quot; \
+  -H &quot;anthropic-beta: server-side-fallback-2026-06-01&quot; \
+  -d '{
+    &quot;model&quot;: &quot;claude-fable-5-1&quot;,
+    &quot;max_tokens&quot;: 16000,
+    &quot;fallbacks&quot;: [{&quot;model&quot;: &quot;claude-opus-4-8&quot;}],
+    &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Hello&quot;}]
+  }')
+
+# Which model produced the message
+echo &quot;$response&quot; | jq -r '.model'
+
+# Refusal on the final response means the whole chain refused
+echo &quot;$response&quot; | jq -r '.stop_reason'
+
+# Switch points: one fallback block per model that ran and declined this turn
+echo &quot;$response&quot; | jq -r '.content[] | select(.type == &quot;fallback&quot;) | &quot;\(.from.model) declined; \(.to.model) continued&quot;'
+
+# Served-by signal - covers sticky turns, which carry no fallback block.
+# Pair with stop_reason: the fallback model can itself refuse.
+if [ &quot;$(echo &quot;$response&quot; | jq -r '.stop_reason')&quot; != &quot;refusal&quot; ] &amp;&amp; \
+   echo &quot;$response&quot; | jq -e '[.usage.iterations[]? | select(.type == &quot;fallback_message&quot;)] | length &gt; 0' &gt; /dev/null; then
+  echo &quot;fallback model served this turn&quot;
+fi
+</code></pre>
+<p>The header must be exactly <code>server-side-fallback-2026-06-01</code> <strong>for this array form</strong>; the newer <code>fallbacks: "default"</code> scalar form uses <code>server-side-fallback-2026-07-01</code> instead (see <code>shared/model-migration.md</code> -&gt; Migrating to Claude Opus 5 -&gt; New API features), and pairing either header with the other form returns a 400. The parameter is rejected on the Batches API and unavailable on Amazon Bedrock, Vertex AI, and Microsoft Foundry. Full semantics (sticky routing, billing, streaming, echoing fallback turns back): <code>shared/model-migration.md</code> -&gt; Migrating to Claude Fable 5.1 -&gt; <code>refusal</code> stop reason.</p>
+<hr />
+<h2>Required Headers</h2>
+<table>
+<thead>
+<tr>
+<th>Header</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Content-Type</code></td>
+<td><code>application/json</code></td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>x-api-key</code></td>
+<td>Your API key</td>
+<td>Authentication</td>
+</tr>
+<tr>
+<td><code>anthropic-version</code></td>
+<td><code>2023-06-01</code></td>
+<td>API version</td>
+</tr>
+<tr>
+<td><code>anthropic-beta</code></td>
+<td>Beta feature IDs</td>
+<td>Required for beta features</td>
+</tr>
+</tbody>
+</table></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

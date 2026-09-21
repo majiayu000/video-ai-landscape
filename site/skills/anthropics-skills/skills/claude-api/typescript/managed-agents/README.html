@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>README · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/typescript/managed-agents/README.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Managed Agents - TypeScript</h1>
+<blockquote>
+<p><strong>Bindings not shown here:</strong> This README covers the most common managed-agents flows for TypeScript. If you need a class, method, namespace, field, or behavior that isn't shown, WebFetch the TypeScript SDK repo <strong>or the relevant docs page</strong> from <code>shared/live-sources.md</code> rather than guess. Do not extrapolate from cURL shapes or another language's SDK.</p>
+<p><strong>Agents are persistent - create once, reference by ID.</strong> Store the agent ID returned by <code>agents.create</code> and pass it to every subsequent <code>sessions.create</code>; do not call <code>agents.create</code> in the request path. <strong>Recommended:</strong> define agents and environments as version-controlled YAML applied with the <code>ant</code> CLI - see <code>shared/anthropic-cli.md</code> (its live-docs URL is in <code>shared/live-sources.md</code>). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.</p>
+</blockquote>
+<h2>Installation</h2>
+<pre><code class="language-bash">npm install @anthropic-ai/sdk
+</code></pre>
+<h2>Client Initialization</h2>
+<pre><code class="language-typescript">import Anthropic from &quot;@anthropic-ai/sdk&quot;;
+
+// Default - resolves credentials from the environment:
+// ANTHROPIC_API_KEY, or ANTHROPIC_AUTH_TOKEN, or an `ant auth login` profile.
+// Prefer this for local dev; don't hardcode a key.
+const client = new Anthropic();
+
+// Explicit API key (only when you must inject a specific key)
+const client = new Anthropic({ apiKey: &quot;your-api-key&quot; });
+</code></pre>
+<hr />
+<h2>Create an Environment</h2>
+<pre><code class="language-typescript">const environment = await client.beta.environments.create(
+  {
+    name: &quot;my-dev-env&quot;,
+    config: {
+      type: &quot;cloud&quot;,
+      networking: { type: &quot;unrestricted&quot; },
+    },
+  },
+);
+console.log(environment.id); // env_...
+</code></pre>
+<hr />
+<h2>Create an Agent (required first step)</h2>
+<blockquote>
+<p>Warning: <strong>There is no inline agent config.</strong> <code>model</code>/<code>system</code>/<code>tools</code> live on the agent object, not the session. Always start with <code>agents.create()</code> - the session only takes <code>agent: { type: "agent", id: agent.id }</code>.</p>
+</blockquote>
+<h3>Minimal</h3>
+<pre><code class="language-typescript">// 1. Create the agent (reusable, versioned)
+const agent = await client.beta.agents.create(
+  {
+    name: &quot;Coding Assistant&quot;,
+    model: &quot;claude-opus-5&quot;,
+    tools: [{ type: &quot;agent_toolset_20260401&quot;, default_config: { enabled: true } }],
+  },
+);
+
+// 2. Start a session
+const session = await client.beta.sessions.create(
+  {
+    agent: { type: &quot;agent&quot;, id: agent.id, version: agent.version },
+    environment_id: environment.id,
+  },
+);
+console.log(session.id, session.status);
+console.log(`Trace: https://platform.claude.com/workspaces/default/sessions/${session.id}`); // swap 'default' for your workspace ID if the API key is not in the Default workspace
+</code></pre>
+<h3>With system prompt and custom tools</h3>
+<pre><code class="language-typescript">const agent = await client.beta.agents.create(
+  {
+    name: &quot;Code Reviewer&quot;,
+    model: &quot;claude-opus-5&quot;,
+    system: &quot;You are a senior code reviewer.&quot;,
+    tools: [
+      { type: &quot;agent_toolset_20260401&quot;, default_config: { enabled: true } },
+      {
+        type: &quot;custom&quot;,
+        name: &quot;run_tests&quot;,
+        description: &quot;Run the test suite&quot;,
+        input_schema: {
+          type: &quot;object&quot;,
+          properties: {
+            test_path: { type: &quot;string&quot;, description: &quot;Path to test file&quot; },
+          },
+          required: [&quot;test_path&quot;],
+        },
+      },
+    ],
+  },
+);
+
+const session = await client.beta.sessions.create(
+  {
+    agent: { type: &quot;agent&quot;, id: agent.id, version: agent.version },
+    environment_id: environment.id,
+    title: &quot;Code review session&quot;,
+    resources: [
+      {
+        type: &quot;github_repository&quot;,
+        url: &quot;https://github.com/owner/repo&quot;,
+        mount_path: &quot;/workspace/repo&quot;,
+        authorization_token: process.env.GITHUB_TOKEN,
+        branch: &quot;main&quot;,
+      },
+    ],
+  },
+);
+</code></pre>
+<hr />
+<h2>Send a User Message</h2>
+<pre><code class="language-typescript">await client.beta.sessions.events.send(
+  session.id,
+  {
+    events: [
+      {
+        type: &quot;user.message&quot;,
+        content: [{ type: &quot;text&quot;, text: &quot;Review the auth module&quot; }],
+      },
+    ],
+  },
+);
+</code></pre>
+<blockquote>
+<p>Tip: <strong>Stream-first:</strong> Open the stream <em>before</em> (or concurrently with) sending the message. The stream only delivers events that occur after it opens - stream-after-send means early events arrive buffered in one batch. See <a href="../../shared/managed-agents-events.html#steering-patterns">Steering Patterns</a>.</p>
+</blockquote>
+<hr />
+<h2>Stream Events (SSE)</h2>
+<pre><code class="language-typescript">// Stream-first: open stream and send concurrently
+const [events] = await Promise.all([
+  collectStream(session.id),
+  client.beta.sessions.events.send(
+    session.id,
+    { events: [{ type: &quot;user.message&quot;, content: [{ type: &quot;text&quot;, text: &quot;...&quot; }] }] },
+  ),
+]);
+
+// Standalone stream iteration:
+const stream = await client.beta.sessions.events.stream(
+  session.id,
+);
+
+for await (const event of stream) {
+  switch (event.type) {
+    case &quot;agent.message&quot;:
+      for (const block of event.content) {
+        if (block.type === &quot;text&quot;) {
+          process.stdout.write(block.text);
+        }
+      }
+      break;
+    case &quot;agent.custom_tool_use&quot;:
+      // Custom tool invocation - session is now idle
+      console.log(`\nCustom tool call: ${event.name}`);
+      console.log(`Input: ${JSON.stringify(event.input)}`);
+      break;
+    case &quot;session.status_idle&quot;:
+      console.log(&quot;\n--- Agent idle ---&quot;);
+      break;
+    case &quot;session.status_terminated&quot;:
+      console.log(&quot;\n--- Session terminated ---&quot;);
+      break;
+  }
+}
+</code></pre>
+<hr />
+<h2>Provide Custom Tool Result</h2>
+<pre><code class="language-typescript">await client.beta.sessions.events.send(
+  session.id,
+  {
+    events: [
+      {
+        type: &quot;user.custom_tool_result&quot;,
+        custom_tool_use_id: &quot;sevt_abc123&quot;,
+        content: [{ type: &quot;text&quot;, text: &quot;All 42 tests passed.&quot; }],
+      },
+    ],
+  },
+);
+</code></pre>
+<hr />
+<h2>Poll Events</h2>
+<pre><code class="language-typescript">const events = await client.beta.sessions.events.list(
+  session.id,
+);
+for (const event of events.data) {
+  console.log(`${event.type}: ${event.id}`);
+}
+</code></pre>
+<hr />
+<h2>Full Streaming Loop with Custom Tools</h2>
+<pre><code class="language-typescript">function runCustomTool(toolName: string, toolInput: unknown): string {
+  if (toolName === &quot;run_tests&quot;) {
+    // Your tool implementation here
+    return &quot;All tests passed.&quot;;
+  }
+  return `Unknown tool: ${toolName}`;
+}
+
+async function runSession(client: Anthropic, sessionId: string) {
+  while (true) {
+    const stream = await client.beta.sessions.events.stream(
+      sessionId,
+    );
+
+    const toolCalls: Anthropic.Beta.Sessions.BetaManagedAgentsAgentCustomToolUseEvent[] = [];
+
+    for await (const event of stream) {
+      if (event.type === &quot;agent.message&quot;) {
+        for (const block of event.content) {
+          if (block.type === &quot;text&quot;) {
+            process.stdout.write(block.text);
+          }
+        }
+      } else if (event.type === &quot;agent.custom_tool_use&quot;) {
+        toolCalls.push(event);
+      } else if (event.type === &quot;session.status_idle&quot;) {
+        break;
+      } else if (event.type === &quot;session.status_terminated&quot;) {
+        return;
+      }
+    }
+
+    if (toolCalls.length === 0) break;
+
+    // Process custom tool calls
+    const results = toolCalls.map((call) =&gt; ({
+      type: &quot;user.custom_tool_result&quot; as const,
+      custom_tool_use_id: call.id,
+      content: [{ type: &quot;text&quot; as const, text: runCustomTool(call.name, call.input) }],
+    }));
+
+    await client.beta.sessions.events.send(
+      sessionId,
+      { events: results },
+    );
+  }
+}
+</code></pre>
+<hr />
+<h2>Upload a File</h2>
+<pre><code class="language-typescript">import fs from &quot;fs&quot;;
+
+const file = await client.beta.files.upload({
+  file: fs.createReadStream(&quot;data.csv&quot;),
+  purpose: &quot;agent&quot;,
+});
+
+// Use in a session
+const session = await client.beta.sessions.create(
+  {
+    agent: { type: &quot;agent&quot;, id: agent.id, version: agent.version },
+    environment_id: environment.id,
+    resources: [{ type: &quot;file&quot;, file_id: file.id, mount_path: &quot;/workspace/data.csv&quot; }],
+  },
+);
+</code></pre>
+<hr />
+<h2>List and Download Session Files</h2>
+<p>List files the agent wrote to <code>/mnt/session/outputs/</code> during a session, then download them.</p>
+<pre><code class="language-typescript">import fs from &quot;fs&quot;;
+
+// List files associated with a session
+const files = await client.beta.files.list({
+  scope_id: session.id,
+  betas: [&quot;managed-agents-2026-04-01&quot;],
+});
+for (const f of files.data) {
+  console.log(f.filename, f.size_bytes);
+
+  // Download and save to disk
+  const resp = await client.beta.files.download(f.id);
+  const buffer = Buffer.from(await resp.arrayBuffer());
+  fs.writeFileSync(f.filename, buffer);
+}
+</code></pre>
+<blockquote>
+<p>Tip: There's a brief indexing lag (~1-3s) between <code>session.status_idle</code> and output files appearing in <code>files.list</code>. Retry once or twice if the list is empty.</p>
+</blockquote>
+<hr />
+<h2>Session Management</h2>
+<pre><code class="language-typescript">// Get session details
+const session = await client.beta.sessions.retrieve(&quot;sesn_011CZxAbc123Def456&quot;);
+console.log(session.status, session.usage);
+
+// List sessions
+const sessions = await client.beta.sessions.list();
+
+// Delete a session
+await client.beta.sessions.delete(&quot;sesn_011CZxAbc123Def456&quot;);
+
+// Archive a session
+await client.beta.sessions.archive(&quot;sesn_011CZxAbc123Def456&quot;);
+</code></pre>
+<hr />
+<h2>MCP Server Integration</h2>
+<pre><code class="language-typescript">// Agent declares MCP server (no auth here - auth goes in a vault)
+const agent = await client.beta.agents.create({
+  name: &quot;MCP Agent&quot;,
+  model: &quot;claude-opus-5&quot;,
+  mcp_servers: [
+    { type: &quot;url&quot;, name: &quot;my-tools&quot;, url: &quot;https://my-mcp-server.example.com/sse&quot; },
+  ],
+  tools: [
+    { type: &quot;agent_toolset_20260401&quot;, default_config: { enabled: true } },
+    { type: &quot;mcp_toolset&quot;, mcp_server_name: &quot;my-tools&quot; },
+  ],
+});
+
+// Session attaches vault(s) containing credentials for those MCP server URLs
+const session = await client.beta.sessions.create({
+  agent: agent.id,
+  environment_id: environment.id,
+  vault_ids: [vault.id],
+});
+</code></pre>
+<p>See <code>shared/managed-agents-tools.md</code> §Vaults for creating vaults and adding credentials.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

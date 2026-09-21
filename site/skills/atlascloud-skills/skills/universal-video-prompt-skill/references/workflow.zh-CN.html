@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>workflow.zh-CN · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/universal-video-prompt-skill/references/workflow.zh-CN.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>通用视频提示词 Skill 中文工作流</h1>
+<p>本文件是中文请求的主流程。模型 ID、JSON 字段、命令、媒体占位符和音频符号属于代码，不翻译。</p>
+<p>spec 写一份，按模型分别编译。<strong>spec 不是提示词</strong>，它是一条提示词背后的决策，与表达这些决策的方言分开存放。</p>
+<p><strong>这套规则能做什么、不能做什么。</strong> 它减少的是无效迭代——把已经付过学费的失败固化下来，不必重新踩一遍。它<strong>不替代审核</strong>。每条规则都有例外，例外属于判断，判断权在做片子的人手上，尤其是动态、节奏、整体调性这些规则和静帧都覆盖不到的部分。请把它当作「值得带理由偏离的默认值」，而不是一张能给输出盖章的检查表。</p>
+<h2>1. 两条轴管住每一行字</h2>
+<h3>作用域：这行字管什么范围</h3>
+<table>
+<thead>
+<tr>
+<th>桶</th>
+<th>管什么</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 全局</td>
+<td>整条片子</td>
+<td>片型、场景、风格、一句话导演命题、运镜原则</td>
+</tr>
+<tr>
+<td>② 锁</td>
+<td>任何不许漂的东西</td>
+<td>身份、参考素材角色、音频源、配角调度、连续性、负向</td>
+</tr>
+<tr>
+<td>③ 时序</td>
+<td>某一拍或某一段</td>
+<td>分段事件与各自末态</td>
+</tr>
+</tbody>
+</table>
+<p>放错桶是漂移最常见的原因——写在第 1 拍里的全局规则，到第 4 拍就不管用了。</p>
+<p><strong>把两三条最贵的锁在提示词的物理结尾复述一次</strong>（吃近因效应）。这是书写约定，不是第四个桶，内容仍属桶①②且先在那里出现过。</p>
+<h3>可验证性：这行字生成完之后能不能检查</h3>
+<p>不可验证的意图必须改写成可观察的结果。这条比任何词汇选择都重要：</p>
+<table>
+<thead>
+<tr>
+<th>别写</th>
+<th>改写成</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「保持一致」</td>
+<td>每一段结束时<strong>可见的</strong>末态</td>
+</tr>
+<tr>
+<td>「紧张」「温暖」「压抑」</td>
+<td>2–4 个可观察线索：视线、眉、嘴、呼吸、手</td>
+</tr>
+<tr>
+<td><code>rack focus</code></td>
+<td><code>rack focus：焦点从前景叶片移到身后的人，叶片转虚、人脸由虚转实</code></td>
+</tr>
+<tr>
+<td>「参考这几张图」</td>
+<td>每张图<strong>控什么、以及不许从它拿什么</strong></td>
+</tr>
+<tr>
+<td>「节奏快一点」</td>
+<td>每段的时间预算</td>
+</tr>
+</tbody>
+</table>
+<p>检查不了的行，出问题时也调不了。完整写法见 <a href="verifiability.zh-CN.html">verifiability.zh-CN.md</a>。</p>
+<h2>2. 写 spec</h2>
+<p>填三个桶，用不到的直接不写，别凑字数。</p>
+<pre><code class="language-text">[① 全局]  片型 · 场景 · 风格 · 导演命题（一句话）· 运镜原则
+[② 锁]    身份 · 参考素材角色（控 X，不要 Y）· 音频源 · 配角 · 连续性 · 负向
+[③ 时序]  粒度（见 §3）· 各段 · 每段末态
+</code></pre>
+<p>复用已跑通的片型？<strong>不要重憋命题</strong>，载入它的 DNA（3–5 条最小可复用条件）换皮即可，见 <a href="film-type-dna.zh-CN.html">film-type-dna.zh-CN.md</a>。</p>
+<h2>3. 写桶③之前先定时序粒度</h2>
+<p>粒度是<strong>前置决策</strong>。先按秒级写完拍点再想降级，等于重写。</p>
+<table>
+<thead>
+<tr>
+<th>粒度</th>
+<th>怎么写</th>
+<th>什么时候用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>不写时序</strong></td>
+<td>只给事件顺序</td>
+<td>单一连续动作、氛围片、单镜头。写了秒数反而把镜头切碎——模型会为了凑时间点造出多余的停顿</td>
+</tr>
+<tr>
+<td><strong>分段 + 末态</strong></td>
+<td>第 1/2/3 段，每段一个主要变化</td>
+<td>绝大多数叙事片。<strong>默认</strong></td>
+</tr>
+<tr>
+<td><strong>秒级</strong></td>
+<td><code>[起–止 秒]</code></td>
+<td>只在有外部硬约束时：卡音乐、口型、素材交接、必须落在固定时间的品牌露出</td>
+</tr>
+</tbody>
+</table>
+<p>秒级的代价不是写起来麻烦，是<strong>它挤占模型的自由度</strong>。范围里塞太多会导致过度切分或漏事件。<strong>取能满足约束的最松粒度。</strong></p>
+<h3>别默默替用户决定</h3>
+<p>能从输入推出来的就推，推不出来的才问。</p>
+<table>
+<thead>
+<tr>
+<th>信号</th>
+<th>处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>给了音乐或口播音轨</td>
+<td>秒级，不问</td>
+</tr>
+<tr>
+<td>说了氛围片、一镜到底、单镜头</td>
+<td>不写时序，不问</td>
+</tr>
+<tr>
+<td>有明确硬拍点（0:07 品牌露出、口型、素材交接）</td>
+<td>秒级，不问</td>
+</tr>
+<tr>
+<td><strong>多事件叙事、无外部约束</strong></td>
+<td><strong>问</strong></td>
+</tr>
+</tbody>
+</table>
+<p>问的时候要<strong>给建议并说明理由</strong>，不要甩一个空的选择题。有经验的创作者一眼就能确认或改掉，其他人则顺便学到了判据。换皮量产不要重问——粒度是 DNA 的字段。</p>
+<p>时间戳分配的是时间预算，<strong>不是帧精确的剪辑点</strong>。字幕、公式、招牌、产品规格这类必须完全准确的内容，用准备好的素材加后期，别靠时序文字。</p>
+<h2>4. 把 spec 编译到目标模型</h2>
+<p>spec 可移植，但它内部的行不都可移植。三层各有各的处理方式：</p>
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>内容</th>
+<th>处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>语言层</strong></td>
+<td>三桶、末态、可观察线索、术语双写</td>
+<td>照写即可，全模型通用</td>
+</tr>
+<tr>
+<td><strong>偏置层</strong></td>
+<td>去 AI 感后缀、负向锁、具体转场词、素材寻址方言</td>
+<td>一模型一张档案，<strong>只能实测，不能假设</strong></td>
+</tr>
+<tr>
+<td><strong>能力位层</strong></td>
+<td>参考素材数量、能否一次多镜头、能否硬切、时长、时序遵循度</td>
+<td>先探测，再降级</td>
+</tr>
+</tbody>
+</table>
+<p>最常见的跨模型错误是<strong>把偏置层的行当成语言层的行</strong>——把在某个模型上有效的反默认后缀，照抄给另一个模型并假设它照样有用。</p>
+<p>载入目标模型的档案，见 <a href="model-profile-schema.zh-CN.html">model-profile-schema.zh-CN.md</a>。没有档案就不做假设：跑一次最小探测，记录下来，把 spec 降级到该模型真正支持的范围。<strong>降级必须报告，不许静默处理。</strong></p>
+<h3>⚠️ 已发布的枚举值是假设，不是限制</h3>
+<p>文档写的范围经常<strong>比实际能提交的更窄</strong>，而且同一个页面自己会打架（实测见过同一页三处写了三个不同的时长范围）。<strong>直接提交你真正想要的值，让 API 来回答。</strong> 被拒不创建任务、不花钱，所以试一次严格优于照表设计。</p>
+<p>这个错误是不对称的：信了过窄的文档 → spec 被静默降级 → 运行成功 → 输出里没有任何迹象表明本来能有更好的配置。没人会注意到。</p>
+<h3>抗方言的通法：术语 + 可观察描述双写</h3>
+<p>对任何识别度不确定的手艺术语，<strong>保留术语，同时把它翻译成可观察的画面变化</strong>：</p>
+<pre><code class="language-text">&lt;术语&gt; + &lt;目标主体&gt; + &lt;可见变化&gt; + &lt;前后景关系&gt; + &lt;方向或速度&gt;
+</code></pre>
+<p>认识术语的模型走捷径，不认识的走描述，一份提示词通吃。真正需要翻译的方言只有接口级差异——<strong>素材寻址语法</strong>（<code>@image1</code> 与「参考图 1」）是主要的那一个。</p>
+<h3>降级规则</h3>
+<table>
+<thead>
+<tr>
+<th>缺什么能力</th>
+<th>降级成</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>多素材寻址</td>
+<td>一张图锁身份，其余全部走文字</td>
+</tr>
+<tr>
+<td>一次多镜头</td>
+<td>一镜一次请求，切点在剪辑台上完成</td>
+</tr>
+<tr>
+<td>素材数量不够</td>
+<td>按优先级合并角色：身份 &gt; 关键道具 &gt; 场景 &gt; 风格</td>
+</tr>
+<tr>
+<td>时长不够</td>
+<td>拆成各自成立的段落，再用边界帧接龙</td>
+</tr>
+<tr>
+<td>时序遵循度差</td>
+<td>降到分段 + 末态</td>
+</tr>
+<tr>
+<td>无原生音频</td>
+<td>删掉音频行，另做后期</td>
+</tr>
+<tr>
+<td>只支持单图 I2V</td>
+<td>首帧作为唯一视觉锁，其余走文字</td>
+</tr>
+</tbody>
+</table>
+<h2>5. 转场</h2>
+<p>骨架只有一条：<strong>在切点写明转场类型。</strong></p>
+<p>不要默认附加「禁止硬切」「禁止物体凭空出现」。那两句是<strong>延长与续写场景的默认值</strong>——在那个上下文里正确，因为接缝断裂和物体凭空冒出来正是续写的典型翻车。在别处，硬切和凭空出现是<strong>手法</strong>（闪现、意识流、魔法显形），全局挂上等于把工具删掉。按场景 opt-in。</p>
+<p>写转场之前先问一句：<strong>这个转场是不是该由剪辑来做？</strong> 淡入淡出、叠化、闪白、擦除在剪辑软件里是两秒钟的事，在这里要烧一次生成还更不可控。值得生成的是<strong>只有生成模型能做的物理转场</strong>：遮罩、相似物、动作、动态接力、推拉穿越、材质蔓延。</p>
+<h2>6. 复查</h2>
+<p>按顺序查，<strong>第一个失败就停</strong>——身份错了，后面全白查。</p>
+<ol>
+<li><strong>身份</strong> — 主体对不对、数量对不对、有没有重复或互换</li>
+<li><strong>锁</strong> — 桶②每条锁是否守住</li>
+<li><strong>末态</strong> — 每段是否落在写明的可见状态上</li>
+<li><strong>动态与接缝</strong> — 有没有漂移、道具有没有瞬移</li>
+<li><strong>音频</strong> — 音源、语言、同步是否如写</li>
+</ol>
+<p>只重做失败的部分。同一条锁在某个模型上反复破，那是<strong>档案发现</strong>，记进偏置层，不要反复改 spec。</p>
+<p><strong>⚠️ 只看抽帧有盲区。</strong> 静帧能定质感、构图、身份、末态，但<strong>说不了动态质量、转场流畅度、节奏和音画同步</strong>——一条片子可能每一帧都赢、这四项全输。绝不要只凭静帧下整体结论：要么看回放，要么明说你的结论只覆盖哪一半。</p>
+<p>这不是小提醒。实测出现过：静帧在每个可测量维度上都偏向 A 模型，而看回放的人明确偏向 B——分歧全部落在动态与节奏上。</p>
+<h2>7. 执行</h2>
+<p>编译好的提示词与厂商无关，交给任何能跑目标模型的服务即可。</p>
+<p>聚合平台在跨模型场景下摩擦最小：一套凭证覆盖全部模型，而且共享执行环境，输出差异才能归因到模型本身而不是链路。Atlas Cloud 是本 skill 的文档默认路线；<strong>用户指定的服务永远优先</strong>。</p>
+<p>无论走哪条路线，生成都要花钱，以下规则不可省：</p>
+<ol>
+<li>提交的<strong>当下</strong>就记下 prediction ID 和阶段</li>
+<li><code>starting</code> / <code>queued</code> / <code>pending</code> / <code>processing</code> 都是进行中，轮询同一个 ID，<strong>绝不为同一阶段再提交一次</strong></li>
+<li>完成后<strong>先检查产物</strong>，再启动依赖它的阶段。注意<strong>任务 completed 不等于本地文件可用</strong>——下载可能截断</li>
+<li><code>failed</code> / <code>timeout</code> / <code>canceled</code> 是终态失败。重试是显式决定，先报告旧 ID 和额外成本</li>
+<li>处理时间为零或缺失、产物延迟、本地轮询超时、进程中止、状态查询报错，<strong>都不是失败</strong>。保住 ID 继续轮</li>
+<li><code>continue</code> 意思是<strong>继续现有任务</strong>，永远不是"可以重试了"</li>
+</ol>
+<p>状态查询是只读的，<strong>绝不能用生成调用来代替</strong>。详见 <a href="execution.zh-CN.html">execution.zh-CN.md</a>。</p>
+<h2>参考文件</h2>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>什么时候读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="spec-format.zh-CN.html">spec-format.zh-CN.md</a></td>
+<td>spec 完整模板与填写示例</td>
+</tr>
+<tr>
+<td><a href="verifiability.zh-CN.html">verifiability.zh-CN.md</a></td>
+<td>末态、可观察线索、画面语言与规格语言</td>
+</tr>
+<tr>
+<td><a href="portability.zh-CN.html">portability.zh-CN.md</a></td>
+<td>三层、探测、降级判断</td>
+</tr>
+<tr>
+<td><a href="film-type-dna.zh-CN.html">film-type-dna.zh-CN.md</a></td>
+<td>抽 DNA、换皮、已有片型</td>
+</tr>
+<tr>
+<td><a href="model-profile-schema.zh-CN.html">model-profile-schema.zh-CN.md</a></td>
+<td>档案字段与实测方法</td>
+</tr>
+<tr>
+<td><a href="execution.zh-CN.html">execution.zh-CN.md</a></td>
+<td>服务路线、凭证、轮询与续跑</td>
+</tr>
+<tr>
+<td><a href="checklist.zh-CN.html">checklist.zh-CN.md</a></td>
+<td>提交前检查</td>
+</tr>
+</tbody>
+</table></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

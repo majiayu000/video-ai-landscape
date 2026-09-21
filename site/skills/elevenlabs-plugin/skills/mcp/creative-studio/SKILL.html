@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>creative-studio · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/mcp/creative-studio/SKILL.md</span><button onclick="t()">🌓</button></nav>
+<main><div class="meta"><div class="m-name">creative-studio</div><div class="m-desc">Generate and edit media through the connected ElevenLabs MCP server — speech, images, video, music, and transcription. Use when the user asks to generate a voiceover, image, video, or soundtrack, edit an image, or transcribe audio directly, rather than writing application code. Requires the ElevenLabs MCP server bundled with this plugin.</div><div class="m-src">源文件：<a href="https://github.com/elevenlabs/plugin/blob/main/skills/mcp/creative-studio/SKILL.md" target="_blank" rel="noopener">elevenlabs/plugin/skills/mcp/creative-studio/SKILL.md</a></div></div><h1>ElevenLabs Creative Studio (via MCP)</h1>
+<p>Workflow guidance for the <code>creative_*</code> tools on the ElevenLabs MCP server. Every
+tool takes a <code>context</code> parameter — briefly state the user's goal in it. For
+building media features into the user's own codebase (SDK, API), use the general
+skills instead (<code>text-to-speech</code>, <code>music</code>, <code>sound-effects</code>, <code>speech-to-text</code>).</p>
+<h2>How generations work</h2>
+<ul>
+<li><code>creative_generate_speech</code>, <code>creative_generate_image</code>, and
+  <code>creative_generate_video</code> return immediately with a <code>flow_id</code>, <code>node_id</code>,
+  <code>session_ids</code>, and a canvas <code>url</code> the user can open to keep editing. If the
+  result doesn't render in a view, poll <code>creative_get_flow_run_status</code> until
+  <code>all_completed</code> or <code>has_failures</code> is true.</li>
+<li><strong>Generations spend credits.</strong> Pass <code>estimate_only: true</code> to price a long
+  video or a batch of variations before committing. Never call a generation
+  tool a second time to "retry" — that starts and charges a second generation.</li>
+<li><code>generations_count</code> defaults to 4 variations so the user can pick; keep the
+  default unless they ask for a specific number.</li>
+</ul>
+<h2>Speech</h2>
+<ul>
+<li><code>voice_id</code> is required and only ever comes from <code>creative_list_voices</code> (or
+  the user) — never from memory. Pick a voice matching what the user described;
+  if they gave no hint, pick a clear general-purpose voice rather than asking.</li>
+<li>Default model: <code>eleven_multilingual_v2</code>. Use <code>eleven_v3</code> when the script uses
+  inline audio direction tags like <code>[whispering]</code> or <code>[laughs softly]</code>.</li>
+</ul>
+<h2>Images</h2>
+<ul>
+<li>Default model: <code>gemini-2.5-flash-image</code>. Pick by need: <code>gpt-image-2</code> for
+  rendered text, infographics, UI mockups, or reference-driven edits;
+  <code>flux-2-pro</code> for fine detail and strict prompt adherence.</li>
+<li><code>creative_get_flow_node_types</code> lists what the workspace can run;
+  <code>creative_get_model_guide</code> explains how to prompt a specific model.</li>
+</ul>
+<h2>Flows: combining generations</h2>
+<ul>
+<li>Nodes on different flows cannot be connected. When one generation feeds
+  another (lipsync, a voiceover over video), call <code>creative_create_flow</code> first
+  and pass that <code>flow_id</code> to every related call.</li>
+<li>Wire upstream nodes with <code>connect_from</code>. A <code>node_id</code> only ever comes from a
+  tool result or <code>creative_get_flow</code> — never invent one.</li>
+<li><code>creative_edit_image</code> requires <code>connect_from</code>: a node from an earlier
+  generation on the same flow, a library asset, or an upload.</li>
+</ul>
+<h2>Reference files and transcription</h2>
+<ul>
+<li>For a file already reachable (attached to the conversation, or a direct
+  link): <code>creative_attach_reference_file</code> — returns a node with content.</li>
+<li>For a file on the user's machine: <code>creative_upload_flow_reference</code> — the node
+  stays empty until the user picks a file, so confirm it has an asset (via
+  <code>creative_get_flow</code>) before generating from it.</li>
+<li>Transcribe with <code>creative_transcribe_audio</code>, passing the audio node's id as
+  <code>connect_from</code>; without it, a picker handles upload and transcription on its
+  own — don't call the tool again or poll while it's open.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>admin-api · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/admin-api.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Admin API (Organization Management)</h1>
+<p>Read this file when the user wants to manage their Anthropic organization programmatically: members and roles, invites, workspaces and workspace members, API keys, rate limit reports, service accounts, workload identity federation (WIF), or customer-managed encryption keys (CMEK).</p>
+<p>The Admin API lives under <code>https://api.anthropic.com/v1/organizations/*</code>. It manages the organization itself - it does not send messages. As of <strong>August 26, 2026</strong> it is available in all seven SDKs (Python, TypeScript, C#, Go, Java, PHP, Ruby) under <code>client.beta.organization</code>, and in the <code>ant</code> CLI under <code>ant beta:organization</code>. Usage reports, cost reports, and the Claude Enterprise user-management and analytics endpoints are <strong>not</strong> in the SDKs - call those with raw HTTP.</p>
+<h2>Authentication</h2>
+<p>Two credential types, both read automatically by the default SDK client and the CLI:</p>
+<table>
+<thead>
+<tr>
+<th>Credential</th>
+<th>Env var</th>
+<th>HTTP header</th>
+<th>Covers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Admin API key (<code>sk-ant-admin...</code>)</td>
+<td><code>ANTHROPIC_API_KEY</code></td>
+<td><code>x-api-key</code></td>
+<td>Most endpoints</td>
+</tr>
+<tr>
+<td><code>org:admin</code> OAuth token</td>
+<td><code>ANTHROPIC_AUTH_TOKEN</code></td>
+<td><code>authorization: Bearer</code></td>
+<td>Everything, including the OAuth-only endpoints</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>OAuth-only endpoints:</strong> service accounts, federation issuers, and federation rules reject API keys - they require an <code>org:admin</code> OAuth token.</li>
+<li><strong>Precedence gotcha:</strong> when both env vars are set, some clients prefer the API key. When using a bearer token, leave <code>ANTHROPIC_API_KEY</code> unset in that shell.</li>
+<li>Admin API keys are created in the Claude Console by organization admins.</li>
+<li>Regular (non-admin) API keys do not work on any of these endpoints, and admin credentials do not work on the Messages API.</li>
+<li>An <code>org:admin</code> token grants access to the whole organization regardless of any workspace binding.</li>
+</ul>
+<p><strong>Interactive OAuth token</strong> - log in with the <code>ant</code> CLI under a dedicated profile (keeps routine commands from running with elevated access), then export the token. Tokens are short-lived; on 401, re-run the export. Profile and scope mechanics (why <code>org:admin</code> needs an explicit <code>--scope</code>, switching profiles): <code>shared/anthropic-cli.md</code>.</p>
+<pre><code class="language-bash">ant auth login --profile admin --scope &quot;org:admin&quot;
+export ANTHROPIC_AUTH_TOKEN=$(ant auth print-credentials --profile admin --access-token)
+# When done: unset ANTHROPIC_AUTH_TOKEN &amp;&amp; ant profile activate default
+</code></pre>
+<p><strong>Automated workloads (CI)</strong> - don't log in interactively. Create a federation rule with <code>oauth_scope: org:admin</code> targeting a service account whose <code>organization_role</code> is <code>admin</code> (this one rule must be created by a human in the Claude Console), then point the client at it with the federation env vars and construct it with no arguments - the SDK/CLI performs the token exchange automatically and refreshes before expiry:</p>
+<pre><code class="language-bash">export ANTHROPIC_FEDERATION_RULE_ID=fdrl_...       # the org:admin rule
+export ANTHROPIC_ORGANIZATION_ID=&lt;org-uuid&gt;
+export ANTHROPIC_SERVICE_ACCOUNT_ID=svac_...       # the rule's target service account
+export ANTHROPIC_IDENTITY_TOKEN_FILE=/path/to/jwt  # or ANTHROPIC_IDENTITY_TOKEN
+</code></pre>
+<p><strong>curl</strong> also needs <code>anthropic-version: 2023-06-01</code> on every request.</p>
+<h2>Endpoint Coverage</h2>
+<p>SDK accessor shown in Python spelling; see the per-language table below for naming conventions.</p>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>REST path</th>
+<th>SDK accessor (<code>client.beta.organization</code> +)</th>
+<th>CLI (<code>ant beta:organization</code> +)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Organization info</td>
+<td><code>GET /v1/organizations/me</code></td>
+<td><code>.retrieve()</code></td>
+<td><code>retrieve</code></td>
+</tr>
+<tr>
+<td>Members</td>
+<td><code>/v1/organizations/users</code></td>
+<td><code>.users</code> - <code>list</code>, <code>update</code>, <code>remove</code></td>
+<td><code>:users list\|update\|remove</code></td>
+</tr>
+<tr>
+<td>Invites</td>
+<td><code>/v1/organizations/invites</code></td>
+<td><code>.invites</code> - <code>create</code>, <code>list</code>, <code>delete</code></td>
+<td><code>:invites create\|list\|delete</code></td>
+</tr>
+<tr>
+<td>Workspaces</td>
+<td><code>/v1/organizations/workspaces</code></td>
+<td><code>.workspaces</code> - <code>create</code>, <code>retrieve</code>, <code>list</code>, <code>update</code>, <code>archive</code></td>
+<td><code>:workspaces create\|list\|update\|archive</code></td>
+</tr>
+<tr>
+<td>Workspace members</td>
+<td><code>/v1/organizations/workspaces/{id}/members</code></td>
+<td><code>.workspaces.members</code> - <code>add</code>, <code>list</code>, <code>update</code>, <code>remove</code></td>
+<td><code>:workspaces:members add\|list\|update\|remove</code></td>
+</tr>
+<tr>
+<td>API keys</td>
+<td><code>/v1/organizations/api_keys</code></td>
+<td><code>.api_keys</code> - <code>list</code>, <code>update</code></td>
+<td><code>:api-keys list\|update</code></td>
+</tr>
+<tr>
+<td>Org rate limits</td>
+<td><code>GET /v1/organizations/rate_limits</code></td>
+<td><code>.rate_limits.list(model=..., group_type=...)</code></td>
+<td><code>:rate-limits list</code></td>
+</tr>
+<tr>
+<td>Workspace rate limits</td>
+<td><code>GET /v1/organizations/workspaces/{id}/rate_limits</code></td>
+<td><code>.workspaces.rate_limits.list(workspace_id)</code></td>
+<td><code>:workspaces:rate-limits list</code></td>
+</tr>
+<tr>
+<td>Service accounts (*)</td>
+<td><code>/v1/organizations/service_accounts</code></td>
+<td><code>.service_accounts</code> - <code>create</code>, <code>list</code>, <code>archive</code></td>
+<td><code>:service-accounts create\|list\|archive</code></td>
+</tr>
+<tr>
+<td>Federation issuers (*)</td>
+<td><code>/v1/organizations/federation_issuers</code></td>
+<td><code>.federation.issuers</code> - <code>create</code>, <code>list</code>, <code>archive</code></td>
+<td><code>:federation:issuers create\|list\|archive</code></td>
+</tr>
+<tr>
+<td>Federation rules (*)</td>
+<td><code>/v1/organizations/federation_rules</code></td>
+<td><code>.federation.rules</code> - <code>create</code>, <code>list</code>, <code>archive</code></td>
+<td><code>:federation:rules create\|list\|archive</code></td>
+</tr>
+<tr>
+<td>CMEK external keys</td>
+<td><code>/v1/organizations/external_keys</code></td>
+<td><code>.external_keys</code> - <code>create</code>, <code>validate</code></td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<p>(*) OAuth-only: requires an <code>org:admin</code> bearer token, not an API key.</p>
+<p>Attaching a CMEK external key to a workspace is a workspace update: <code>client.beta.organization.workspaces.update("&lt;workspace-id&gt;", external_key_id="ekey_...")</code>.</p>
+<h2>Per-Language Naming &amp; Pagination</h2>
+<table>
+<thead>
+<tr>
+<th>Language</th>
+<th>Accessor style (list members example)</th>
+<th>List behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td><code>client.beta.organization.users.list(limit=10)</code></td>
+<td>Iterator auto-fetches more pages; <code>limit</code> = page size, not total</td>
+</tr>
+<tr>
+<td>TypeScript</td>
+<td><code>client.beta.organization.users.list({ limit: 10 })</code> - camelCase sub-resources: <code>apiKeys</code>, <code>rateLimits</code>, <code>serviceAccounts</code>, <code>externalKeys</code></td>
+<td><code>for await</code> auto-pages</td>
+</tr>
+<tr>
+<td>C#</td>
+<td><code>client.Beta.Organization.Users.List(new() { Limit = 10 })</code></td>
+<td><code>await foreach (var u in page.Paginate())</code> auto-pages</td>
+</tr>
+<tr>
+<td>Go</td>
+<td><code>client.Beta.Organization.Users.ListAutoPaging(ctx, params)</code>; org info is <code>Organization.Get(ctx)</code></td>
+<td><code>.Next()</code> / <code>.Current()</code> auto-pages</td>
+</tr>
+<tr>
+<td>Java</td>
+<td><code>client.beta().organization().users().list(params)</code> with builder params (<code>UserListParams.builder().limit(10).build()</code>)</td>
+<td><code>.autoPager()</code> auto-pages</td>
+</tr>
+<tr>
+<td>PHP</td>
+<td><code>$client-&gt;beta-&gt;organization-&gt;users-&gt;list(limit: 10)</code></td>
+<td>Raw single-page data call - iterate <code>-&gt;getItems()</code>; the SDK's auto-pagination helpers aren't wired up for these endpoints yet</td>
+</tr>
+<tr>
+<td>Ruby</td>
+<td><code>client.beta.organization.users.list(limit: 10)</code></td>
+<td>Raw single-page data call - iterate <code>.data</code>; the SDK's auto-pagination helpers aren't wired up for these endpoints yet</td>
+</tr>
+<tr>
+<td>CLI</td>
+<td><code>ant beta:organization:users list --limit 10</code></td>
+<td>On the member, invite, workspace, workspace-member, and API-key lists, <code>--limit</code> caps the results (unlike most <code>ant</code> list commands, where <code>--limit</code> sets the page size and <code>--max-items</code> caps - see <code>shared/anthropic-cli.md</code>)</td>
+</tr>
+<tr>
+<td>curl</td>
+<td><code>GET /v1/organizations/users?limit=10</code></td>
+<td>One page per request; cursor pagination per the Admin API reference</td>
+</tr>
+</tbody>
+</table>
+<p>The rate-limit lists (<code>rate_limits</code>, <code>workspaces.rate_limits</code>) also support pagination as of launch - page them like the other list endpoints rather than assuming a single response.</p>
+<p>Go param types follow the pattern <code>anthropic.BetaOrganizationUserListParams</code> (with <code>anthropic.Int(10)</code> for <code>Limit</code>); Java params use builders from <code>com.anthropic.models.beta.organization.*</code> (e.g. <code>UserListParams.builder().limit(10).build()</code>). The Go and Java pagination loops:</p>
+<pre><code class="language-go">users := client.Beta.Organization.Users.ListAutoPaging(ctx, anthropic.BetaOrganizationUserListParams{Limit: anthropic.Int(10)})
+for users.Next() {
+    user := users.Current() // ...
+}
+if err := users.Err(); err != nil { /* handle */ }
+</code></pre>
+<pre><code class="language-java">for (var user : client.beta().organization().users().list(params).autoPager()) { /* ... */ }
+</code></pre>
+<h2>Examples</h2>
+<p>Common operations (Python spelling; map to other languages with the table above - every operation follows the same shape in each language):</p>
+<pre><code class="language-python"># Organization info
+org = client.beta.organization.retrieve()
+
+# List members (iterator auto-fetches more pages; limit = page size)
+for user in client.beta.organization.users.list(limit=10):
+    print(f&quot;{user.id}: {user.email} ({user.role})&quot;)
+
+# Change a member's role / remove a member
+client.beta.organization.users.update(&quot;user_...&quot;, role=&quot;developer&quot;)
+client.beta.organization.users.remove(&quot;user_...&quot;)
+
+# Invite someone
+client.beta.organization.invites.create(email=&quot;user@example.com&quot;, role=&quot;developer&quot;)
+
+# Create a workspace and add a member to it
+ws = client.beta.organization.workspaces.create(name=&quot;Production&quot;)
+client.beta.organization.workspaces.members.add(
+    ws.id, user_id=&quot;user_...&quot;, workspace_role=&quot;workspace_developer&quot;
+)
+
+# Deactivate / rename an API key
+client.beta.organization.api_keys.update(&quot;apikey_...&quot;, status=&quot;inactive&quot;, name=&quot;New Key Name&quot;)
+
+# Rate limit reports (optional filters: model=..., group_type=...)
+client.beta.organization.rate_limits.list(model=&quot;claude-opus-5&quot;)
+client.beta.organization.workspaces.rate_limits.list(&quot;wrkspc_...&quot;)
+
+# Service accounts + WIF (org:admin OAuth token required)
+sa = client.beta.organization.service_accounts.create(name=&quot;inference-worker&quot;, organization_role=&quot;developer&quot;)
+issuer = client.beta.organization.federation.issuers.create(
+    name=&quot;github-actions&quot;,
+    issuer_url=&quot;https://token.actions.githubusercontent.com&quot;,
+    jwks={&quot;type&quot;: &quot;discovery&quot;},
+)
+client.beta.organization.federation.rules.create(
+    name=&quot;gha-deploy&quot;,
+    issuer_id=issuer.id,
+    match={&quot;subject_prefix&quot;: &quot;repo:my-org/my-repo:ref:refs/heads/main&quot;,
+           &quot;claims&quot;: {&quot;repository_owner&quot;: &quot;my-org&quot;}},
+    target={&quot;type&quot;: &quot;service_account&quot;, &quot;service_account_id&quot;: sa.id},
+    workspace_id=&quot;wrkspc_...&quot;,
+    oauth_scope=&quot;workspace:developer&quot;,
+    token_lifetime_seconds=600,
+)
+
+# CMEK: register, validate, then attach an external key to a workspace
+key = client.beta.organization.external_keys.create(
+    display_name=&quot;prod-key&quot;, geo=&quot;us&quot;,
+    provider_config={&quot;type&quot;: &quot;aws&quot;, &quot;kms_arn&quot;: &quot;arn:aws:kms:...&quot;},
+)
+client.beta.organization.external_keys.validate(key.id)
+client.beta.organization.workspaces.update(&quot;wrkspc_...&quot;, external_key_id=key.id)
+</code></pre>
+<h2>Organization Roles</h2>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Permissions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user</code></td>
+<td>Playground</td>
+</tr>
+<tr>
+<td><code>claude_code_user</code></td>
+<td>Playground + Claude Code</td>
+</tr>
+<tr>
+<td><code>developer</code></td>
+<td>Playground + manage API keys</td>
+</tr>
+<tr>
+<td><code>billing</code></td>
+<td>Playground + manage billing</td>
+</tr>
+<tr>
+<td><code>admin</code></td>
+<td>All of the above + manage users</td>
+</tr>
+</tbody>
+</table>
+<p>Owners and primary owners have all admin permissions and can also manage admins. Workspace roles are <code>workspace_user</code>, <code>workspace_developer</code>, <code>workspace_admin</code>, and <code>workspace_billing</code>.</p>
+<h2>Platform Restrictions</h2>
+<ul>
+<li><strong>Claude Platform on AWS:</strong> only the workspace endpoints work. Members, workspace members, invites, API keys, and usage/cost/rate-limit reports are unavailable. CMEK external-key endpoints are not yet available there - register and attach keys in the Claude Console.</li>
+<li><strong>Claude Enterprise (claude.ai orgs):</strong> only members and invites from this surface, plus Enterprise-only endpoints (group and custom-role reads, spend limits) that are not in the SDKs.</li>
+</ul>
+<h2>Live Docs</h2>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Admin API guide</td>
+<td><code>https://platform.claude.com/docs/en/manage-claude/admin-api.md</code></td>
+</tr>
+<tr>
+<td>Admin API reference</td>
+<td><code>https://platform.claude.com/docs/en/api/admin.md</code></td>
+</tr>
+<tr>
+<td>Workspaces</td>
+<td><code>https://platform.claude.com/docs/en/manage-claude/workspaces.md</code></td>
+</tr>
+<tr>
+<td>Rate limits API</td>
+<td><code>https://platform.claude.com/docs/en/manage-claude/rate-limits-api.md</code></td>
+</tr>
+<tr>
+<td>WIF admin</td>
+<td><code>https://platform.claude.com/docs/en/manage-claude/wif-admin-api.md</code></td>
+</tr>
+<tr>
+<td>Usage &amp; cost reports (curl-only)</td>
+<td><code>https://platform.claude.com/docs/en/manage-claude/usage-cost-api.md</code></td>
+</tr>
+</tbody>
+</table></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

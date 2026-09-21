@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>writing-procedures · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/agents/references/writing-procedures.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Writing Procedures</h1>
+<p>Check the current documentation before authoring procedure content. Procedures are in Alpha, and the content schema may change:</p>
+<ul>
+<li><a href="https://elevenlabs.io/docs/eleven-agents/customization/procedures.md">Procedures</a> — what a procedure is, and when to use one instead of a workflow or the system prompt.</li>
+<li><a href="https://elevenlabs.io/docs/eleven-agents/customization/procedures/free-form-procedures.md">Free-form procedures</a> — anatomy, inline references, and how to write triggers and content.</li>
+<li><a href="https://elevenlabs.io/docs/eleven-agents/customization/procedures/structured-procedures.md">Structured procedures</a> — step types, branching, and the rules on branches.</li>
+</ul>
+<h2>Authoring Rules</h2>
+<ul>
+<li>A procedure has a <code>name</code>, a <code>trigger</code>, and <code>content</code>. The agent uses the trigger for routing and reads the content when the procedure starts.</li>
+<li>Use <code>free_form</code> for natural-language guidance that the agent can adapt. Only free-form procedures can reference knowledge base documents.</li>
+<li>Use <code>deterministic</code> for ordered, typed steps that must run consistently, such as identity verification or payment collection.</li>
+<li>Preserve the procedure type during routine updates unless the user explicitly requests a conversion.</li>
+<li>Write concrete, non-overlapping triggers from the user's perspective. Cover likely phrasing: <code>When the user asks to refund, return, or get money back for an order</code> routes better than <code>When the user requests a refund</code>.</li>
+<li>An empty <code>trigger</code> marks a sub-procedure that runs only when another procedure references it. Omit <code>trigger</code> entirely to derive one from the content.</li>
+<li>Content is capped at 50,000 characters for both types.</li>
+<li>Keep each procedure focused on one task. Put tone and refusal policy in the system prompt.</li>
+<li>Extract steps shared across procedures into a separate procedure.</li>
+</ul>
+<h2>Free-Form Content</h2>
+<p>Write <code>content</code> as markdown. Use numbered steps for sequences and bullets for requirements within a step. Use the imperative. Explain a step's rationale only when it helps the agent handle cases the procedure does not enumerate.</p>
+<p>Reference a tool, knowledge base document, or another procedure inline. The <code>id</code> binds the resource; <code>name</code> provides a readable label.</p>
+<p>An inline reference attaches the resource automatically. Naming a tool in prose works only when it is already attached to the agent, so prefer the markup.</p>
+<pre><code class="language-markdown">1. Ask the user for their order ID.
+2. Look it up with [tool id=&quot;tool_abc123&quot; name=&quot;Get order&quot;], because the refund window runs from the order date.
+3. If the order is inside the 30-day window, check [kb id=&quot;kb_def456&quot; name=&quot;Refund policy&quot;] for the timeline on the payment method used and tell the user what to expect.
+4. If it falls outside the window, explain why it is not eligible and offer store credit instead.
+5. If the caller asks for a human at any point, run [procedure id=&quot;agtprc_xyz789&quot; name=&quot;Escalate&quot;].
+6. Once the caller has no further questions, use [system_tool id=&quot;end_call&quot; name=&quot;End call&quot;].
+</code></pre>
+<p>A trigger can reference a resource's output, for example <code>When get_user returns tier 'gold'</code>.</p>
+<h2>Structured Content</h2>
+<p>Set <code>content</code> to a serialized JSON object containing a <code>trigger</code> and a non-empty <code>steps</code> array. Each step is an object discriminated by <code>type</code>. The step type defines its behavior, so its instruction rarely needs to restate that behavior.</p>
+<p>Each entry in <code>branches</code> pairs a <code>condition</code> with its own <code>steps</code>. A condition is either an LLM condition such as <code>{"type": "llm", "condition": "the caller has no order ID"}</code> or an expression over dynamic variables such as <code>{"type": "expression", "expression": ...}</code>.</p>
+<p>Use the structured procedures documentation for current step types, fields, and valid combinations. To validate against a live agent, save the draft and compile it. Fix every reported error before publishing; <a href="using-procedure-api.html">Using the Procedure API</a> describes the loop.</p>
+<pre><code class="language-json">{
+  &quot;trigger&quot;: &quot;When the user asks to refund, return, or get money back for an order&quot;,
+  &quot;steps&quot;: [
+    { &quot;type&quot;: &quot;ask&quot;, &quot;instruction&quot;: &quot;Ask for the order ID.&quot; },
+    { &quot;type&quot;: &quot;tool_call&quot;, &quot;tool_id&quot;: &quot;tool_abc123&quot;, &quot;tool_name&quot;: &quot;Get order&quot; },
+    {
+      &quot;type&quot;: &quot;branch&quot;,
+      &quot;branches&quot;: [
+        {
+          &quot;condition&quot;: { &quot;type&quot;: &quot;llm&quot;, &quot;condition&quot;: &quot;the order is outside the refund window&quot; },
+          &quot;steps&quot;: [{ &quot;type&quot;: &quot;tell&quot;, &quot;instruction&quot;: &quot;Explain the order is no longer eligible.&quot; }]
+        }
+      ],
+      &quot;fallback&quot;: [{ &quot;type&quot;: &quot;say&quot;, &quot;message&quot;: &quot;Your refund is on its way.&quot; }]
+    },
+    { &quot;type&quot;: &quot;system_tool&quot;, &quot;system_tool_name&quot;: &quot;end_call&quot; }
+  ]
+}
+</code></pre>
+<h2>Building the Content String</h2>
+<p>Serialize the object before assigning it to <code>content</code>; do not hand-escape quotes.</p>
+<h3>Python</h3>
+<pre><code class="language-python">import json
+
+content = json.dumps(
+    {
+        &quot;trigger&quot;: &quot;When the user asks for a refund&quot;,
+        &quot;steps&quot;: [
+            {&quot;type&quot;: &quot;ask&quot;, &quot;instruction&quot;: &quot;Ask for the order ID.&quot;},
+            {&quot;type&quot;: &quot;say&quot;, &quot;message&quot;: &quot;Your refund is on its way.&quot;},
+        ],
+    }
+)
+</code></pre>
+<h3>JavaScript</h3>
+<pre><code class="language-javascript">const content = JSON.stringify({
+  trigger: &quot;When the user asks for a refund&quot;,
+  steps: [
+    { type: &quot;ask&quot;, instruction: &quot;Ask for the order ID.&quot; },
+    { type: &quot;say&quot;, message: &quot;Your refund is on its way.&quot; },
+  ],
+});
+</code></pre>
+<h3>CLI</h3>
+<pre><code class="language-bash"># Build the JSON string to pass to `elevenlabs agents procedures create --json`
+CONTENT=$(jq -n '{
+  trigger: &quot;When the user asks for a refund&quot;,
+  steps: [
+    { type: &quot;ask&quot;, instruction: &quot;Ask for the order ID.&quot; },
+    { type: &quot;say&quot;, message: &quot;Your refund is on its way.&quot; }
+  ]
+}')
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

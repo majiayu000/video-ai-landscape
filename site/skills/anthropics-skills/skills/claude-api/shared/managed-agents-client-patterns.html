@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>managed-agents-client-patterns · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/managed-agents-client-patterns.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Managed Agents - Common Client Patterns</h1>
+<p>Patterns you'll write on the client side when driving a Managed Agent session, grounded in working SDK examples.</p>
+<p>Code samples are TypeScript - other languages follow the same shape; see <code>{lang}/managed-agents/README.md</code> (cURL and C#: <code>curl/managed-agents.md</code>) for equivalents.</p>
+<hr />
+<h2>1. Lossless stream reconnect</h2>
+<p><strong>Problem:</strong> SSE has no replay. If the connection drops mid-session, a naive reconnect re-opens the stream from "now" and you silently miss every event emitted in between.</p>
+<p><strong>Solution:</strong> on reconnect, fetch the full event history via <code>events.list()</code> <em>before</em> consuming the live stream, and dedupe on event ID as the live stream catches up.</p>
+<pre><code class="language-ts">const seenEventIds = new Set&lt;string&gt;()
+const stream = await client.beta.sessions.events.stream(session.id)
+
+// Stream is now open and buffering server-side. Read history first.
+for await (const event of client.beta.sessions.events.list(session.id)) {
+  seenEventIds.add(event.id)
+  handle(event)
+}
+
+// Tail the live stream. Dedupe only gates handle() - terminal checks must run
+// even for already-seen events, or a terminal event that was in the history
+// response gets skipped by `continue` and the loop never exits.
+for await (const event of stream) {
+  if (!seenEventIds.has(event.id)) {
+    seenEventIds.add(event.id)
+    handle(event)
+  }
+  if (event.type === 'session.status_terminated') break
+  if (event.type === 'session.status_idle' &amp;&amp; event.stop_reason.type !== 'requires_action') break
+}
+</code></pre>
+<hr />
+<h2>2. <code>processed_at</code> - queued vs processed</h2>
+<p>Every event on the stream carries <code>processed_at</code> (ISO 8601), set when the event finishes processing. For client-sent events (<code>user.message</code>, <code>user.interrupt</code>, <code>user.tool_confirmation</code>) it's <code>null</code> while the event is queued behind earlier ones, and populated once the agent processes it - so the same event appears on the stream twice, once with <code>null</code> and once with a timestamp. (Exception: a <code>user.interrupt</code> sent while the session is paused at its budget is accepted and ignored - it never appears at all; see <code>shared/managed-agents-events.md</code> § Reaching a session budget.)</p>
+<p><strong>Three event types skip the queued phase:</strong> <code>user.define_outcome</code>, <code>user.custom_tool_result</code>, and <code>user.tool_result</code> are processed on receipt and echoed back with <code>processed_at</code> already populated. A pending -&gt; acknowledged UI that assumes "first sighting is always <code>null</code>" will never clear for these - treat a populated <code>processed_at</code> on first sighting as immediately acknowledged.</p>
+<pre><code class="language-ts">for await (const event of stream) {
+  if (event.type === 'user.message') {
+    if (event.processed_at == null) onQueued(event.id)
+    else onProcessed(event.id, event.processed_at)
+  }
+}
+</code></pre>
+<p>Use this to drive pending -&gt; acknowledged UI state for anything you send. How you map a locally-rendered optimistic message to the server-assigned <code>event.id</code> is application-specific (typically via the return value of <code>events.send()</code> or FIFO ordering).</p>
+<hr />
+<h2>3. Interrupt a running session</h2>
+<p>Send <code>user.interrupt</code> as a normal event. The session keeps running until it reaches a safe boundary, then goes idle.</p>
+<pre><code class="language-ts">await client.beta.sessions.events.send(session.id, {
+  events: [{ type: 'user.interrupt' }],
+})
+
+// Drain until the session is truly done - see Pattern 5 for the full gate.
+for await (const event of stream) {
+  if (event.type === 'session.status_terminated') break
+  if (
+    event.type === 'session.status_idle' &amp;&amp;
+    event.stop_reason.type !== 'requires_action'
+  ) break
+}
+</code></pre>
+<p>Reference: <code>interrupt.ts</code> - sends the interrupt the moment it sees <code>span.model_request_start</code>, drains to idle, then verifies via <code>sessions.retrieve()</code>.</p>
+<hr />
+<h2>4. <code>tool_confirmation</code> round-trip</h2>
+<p>When a call evaluates to <code>ask</code> - the tool has <code>permission_policy: { type: 'always_ask' }</code>, or it has <code>{ type: 'auto' }</code> and the server reached no determination - the <code>agent.tool_use</code> / <code>agent.mcp_tool_use</code> event carries <code>evaluated_permission === 'ask'</code> and the session goes idle waiting for a decision. Respond with <code>user.tool_confirmation</code>.</p>
+<pre><code class="language-ts">for await (const event of stream) {
+  if ((event.type === 'agent.tool_use' || event.type === 'agent.mcp_tool_use') &amp;&amp; event.evaluated_permission === 'ask') {
+    await client.beta.sessions.events.send(session.id, {
+      events: [{
+        type: 'user.tool_confirmation',
+        tool_use_id: event.id,         // not a toolu_ id - use event.id
+        result: 'allow',               // or 'deny'
+        // deny_message: '...',        // optional, only with result: 'deny'
+      }],
+    })
+  }
+}
+</code></pre>
+<p>Key points:
+- <code>tool_use_id</code> is <code>event.id</code> (typically <code>sevt_...</code>), <strong>not</strong> a <code>toolu_...</code> ID.
+- <code>result</code> is <code>'allow' | 'deny'</code>. Use <code>deny_message</code> to tell the model <em>why</em> you denied - it gets surfaced back to the agent.
+- Multiple pending tools: respond once per <code>agent.tool_use</code> / <code>agent.mcp_tool_use</code> event with <code>evaluated_permission === 'ask'</code>.
+- Gate on <code>evaluated_permission === 'ask'</code>, not on the policy you configured - it covers <code>always_ask</code> and <code>auto</code>-indeterminate alike. Calls the server <strong>denies</strong> under <code>auto</code> (<code>evaluated_permission === 'deny'</code>, <code>evaluation.evaluated_permission.reason_code === 'high_risk'</code>) never enter this flow: the agent gets an error tool result and the session keeps running; sending a confirmation for one is a 400.
+- Log <code>event.evaluation</code> for audit (<code>type</code> + <code>reason_code</code>), and tolerate a <code>type</code> or <code>reason_code</code> you don't recognize - branch on known values, pass unknown ones through.</p>
+<p>Reference: <code>tool-permissions.ts</code>.</p>
+<hr />
+<h2>5. Correct idle-break gate</h2>
+<p>Do not break on <code>session.status_idle</code> alone. The session goes idle transiently - e.g. between parallel tool executions, while waiting for a <code>user.tool_confirmation</code>, or while awaiting a <code>user.custom_tool_result</code>. Break when idle with a non-<code>requires_action</code> <code>stop_reason</code> (terminal, or <code>budget_reached</code> - resumable only by a budget update, so break unless you intend to change or remove the budget), or on <code>session.status_terminated</code>.</p>
+<pre><code class="language-ts">for await (const event of stream) {
+  handle(event)
+  if (event.type === 'session.status_terminated') break
+  if (event.type === 'session.status_idle') {
+    if (event.stop_reason.type === 'requires_action') continue // waiting on you - handle it
+    break // end_turn, retries_exhausted, or budget_reached - see list below
+  }
+}
+</code></pre>
+<p><code>stop_reason.type</code> values on <code>session.status_idle</code>:
+- <code>requires_action</code> - agent is waiting on a client-side event (tool confirmation, custom tool result). Handle it, don't break. <strong>Self-hosted exception:</strong> if the session went <code>requires_action</code>-idle with no pending <code>agent.tool_use</code> / <code>agent.mcp_tool_use</code> (<code>ask</code>) or <code>agent.custom_tool_use</code> to answer, the worker failed the claimed work item (typically a memory-store mount error, logged only on the worker host). Don't <code>continue</code> forever on that - surface it, fix the host, and send <code>user.interrupt</code> to re-queue the work (<code>shared/managed-agents-self-hosted-sandboxes.md</code> § Memory stores -&gt; Troubleshooting).
+- <code>retries_exhausted</code> - terminal failure. Break, then check <code>sessions.retrieve()</code> for the error state.
+- <code>end_turn</code> - normal completion.
+- <code>budget_reached</code> - the session hit its spend cap and paused. Not terminal and not resumable by any event: change (typically raise) or remove the session's <code>budget</code> to resume, or treat it as done. A <code>session.usage</code> event with the final cost immediately precedes this idle. See <code>shared/managed-agents-core.md</code> § Session budgets.</p>
+<hr />
+<h2>6. Post-idle status-write race</h2>
+<p>The SSE stream emits <code>session.status_idle</code> slightly before the session's queryable status reflects it. Clients that break on idle and immediately call <code>sessions.delete()</code> or <code>sessions.archive()</code> will intermittently 400 with "cannot delete/archive while running."</p>
+<p>Poll before cleanup:</p>
+<pre><code class="language-ts">let s
+for (let i = 0; i &lt; 10; i++) {
+  s = await client.beta.sessions.retrieve(session.id)
+  if (s.status !== 'running') break
+  await new Promise(r =&gt; setTimeout(r, 200))
+}
+if (s?.status !== 'running') {
+  await client.beta.sessions.archive(session.id)
+} // else: still running after 2s - don't archive, let it settle or escalate
+</code></pre>
+<hr />
+<h2>7. Stream-first, then send</h2>
+<p>Always open the stream <strong>before</strong> sending the kickoff event. Otherwise the agent may process the event and emit the first events before your consumer is attached, and you'll miss them.</p>
+<pre><code class="language-ts">const stream = await client.beta.sessions.events.stream(session.id)
+await client.beta.sessions.events.send(session.id, {
+  events: [{ type: 'user.message', content: [{ type: 'text', text: 'Hello' }] }],
+})
+for await (const event of stream) { /* ... */ }
+</code></pre>
+<p>The <code>Promise.all([stream, send])</code> shape works too, but stream-first is simpler and has the same effect - the stream starts buffering the moment it's opened.</p>
+<hr />
+<h2>8. File-mount gotchas</h2>
+<p><strong>The mounted resource has a different <code>file_id</code> than the file you uploaded.</strong> Session creation makes a session-scoped copy.</p>
+<pre><code class="language-ts">const uploaded = await client.beta.files.upload({ file, purpose: 'agent_resource' })
+// uploaded.id         -&gt; the original file
+const session = await client.beta.sessions.create({
+  /* ... */
+  resources: [{ type: 'file', file_id: uploaded.id, mount_path: '/workspace/data.csv' }],
+})
+// session.resources[0].file_id !== uploaded.id  &lt;- different IDs
+</code></pre>
+<p>Delete the original via <code>files.delete(uploaded.id)</code>; the session-scoped copy is garbage-collected with the session. <code>mount_path</code> must be absolute - see <code>shared/managed-agents-environments.md</code>.</p>
+<hr />
+<h2>9. Secrets for non-MCP APIs and CLIs - keep them host-side via custom tools</h2>
+<p><strong>Problem:</strong> you want the agent to call a third-party API or run a CLI that needs a secret (API key, token, service-account credential), but you can't or don't want to hand the secret to a vault.</p>
+<p><strong>First check:</strong> for cloud environments, the first-class answer is now a vault <code>environment_variable</code> credential - the agent's shell sees an opaque placeholder and the real secret is substituted at egress. See <code>shared/managed-agents-tools.md</code> -&gt; Vaults. Use this pattern instead when that doesn't fit: <strong>self-hosted sandboxes</strong> (env-var credentials not yet supported there), clients that reject the placeholder via local format validation, secrets that must never leave your infrastructure, or calls that need host-side binaries.</p>
+<p><strong>Solution:</strong> move the authenticated call to your side. Declare a custom tool on the agent; when the agent emits <code>agent.custom_tool_use</code>, your orchestrator (the process reading the SSE stream) executes the call with its own credentials and responds with <code>user.custom_tool_result</code>. The container never sees the key.</p>
+<pre><code class="language-ts">// Agent template: declare the tool, no credentials
+tools: [{ type: 'custom', name: 'linear_graphql', input_schema: { /* query, vars */ } }]
+
+// Orchestrator: handle the call with host-side creds
+for await (const event of stream) {
+  if (event.type === 'agent.custom_tool_use' &amp;&amp; event.name === 'linear_graphql') {
+    const result = await linear.request(event.input.query, event.input.vars) // host's key
+    await client.beta.sessions.events.send(session.id, {
+      events: [{
+        type: 'user.custom_tool_result',
+        custom_tool_use_id: event.id,
+        content: [{ type: 'text', text: JSON.stringify(result) }],
+      }],
+    })
+  }
+}
+</code></pre>
+<p>Same shape works for <code>gh</code> CLI, local eval scripts, or anything else that needs host-side auth or binaries.</p>
+<p><strong>Security note:</strong> this does not expose a public endpoint. <code>agent.custom_tool_use</code> arrives on the SSE stream your orchestrator already holds open with your Anthropic API key, and <code>user.custom_tool_result</code> goes back via <code>events.send()</code> under the same key. Your orchestrator is a client, not a server - nothing unauthenticated is listening.</p>
+<p><strong>Do not embed API keys in the system prompt or user messages as a workaround.</strong> Prompts and messages are stored in the session's event history, returned by <code>events.list()</code>, and included in compaction summaries - a secret placed there is durably persisted and readable via the API for the life of the session.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

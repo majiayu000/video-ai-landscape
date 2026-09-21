@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>error-codes · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/error-codes.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>HTTP Error Codes Reference</h1>
+<p>This file documents HTTP error codes returned by the Claude API, their common causes, and how to handle them. For language-specific error handling examples, see the <code>python/</code> or <code>typescript/</code> folders.</p>
+<h2>Error Code Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Error Type</th>
+<th>Retryable</th>
+<th>Common Cause</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>400</td>
+<td><code>invalid_request_error</code></td>
+<td>No</td>
+<td>Invalid request format or parameters</td>
+</tr>
+<tr>
+<td>401</td>
+<td><code>authentication_error</code></td>
+<td>No</td>
+<td>Invalid or missing API key</td>
+</tr>
+<tr>
+<td>403</td>
+<td><code>permission_error</code></td>
+<td>No</td>
+<td>API key lacks permission</td>
+</tr>
+<tr>
+<td>404</td>
+<td><code>not_found_error</code></td>
+<td>No</td>
+<td>Invalid endpoint or model ID</td>
+</tr>
+<tr>
+<td>413</td>
+<td><code>request_too_large</code></td>
+<td>No</td>
+<td>Request exceeds size limits</td>
+</tr>
+<tr>
+<td>429</td>
+<td><code>rate_limit_error</code></td>
+<td>Yes</td>
+<td>Too many requests</td>
+</tr>
+<tr>
+<td>500</td>
+<td><code>api_error</code></td>
+<td>Yes</td>
+<td>Anthropic service issue</td>
+</tr>
+<tr>
+<td>529</td>
+<td><code>overloaded_error</code></td>
+<td>Yes</td>
+<td>API is temporarily overloaded</td>
+</tr>
+</tbody>
+</table>
+<h2>Detailed Error Information</h2>
+<h3>400 Bad Request</h3>
+<p><strong>Causes:</strong></p>
+<ul>
+<li>Malformed JSON in request body</li>
+<li>Missing required parameters (<code>model</code>, <code>max_tokens</code>, <code>messages</code>)</li>
+<li>Invalid parameter types (e.g., string where integer expected)</li>
+<li>Empty messages array</li>
+<li>Messages not alternating user/assistant</li>
+</ul>
+<p><strong>Example error:</strong></p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;error&quot;,
+  &quot;error&quot;: {
+    &quot;type&quot;: &quot;invalid_request_error&quot;,
+    &quot;message&quot;: &quot;messages: roles must alternate between \&quot;user\&quot; and \&quot;assistant\&quot;&quot;
+  },
+  &quot;request_id&quot;: &quot;req_011CSHoEeqs5C35K2UUqR7Fy&quot;
+}
+</code></pre>
+<p><strong>Fix:</strong> Validate request structure before sending. Check that:</p>
+<ul>
+<li><code>model</code> is a valid model ID</li>
+<li><code>max_tokens</code> is a positive integer</li>
+<li><code>messages</code> array is non-empty and alternates correctly</li>
+</ul>
+<hr />
+<h3>401 Unauthorized</h3>
+<p><strong>Causes:</strong></p>
+<ul>
+<li>Missing <code>x-api-key</code> header or <code>Authorization</code> header</li>
+<li>Invalid API key format</li>
+<li>Revoked or deleted API key</li>
+<li>OAuth bearer token sent via <code>x-api-key</code> instead of <code>Authorization: Bearer</code></li>
+<li>Both <code>ANTHROPIC_API_KEY</code> and <code>ANTHROPIC_AUTH_TOKEN</code> set - the SDK sends both headers and the API rejects the request</li>
+</ul>
+<p><strong>Fix:</strong> Set <code>ANTHROPIC_API_KEY</code>, or run <code>ant auth login</code> and leave the client constructor empty. For raw HTTP with an OAuth token, use <code>Authorization: Bearer &lt;token&gt;</code> (not <code>x-api-key:</code>).</p>
+<hr />
+<h3>403 Forbidden</h3>
+<p><strong>Causes:</strong></p>
+<ul>
+<li>API key doesn't have access to the requested model</li>
+<li>Organization-level restrictions</li>
+<li>Attempting to access beta features without beta access</li>
+</ul>
+<p><strong>Fix:</strong> Check your API key permissions in the Console. You may need a different API key or to request access to specific features.</p>
+<hr />
+<h3>404 Not Found</h3>
+<p><strong>Causes:</strong></p>
+<ul>
+<li>Typo in model ID (e.g., <code>claude-sonnet-4.6</code> instead of <code>claude-sonnet-4-6</code>)</li>
+<li>Using deprecated model ID</li>
+<li>Invalid API endpoint</li>
+</ul>
+<p><strong>Fix:</strong> Use exact model IDs from the models documentation. You can use aliases (e.g., <code>claude-opus-5</code>).</p>
+<hr />
+<h3>413 Request Too Large</h3>
+<p><strong>Causes:</strong></p>
+<ul>
+<li>Request body exceeds maximum size</li>
+<li>Too many tokens in input</li>
+<li>Image data too large</li>
+</ul>
+<p><strong>Fix:</strong> Reduce input size - truncate conversation history, compress/resize images, or split large documents into chunks.</p>
+<hr />
+<h3>400 Validation Errors</h3>
+<p>Some 400 errors are specifically related to parameter validation:</p>
+<ul>
+<li><code>max_tokens</code> exceeds model's limit</li>
+<li>Invalid <code>temperature</code> value (must be 0.0-1.0)</li>
+<li><code>budget_tokens</code> &gt;= <code>max_tokens</code> in extended thinking</li>
+<li>Invalid tool definition schema</li>
+</ul>
+<p><strong>Model-specific 400s on Claude Opus 5 / Fable 5/5.1 / Opus 4.8 / 4.7:</strong></p>
+<ul>
+<li><code>temperature</code>, <code>top_p</code>, <code>top_k</code> are removed - sending any of them returns 400. Delete the parameter; see <code>shared/model-migration.md</code> -&gt; Per-SDK Syntax Reference.</li>
+<li><code>thinking: {type: "enabled", budget_tokens: N}</code> is removed - sending it returns 400. Use <code>thinking: {type: "adaptive"}</code> instead.</li>
+<li><strong>Claude Opus 5:</strong> <code>thinking: {type: "disabled"}</code> returns 400 when <code>effort</code> is <code>xhigh</code> or <code>max</code> - it is accepted at <code>high</code> or below. Thinking is on by default, so omitting the param runs adaptive rather than disabling it.</li>
+<li><strong>Fable 5/5.1 only:</strong> an explicit <code>thinking: {type: "disabled"}</code> returns 400 at any effort (it is accepted on Opus 4.8/4.7). Omit the <code>thinking</code> param entirely instead.</li>
+<li><strong>Fable 5/5.1, Mythos 5/5.1:</strong> if the organization or workspace is set to zero data retention (ZDR) - or any retention below the required 30 days - then <strong>all</strong> requests to these models return <code>400 invalid_request_error</code> ("In order to access this model, your organization or workspace must have data retention enabled."), even with a perfectly valid payload; ZDR only if expressly authorized by Anthropic. Check the retention configuration before debugging the request body.</li>
+<li><strong>Claude Fable 5.1 / Claude Mythos 5.1 (and Mythos Preview):</strong> <code>tool_choice: {type: "any"}</code> or <code>{type: "tool", name: ...}</code> returns 400 <code>tool_choice: type "tool" and "any" are not supported for this model.</code> - also on <code>count_tokens</code> and Batches. Use <code>{type: "auto"}</code> plus a prompt instruction (<code>strict: true</code> for schema-valid arguments), or structured outputs.</li>
+<li><strong>Claude Fable 5.1 / Claude Mythos 5.1 - preserved thinking / history-editing check (new accounts created on/after 2026-08-31, or any request that sets <code>prefix_mismatch_behavior</code>):</strong> <code>messages.N.content.M: Invalid `signature` in `thinking` block. The block is bound to a different conversation. Remove the block, or set `thinking.block_binding.prefix_mismatch_behavior` to "drop_block".</code> (plus a sentence naming the beta header when it wasn't sent, and optionally one naming the first message that changed) means the system prompt, tool list, or an earlier message changed since that thinking block was produced. Retrying the same body never clears it; <code>count_tokens</code> returns the same 400. (In the Message Batches API the <em>unset</em> default drops the failing blocks instead of failing the item - a Batches item fails as <code>errored</code> only with <code>prefix_mismatch_behavior: "error"</code> set.) Strip the named block and every thinking block after it and retry once, or resend with <code>thinking.block_binding.prefix_mismatch_behavior: "drop_block"</code> under beta <code>thinking-binding-controls-2026-08-01</code> (where the controls beta is offered - Claude API / Claude Platform on AWS at launch, per model on Bedrock and Google Cloud, not on Foundry: <code>shared/platform-availability.md</code>; elsewhere use the strip-and-retry path; without the header that field is a 400 ending <code>block_binding: Extra inputs are not permitted</code>); then fix the harness so it stops editing history (see <code>shared/model-migration.md</code> -&gt; Migrating to Claude Fable 5.1 from Claude Fable 5). The same leading clause with <em>no</em> "bound to a different conversation" sentence is a tampered signature - always a 400, regardless of the setting.</li>
+</ul>
+<p><strong>Common mistake with extended thinking on older models (Opus 4.6 and earlier):</strong></p>
+<pre><code># Wrong: budget_tokens must be &lt; max_tokens
+thinking: budget_tokens=10000, max_tokens=1000  -&gt; Error!
+
+# Correct
+thinking: budget_tokens=10000, max_tokens=16000
+</code></pre>
+<hr />
+<h3>429 Rate Limited</h3>
+<p><strong>Causes:</strong></p>
+<ul>
+<li>Exceeded requests per minute (RPM)</li>
+<li>Exceeded tokens per minute (TPM)</li>
+<li>Exceeded tokens per day (TPD)</li>
+</ul>
+<p><strong>Headers to check:</strong></p>
+<ul>
+<li><code>retry-after</code>: Seconds to wait before retrying</li>
+<li><code>x-ratelimit-limit-*</code>: Your limits</li>
+<li><code>x-ratelimit-remaining-*</code>: Remaining quota</li>
+</ul>
+<p><strong>Fix:</strong> The Anthropic SDKs automatically retry 429 and 5xx errors with exponential backoff (default: <code>max_retries=2</code>). For custom retry behavior, see the language-specific error handling examples.</p>
+<hr />
+<h3>500 Internal Server Error</h3>
+<p><strong>Causes:</strong></p>
+<ul>
+<li>Temporary Anthropic service issue</li>
+<li>Bug in API processing</li>
+</ul>
+<p><strong>Fix:</strong> Retry with exponential backoff. If persistent, check <a href="https://status.anthropic.com">status.anthropic.com</a>.</p>
+<hr />
+<h3>529 Overloaded</h3>
+<p><strong>Causes:</strong></p>
+<ul>
+<li>High API demand</li>
+<li>Service capacity reached</li>
+</ul>
+<p><strong>Fix:</strong> Retry with exponential backoff. Consider using a different model (Haiku is often less loaded), spreading requests over time, or implementing request queuing.</p>
+<hr />
+<h2>Common Mistakes and Fixes</h2>
+<table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Error</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>temperature</code>/<code>top_p</code>/<code>top_k</code> on Claude Opus 5 / Fable 5/5.1 / Opus 4.8 / 4.7</td>
+<td>400</td>
+<td>Remove the parameter (see <code>shared/model-migration.md</code>)</td>
+</tr>
+<tr>
+<td><code>budget_tokens</code> on Claude Opus 5 / Fable 5/5.1 / Opus 4.8 / 4.7</td>
+<td>400</td>
+<td>Use <code>thinking: {type: "adaptive"}</code></td>
+</tr>
+<tr>
+<td><code>thinking: {type: "disabled"}</code> on Fable 5/5.1</td>
+<td>400</td>
+<td>Omit the <code>thinking</code> param entirely (accepted on Opus 4.8/4.7)</td>
+</tr>
+<tr>
+<td>Org set to ZDR / retention below 30 days (Fable 5/5.1, Mythos 5/5.1)</td>
+<td>400 on every request</td>
+<td>Fix the org's data-retention configuration - the payload isn't the problem</td>
+</tr>
+<tr>
+<td><code>tool_choice</code> <code>any</code> / <code>tool</code> on Claude Fable 5.1 / Claude Mythos 5.1 / Mythos Preview</td>
+<td>400</td>
+<td><code>{type: "auto"}</code> + name the tool in the prompt (<code>strict: true</code> for schema-valid args), or structured outputs</td>
+</tr>
+<tr>
+<td>Edited history replayed with thinking blocks (Claude Fable 5.1 / Claude Mythos 5.1, preserved thinking)</td>
+<td>400 <code>Invalid signature in thinking block ... bound to a different conversation</code></td>
+<td>Stop editing history - keep the transcript append-only, using mid-conversation <code>role: "system"</code> / tool-change messages, turn-scoped <code>clear_at</code> reminders that are never deleted, server-side context editing, and summary-only compaction instead of edits; recover once by stripping the named block and every thinking block after it (text and tool calls stay), or <code>prefix_mismatch_behavior: "drop_block"</code></td>
+</tr>
+<tr>
+<td><code>thinking.block_binding</code> without <code>thinking-binding-controls-2026-08-01</code></td>
+<td>400 <code>block_binding: Extra inputs are not permitted</code></td>
+<td>Send the beta header where the controls beta is offered (<code>shared/platform-availability.md</code>); elsewhere remove <code>block_binding</code> and use strip-and-retry</td>
+</tr>
+<tr>
+<td><code>budget_tokens</code> &gt;= <code>max_tokens</code> (older models)</td>
+<td>400</td>
+<td>Ensure <code>budget_tokens</code> &lt; <code>max_tokens</code></td>
+</tr>
+<tr>
+<td>Typo in model ID</td>
+<td>404</td>
+<td>Use valid model ID like <code>claude-opus-5</code></td>
+</tr>
+<tr>
+<td>First message is <code>assistant</code></td>
+<td>400</td>
+<td>First message must be <code>user</code></td>
+</tr>
+<tr>
+<td>Consecutive same-role messages</td>
+<td>400</td>
+<td>Alternate <code>user</code> and <code>assistant</code></td>
+</tr>
+<tr>
+<td>API key in code</td>
+<td>401 (leaked key)</td>
+<td>Use environment variable</td>
+</tr>
+<tr>
+<td>Custom retry needs</td>
+<td>429/5xx</td>
+<td>SDK retries automatically; customize with <code>max_retries</code></td>
+</tr>
+</tbody>
+</table>
+<h2>Typed Exceptions in SDKs</h2>
+<p><strong>Always use the SDK's typed exception classes</strong> instead of checking error messages with string matching. Each HTTP status code maps to a specific exception class per SDK.</p>
+<h3>Exception class names by language</h3>
+<table>
+<thead>
+<tr>
+<th>HTTP</th>
+<th>Python (<code>anthropic.*</code>) / TypeScript (<code>Anthropic.*</code>)</th>
+<th>Ruby (<code>Anthropic::Errors::*</code>)</th>
+<th>Java (<code>com.anthropic.errors.*</code>)</th>
+<th>C#</th>
+<th>PHP (<code>Anthropic\Core\Exceptions\*</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>400</td>
+<td><code>BadRequestError</code></td>
+<td><code>BadRequestError</code></td>
+<td><code>BadRequestException</code></td>
+<td><code>AnthropicBadRequestException</code></td>
+<td><code>BadRequestException</code></td>
+</tr>
+<tr>
+<td>401</td>
+<td><code>AuthenticationError</code></td>
+<td><code>AuthenticationError</code></td>
+<td><code>UnauthorizedException</code></td>
+<td><code>AnthropicUnauthorizedException</code></td>
+<td><code>AuthenticationException</code></td>
+</tr>
+<tr>
+<td>403</td>
+<td><code>PermissionDeniedError</code></td>
+<td><code>PermissionDeniedError</code></td>
+<td><code>PermissionDeniedException</code></td>
+<td><code>AnthropicForbiddenException</code></td>
+<td><code>PermissionDeniedException</code></td>
+</tr>
+<tr>
+<td>404</td>
+<td><code>NotFoundError</code></td>
+<td><code>NotFoundError</code></td>
+<td><code>NotFoundException</code></td>
+<td><code>AnthropicNotFoundException</code></td>
+<td><code>NotFoundException</code></td>
+</tr>
+<tr>
+<td>422</td>
+<td><code>UnprocessableEntityError</code></td>
+<td><code>UnprocessableEntityError</code></td>
+<td><code>UnprocessableEntityException</code></td>
+<td><code>AnthropicUnprocessableEntityException</code></td>
+<td><code>UnprocessableEntityException</code></td>
+</tr>
+<tr>
+<td>429</td>
+<td><code>RateLimitError</code></td>
+<td><code>RateLimitError</code></td>
+<td><code>RateLimitException</code></td>
+<td><code>AnthropicRateLimitException</code></td>
+<td><code>RateLimitException</code></td>
+</tr>
+<tr>
+<td>&gt;=500</td>
+<td><code>InternalServerError</code></td>
+<td><code>InternalServerError</code></td>
+<td><code>InternalServerException</code></td>
+<td><code>Anthropic5xxException</code></td>
+<td><code>InternalServerException</code></td>
+</tr>
+<tr>
+<td>net</td>
+<td><code>APIConnectionError</code></td>
+<td><code>APIConnectionError</code></td>
+<td><code>AnthropicIoException</code></td>
+<td><code>AnthropicIOException</code></td>
+<td><code>APIConnectionException</code></td>
+</tr>
+<tr>
+<td>base</td>
+<td><code>APIError</code> (both); <code>APIStatusError</code> (Python only)</td>
+<td><code>APIStatusError</code> / <code>APIError</code></td>
+<td><code>AnthropicServiceException</code></td>
+<td><code>AnthropicApiException</code></td>
+<td><code>APIStatusException</code> / <code>APIException</code></td>
+</tr>
+</tbody>
+</table>
+<p>The Ruby and PHP classes live in a dedicated errors namespace - write <code>Anthropic::Errors::RateLimitError</code> and <code>Anthropic\Core\Exceptions\RateLimitException</code> (not bare <code>Anthropic::RateLimitError</code>). All 4xx C# exceptions also inherit from <code>Anthropic4xxException</code>.</p>
+<h3>Catch most-specific first, in a chain</h3>
+<p>Order <code>catch</code>/<code>except</code>/<code>rescue</code> clauses from the most specific subclass to the base class, with a separate clause for each category you handle differently - retryable (429, &gt;=500, network) vs. non-retryable (4xx). The SDK defines a distinct class per status for exactly this reason; a single broad catch-all discards that information.</p>
+<pre><code class="language-python">try:
+    msg = client.messages.create(...)
+except anthropic.NotFoundError as e:          # 404 - e.g. bad model ID
+    ...
+except anthropic.RateLimitError as e:         # 429 - back off and retry
+    ...
+except anthropic.APIStatusError as e:         # any other non-2xx HTTP response
+    print(e.status_code, e.message)
+except anthropic.APIConnectionError as e:     # network failure before a response
+    ...
+</code></pre>
+<p>The same chain shape applies in every SDK: TypeScript <code>instanceof Anthropic.NotFoundError</code> -&gt; <code>RateLimitError</code> -&gt; <code>APIConnectionError</code> -&gt; <code>APIError</code> (check <code>APIConnectionError</code> before <code>APIError</code> - in the TypeScript SDK it's a subclass of <code>APIError</code>, unlike Python where it's a sibling); Ruby <code>rescue Anthropic::Errors::NotFoundError</code> -&gt; <code>...::RateLimitError</code> -&gt; <code>...::APIStatusError</code>; Java <code>catch (NotFoundException) ... catch (RateLimitException) ... catch (AnthropicServiceException)</code>; C# <code>catch (AnthropicNotFoundException) ... catch (AnthropicRateLimitException) ... catch (AnthropicApiException)</code>; PHP <code>catch (NotFoundException) ... catch (RateLimitException) ... catch (APIStatusException)</code>.</p>
+<h3>Go - <code>errors.As</code> then branch on status</h3>
+<p>The Go SDK returns a single <code>*anthropic.Error</code> for all non-2xx responses. Unwrap it with <code>errors.As</code>, then branch on <code>StatusCode</code>:</p>
+<pre><code class="language-go">_, err := client.Messages.New(ctx, params)
+if err != nil {
+    var apierr *anthropic.Error
+    if errors.As(err, &amp;apierr) {
+        switch apierr.StatusCode {
+        case 404:
+            // bad model ID / resource
+        case 429:
+            // back off and retry
+        default:
+            // other API error - apierr.StatusCode, apierr.RequestID
+        }
+    } else {
+        // transport-level error (*url.Error wrapping *net.OpError, etc.)
+    }
+}
+</code></pre>
+<h3>Error <code>.type</code> Field</h3>
+<p>All <code>APIStatusError</code> subclasses now expose a <code>.type</code> property (Python: <code>.type</code>, TypeScript: <code>.type</code>, Java: <code>.errorType()</code>, Go: <code>.Type()</code>, Ruby: <code>.type</code>, PHP: <code>.type</code>) that returns the API error type string (e.g., <code>"invalid_request_error"</code>, <code>"authentication_error"</code>, <code>"rate_limit_error"</code>, <code>"overloaded_error"</code>). Use this for programmatic error classification when you need finer granularity than the HTTP status code - for example, distinguishing <code>"billing_error"</code> from <code>"permission_error"</code> (both map to 403).</p>
+<pre><code class="language-python">except anthropic.APIStatusError as e:
+    if e.type == &quot;rate_limit_error&quot;:
+        # handle rate limiting
+    elif e.type == &quot;overloaded_error&quot;:
+        # handle overload
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

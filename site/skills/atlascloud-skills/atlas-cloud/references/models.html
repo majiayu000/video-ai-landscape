@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>models · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">atlas-cloud/references/models.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Atlas Cloud — Model Reference</h1>
+<h2>CRITICAL: Fetch From the API — Do Not Fabricate</h2>
+<blockquote>
+<p>The tables in this file are a <strong>snapshot, not a source of truth</strong>. Model IDs, prices, parameter names, defaults, and enums all change. Any ID, parameter, or schema detail in code or user-facing output MUST come from a live API fetch performed in the current session.</p>
+</blockquote>
+<p><strong>Mandatory workflow — no exceptions:</strong></p>
+<ol>
+<li>
+<p><strong>Always fetch the model list first.</strong> No authentication required:
+   <code>GET https://api.atlascloud.ai/api/v1/models</code>
+   If the MCP server is installed, call <code>atlas_list_models</code> or <code>atlas_search_docs</code> instead — same live data.</p>
+</li>
+<li>
+<p><strong>Filter to <code>display_console: true</code>.</strong> Any model with <code>display_console: false</code> is internal and will fail for regular users. Do not surface those IDs.</p>
+</li>
+<li>
+<p><strong>Before writing a request body, fetch the schema.</strong> Never guess parameter names, enums, defaults, or required fields. For any target model:
+   - MCP: <code>atlas_get_model_info</code> with the exact model ID
+   - HTTP: GET the <code>schema</code> URL from the model entry (OpenAPI JSON) and read <code>components.schemas.Input.properties</code></p>
+</li>
+</ol>
+<p>Build the payload strictly from the fields listed there. If a parameter you want isn't in the schema, it doesn't exist on that model.</p>
+<ol start="4">
+<li><strong>Hardcoded IDs are only acceptable after verification.</strong> Either fetch and filter at runtime, or confirm the ID against a live <code>GET /models</code> response in the same session before embedding it.</li>
+</ol>
+<p><strong>Red flags — stop and fetch if you catch yourself doing any of these:</strong>
+- Copying a model ID from memory or from these tables without a same-session API check
+- Guessing a parameter name (e.g. assuming <code>aspect_ratio</code> when the model uses <code>ratio</code>, or <code>image_url</code> when it uses <code>image</code>)
+- Sending a parameter not listed in the schema
+- Reporting a price to the user that wasn't in the live API response</p>
+<hr />
+<h2>Image Models (priced per image)</h2>
+<table>
+<thead>
+<tr>
+<th>Model ID</th>
+<th>Name</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>google/nano-banana-2/text-to-image</code></td>
+<td>Nano Banana 2 Text-to-Image</td>
+<td>$0.072/image</td>
+</tr>
+<tr>
+<td><code>google/nano-banana-2/text-to-image-developer</code></td>
+<td>Nano Banana 2 Developer</td>
+<td>$0.056/image</td>
+</tr>
+<tr>
+<td><code>google/nano-banana-2/edit</code></td>
+<td>Nano Banana 2 Edit</td>
+<td>$0.072/image</td>
+</tr>
+<tr>
+<td><code>google/nano-banana-2/edit-developer</code></td>
+<td>Nano Banana 2 Edit Developer</td>
+<td>$0.056/image</td>
+</tr>
+<tr>
+<td><code>bytedance/seedream-v5.0-lite</code></td>
+<td>Seedream v5.0 Lite</td>
+<td>$0.032/image</td>
+</tr>
+<tr>
+<td><code>bytedance/seedream-v5.0-lite/edit</code></td>
+<td>Seedream v5.0 Lite Edit</td>
+<td>$0.032/image</td>
+</tr>
+<tr>
+<td><code>bytedance/seedream-v5.0-lite/sequential</code></td>
+<td>Seedream v5.0 Lite Sequential</td>
+<td>$0.032/image</td>
+</tr>
+<tr>
+<td><code>alibaba/qwen-image/edit-plus-20251215</code></td>
+<td>Qwen-Image Edit Plus</td>
+<td>$0.021/image</td>
+</tr>
+<tr>
+<td><code>alibaba/wan-2.6/image-edit</code></td>
+<td>Wan-2.6 Image Edit</td>
+<td>$0.021/image</td>
+</tr>
+<tr>
+<td><code>z-image/turbo</code></td>
+<td>Z-Image Turbo</td>
+<td>$0.01/image</td>
+</tr>
+<tr>
+<td><code>bytedance/seedream-v4.5</code></td>
+<td>Seedream v4.5</td>
+<td>$0.036/image</td>
+</tr>
+</tbody>
+</table>
+<h2>Video Models (priced per second of output; figures are the 480p entry price — 720p/1080p cost more)</h2>
+<table>
+<thead>
+<tr>
+<th>Model ID</th>
+<th>Name</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bytedance/seedance-2.5/text-to-video</code></td>
+<td><strong>Seedance 2.5 Text-to-Video</strong> (native audio, 4-30s, native up to 1080p / 4K via SR)</td>
+<td>$0.134/s</td>
+</tr>
+<tr>
+<td><code>bytedance/seedance-2.5/image-to-video</code></td>
+<td><strong>Seedance 2.5 Image-to-Video</strong> (first+last frame, native audio)</td>
+<td>$0.134/s</td>
+</tr>
+<tr>
+<td><code>bytedance/seedance-2.5/reference-to-video</code></td>
+<td><strong>Seedance 2.5 Reference-to-Video</strong> (multimodal: up to 30 images + 10 videos + 10 audio)</td>
+<td>$0.134/s</td>
+</tr>
+<tr>
+<td><code>bytedance/seedance-2.0/text-to-video</code></td>
+<td>Seedance 2.0 Text-to-Video (native audio, 4-15s)</td>
+<td>$0.112/s</td>
+</tr>
+<tr>
+<td><code>bytedance/seedance-2.0-fast/text-to-video</code></td>
+<td>Seedance 2.0 Fast Text-to-Video</td>
+<td>$0.072/s</td>
+</tr>
+<tr>
+<td><code>bytedance/seedance-2.0-fast/image-to-video</code></td>
+<td>Seedance 2.0 Fast Image-to-Video</td>
+<td>$0.072/s</td>
+</tr>
+<tr>
+<td><code>bytedance/seedance-2.0-fast/reference-to-video</code></td>
+<td>Seedance 2.0 Fast Reference-to-Video</td>
+<td>$0.072/s</td>
+</tr>
+<tr>
+<td><code>bytedance/seedance-2.0-mini/text-to-video</code></td>
+<td>Seedance 2.0 Mini Text-to-Video (cheapest Seedance tier)</td>
+<td>$0.039/s</td>
+</tr>
+<tr>
+<td><code>kwaivgi/kling-v3.0-std/text-to-video</code></td>
+<td>Kling v3.0 Std Text-to-Video</td>
+<td>$0.071/s</td>
+</tr>
+<tr>
+<td><code>kwaivgi/kling-v3.0-std/image-to-video</code></td>
+<td>Kling v3.0 Std Image-to-Video</td>
+<td>$0.071/s</td>
+</tr>
+<tr>
+<td><code>kwaivgi/kling-v3.0-pro/text-to-video</code></td>
+<td>Kling v3.0 Pro Text-to-Video</td>
+<td>$0.095/s</td>
+</tr>
+<tr>
+<td><code>kwaivgi/kling-v3.0-pro/image-to-video</code></td>
+<td>Kling v3.0 Pro Image-to-Video</td>
+<td>$0.095/s</td>
+</tr>
+<tr>
+<td><code>kwaivgi/kling-video-o3-pro/text-to-video</code></td>
+<td>Kling Video O3 Pro Text-to-Video</td>
+<td>$0.095/s</td>
+</tr>
+<tr>
+<td><code>vidu/q3-pro/text-to-video</code></td>
+<td>Vidu Q3 Pro Text-to-Video</td>
+<td>$0.042/s</td>
+</tr>
+<tr>
+<td><code>vidu/q3-pro/image-to-video</code></td>
+<td>Vidu Q3 Pro Image-to-Video</td>
+<td>$0.042/s</td>
+</tr>
+<tr>
+<td><code>alibaba/wan-2.7/image-to-video</code></td>
+<td>Wan-2.7 Image-to-Video (newest Wan on Atlas Cloud)</td>
+<td>$0.1/s</td>
+</tr>
+<tr>
+<td><code>bytedance/seedance-v1.5-pro/text-to-video</code></td>
+<td>Seedance v1.5 Pro Text-to-Video</td>
+<td>$0.047/s</td>
+</tr>
+<tr>
+<td><code>bytedance/seedance-v1.5-pro/image-to-video</code></td>
+<td>Seedance v1.5 Pro Image-to-Video</td>
+<td>$0.047/s</td>
+</tr>
+<tr>
+<td><code>bytedance/seedance-v1.5-pro/image-to-video-fast</code></td>
+<td>Seedance v1.5 Pro I2V Fast</td>
+<td>$0.018/s</td>
+</tr>
+<tr>
+<td><code>alibaba/wan-2.6/image-to-video-flash</code></td>
+<td>Wan-2.6 Image-to-Video Flash</td>
+<td>$0.018/s</td>
+</tr>
+<tr>
+<td><code>kwaivgi/kling-v2.6-pro/avatar</code></td>
+<td>Kling v2.6 Pro Avatar</td>
+<td>$0.095/s</td>
+</tr>
+<tr>
+<td><code>kwaivgi/kling-v2.6-std/avatar</code></td>
+<td>Kling v2.6 Std Avatar</td>
+<td>$0.048/s</td>
+</tr>
+<tr>
+<td><code>kwaivgi/kling-v3.0-pro/motion-control</code></td>
+<td>Kling v3.0 Pro Motion Control</td>
+<td>$0.143/s</td>
+</tr>
+</tbody>
+</table>
+<h2>LLM Models (priced per million tokens)</h2>
+<table>
+<thead>
+<tr>
+<th>Model ID</th>
+<th>Name</th>
+<th>Input</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>qwen/qwen3.5-397b-a17b</code></td>
+<td>Qwen3.5 397B A17B</td>
+<td>$0.55/M</td>
+<td>$3.5/M</td>
+</tr>
+<tr>
+<td><code>qwen/qwen3.5-122b-a10b</code></td>
+<td>Qwen3.5 122B A10B</td>
+<td>$0.3/M</td>
+<td>$2.4/M</td>
+</tr>
+<tr>
+<td><code>qwen/qwen3.5-35b-a3b</code></td>
+<td>Qwen3.5 35B A3B</td>
+<td>$0.225/M</td>
+<td>$1.8/M</td>
+</tr>
+<tr>
+<td><code>qwen/qwen3.5-27b</code></td>
+<td>Qwen3.5 27B</td>
+<td>$0.27/M</td>
+<td>$2.16/M</td>
+</tr>
+<tr>
+<td><code>qwen/qwen3-coder-next</code></td>
+<td>Qwen3 Coder Next</td>
+<td>$0.18/M</td>
+<td>$1.35/M</td>
+</tr>
+<tr>
+<td><code>moonshotai/kimi-k2.5</code></td>
+<td>Kimi K2.5</td>
+<td>$0.5/M</td>
+<td>$2.6/M</td>
+</tr>
+<tr>
+<td><code>zai-org/glm-5</code></td>
+<td>GLM 5</td>
+<td>$0.95/M</td>
+<td>$3.15/M</td>
+</tr>
+<tr>
+<td><code>minimaxai/minimax-m2.5</code></td>
+<td>MiniMax M2.5</td>
+<td>$0.295/M</td>
+<td>$1.2/M</td>
+</tr>
+<tr>
+<td><code>deepseek-ai/deepseek-v3.2-speciale</code></td>
+<td>DeepSeek V3.2 Speciale</td>
+<td>$0.4/M</td>
+<td>$1.2/M</td>
+</tr>
+<tr>
+<td><code>qwen/qwen3-max-2026-01-23</code></td>
+<td>Qwen3 Max</td>
+<td>$1.2/M</td>
+<td>$6/M</td>
+</tr>
+<tr>
+<td><code>zai-org/glm-4.7</code></td>
+<td>GLM 4.7</td>
+<td>$0.52/M</td>
+<td>$1.75/M</td>
+</tr>
+<tr>
+<td><code>minimaxai/minimax-m2.1</code></td>
+<td>MiniMax M2.1</td>
+<td>$0.29/M</td>
+<td>$0.95/M</td>
+</tr>
+</tbody>
+</table>
+<h2>Model Type → Endpoint Mapping</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Endpoint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>"Image"</code></td>
+<td><code>POST https://api.atlascloud.ai/api/v1/model/generateImage</code></td>
+</tr>
+<tr>
+<td><code>"Video"</code></td>
+<td><code>POST https://api.atlascloud.ai/api/v1/model/generateVideo</code></td>
+</tr>
+<tr>
+<td><code>"Audio"</code></td>
+<td><code>POST https://api.atlascloud.ai/api/v1/model/generateAudio</code></td>
+</tr>
+<tr>
+<td><code>"Text"</code></td>
+<td><code>POST https://api.atlascloud.ai/v1/chat/completions</code></td>
+</tr>
+</tbody>
+</table>
+<p>Type notes: 3D models (image/text-to-3D) are <code>"Image"</code> type; TTS, music, and speech-to-text (ASR) models are all <code>"Audio"</code> type; lipsync / talking-avatar models are <code>"Video"</code> type. See <code>references/audio-gen.md</code> for audio patterns.</p>
+<h2>Price Structure</h2>
+<p>The price field in the API response has this structure:</p>
+<ul>
+<li><strong>Image/Video models</strong>: Use <code>price.actual.base_price</code> — this is the cost per generation</li>
+<li><strong>LLM models</strong>: Use <code>price.actual.input_price</code> and <code>price.actual.output_price</code> — cost per million tokens</li>
+<li>Fallback chain: <code>price.actual</code> → <code>price.sku.text</code> → top-level <code>inputPrice</code>/<code>basePrice</code></li>
+<li><code>price.discount</code>: Discount percentage (e.g., "70" means 70% of original price)</li>
+</ul>
+<h2>Model Schema</h2>
+<p>Each model has a <code>schema</code> field pointing to an OpenAPI JSON file that describes all available parameters. Fetch it to understand what a specific model accepts:</p>
+<pre><code class="language-python">import requests
+
+# Get public model list
+models = requests.get(&quot;https://api.atlascloud.ai/api/v1/models&quot;).json()[&quot;data&quot;]
+public_models = [m for m in models if m.get(&quot;display_console&quot;) == True]
+
+# Find a specific model
+model = next(m for m in public_models if m[&quot;model&quot;] == &quot;bytedance/seedream-v5.0-lite&quot;)
+
+# Fetch its parameter schema
+if model.get(&quot;schema&quot;):
+    schema = requests.get(model[&quot;schema&quot;]).json()
+    # schema[&quot;components&quot;][&quot;schemas&quot;][&quot;Input&quot;][&quot;properties&quot;] contains all parameters
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

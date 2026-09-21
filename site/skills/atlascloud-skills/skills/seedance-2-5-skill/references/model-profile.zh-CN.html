@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>model-profile.zh-CN · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/seedance-2-5-skill/references/model-profile.zh-CN.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>模型档案：Seedance 家族</h1>
+<p>记实测行为，不记文档行为。编译器读这些字段来决定输出什么、降级什么。</p>
+<p>字段定义与空白模板在<a href="../../universal-video-prompt-skill/references/model-profile-schema.zh-CN.html">通用视频提示词 Skill</a>。
+若此链接不可达，说明 Seedance 2.5 Skill 安装不完整。继续前先协助用户安装 <code>universal-video-prompt-skill</code>，并且<strong>不要自行编造字段定义</strong>。</p>
+<p><strong>「未知」是合法值。</strong> 空字段会触发一次探测；猜出来的字段会静默污染每一次基于它的运行。</p>
+<hr />
+<h2><code>bytedance/seedance-2.0</code></h2>
+<p>最后核实：2026-08-03 · 服务：Atlas Cloud</p>
+<h3>能力位层</h3>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>值</th>
+<th>如何核实</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>素材寻址</td>
+<td><code>@image1</code>、<code>@image2</code>…</td>
+<td>生成实测</td>
+</tr>
+<tr>
+<td>素材上限</td>
+<td>9 张图</td>
+<td>厂商文档</td>
+</tr>
+<tr>
+<td>一次生成能否多镜头</td>
+<td>能——带切点的有序段落</td>
+<td>15 秒多段生成</td>
+</tr>
+<tr>
+<td>是否支持硬切</td>
+<td>能</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>时长范围</td>
+<td>4–15s</td>
+<td>厂商文档</td>
+</tr>
+<tr>
+<td>分辨率</td>
+<td>480p、720p、1080p，视服务而定</td>
+<td>服务模型页</td>
+</tr>
+<tr>
+<td>原生音频</td>
+<td>有</td>
+<td>开启音频的生成</td>
+</tr>
+<tr>
+<td>时序遵循度</td>
+<td>15 秒的片子里请求拍点<strong>整体晚约 2 秒</strong>；段落<strong>顺序稳</strong></td>
+<td>对着带时间戳的提示词做的受控 15 秒实测</td>
+</tr>
+<tr>
+<td>建议粒度</td>
+<td><strong>分段</strong></td>
+<td>由上一行推出</td>
+</tr>
+<tr>
+<td>延长／接龙</td>
+<td>通过尾帧接龙</td>
+<td>—</td>
+</tr>
+<tr>
+<td>仅传音频</td>
+<td>不支持</td>
+<td>厂商文档</td>
+</tr>
+<tr>
+<td><strong>prompt 长度耐受性</strong></td>
+<td><strong>高。</strong> 加长版本保住了手、开场变形、手绘质感，还吃下了新增拍点；对照模型在同样两份提示词上把这三样全丢了</td>
+<td>同一份 spec 的 v3</td>
+</tr>
+</tbody>
+</table>
+<h3>偏置层</h3>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>值</th>
+<th>如何核实</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>默认审美偏置</td>
+<td>镜头先验很强；稀疏提示词理解得好，会合理即兴</td>
+<td>与过度指定版本做 A/B</td>
+</tr>
+<tr>
+<td>有效的反默认写法</td>
+<td><strong>按工具命名，不要命名抽象属性。</strong> <code>蜡笔／彩铅／粗笔刷，看得见排线方向、涂色不均、毛边</code> 给出了真正的手绘笔触</td>
+<td>同一份手绘 VFX spec 的受控 A/B</td>
+</tr>
+<tr>
+<td>无效或过冲的写法</td>
+<td><strong><code>保持平面图形、绝不写实</code> —— 被精确满足、且毫无用处。</strong> 模型用光滑的霓虹管矢量描边加均匀填充满足了它：平面，但完全不手绘。在同一份 spec 上只把这一条锁换成工具名，结果直接反转</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>无效或过冲的写法</td>
+<td><strong>喂故事板网格过度指定，比纯文字 staging 更差</strong> —— 会压掉让重特效镜头成立的运镜先验</td>
+<td>同一段落的 A/B</td>
+</tr>
+<tr>
+<td>负向锁行为</td>
+<td>会被尊重。前置</td>
+<td>迭代</td>
+</tr>
+<tr>
+<td>参考图与文字的优先级</td>
+<td><strong>图赢。</strong> 构图参考会覆盖写出来的构图</td>
+<td>迭代</td>
+</tr>
+<tr>
+<td>手持 / POV</td>
+<td>能可信地执行手持 POV，包括快速跟随时的运动模糊、以及手从画面下方入画</td>
+<td>手绘 VFX spec，v2</td>
+</tr>
+<tr>
+<td>实拍质感保持</td>
+<td>强。手绘层叠在上面时，真实的骨、玻璃、石材、天花灯具都保持自己的颜色</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>未经要求的接触阴影</td>
+<td>手绘物落在真实表面上时会自己加投影，没有被要求过。这是「两种媒介共享一个物理空间」能拿到的最强证据</td>
+<td>v3</td>
+</tr>
+<tr>
+<td>空间容纳关系</td>
+<td>能正确读懂 <code>开放式展台</code> ——会渲染台面、支撑杆和投影，不是展柜</td>
+<td>v3</td>
+</tr>
+</tbody>
+</table>
+<h3>已知失败模式</h3>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>细节</th>
+<th>处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>小字出错</td>
+<td>UI 标签与招牌出现字符级错误，小字乱码</td>
+<td>需要完全准确的文字走后期</td>
+</tr>
+<tr>
+<td>列表项漏画</td>
+<td>枚举的菜单项只画出一部分——有些条目直接缺失</td>
+<td>减少条目数，或文字走后期</td>
+</tr>
+<tr>
+<td>运镜被忽略</td>
+<td>写明的运镜被跳过，段落其余部分正常落地</td>
+<td>把运镜改写成该段的主要意图，或接受并重新构图</td>
+</tr>
+<tr>
+<td>时间轴漂移</td>
+<td>整条时间轴后移，15 秒里约 2 秒</td>
+<td>用分段；若必须秒级，把拍点写早并核实</td>
+</tr>
+<tr>
+<td><strong>超载时丢段</strong></td>
+<td>15 秒装<strong>四段</strong>时只渲染了第 1 段和第 4 段——中间两段<strong>整个跳过</strong>，不是延迟。改成五段更短、每段事件更密之后<strong>没有</strong>复现</td>
+<td>把 15 秒里约 4 个不同状态变化当作上限。需要更多就缩短每段、提高密度，或拆成多次请求</td>
+</tr>
+</tbody>
+</table>
+<h3>编译注记</h3>
+<ul>
+<li>输出 <code>@imageN</code>。绝不用方括号或拼写形式的素材标签</li>
+<li>默认 <code>分段</code></li>
+<li>重特效与大场面段落优先文字驱动 staging，不要喂故事板网格</li>
+<li>构图参考与写出来的构图冲突时，删掉写的那份——它反正会输，只是增加噪音</li>
+</ul>
+<hr />
+<h2><code>bytedance/seedance-2.5</code></h2>
+<p>最后核实：— · 状态：<strong>尚未实测</strong></p>
+<p>可用性因服务而异。提供 2.5 专属路线之前，先核实该服务的模型页；见 <a href="capabilities.zh-CN.html">capabilities.zh-CN.md</a>。</p>
+<h3>能力位层</h3>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>值</th>
+<th>如何核实</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>素材寻址</td>
+<td><code>@Image 1</code> / <code>@image1</code> —— <strong>未核实</strong>，向服务确认</td>
+<td>—</td>
+</tr>
+<tr>
+<td>素材上限</td>
+<td>最多 30 图、10 视频、10 音频，合计约 50</td>
+<td>发布材料</td>
+</tr>
+<tr>
+<td>一次生成能否多镜头</td>
+<td>预期能</td>
+<td>未实测</td>
+</tr>
+<tr>
+<td>时长范围</td>
+<td>4–30s</td>
+<td>发布材料</td>
+</tr>
+<tr>
+<td>分辨率</td>
+<td>读服务的模型页</td>
+<td>—</td>
+</tr>
+<tr>
+<td>原生音频</td>
+<td>有</td>
+<td>发布材料</td>
+</tr>
+<tr>
+<td>仅传音频</td>
+<td>支持</td>
+<td>发布材料</td>
+</tr>
+<tr>
+<td>时序遵循度</td>
+<td><strong>未实测</strong> —— 最值得跑的那次探测</td>
+<td>—</td>
+</tr>
+<tr>
+<td>建议粒度</td>
+<td><strong>未知</strong> —— 不要假设它与 2.0 不同</td>
+<td>—</td>
+</tr>
+<tr>
+<td>编辑／延长／桥接</td>
+<td>已宣布；API 暴露情况因服务而异</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3>偏置层</h3>
+<p>未实测。<strong>不要</strong>把 2.0 的偏置层条目抄过来——反默认写法按定义是逐模型的，而且发布材料明确声称默认行为在「多余字幕与音乐」方面有变化，那恰恰是一份为 2.0 调过的负向清单现在可能在多余对抗的东西。</p>
+<h3>该先跑的探测，按顺序</h3>
+<ol>
+<li><strong>素材寻址</strong> —— 一次生成，绑两份素材。这条不对，后面全部被卡住</li>
+<li><strong>时序遵循度</strong> —— 同一份 spec 分别用 <code>分段</code> 与 <code>秒级</code> 各跑一遍，量偏差。一次填满时序遵循度、建议粒度，通常还附带一个失败模式</li>
+<li><strong>多余字幕与音乐</strong> —— 完全不写负向跑一次。如果它们不再出现，2.0 那套负向行在这里是多余负担</li>
+<li><strong>素材上限的实际拐点</strong> —— 稳定性真正开始下降的位置，不是文档上限的位置</li>
+</ol>
+<p>结果落地就记回本文件，<strong>包括负面结果</strong>。</p>
+<p>⚠️ <strong>别信参数表。</strong> 本平台已确认三次文档比实际更窄（H3 t2v、Kling 两档）。<strong>直接提交你真正想要的值</strong>——被拒不创建任务、不花钱。</p>
+<hr />
+<h2>关联</h2>
+<ul>
+<li><a href="../../universal-video-prompt-skill/references/model-profile-schema.zh-CN.html">模型档案字段定义</a></li>
+<li><a href="capabilities.zh-CN.html">capabilities.zh-CN.md</a> — 文档上限、以及平台功能与 API 的分界</li>
+<li><a href="troubleshooting.zh-CN.html">troubleshooting.zh-CN.md</a> — 按症状查修法</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>managed-agents-overview · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/managed-agents-overview.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Managed Agents - Overview</h1>
+<p>Managed Agents provisions a container per session as the agent's workspace. The agent loop runs on Anthropic's orchestration layer; the container is where the agent's <em>tools</em> execute - bash commands, file operations, code. You create a persisted <strong>Agent</strong> config (model, system prompt, tools, MCP servers, skills), then start <strong>Sessions</strong> that reference it. The session streams events back to you; you send user messages and tool results in.</p>
+<h2>Warning: THE MANDATORY FLOW: Agent (once) -&gt; Session (every run)</h2>
+<p><strong>Why agents are separate objects: versioning.</strong> An agent is a persisted, versioned config - every update creates a new immutable version, and sessions pin to a version at creation time. This lets you iterate on the agent (tweak the prompt, add a tool) without breaking sessions already running, roll back if a change regresses, and A/B test versions side-by-side. None of that works if you <code>agents.create()</code> fresh on every run.</p>
+<p>Every session references a pre-created <code>/v1/agents</code> object. Create the agent once, store the ID, and reuse it across runs.</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Call</th>
+<th>Frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>POST /v1/agents</code> - <code>model</code>, <code>system</code>, <code>tools</code>, <code>mcp_servers</code>, <code>skills</code> live here</td>
+<td><strong>ONCE.</strong> Store <code>agent.id</code> <strong>and</strong> <code>agent.version</code>.</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>POST /v1/sessions</code> - <code>agent: "agent_abc123"</code> or <code>{type: "agent", id, version}</code></td>
+<td><strong>Every run.</strong> String shorthand uses latest version.</td>
+</tr>
+</tbody>
+</table>
+<p>If you're about to write <code>sessions.create()</code> with <code>model</code>, <code>system</code>, or <code>tools</code> on the session body - <strong>stop</strong>. Those fields live on <code>agents.create()</code>. The session takes a <em>pointer</em> only.</p>
+<p><strong>When generating code, separate setup from runtime.</strong> <code>agents.create()</code> belongs in a setup script (or a guarded <code>if agent_id is None:</code> block), not at the top of the hot path. If the user's code calls <code>agents.create()</code> on every invocation, they're accumulating orphaned agents and paying the create latency for nothing. The correct shape is: define the agent as a version-controlled YAML manifest, apply it once with <code>ant beta:agents create &lt; agent.yaml</code> (or a guarded setup script - see <code>shared/anthropic-cli.md</code>), persist the returned ID (config file, env var, secrets manager), and have every run load the ID and call <code>sessions.create()</code>.</p>
+<p><strong>To change the agent's behavior, use <code>POST /v1/agents/{id}</code> - don't create a new one.</strong> Each update bumps the version; running sessions keep their pinned version, new sessions get the latest (or pin explicitly via <code>{type: "agent", id, version}</code>). See <code>shared/managed-agents-core.md</code> -&gt; Agents -&gt; Versioning. To change <code>tools</code>/<code>mcp_servers</code> on <strong>one running session</strong> without touching the agent object, use <code>sessions.update()</code> (<code>vault_ids</code> attaches at session create only) - see <code>shared/managed-agents-core.md</code> -&gt; Updating the agent configuration mid-session.</p>
+<h2>Beta Headers</h2>
+<p>Managed Agents is in beta. The SDK sets required beta headers automatically:</p>
+<table>
+<thead>
+<tr>
+<th>Beta Header</th>
+<th>What it enables</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>managed-agents-2026-04-01</code></td>
+<td>Agents, Environments, Sessions, Events, Session Resources, Session Threads, Outcomes, Multiagent, Vaults, Credentials, Memory Stores, Deployments</td>
+</tr>
+<tr>
+<td><code>skills-2025-10-02</code></td>
+<td>Skills API (for managing custom skill definitions)</td>
+</tr>
+<tr>
+<td><code>files-api-2025-04-14</code></td>
+<td>Files API for file uploads</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Which beta header goes where:</strong> The SDK sets <code>managed-agents-2026-04-01</code> automatically on <code>client.beta.{agents,environments,sessions,vaults,memory_stores,deployments,deployment_runs}.*</code> calls, and <code>files-api-2025-04-14</code> / <code>skills-2025-10-02</code> automatically on <code>client.beta.files.*</code> / <code>client.beta.skills.*</code> calls. You do NOT need to add the Skills or Files beta header when calling Managed Agents endpoints. On raw HTTP the Managed Agents header <strong>grants Files API access on its own</strong>, so uploading a file for use as a session resource does not need <code>files-api-2025-04-14</code> alongside it. (Direct Skills API calls over cURL do still need <code>skills-2025-10-02</code>; the <code>ant</code> CLI and the SDKs send it for you.) <strong>Exception - session-scoped file listing:</strong> <code>client.beta.files.list({scope_id: session.id})</code> is a Files endpoint that takes a Managed Agents parameter, so it needs <strong>both</strong> headers. Pass <code>betas: ["managed-agents-2026-04-01"]</code> explicitly on that call (the SDK adds the Files header; you add the Managed Agents one). See <code>shared/managed-agents-environments.md</code> -&gt; Session outputs.</p>
+<h2>Reading Guide</h2>
+<table>
+<thead>
+<tr>
+<th>User wants to...</th>
+<th>Read these files</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Get started from scratch / "help me set up an agent"</strong></td>
+<td><code>shared/managed-agents-onboarding.md</code> - guided interview (WHERE-&gt;WHO-&gt;WHAT-&gt;WATCH), then emit code</td>
+</tr>
+<tr>
+<td>Understand how the API works</td>
+<td><code>shared/managed-agents-core.md</code></td>
+</tr>
+<tr>
+<td>See the full endpoint reference</td>
+<td><code>shared/managed-agents-api-reference.md</code></td>
+</tr>
+<tr>
+<td><strong>Create an agent</strong> (required first step)</td>
+<td><code>shared/managed-agents-core.md</code> (Agents section) + language file</td>
+</tr>
+<tr>
+<td>Update/version an agent</td>
+<td><code>shared/managed-agents-core.md</code> (Agents -&gt; Versioning) - update, don't re-create</td>
+</tr>
+<tr>
+<td>Create a session</td>
+<td><code>shared/managed-agents-core.md</code> + <code>{lang}/managed-agents/README.md</code> (cURL/C#: <code>curl/managed-agents.md</code>)</td>
+</tr>
+<tr>
+<td>Configure tools and permissions</td>
+<td><code>shared/managed-agents-tools.md</code></td>
+</tr>
+<tr>
+<td>Restrict which sites <code>web_search</code> / <code>web_fetch</code> can reach; localize search; cap fetched content</td>
+<td><code>shared/managed-agents-tools.md</code> (§ Web search &amp; web fetch settings) - <code>allowed_domains</code> / <code>blocked_domains</code> / <code>user_location</code> / <code>max_content_tokens</code> on the toolset <code>configs</code> entry; <strong>not</strong> the environment's <code>networking</code></td>
+</tr>
+<tr>
+<td>Set up MCP servers</td>
+<td><code>shared/managed-agents-tools.md</code> (MCP Servers section)</td>
+</tr>
+<tr>
+<td>Stream events / handle tool_use</td>
+<td><code>shared/managed-agents-events.md</code> + language file</td>
+</tr>
+<tr>
+<td>Get notified of session state changes via webhook (no polling)</td>
+<td><code>shared/managed-agents-webhooks.md</code> - Console-registered endpoint, HMAC verify, thin payload + fetch</td>
+</tr>
+<tr>
+<td>Define an outcome / rubric-graded iterate loop</td>
+<td><code>shared/managed-agents-outcomes.md</code> - <code>user.define_outcome</code> event, grader, <code>span.outcome_evaluation_*</code> events</td>
+</tr>
+<tr>
+<td>Coordinate multiple agents / subagents / threads</td>
+<td><code>shared/managed-agents-multiagent.md</code> - <code>multiagent: {type: "coordinator", agents: [...]}</code> on the agent, session threads, cross-posted tool confirmations</td>
+</tr>
+<tr>
+<td>Set up environments</td>
+<td><code>shared/managed-agents-environments.md</code> + language file</td>
+</tr>
+<tr>
+<td>Run tool execution in your own infra / VPC (self-hosted sandbox)</td>
+<td><code>shared/managed-agents-self-hosted-sandboxes.md</code> - <code>config:{type:"self_hosted"}</code>, <code>ANTHROPIC_ENVIRONMENT_KEY</code>, <code>EnvironmentWorker.run()</code> / <code>ant beta:worker poll</code></td>
+</tr>
+<tr>
+<td>Upload files / attach repos</td>
+<td><code>shared/managed-agents-environments.md</code> (Resources)</td>
+</tr>
+<tr>
+<td>Give agents persistent memory across sessions</td>
+<td><code>shared/managed-agents-memory.md</code> - memory stores, <code>memory_store</code> session resource, preconditions, versions/redact. On self-hosted sandboxes: <code>shared/managed-agents-self-hosted-sandboxes.md</code> § Memory stores (SDK worker syncs a local copy)</td>
+</tr>
+<tr>
+<td>Inspect a session without code (transcript, per-tool stats, cost, threads)</td>
+<td><code>shared/managed-agents-events.md</code> - Console session viewer note; deep link <code>?event={event_id}</code></td>
+</tr>
+<tr>
+<td>Define agents/environments as version-controlled YAML; drive the API from the shell</td>
+<td><code>shared/anthropic-cli.md</code> - <code>ant beta:agents create &lt; agent.yaml</code>, <code>--transform</code>, <code>@file</code> inlining</td>
+</tr>
+<tr>
+<td>Store credentials (MCP auth, API keys for CLIs/SDKs)</td>
+<td><code>shared/managed-agents-tools.md</code> (Vaults section) - <code>mcp_oauth</code> / <code>static_bearer</code> / <code>environment_variable</code></td>
+</tr>
+<tr>
+<td>Call a non-MCP API / CLI that needs a secret</td>
+<td><code>shared/managed-agents-tools.md</code> (Vaults section) - <code>environment_variable</code> credential, substituted at egress. If that doesn't fit (e.g. self-hosted sandboxes), <code>shared/managed-agents-client-patterns.md</code> Pattern 9 keeps the secret host-side via a custom tool</td>
+</tr>
+<tr>
+<td>Run an agent on a recurring cron schedule</td>
+<td><code>shared/managed-agents-scheduled-deployments.md</code> - deployments, deployment runs, pause/auto-pause</td>
+</tr>
+<tr>
+<td>Cap a session's spend with a hard dollar budget</td>
+<td><code>shared/managed-agents-core.md</code> (§ Session budgets) - <code>budget</code> at session create, <code>budget_reached</code> pause, change/remove to resume. Deployments: <code>shared/managed-agents-scheduled-deployments.md</code> § Deployment budgets</td>
+</tr>
+<tr>
+<td>Pin where model inference runs (data residency)</td>
+<td><code>shared/managed-agents-core.md</code> (§ Pinning inference geography) - <code>model.inference_geo</code> on the agent, per-session override, roster uniformity</td>
+</tr>
+<tr>
+<td>Load skills from the codebase instead of uploading</td>
+<td><code>shared/managed-agents-tools.md</code> (§ Skills from a GitHub repository) - root <code>.claude/skills</code> discovery at session start</td>
+</tr>
+<tr>
+<td>Give the session an advisor to consult mid-turn</td>
+<td><code>shared/managed-agents-multiagent.md</code> (§ Advisor) - <code>{type: "advisor", model}</code> roster entry, consultation threads, plaintext vs redacted delivery</td>
+</tr>
+</tbody>
+</table>
+<h2>Common Pitfalls</h2>
+<ul>
+<li><strong>Agent FIRST, then session - NO EXCEPTIONS</strong> - the session's <code>agent</code> field accepts <strong>only</strong> a string ID or <code>{type: "agent", id, version}</code>. <code>model</code>, <code>system</code>, <code>tools</code>, <code>mcp_servers</code>, <code>skills</code> are <strong>top-level fields on <code>POST /v1/agents</code></strong>, never on <code>sessions.create()</code>. If the user hasn't created an agent, that is step zero of every example.</li>
+<li><strong>Agent ONCE, not every run</strong> - <code>agents.create()</code> is a setup step. Store the returned <code>agent_id</code> and reuse it; don't call <code>agents.create()</code> at the top of your hot path. If the agent's config needs to change, <code>POST /v1/agents/{id}</code> - each update creates a new version, and sessions can pin to a specific version for reproducibility.</li>
+<li><strong>MCP auth goes through vaults</strong> - the agent's <code>mcp_servers</code> array declares <code>{type, name, url}</code> only (no auth). Credentials live in vaults (<code>client.beta.vaults.credentials.create</code>) and attach to sessions via <code>vault_ids</code>. Anthropic auto-refreshes OAuth tokens using the stored refresh token. Vaults also hold <code>environment_variable</code> credentials for non-MCP services (CLIs, SDKs, direct API calls) - substituted at egress, never visible in the sandbox.</li>
+<li><strong>Reconcile resources before the first run</strong> - a session with a clear ask but a missing tool, credential, data mount, or context will discover the gap mid-run, then flail and give up. Before creating the session, check that every action in the task maps to a configured tool/MCP server, every MCP server has a vault credential, and every referenced file/host is mounted/reachable. When helping a user set one up, run the reconciliation in <code>shared/managed-agents-onboarding.md</code> -&gt; §3 Pre-flight viability check.</li>
+<li><strong>Stream to get events</strong> - <code>GET /v1/sessions/{id}/events/stream</code> is the primary way to receive agent output in real-time.</li>
+<li><strong>SSE stream has no replay - reconnect with consolidation</strong> - if the stream drops while a <code>agent.tool_use</code>, <code>agent.mcp_tool_use</code>, or <code>agent.custom_tool_use</code> is pending resolution (<code>user.tool_confirmation</code> for the first two, <code>user.custom_tool_result</code> for the last one), the session deadlocks (client disconnects -&gt; session idles -&gt; reconnect happens -&gt; no client resolution happens). On every (re)connect: open stream with <code>GET /v1/sessions/{id}/events/stream</code> , fetch <code>GET /v1/sessions/{id}/events</code>, dedupe by event ID, then proceed. See <code>shared/managed-agents-events.md</code> -&gt; Reconnecting after a dropped stream.</li>
+<li><strong>Don't trust HTTP-library timeouts as wall-clock caps</strong> - <code>requests</code> <code>timeout=(c, r)</code> and <code>httpx.Timeout(n)</code> are <em>per-chunk</em> read timeouts; they reset every byte, so a trickling connection can block indefinitely. For a hard deadline on raw-HTTP polling, track <code>time.monotonic()</code> at the loop level and bail explicitly. Prefer the SDK's <code>sessions.events.stream()</code> / <code>sessions.events.list()</code> over hand-rolled HTTP. See <code>shared/managed-agents-events.md</code> -&gt; Receiving Events.</li>
+<li><strong>Messages queue</strong> - you can send events while the session is <code>running</code> or <code>idle</code>; they're processed in order. No need to wait for a response before sending the next message. Exception: a session paused at its budget (<code>stop_reason: budget_reached</code>) accepts only settle events - change or remove the budget to resume (<code>shared/managed-agents-core.md</code> § Session budgets).</li>
+<li><strong>Environment <code>config.type</code> is <code>"cloud"</code> or <code>"self_hosted"</code></strong> - <code>cloud</code> runs the container on Anthropic's infrastructure; <code>self_hosted</code> moves tool execution to your own (see <code>shared/managed-agents-self-hosted-sandboxes.md</code>).</li>
+<li><strong>Archive is permanent on every resource</strong> - archiving an agent, environment, session, vault, credential, or memory store makes it read-only with no unarchive. For agents, environments, and memory stores specifically, archived resources cannot be referenced by new sessions (existing sessions continue). Do not call <code>.archive()</code> on a production agent, environment, or memory store as cleanup - <strong>always confirm with the user before archiving</strong>.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>managed-agents-tools · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/managed-agents-tools.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Managed Agents - Tools &amp; Skills</h1>
+<h2>Tools</h2>
+<h3>Server tools vs client tools</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Who runs it</th>
+<th>How it works</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Prebuilt Claude Agent tools</strong> (<code>agent_toolset_20260401</code>)</td>
+<td>Anthropic, on the session's container (for <code>cloud</code> envs; for <code>self_hosted</code>, <strong>your</strong> worker supplies and runs the file/bash tools - see <code>shared/managed-agents-self-hosted-sandboxes.md</code>). <code>web_search</code> / <code>web_fetch</code> always run on Anthropic's servers, in both environment types.</td>
+<td>File ops, bash, web search, etc. Enable all at once or configure individually with <code>enabled: true/false</code>; restrict the web tools with <code>allowed_domains</code> / <code>blocked_domains</code>.</td>
+</tr>
+<tr>
+<td><strong>MCP tools</strong> (<code>mcp_toolset</code>)</td>
+<td>Anthropic's orchestration layer</td>
+<td>Capabilities exposed by connected MCP servers. Grant access per-server via the toolset.</td>
+</tr>
+<tr>
+<td><strong>Custom tools</strong></td>
+<td><strong>You</strong> - your application handles the call and returns results</td>
+<td>Agent emits a <code>agent.custom_tool_use</code> event, session goes <code>idle</code>, you send back a <code>user.custom_tool_result</code> event.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommendation:</strong> Enable all prebuilt tools via <code>agent_toolset_20260401</code>, then disable individually as needed.</p>
+<p><strong>Versioning:</strong> The toolset is a versioned, static resource. When underlying tools change, a new toolset version is created (hence <code>_20260401</code>) so you always know exactly what you're getting.</p>
+<h3>Agent Toolset</h3>
+<p>The <code>agent_toolset_20260401</code> provides these built-in tools:</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bash</code></td>
+<td>Execute bash commands in a shell session</td>
+</tr>
+<tr>
+<td><code>read</code></td>
+<td>Read a file from the local filesystem, including text, images, PDFs, and Jupyter notebooks</td>
+</tr>
+<tr>
+<td><code>write</code></td>
+<td>Write a file to the local filesystem</td>
+</tr>
+<tr>
+<td><code>edit</code></td>
+<td>Perform string replacement in a file</td>
+</tr>
+<tr>
+<td><code>glob</code></td>
+<td>Fast file pattern matching using glob patterns</td>
+</tr>
+<tr>
+<td><code>grep</code></td>
+<td>Text search using regex patterns</td>
+</tr>
+<tr>
+<td><code>web_fetch</code></td>
+<td>Fetch content from a URL</td>
+</tr>
+<tr>
+<td><code>web_search</code></td>
+<td>Search the web for information</td>
+</tr>
+</tbody>
+</table>
+<p>Enable the full toolset:</p>
+<pre><code class="language-json">{
+  &quot;tools&quot;: [
+    { &quot;type&quot;: &quot;agent_toolset_20260401&quot; }
+  ]
+}
+</code></pre>
+<h3>Per-Tool Configuration</h3>
+<p>Override defaults for individual tools. This example enables everything except bash:</p>
+<pre><code class="language-json">{
+  &quot;tools&quot;: [
+    {
+      &quot;type&quot;: &quot;agent_toolset_20260401&quot;,
+      &quot;default_config&quot;: { &quot;enabled&quot;: true },
+      &quot;configs&quot;: [
+        { &quot;name&quot;: &quot;bash&quot;, &quot;enabled&quot;: false }
+      ]
+    }
+  ]
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type</code></td>
+<td>Yes</td>
+<td><code>"agent_toolset_20260401"</code></td>
+</tr>
+<tr>
+<td><code>default_config</code></td>
+<td>No</td>
+<td>Applied to all tools. <code>{ "enabled": bool, "permission_policy": {...} }</code></td>
+</tr>
+<tr>
+<td><code>configs</code></td>
+<td>No</td>
+<td>Per-tool overrides: <code>[{ "name": "...", "type": "...", "enabled": bool, "permission_policy": {...} }]</code>. <code>name</code> identifies the tool (values from the table above); <code>type</code> is optional in requests (same value as <code>name</code>; the server infers it) and always present in responses. <code>web_search</code> / <code>web_fetch</code> entries also accept web settings - see § Web search &amp; web fetch settings below.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Typed SDKs:</strong> each <code>configs</code> entry is a member of a union with one member per built-in tool (eight: <code>BetaManagedAgentsWebFetchToolConfigParams</code>, <code>...WebSearchToolConfigParams</code>, <code>...BashToolConfigParams</code>, ...), discriminated by <code>type</code>. Python/TypeScript/Ruby dicts and hashes with just <code>name</code> + <code>enabled</code> + <code>permission_policy</code> are unchanged. In Go, Java, C#, and PHP, <code>configs</code> is the union itself - build each entry from its per-tool type (Go: <code>BetaManagedAgentsAgentToolConfigUnionParamsUnion{OfWebFetch: &amp;anthropic.BetaManagedAgentsWebFetchToolConfigParams{...}}</code> - the arms are <code>OfBash</code> / <code>OfRead</code> / <code>OfWrite</code> / <code>OfEdit</code> / <code>OfGlob</code> / <code>OfGrep</code> / <code>OfWebFetch</code> / <code>OfWebSearch</code>; Java: <code>.addConfig(BetaManagedAgentsWebFetchToolConfigParams.builder()...build())</code>; C#: <code>new BetaManagedAgentsWebFetchToolConfigParams { Enabled = false }</code>; PHP: <code>BetaManagedAgentsWebFetchToolConfigParams::with(enabled: false)</code>). Code written against an SDK where all tools shared one config type must update how it constructs entries.</p>
+</blockquote>
+<h3>Permission Policies</h3>
+<p>Control whether server-executed tools (agent toolset + MCP) run automatically, wait for your approval, or have each call evaluated by the server. Does not apply to custom tools (your application executes those).</p>
+<table>
+<thead>
+<tr>
+<th>Policy</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>always_allow</code></td>
+<td>Tool executes automatically. Default for the agent toolset.</td>
+</tr>
+<tr>
+<td><code>always_ask</code></td>
+<td>Session emits <code>session.status_idle</code> (<code>stop_reason.type: requires_action</code>) and pauses until you send a <code>user.tool_confirmation</code> event. Default for MCP toolsets.</td>
+</tr>
+<tr>
+<td><code>auto</code></td>
+<td>The server evaluates each call (tool + input + session content so far) and <strong>runs it, denies it, or pauses for your approval</strong>. Neither toolset kind defaults to <code>auto</code>. See § <code>auto</code> below.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;agent_toolset_20260401&quot;,
+  &quot;default_config&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;permission_policy&quot;: { &quot;type&quot;: &quot;always_allow&quot; }
+  },
+  &quot;configs&quot;: [
+    { &quot;name&quot;: &quot;bash&quot;, &quot;permission_policy&quot;: { &quot;type&quot;: &quot;always_ask&quot; } }
+  ]
+}
+</code></pre>
+<p><strong>Responding to <code>always_ask</code></strong> (and to <code>auto</code> calls that pause): send a <code>user.tool_confirmation</code> event with <code>tool_use_id</code> set to the <strong>event ID</strong> (<code>sevt_...</code>, not a <code>toolu_</code> ID) of the triggering <code>agent.tool_use</code> / <code>agent.mcp_tool_use</code> event. Several confirmations can go in one <code>events</code> request:</p>
+<pre><code class="language-json">{ &quot;type&quot;: &quot;user.tool_confirmation&quot;, &quot;tool_use_id&quot;: &quot;sevt_abc123&quot;, &quot;result&quot;: &quot;allow&quot; }
+{ &quot;type&quot;: &quot;user.tool_confirmation&quot;, &quot;tool_use_id&quot;: &quot;sevt_def456&quot;, &quot;result&quot;: &quot;deny&quot;, &quot;deny_message&quot;: &quot;Read .env.example instead&quot; }
+</code></pre>
+<p>The optional <code>deny_message</code> on a deny is delivered to the agent as the rejected tool result so it can adjust its approach. A <code>user.tool_confirmation</code> for an event whose <code>evaluated_permission</code> is not <code>"ask"</code> is rejected with a 400 - that includes calls the server denied under <code>auto</code>; your client cannot override them.</p>
+<h4><code>auto</code> - let the server evaluate each call</h4>
+<p>Set <code>{"type": "auto"}</code> anywhere a <code>permission_policy</code> is accepted: a toolset's <code>default_config</code> or an individual <code>configs</code> entry, on the agent toolset or an <code>mcp_toolset</code>. Because the evaluation considers the call's input and the session's content up to that point, two calls to the same tool can be treated differently. Each call has exactly one of three outcomes:</p>
+<table>
+<thead>
+<tr>
+<th>Outcome</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Runs</strong></td>
+<td>Server determined the call is safe - executes as under <code>always_allow</code>, without reaching your client.</td>
+</tr>
+<tr>
+<td><strong>Denied</strong></td>
+<td>Server evaluated the call as high-risk - the tool does not run. The agent receives an error tool result (<code>Permission to use {tool_name} has been denied.</code>, <code>is_error: true</code>), the session <strong>keeps running</strong>, and your client cannot override the denial.</td>
+</tr>
+<tr>
+<td><strong>Pauses</strong></td>
+<td>Server reached no determination - the session pauses exactly as under <code>always_ask</code>; respond with <code>user.tool_confirmation</code>.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;Ops Agent&quot;,
+  &quot;model&quot;: &quot;claude-opus-5&quot;,
+  &quot;mcp_servers&quot;: [{ &quot;type&quot;: &quot;url&quot;, &quot;name&quot;: &quot;github&quot;, &quot;url&quot;: &quot;https://mcp.example.com/github&quot; }],
+  &quot;tools&quot;: [
+    {
+      &quot;type&quot;: &quot;agent_toolset_20260401&quot;,
+      &quot;default_config&quot;: { &quot;permission_policy&quot;: { &quot;type&quot;: &quot;auto&quot; } },
+      &quot;configs&quot;: [{ &quot;name&quot;: &quot;bash&quot;, &quot;permission_policy&quot;: { &quot;type&quot;: &quot;always_ask&quot; } }]
+    },
+    {
+      &quot;type&quot;: &quot;mcp_toolset&quot;,
+      &quot;mcp_server_name&quot;: &quot;github&quot;,
+      &quot;default_config&quot;: { &quot;permission_policy&quot;: { &quot;type&quot;: &quot;auto&quot; } }
+    }
+  ]
+}
+</code></pre>
+<p>Pass the same shape as an untyped dict / object literal / hash in Python, TypeScript, and Ruby. The typed SDKs (Go, Java, C#, PHP) need a generated type for the <code>auto</code> policy that ships with each SDK's release of the feature - until then, build the request in an untyped language or via cURL / <code>ant</code>. Python and TypeScript also only type-check <code>{"type": "auto"}</code> from the release that adds it (the wire API accepts it regardless).</p>
+<p><strong>What the evaluation trusts.</strong> The server treats session content as material to assess, not instructions to follow. Text you post in <code>user.message</code> events (including end-user text you relay there) counts as <em>your intent</em> and can lead the server to allow a call it would otherwise deny - though some calls are evaluated as high-risk regardless. The same words in a tool result, a fetched webpage, an MCP server response, or a message between session threads carry no such weight. If you relay untrusted end-user input in <code>user.message</code>, the server reads it as your intent too and it can get a call allowed - put <code>always_ask</code> on the tools you would not let that end user run without review.</p>
+<blockquote>
+<p><strong><code>auto</code> is not a human checkpoint.</strong> A call the server determines to be safe runs before any person sees it, and its effects may not be reversible. If a person must review a tool's calls before they run, use <code>always_ask</code> on that tool.</p>
+</blockquote>
+<h4><code>evaluated_permission</code> and <code>evaluation</code> - see how each call was evaluated</h4>
+<p>Under <strong>any</strong> policy, each <code>agent.tool_use</code> and <code>agent.mcp_tool_use</code> event carries <code>evaluated_permission</code> (<code>"allow" | "ask" | "deny"</code>) - the outcome of the permission check. Most events also carry an <code>evaluation</code> object whose <code>type</code> names the policy that produced the outcome; under <code>auto</code> it adds the server's determination and, for <code>ask</code> / <code>deny</code>, a <code>reason_code</code>:</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;agent.tool_use&quot;,
+  &quot;id&quot;: &quot;sevt_01pqr...&quot;,
+  &quot;name&quot;: &quot;bash&quot;,
+  &quot;input&quot;: { &quot;command&quot;: &quot;rm -rf /workspace/reports&quot; },
+  &quot;evaluated_permission&quot;: &quot;deny&quot;,
+  &quot;evaluation&quot;: {
+    &quot;type&quot;: &quot;auto&quot;,
+    &quot;evaluated_permission&quot;: { &quot;type&quot;: &quot;deny&quot;, &quot;reason_code&quot;: &quot;high_risk&quot; }
+  },
+  &quot;processed_at&quot;: &quot;2026-03-25T14:05:12Z&quot;
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th><code>evaluation</code></th>
+<th>Top-level <code>evaluated_permission</code></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>{"type": "always_allow"}</code></td>
+<td><code>"allow"</code></td>
+<td>Resolved policy is <code>always_allow</code>; the call ran.</td>
+</tr>
+<tr>
+<td><code>{"type": "always_ask"}</code></td>
+<td><code>"ask"</code></td>
+<td>Resolved policy is <code>always_ask</code>; paused for your approval.</td>
+</tr>
+<tr>
+<td><code>{"type": "auto", "evaluated_permission": {"type": "allow"}}</code></td>
+<td><code>"allow"</code></td>
+<td>Server determined the call safe; it ran.</td>
+</tr>
+<tr>
+<td><code>{"type": "auto", "evaluated_permission": {"type": "ask", "reason_code": "indeterminate"}}</code></td>
+<td><code>"ask"</code></td>
+<td>Server reached no determination; paused for your approval.</td>
+</tr>
+<tr>
+<td><code>{"type": "auto", "evaluated_permission": {"type": "deny", "reason_code": "high_risk"}}</code></td>
+<td><code>"deny"</code></td>
+<td>Server evaluated the call as high-risk and denied it.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>On the <code>auto</code> form the nested <code>evaluated_permission.type</code> always equals the event's top-level <code>evaluated_permission</code>.</li>
+<li><code>reason_code</code> is for your client to branch on and keep in audit records - not text to show end users.</li>
+<li><code>evaluation</code> is <strong>absent</strong> when the agent names a tool that isn't enabled in the session (server denies without evaluating any policy: <code>evaluated_permission: "deny"</code>, no <code>evaluation</code>) and on events recorded before the field existed (read those as <code>always_allow</code> for <code>"allow"</code>, <code>always_ask</code> for <code>"ask"</code>).</li>
+<li>Write your client to tolerate an <code>evaluation.type</code> or <code>reason_code</code> it doesn't recognize.</li>
+<li><code>agent.custom_tool_use</code> events carry neither field (custom tools aren't governed by permission policies).</li>
+</ul>
+<p>To enable only specific tools, flip the default off and opt-in per tool:</p>
+<pre><code class="language-json">{
+  &quot;tools&quot;: [
+    {
+      &quot;type&quot;: &quot;agent_toolset_20260401&quot;,
+      &quot;default_config&quot;: { &quot;enabled&quot;: false },
+      &quot;configs&quot;: [
+        { &quot;name&quot;: &quot;bash&quot;, &quot;enabled&quot;: true },
+        { &quot;name&quot;: &quot;read&quot;, &quot;enabled&quot;: true }
+      ]
+    }
+  ]
+}
+</code></pre>
+<h3>Web search &amp; web fetch settings (domain filters)</h3>
+<p><code>web_search</code> and <code>web_fetch</code> run on Anthropic's servers regardless of environment type, so an environment's <code>networking</code> policy <strong>does not</strong> govern them (see <code>shared/managed-agents-environments.md</code> -&gt; Networking). To control what they can reach, set <code>allowed_domains</code> (only these hosts) <strong>or</strong> <code>blocked_domains</code> (never these hosts) - never both on one entry - on the tool's <code>configs</code> entry. Each tool carries its own list. Organization-level web search/fetch settings in the Console apply to the Messages API only, not to Managed Agents sessions.</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;agent_toolset_20260401&quot;,
+  &quot;configs&quot;: [
+    {
+      &quot;type&quot;: &quot;web_search&quot;,
+      &quot;name&quot;: &quot;web_search&quot;,
+      &quot;allowed_domains&quot;: [&quot;docs.example.com&quot;, &quot;arxiv.org&quot;],
+      &quot;user_location&quot;: { &quot;type&quot;: &quot;approximate&quot;, &quot;country&quot;: &quot;US&quot;, &quot;timezone&quot;: &quot;America/Los_Angeles&quot; }
+    },
+    {
+      &quot;type&quot;: &quot;web_fetch&quot;,
+      &quot;name&quot;: &quot;web_fetch&quot;,
+      &quot;blocked_domains&quot;: [&quot;ads.example.com&quot;],
+      &quot;max_content_tokens&quot;: 50000
+    }
+  ]
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Applies to</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>allowed_domains</code></td>
+<td><code>web_search</code>, <code>web_fetch</code></td>
+<td>The only hosts the tool can reach. Mutually exclusive with <code>blocked_domains</code> on the same entry.</td>
+</tr>
+<tr>
+<td><code>blocked_domains</code></td>
+<td><code>web_search</code>, <code>web_fetch</code></td>
+<td>Hosts the tool cannot reach.</td>
+</tr>
+<tr>
+<td><code>max_content_tokens</code></td>
+<td><code>web_fetch</code></td>
+<td>Positive integer cap on fetched <em>text</em> content entering context (binary content such as PDFs is not capped).</td>
+</tr>
+<tr>
+<td><code>user_location</code></td>
+<td><code>web_search</code></td>
+<td><code>{ "type": "approximate", city?, region?, country? (2-letter uppercase ISO 3166-1), timezone? (IANA) }</code> - at least one of the optional fields.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Run-time behavior:</strong> a <code>web_fetch</code> call outside its list returns an error result to the agent (<code>is_error: true</code> on <code>agent.tool_result</code>, content names <code>url_not_allowed</code>); <code>web_search</code> silently omits results outside its list. In the Console, the agent form has allow/block-list controls for the web tools; <code>user_location</code> and <code>max_content_tokens</code> are set in the agent's <strong>Raw</strong> view.</p>
+<p><strong>Domain list rules</strong> (violations -&gt; 400 <code>invalid_request_error</code> on agent create/update and on session create/update that supplies <code>tools</code>; messages name the list and zero-based index, e.g. <code>allowed_domains.0: IP addresses are not supported...</code>):</p>
+<ul>
+<li>1-64 domains per list, each 1-255 chars. Empty list is rejected - omit the field or send <code>null</code> for "no restriction". Duplicates within a list are rejected.</li>
+<li>Plain hostname only: <code>example.com</code>, not <code>https://example.com</code>, <code>example.com:443</code>, or <code>*.example.com</code>. Case-insensitive; a single trailing <code>/</code> is ignored.</li>
+<li>A listed domain covers itself <strong>and its subdomains</strong> (<code>example.com</code> covers <code>docs.example.com</code>; <code>docs.example.com</code> does not cover <code>example.com</code> or <code>api.example.com</code>). <code>www.</code> is an ordinary subdomain - list the bare domain to cover both.</li>
+<li>Rejected: IP addresses in any form; bare TLDs/registry suffixes (<code>com</code>, <code>co.uk</code>); single-label names (<code>intranet</code>); <code>localhost</code> and hosts ending in <code>.localhost</code>, <code>.local</code>, <code>.internal</code>, <code>.localdomain</code>, <code>.invalid</code>; non-ASCII (use <code>xn--</code> Punycode).</li>
+<li><code>web_fetch</code> domains cannot carry a path. <code>web_search</code> domains may carry a path suffix (<code>example.com/blog</code>, no spaces / <code>?</code> / <code>#</code> / <code>$ , | ^ !</code>), but the provider matches it as a URL pattern - prefer plain hostnames.</li>
+<li>Provider-dependent rejections at the same time: a domain Anthropic's crawler may not access, an unsupported <code>user_location.country</code> (message ends <code>not a country the search provider supports</code>), an invalid IANA <code>timezone</code>.</li>
+</ul>
+<p>The session re-checks the config when it first initializes the tool; if a previously accepted setting is no longer valid it emits <code>session.error</code> and goes <code>idle</code> without retrying. Fix via a session tools update (<code>shared/managed-agents-core.md</code> -&gt; Updating the agent configuration mid-session), update the agent too so new sessions get the fix, then send a new <code>user.message</code>.</p>
+<p><strong>Multiagent layering</strong> (see <code>shared/managed-agents-multiagent.md</code>): every list on the path to a thread applies at once - a roster agent is bound by its own lists, by those of every agent that called it, and by the coordinator's <em>current</em> lists. Allow-lists intersect and block-lists union, so a roster agent can narrow but never widen. Disjoint allow-lists leave the tool available but every call fails <code>url_not_allowed</code> (the tool description tells the model) - keep roster allow-lists inside the coordinator's. <code>max_content_tokens</code> and <code>user_location</code> are <strong>not</strong> combined: own value -&gt; caller's -&gt; coordinator's. <code>{"type": "self"}</code> entries follow the coordinator. The outcome grader (<code>shared/managed-agents-outcomes.md</code>) runs without the web tools. Updating an idle session's tools changes the coordinator's lists for every thread from its next turn; a roster agent's own lists stay as defined at session create.</p>
+<p><strong>vs. the Messages API <code>web_search_20260209</code> / <code>web_fetch_20260209</code> tools:</strong> same <code>allowed_domains</code> / <code>blocked_domains</code> vocabulary, but 64-entry cap, no path on <code>web_fetch</code> domains, and no <code>max_uses</code>, <code>citations</code>, or <code>cache_control</code>. If migrating from Messages API, these move from per-request to once-on-the-agent.</p>
+<h3>Custom Tools (Client-Side)</h3>
+<p>Custom tools are executed by <strong>your application</strong>, not Anthropic. The flow:</p>
+<ol>
+<li>Agent decides to use the tool -&gt; session emits a <code>agent.custom_tool_use</code> event with inputs</li>
+<li>Session goes <code>idle</code> waiting for you</li>
+<li>Your application executes the tool</li>
+<li>You send back a <code>user.custom_tool_result</code> event with the output</li>
+<li>Session resumes <code>running</code></li>
+</ol>
+<p>No permission policy needed - you're the one executing.</p>
+<pre><code class="language-json">{
+  &quot;tools&quot;: [
+    {
+      &quot;type&quot;: &quot;custom&quot;,
+      &quot;name&quot;: &quot;get_weather&quot;,
+      &quot;description&quot;: &quot;Fetch current weather for a city.&quot;,
+      &quot;input_schema&quot;: {
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;properties&quot;: {
+          &quot;city&quot;: { &quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;City name&quot; }
+        },
+        &quot;required&quot;: [&quot;city&quot;]
+      }
+    }
+  ]
+}
+</code></pre>
+<h3>MCP Servers</h3>
+<p>MCP (Model Context Protocol) servers expose standardized third-party capabilities (e.g. Asana, GitHub, Linear). <strong>Configuration is split across agent and vault:</strong></p>
+<ol>
+<li><strong>Agent creation</strong> declares which servers to connect to (<code>type</code>, <code>name</code>, <code>url</code> - no auth). The agent's <code>mcp_servers</code> array has no auth field.</li>
+<li><strong>Vault</strong> stores the OAuth credentials. Attach via <code>vault_ids</code> on session create.</li>
+</ol>
+<p>This keeps secrets out of reusable agent definitions. Each vault credential is tied to one MCP server URL; Anthropic matches credentials to servers by URL.</p>
+<p><strong>Agent side - declare servers (no auth):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type</code></td>
+<td>Yes</td>
+<td><code>"url"</code></td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>Yes</td>
+<td>Unique name - referenced by <code>mcp_toolset.mcp_server_name</code></td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td>Yes</td>
+<td>The MCP server's endpoint URL (Streamable HTTP transport)</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-json">{
+  &quot;mcp_servers&quot;: [
+    { &quot;type&quot;: &quot;url&quot;, &quot;name&quot;: &quot;linear&quot;, &quot;url&quot;: &quot;https://mcp.linear.app/mcp&quot; }
+  ],
+  &quot;tools&quot;: [
+    { &quot;type&quot;: &quot;mcp_toolset&quot;, &quot;mcp_server_name&quot;: &quot;linear&quot; }
+  ]
+}
+</code></pre>
+<p><strong>Session side - attach vault:</strong></p>
+<pre><code class="language-json">{
+  &quot;agent&quot;: &quot;agent_abc123&quot;,
+  &quot;environment_id&quot;: &quot;env_abc123&quot;,
+  &quot;vault_ids&quot;: [&quot;vlt_abc123&quot;]
+}
+</code></pre>
+<blockquote>
+<p>Tip: <strong>Per-tool enablement:</strong> <code>mcp_toolset</code> accepts <code>default_config: {enabled: false}</code> + <code>configs: [{name, enabled: true}]</code> for an allowlist pattern. MCP <code>configs</code> entries take <strong>only</strong> <code>name</code> (the bare tool name as the server reports it), <code>enabled</code>, and <code>permission_policy</code> - no <code>type</code> field and none of the web settings that <code>web_search</code> / <code>web_fetch</code> accept in the agent toolset.</p>
+<p>Tip: <strong>Changing tools/MCP servers on a running session:</strong> <code>sessions.update()</code> can replace <code>agent.tools</code> and <code>agent.mcp_servers</code> while the session is <code>idle</code> - a session-local override that doesn't touch the agent object. <code>vault_ids</code> is create-only. See <code>shared/managed-agents-core.md</code> -&gt; Updating the agent configuration mid-session.</p>
+</blockquote>
+<p><strong>Large tool outputs.</strong> If a tool returns more than <strong>100,000 characters (roughly 25,000 tokens)</strong>, the output is automatically offloaded to a file in the sandbox - the agent receives a truncated preview plus the file path and can <code>read</code> the full content. No configuration required. The threshold is in <em>characters</em>, not tokens, and applies to built-in agent tools as well as MCP tools.</p>
+<p><strong>Invalid vault credentials don't block session creation.</strong> If a vault credential is invalid for a declared MCP server, the session still creates successfully; a <code>session.error</code> event describes the MCP auth failure, and auth retries on the next <code>session.status_idle</code> -&gt; <code>session.status_running</code> transition.</p>
+<blockquote>
+<p>Warning: <strong>MCP auth tokens != REST API tokens.</strong> Hosted MCP servers (<code>mcp.notion.com</code>, <code>mcp.linear.app</code>, etc.) typically require <strong>OAuth bearer tokens</strong>, not the service's native API keys. A Notion <code>ntn_</code> integration token authenticates against Notion's REST API but will <strong>not</strong> work as a vault credential for the Notion MCP server. These are different auth systems.</p>
+</blockquote>
+<h3>Vaults - the credential store</h3>
+<p><strong>Vaults</strong> store credentials that Anthropic manages on your behalf. Two credential categories:</p>
+<ul>
+<li><strong>MCP credentials</strong> (<code>mcp_oauth</code>, <code>static_bearer</code>) - keyed by <code>mcp_server_url</code>. When the agent connects to a server at that URL, the token is injected automatically. <strong>Matching is normalized, not byte-exact:</strong> scheme and host are lowercased, and default ports and trailing slashes are stripped, so host casing, an explicit default port, or a trailing slash won't break the match. A different path, subdomain, or <em>non-default</em> port will. If nothing matches, the connection is attempted unauthenticated. <code>mcp_oauth</code> tokens are auto-refreshed via the standard OAuth 2.0 <code>refresh_token</code> grant. This is the only way to authenticate MCP servers.</li>
+<li><strong>Environment variables</strong> (<code>environment_variable</code>) - keyed by <code>secret_name</code> (the env var name). The sandbox sees only an <strong>opaque placeholder</strong>; the real secret is substituted into the outbound request <strong>at egress</strong>. Use this for any service that authenticates through an environment variable: CLIs (<code>aws</code>, <code>gcloud</code>, <code>stripe</code>), SDKs, or direct <code>curl</code> calls from the <code>bash</code> tool.</li>
+</ul>
+<p>Secret fields you supply (<code>token</code>, <code>access_token</code>, <code>refresh_token</code>, <code>client_secret</code>, <code>secret_value</code>) are write-only - never returned in API responses.</p>
+<h4>Credentials and the sandbox</h4>
+<p>Vaults store credentials; those credentials <strong>never enter the sandbox</strong>. This is a deliberate security boundary - code running in the sandbox (including anything the agent writes) cannot read or exfiltrate a vaulted credential, even under prompt injection. Instead, credentials are injected by Anthropic-side proxies <strong>after</strong> a request leaves the sandbox:</p>
+<ul>
+<li><strong>MCP tool calls</strong> are routed through an Anthropic-side proxy that fetches the credential from the vault and adds it to the outbound request.</li>
+<li><strong>Git operations on attached GitHub repositories</strong> (<code>git pull</code>, <code>git push</code>, GitHub REST calls) are routed through a git proxy that injects the <code>github_repository</code> resource's <code>authorization_token</code> the same way.</li>
+<li><strong>Environment-variable credentials</strong> appear in the sandbox as an opaque placeholder; the real value replaces the placeholder at egress, on requests to the credential's allowed hosts only. Substitution covers request <strong>headers and body only</strong> - a secret embedded in the <strong>URL path</strong> is never substituted, so path-secret endpoints (e.g. Slack incoming-webhook URLs) can't be vaulted; use header-based auth instead (for Slack: a bot token in <code>Authorization</code> via <code>chat.postMessage</code>).</li>
+</ul>
+<p><strong>When vault credentials don't fit</strong> (e.g. self-hosted sandboxes - <code>environment_variable</code> is not yet supported there), <strong>register a custom tool:</strong> the agent emits <code>agent.custom_tool_use</code>, your orchestrator (which already holds the credential) executes the call and returns <code>user.custom_tool_result</code> over the same authenticated event stream. No public endpoint is exposed; the sandbox never sees the secret. See <code>shared/managed-agents-client-patterns.md</code> -&gt; Pattern 9.</p>
+<p><strong>Do not put API keys in the system prompt or user messages as a workaround</strong> - they persist in the session's event history.</p>
+<blockquote>
+<p>Formerly known internally as TATs (Tool/Tenant Access Tokens).</p>
+</blockquote>
+<p><strong>Flow:</strong></p>
+<ol>
+<li>Create a vault (<code>client.beta.vaults.create(...)</code>) - one per tenant/user, or one shared, depending on your model</li>
+<li>Add credentials to it (<code>client.beta.vaults.credentials.create(...)</code>) - MCP credentials are keyed by MCP server URL; environment-variable credentials by <code>secret_name</code></li>
+<li>Reference the vault on session create via <code>vault_ids: ["vlt_..."]</code></li>
+<li>Anthropic auto-refreshes OAuth tokens before they expire and substitutes secrets at runtime</li>
+</ol>
+<p><strong>MCP OAuth credential shape</strong>:</p>
+<pre><code class="language-json">{
+  &quot;display_name&quot;: &quot;Notion (workspace-foo)&quot;,
+  &quot;auth&quot;: {
+    &quot;type&quot;: &quot;mcp_oauth&quot;,
+    &quot;mcp_server_url&quot;: &quot;https://mcp.notion.com/mcp&quot;,
+    &quot;access_token&quot;: &quot;&lt;current access token&gt;&quot;,
+    &quot;expires_at&quot;: &quot;2026-04-02T14:00:00Z&quot;,
+    &quot;refresh&quot;: {
+      &quot;refresh_token&quot;: &quot;&lt;refresh token&gt;&quot;,
+      &quot;client_id&quot;: &quot;&lt;your OAuth client_id&gt;&quot;,
+      &quot;token_endpoint&quot;: &quot;https://api.notion.com/v1/oauth/token&quot;,
+      &quot;token_endpoint_auth&quot;: { &quot;type&quot;: &quot;none&quot; }
+    }
+  }
+}
+</code></pre>
+<p>The <code>refresh</code> block is what enables auto-refresh - <code>token_endpoint</code> is where Anthropic posts the <code>refresh_token</code> grant. <code>token_endpoint_auth</code> is a discriminated union:</p>
+<table>
+<thead>
+<tr>
+<th><code>type</code></th>
+<th>Shape</th>
+<th>Use when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>"none"</code></td>
+<td><code>{type: "none"}</code></td>
+<td>Public OAuth client (no secret)</td>
+</tr>
+<tr>
+<td><code>"client_secret_basic"</code></td>
+<td><code>{type: "client_secret_basic", client_secret: "..."}</code></td>
+<td>Confidential client, secret via HTTP Basic auth</td>
+</tr>
+<tr>
+<td><code>"client_secret_post"</code></td>
+<td><code>{type: "client_secret_post", client_secret: "..."}</code></td>
+<td>Confidential client, secret in request body</td>
+</tr>
+</tbody>
+</table>
+<p>Omit <code>refresh</code> entirely if you only have an access token with no refresh capability - it'll work until it expires, then the agent loses access.</p>
+<blockquote>
+<p>Tip: <strong>Getting an OAuth token.</strong> How you obtain the initial access and refresh tokens depends on the MCP server - consult its documentation. Once you have them, store them in a vault credential using the shape above; Anthropic auto-refreshes via the <code>refresh.token_endpoint</code> from there.</p>
+</blockquote>
+<p><strong>Environment-variable credential shape</strong>:</p>
+<pre><code class="language-json">{
+  &quot;display_name&quot;: &quot;Twilio API key for sandbox&quot;,
+  &quot;auth&quot;: {
+    &quot;type&quot;: &quot;environment_variable&quot;,
+    &quot;secret_name&quot;: &quot;TWILIO_API_KEY&quot;,
+    &quot;secret_value&quot;: &quot;sk-your-secret-here&quot;,
+    &quot;networking&quot;: {
+      &quot;type&quot;: &quot;limited&quot;,
+      &quot;allowed_hosts&quot;: [&quot;api.twilio.com&quot;, &quot;*.twilio.com&quot;]
+    }
+  }
+}
+</code></pre>
+<p><code>networking.allowed_hosts</code> controls which outbound hosts the secret can be substituted for - <code>{"type": "limited", "allowed_hosts": [...]}</code> or <code>{"type": "unrestricted"}</code> if you can't enumerate the domains in advance. Limiting is strongly recommended: it prevents the key from ever being sent to unauthorized hosts.</p>
+<p><strong><code>injection_location</code></strong> (optional, sibling of <code>networking</code>) controls <strong>where</strong> in the outbound request the secret is substituted - <code>{header: bool, body: bool}</code>. The two are independent: <code>allowed_hosts</code> scopes <em>which hosts</em> a substituted request can target; <code>injection_location</code> scopes <em>which parts of the request</em> the secret is substituted into across all of those hosts. Most services read an API key from a request header, so <code>{"header": true}</code> is the narrower configuration - request bodies are often assembled from content the agent is working with, making the body the broader exposure surface. A placeholder in a disabled location is <strong>neither substituted nor stripped</strong> - the literal opaque placeholder string is sent to the third party in that location.</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th><code>injection_location</code> semantics</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Create credential</td>
+<td>Omit the field entirely -&gt; both locations enabled. Provide the object -&gt; any field you omit defaults to <code>false</code> (<code>{"header": true}</code> creates a header-only credential).</td>
+</tr>
+<tr>
+<td>Update credential</td>
+<td>Fields <strong>merge individually</strong> - <code>{"body": false}</code> disables body substitution and leaves <code>header</code> unchanged. For a running session, the update takes effect on the session's next operation.</td>
+</tr>
+</tbody>
+</table>
+<p>A credential must have at least one location enabled; a create or update that would disable both returns 400, as does explicit <code>null</code> for the object or either field (omit instead). The response always returns both fields with their resolved values.</p>
+<blockquote>
+<p>Warning: <strong>Credentials created in the Console are header-only by default</strong> - unlike the API, where omitting the field enables both. If your client sends the secret in the request body (a form-encoded token request, for example), the placeholder passes through literally and the service rejects it with its own authentication error. Tick body injection in the Console form, or <code>POST</code> the credential with <code>{"injection_location": {"body": true}}</code>.</p>
+<p>Warning: <strong>Two networking layers, both required.</strong> <code>networking.allowed_hosts</code> on the credential controls which requests <em>use the secret</em>, not which requests are <em>allowed</em>. The agent must also be able to reach the domain at the <strong>environment level</strong> (<code>unrestricted</code>, or the host listed in the environment's <code>allowed_hosts</code> - see <code>shared/managed-agents-environments.md</code>). A domain missing from either layer means the secret-substituted request fails.</p>
+<p>Warning: <strong>Client-side validation caveat.</strong> Substitution happens at egress, not inside the sandbox - clients that validate the credential <em>format</em> locally before making a network request (e.g. a CLI that checks the key starts with <code>sk-</code>) will see the opaque placeholder and may fail at startup. If a client rejects the credential before any network call, that's why.</p>
+<p>Tip: <strong>Scope the key minimally.</strong> The agent can do anything the key allows; a key with broader permissions than the task needs increases the blast radius if the agent behaves unexpectedly.</p>
+</blockquote>
+<p><strong>Not supported with self-hosted sandboxes</strong> - <code>environment_variable</code> credentials require Anthropic-managed egress. See <code>shared/managed-agents-self-hosted-sandboxes.md</code>.</p>
+<p><strong>Constraints (all credential types):</strong></p>
+<ul>
+<li><strong>Unique key per vault.</strong> <code>mcp_server_url</code> (MCP credentials) and <code>secret_name</code> (environment-variable credentials) must be unique among active credentials in a vault; duplicates return a 409.</li>
+<li><strong>Keys are immutable.</strong> Secret values, <code>display_name</code>, and (on environment-variable credentials) <code>injection_location</code> can be updated; to change <code>mcp_server_url</code>, <code>secret_name</code>, <code>token_endpoint</code>, or <code>client_id</code>, archive the credential and create a new one. Archiving purges the secret and frees the key for a replacement.</li>
+<li><strong>Maximum 20 credentials per vault.</strong></li>
+<li>Credentials are stored as provided and <strong>not validated until session runtime</strong> - an invalid credential surfaces as an authentication or downstream error during the session, which is emitted but does not block the session from continuing.</li>
+</ul>
+<p><strong>Scoping:</strong> Vaults are workspace-scoped. Anyone with developer+ role in the API workspace can create, read (metadata only - secrets are write-only), and attach vaults. <code>vault_ids</code> can be set at session <strong>create</strong> time but not via session update (the SDK docstring says "Not yet supported; requests setting this field are rejected").</p>
+<hr />
+<h2>Skills</h2>
+<p>Skills are reusable, filesystem-based resources that provide your agent with domain-specific expertise: workflows, context, and best practices that transform general-purpose agents into specialists. Unlike prompts (conversation-level instructions for one-off tasks), skills load on-demand and eliminate the need to repeatedly provide the same guidance across multiple conversations.</p>
+<p>Skills reach the agent two ways: <strong>attached</strong> through the agent's <code>skills</code> array, or <strong>loaded from a GitHub repository</strong> mounted on the session (see § Skills from a GitHub repository below). The agent automatically uses them when relevant to the task at hand:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Pre-built Anthropic skills</strong></td>
+<td>Common document tasks (PowerPoint, Excel, Word, PDF). Reference by name (e.g. <code>xlsx</code>).</td>
+</tr>
+<tr>
+<td><strong>Custom skills</strong></td>
+<td>Skills you've created in your organization via the Skills API. Reference by <code>skill_id</code> + optional <code>version</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Max 20 skills per agent.</strong> Agent creation uses <code>managed-agents-2026-04-01</code>; the separate Skills API (for managing custom skill definitions) uses <code>skills-2025-10-02</code>.</p>
+<h3>Enabling skills on a session</h3>
+<p>Skills are attached to the <strong>agent</strong> definition via <code>agents.create()</code>:</p>
+<pre><code class="language-ts">const agent = await client.beta.agents.create(
+  {
+    name: &quot;Financial Agent&quot;,
+    model: &quot;claude-opus-5&quot;,
+    system: &quot;You are a financial analysis agent.&quot;,
+    skills: [
+      { type: &quot;anthropic&quot;, skill_id: &quot;xlsx&quot; },
+      { type: &quot;custom&quot;, skill_id: &quot;skill_abc123&quot;, version: &quot;latest&quot; },
+    ],
+  }
+);
+</code></pre>
+<p>Python:</p>
+<pre><code class="language-python">agent = client.beta.agents.create(
+    name=&quot;Financial Agent&quot;,
+    model=&quot;claude-opus-5&quot;,
+    system=&quot;You are a financial analysis agent.&quot;,
+    skills=[
+        {&quot;type&quot;: &quot;anthropic&quot;, &quot;skill_id&quot;: &quot;xlsx&quot;},
+        {&quot;type&quot;: &quot;custom&quot;, &quot;skill_id&quot;: &quot;skill_abc123&quot;, &quot;version&quot;: &quot;latest&quot;},
+    ]
+)
+</code></pre>
+<p><strong>Skill reference fields:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Anthropic skill</th>
+<th>Custom skill</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type</code></td>
+<td><code>"anthropic"</code></td>
+<td><code>"custom"</code></td>
+</tr>
+<tr>
+<td><code>skill_id</code></td>
+<td>Skill name (e.g. <code>"xlsx"</code>, <code>"docx"</code>, <code>"pptx"</code>, <code>"pdf"</code>)</td>
+<td>Skill ID from Skills API (e.g. <code>"skill_abc123"</code>)</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td><code>"latest"</code> or a specific version number</td>
+<td><code>"latest"</code> or a specific version number</td>
+</tr>
+</tbody>
+</table>
+<p><code>version</code> is optional on <strong>both</strong> kinds and defaults to <code>"latest"</code> - it is not custom-skill-only.</p>
+<h3>Skills from a GitHub repository</h3>
+<p>Skills can also live in your codebase. When a session mounts a repository via the <code>github_repository</code> resource (see <code>shared/managed-agents-environments.md</code> -&gt; GitHub Repositories), the repository's root <code>.claude/skills</code> directory is scanned at session start, and each skill found becomes available to the agent: it sees each discovered skill's name, description, and sandbox path, and reads the skill's <code>SKILL.md</code> (plus any scripts/resources it ships) when a task matches.</p>
+<p><strong>The agent can discover any skill in <code>.claude/skills/&lt;skill-name&gt;/</code></strong> - one directory level deep at the repository root. Skills in the following locations are not discoverable: a bare <code>.claude/skills/SKILL.md</code> (no skill directory), anything nested deeper (<code>.claude/skills/tools/code-review/SKILL.md</code>), a <code>skills/</code> directory outside <code>.claude</code>, or a <code>.claude/skills</code> inside a package subdirectory (though those can still surface when the agent reads files under that subtree). The <code>SKILL.md</code> format is the same as uploaded custom skills.</p>
+<blockquote>
+<p>Warning: <strong>Repository skills are agent instructions - treat them as part of your trust boundary.</strong> Anyone who can commit to a mounted repository (a merged external PR, a compromised dependency, a contributor) can add or edit <code>.claude/skills/</code> content, and the platform loads it at session start with no review step - where session tools like <code>bash</code> and <code>web_fetch</code> give injected instructions real capability. Only mount repositories you trust, and audit <code>.claude/skills/</code> before mounting one with external contributors.</p>
+</blockquote>
+<p>Rules:
+- <strong>Cloud sandboxes only</strong> - self-hosted sandboxes don't support <code>github_repository</code> resources, so they can't load repository skills.
+- <strong>Scanned once, at session start</strong>, from the repository state checked out then (the resource's <code>checkout</code> branch/commit, else the default branch). Commits pushed mid-session are not picked up - start a new session for updated skills. Repositories added to a <em>running</em> session are not scanned either.
+- <strong>Coexists with attached skills.</strong> If a repository skill shares a name with an attached skill (or a skill from another mounted repo), both are available, each announced with its own path.</p>
+<h3>Skills API</h3>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Method</th>
+<th>Path</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Create Skill</td>
+<td><code>POST</code></td>
+<td><code>/v1/skills</code></td>
+</tr>
+<tr>
+<td>List Skills</td>
+<td><code>GET</code></td>
+<td><code>/v1/skills</code></td>
+</tr>
+<tr>
+<td>Get Skill</td>
+<td><code>GET</code></td>
+<td><code>/v1/skills/{id}</code></td>
+</tr>
+<tr>
+<td>Delete Skill</td>
+<td><code>DELETE</code></td>
+<td><code>/v1/skills/{id}</code></td>
+</tr>
+<tr>
+<td>Create Version</td>
+<td><code>POST</code></td>
+<td><code>/v1/skills/{id}/versions</code></td>
+</tr>
+<tr>
+<td>List Versions</td>
+<td><code>GET</code></td>
+<td><code>/v1/skills/{id}/versions</code></td>
+</tr>
+<tr>
+<td>Get Version</td>
+<td><code>GET</code></td>
+<td><code>/v1/skills/{id}/versions/{version}</code></td>
+</tr>
+<tr>
+<td>Delete Version</td>
+<td><code>DELETE</code></td>
+<td><code>/v1/skills/{id}/versions/{version}</code></td>
+</tr>
+</tbody>
+</table></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

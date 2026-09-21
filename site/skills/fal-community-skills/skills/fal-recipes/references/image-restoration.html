@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>image-restoration · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/fal-recipes/references/image-restoration.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Image Restoration Recipe</h1>
+<p>Use this recipe to restore and enhance image quality, fix blur, noise, haze, faces, or documents. The recipe is a <strong>smart dispatcher</strong>: pick the right specialist endpoint for the dominant defect, optionally chain a second pass.</p>
+<h2>Inputs to collect</h2>
+<ul>
+<li><strong>Source image</strong>: URL or local path.</li>
+<li><strong>Dominant defect</strong>: blur, noise, haze, distorted face, damaged document, low resolution. Ask the user if not obvious.</li>
+<li><strong>Output quality vs fidelity tradeoff</strong>: for face restoration, fidelity (1.0) preserves identity better; lower fidelity (0.0-0.5) produces a higher-quality but more "synthetic" result.</li>
+</ul>
+<h2>Smart dispatch by defect</h2>
+<table>
+<thead>
+<tr>
+<th>Defect</th>
+<th>Endpoint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Motion blur, focus blur</td>
+<td><code>fal-ai/nafnet/deblur</code></td>
+</tr>
+<tr>
+<td>Sensor noise, ISO grain</td>
+<td><code>fal-ai/nafnet/denoise</code></td>
+</tr>
+<tr>
+<td>Atmospheric haze, fog</td>
+<td><code>fal-ai/mix-dehaze-net</code></td>
+</tr>
+<tr>
+<td>Distorted, low-res, or damaged face</td>
+<td><code>fal-ai/codeformer</code></td>
+</tr>
+<tr>
+<td>Scanned document (text legibility)</td>
+<td><code>fal-ai/docres</code></td>
+</tr>
+</tbody>
+</table>
+<p>If multiple defects are present, run them in sequence (denoise → deblur → upscale, or face-fix → upscale).</p>
+<h2>Flow</h2>
+<h3>Single-defect restoration</h3>
+<pre><code class="language-bash">URL=$(genmedia upload ./damaged.jpg --json | jq -r '.url')
+
+# Pick endpoint based on dominant defect
+genmedia run fal-ai/nafnet/deblur \
+ --image_url &quot;$URL&quot; \
+ --download &quot;./outputs/restored/{request_id}_{index}.{ext}&quot; \
+ --json
+</code></pre>
+<h3>Face restoration with fidelity control</h3>
+<pre><code class="language-bash">URL=$(genmedia upload ./bad-face.jpg --json | jq -r '.url')
+
+genmedia run fal-ai/codeformer \
+ --image_url &quot;$URL&quot; \
+ --fidelity 0.7 \
+ --download &quot;./outputs/restored/{request_id}_{index}.{ext}&quot; \
+ --json
+</code></pre>
+<p><code>fidelity</code> is typically 0.0-1.0:</p>
+<ul>
+<li><strong>0.0</strong> → maximum quality, identity may drift</li>
+<li><strong>1.0</strong> → maximum identity preservation, less aggressive cleanup</li>
+<li><strong>0.5-0.7</strong> → good balance for most portraits</li>
+</ul>
+<h3>Document restoration</h3>
+<pre><code class="language-bash">URL=$(genmedia upload ./scan.jpg --json | jq -r '.url')
+
+genmedia run fal-ai/docres \
+ --image_url &quot;$URL&quot; \
+ --download &quot;./outputs/restored/{request_id}_{index}.{ext}&quot; \
+ --json
+</code></pre>
+<p>DocRes is tuned for text legibility, it removes paper texture, fixes contrast, and straightens scans without inventing characters.</p>
+<h3>Chained restoration</h3>
+<p>For a noisy + blurry photo, chain two passes:</p>
+<pre><code class="language-bash"># Pass 1: denoise
+URL1=$(genmedia upload ./input.jpg --json | jq -r '.url')
+RES1=$(genmedia run fal-ai/nafnet/denoise --image_url &quot;$URL1&quot; --json)
+URL2=$(echo &quot;$RES1&quot; | jq -r '.image.url')
+
+# Pass 2: deblur the cleaned-up result
+genmedia run fal-ai/nafnet/deblur \
+ --image_url &quot;$URL2&quot; \
+ --download &quot;./outputs/restored/{request_id}_{index}.{ext}&quot; \
+ --json
+</code></pre>
+<p>For an old portrait scan: face-fix → upscale.</p>
+<pre><code class="language-bash"># Pass 1: codeformer for face
+RES1=$(genmedia run fal-ai/codeformer \
+ --image_url &quot;$URL1&quot; --fidelity 0.7 --json)
+URL2=$(echo &quot;$RES1&quot; | jq -r '.image.url')
+
+# Pass 2: upscale (see fal-models-catalog/image-to-image.md for upscale endpoints)
+genmedia run &lt;upscale-endpoint&gt; \
+ --image_url &quot;$URL2&quot; \
+ --download &quot;./outputs/restored/{request_id}_{index}.{ext}&quot; \
+ --json
+</code></pre>
+<h2>Discovery for unusual defects</h2>
+<p>For defects not covered above (artifacts, color shifts, JPEG compression):</p>
+<pre><code class="language-bash">genmedia models &quot;image restoration&quot; --json
+genmedia models --category image-to-image --json | jq '.models[] | select(.tags[]? == &quot;restoration&quot;)'
+genmedia docs &quot;image restoration enhance&quot; --json
+</code></pre>
+<h2>Quality bar</h2>
+<p>Before returning:</p>
+<ul>
+<li>The fix addressed the actual dominant defect, not a guess.</li>
+<li>For faces: identity is preserved (eyes, face shape, hair). If drift, raise <code>fidelity</code>.</li>
+<li>For documents: text is more legible than the source, no characters invented or dropped.</li>
+<li>For chained passes: the intermediate result was acceptable before adding the next step.</li>
+<li>Output paths come from <code>downloaded_files[]</code>.</li>
+</ul>
+<h2>Tips</h2>
+<ul>
+<li><strong>Source format matters.</strong> PNG / lossless source produces cleaner results than re-compressed JPEG.</li>
+<li><strong>One defect at a time</strong> in early iterations. Diagnose before chaining.</li>
+<li><strong>Don't over-restore.</strong> Heavy CodeFormer at low fidelity makes everyone look like the same generic AI face.</li>
+<li><strong>Compare side-by-side.</strong> Always show before/after to the user; restoration is subjective.</li>
+</ul>
+<h2>Common parameters</h2>
+<p>Inspect each endpoint:</p>
+<pre><code class="language-bash">genmedia schema fal-ai/nafnet/deblur --json
+genmedia schema fal-ai/codeformer --json
+genmedia schema fal-ai/docres --json
+</code></pre>
+<p>Frequently exposed:</p>
+<ul>
+<li><code>image_url</code>: source</li>
+<li><code>fidelity</code> (CodeFormer only), 0.0-1.0, identity preservation</li>
+<li>Some endpoints expose <code>output_format</code> (<code>png</code>, <code>jpeg</code>)</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

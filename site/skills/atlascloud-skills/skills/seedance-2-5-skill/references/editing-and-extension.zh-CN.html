@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>editing-and-extension.zh-CN · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/seedance-2-5-skill/references/editing-and-extension.zh-CN.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>视频编辑与延长</h1>
+<p>三类都从已有视频出发。共同点：<strong>源视频是权威，提示词的任务是精确说明什么变、什么绝不能变。</strong></p>
+<p>编辑与延长还会根据输入<strong>自动锁定</strong>部分参数。承诺画幅或时长之前先看 <a href="capabilities.zh-CN.html">capabilities.zh-CN.md</a>。</p>
+<h2>编辑已有视频</h2>
+<pre><code class="language-text">[编辑目标]
+编辑 @video1。在&lt;整段视频 | 某个时间范围&gt;内，&lt;添加 | 移除 | 替换 | 调整&gt;
+&lt;物体、区域或音频类别&gt;。
+
+[源视频角色]
+@video1 是唯一编辑母版。它定义&lt;人物、场景、动作、构图、运镜、遮挡关系、音频、
+事件顺序&gt;。
+
+[目标素材角色]
+@image1 定义&lt;目标物体的指定属性&gt;。
+  不要用&lt;它的背景、构图或无关物体&gt;。
+
+[编辑范围]
+只修改&lt;物体、区域、时间范围或音频类别&gt;。
+
+[需要保留]
+保留 @video1 的&lt;绝不能变的全部内容&gt;。
+</code></pre>
+<p>四件事让它成立：</p>
+<p><strong>唯一编辑母版。</strong> 要写出来。不写这句，提供的参考图会跟源视频争夺构图与调度的控制权。</p>
+<p><strong>范围写两遍</strong> —— 一遍是要改什么，一遍是要保留什么。第二半不是冗余，它是防连带改动的东西。</p>
+<p><strong>目标数量。</strong> 替换物体时写明存在几个：<code>全片只有一盏白色台灯；只替换原来那盏黄色的</code>。</p>
+<p><strong>时间轴继承。</strong> 被替换的物体继承原物体做过的一切：</p>
+<pre><code class="language-text">白色台灯继承原来那盏黄色台灯的全部出现、灯臂旋转、手部遮挡与离场，
+包括时机、路径与速度变化。
+</code></pre>
+<p>不写这行，替换物经常外形正确但运动方式不一样。</p>
+<h3>允许自然反应</h3>
+<p>范围不该收得太紧、以致结果看起来像贴上去的。改灯光颜色时，允许皮肤跟着环境光变：<code>只改右墙的灯光颜色及其照亮的区域；允许人物肤色对环境光作出自然反应。</code></p>
+<h3>音频可以单独编辑</h3>
+<p>台词、语言、音色、音乐、音效各自可寻址。写明说话人或声音类别、要改什么、什么必须保留：</p>
+<pre><code class="language-text">编辑 @video1。只移除原有背景音乐。保留人物台词、唇形同步、环境声与动作音效；
+保留 @video1 的画面、运镜与剪辑节奏。
+</code></pre>
+<h2>向前延长 —— 接在源片之后</h2>
+<p>先描述边界状态，再写接下来发生什么。</p>
+<pre><code class="language-text">向前延长 @video1。延长段的第一帧直接承接 @video1 的最后一帧。保持
+&lt;主体姿态与朝向&gt;、&lt;道具位置&gt;、&lt;背景与空间关系&gt;、&lt;机位与构图&gt;、&lt;光照&gt;、
+&lt;运动方向&gt;的连续性。
+
+然后，&lt;新的动作、事件、运镜或音频&gt;。
+
+全程保持&lt;人物身份与服装&gt;、&lt;关键道具&gt;、&lt;背景布局&gt;、&lt;动作轴线&gt;的连续性。
+每个主体保持为同一个连续实体：不许复制或分裂。
+</code></pre>
+<p>这正是接缝默认值成立的上下文：<strong>要求自然延续、动作衔接顺畅、禁止生硬切断、禁止物体凭空出现。</strong> 这些约束属于这里，不属于全局——见 <a href="transitions.zh-CN.html">transitions.zh-CN.md</a>。</p>
+<h2>向后延长 —— 接在源片之前</h2>
+<p>会出错的那个方向，原因很具体。</p>
+<p>先写新内容，再把源片的<strong>首帧写成你正在生成这一段的明确末态</strong>：</p>
+<pre><code class="language-text">向后延长 @video1。在源视频开始之前，&lt;在前面发生的动作或事件&gt;。
+
+延长段的最后一帧自然衔接到 @video1 的第一帧：&lt;主体姿态与朝向&gt;、
+&lt;道具位置与状态&gt;、&lt;其他主体的位置&gt;。匹配 @video1 首帧的&lt;机位与构图&gt;、
+&lt;光照&gt;、&lt;运动方向&gt;。
+
+&lt;只应在源视频开始之后出现的素材&gt;不得在向后延长段中提前出现。
+</code></pre>
+<p><strong>只写「然后接上源视频」就是那个翻车写法。</strong> 两件事会出错：属于源片<strong>之后</strong>的角色或效果提前露面；以及画面到达目标状态之后继续变。两者都靠把源片首帧当成写明的末态来解决——正是承载分段长视频的同一个装置。</p>
+<p>最后那行在有参考素材时尤其重要。说清哪些素材属于前面这一段、哪些必须等。</p>
+<h2>接龙</h2>
+<p>一个动作长于单次请求能支持的范围时：</p>
+<ul>
+<li>在某一段<strong>真正结束</strong>的地方切，不在动作中途切</li>
+<li>把<strong>真实生成的尾帧</strong>往前喂——不是你设想的那个尾帧</li>
+<li>接龙段落<strong>按顺序</strong>生成，它们互相依赖</li>
+<li>被切点分开的镜头独立生成，在剪辑台上拼</li>
+</ul>
+<p>接龙是对齐辅助，<strong>不保证接缝隐形</strong>。</p>
+<h2>复查</h2>
+<p>边界帧在<strong>视觉上</strong>衔接，它们不是逐像素的剪辑拼接——期待那个会导致对可用输出的无限重做。</p>
+<p>按顺序检查：</p>
+<ol>
+<li>边界两侧——姿态、道具、光、运动方向</li>
+<li>完整的延长段，不只是接缝</li>
+<li>有没有东西提前出现（向后延长），或错误地留存</li>
+<li>跨边界的音频连续性；延长段的音量可能与源片略有差异</li>
+</ol>
+<p>只重做失败的那一段。</p>
+<h2>关联</h2>
+<ul>
+<li><a href="long-video.zh-CN.html">long-video.zh-CN.md</a> — 这里复用的末态装置</li>
+<li><a href="transitions.zh-CN.html">transitions.zh-CN.md</a> — 接缝约束的正确作用域</li>
+<li><a href="capabilities.zh-CN.html">capabilities.zh-CN.md</a> — 这些任务会自动锁定什么</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

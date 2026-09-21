@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>README · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/ruby/claude-api/README.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Claude API - Ruby</h1>
+<blockquote>
+<p><strong>Note:</strong> The Ruby SDK supports the Claude API. A tool runner is available in beta via <code>client.beta.messages.tool_runner()</code>. Agent SDK is not yet available for Ruby.</p>
+</blockquote>
+<h2>Installation</h2>
+<pre><code class="language-bash">gem install anthropic
+</code></pre>
+<h2>Client Initialization</h2>
+<pre><code class="language-ruby">require &quot;anthropic&quot;
+
+# Default (uses ANTHROPIC_API_KEY env var)
+client = Anthropic::Client.new
+
+# Explicit API key
+client = Anthropic::Client.new(api_key: &quot;your-api-key&quot;)
+</code></pre>
+<hr />
+<h2>Basic Message Request</h2>
+<pre><code class="language-ruby">message = client.messages.create(
+  model: :&quot;claude-opus-5&quot;,
+  max_tokens: 16000,
+  messages: [
+    { role: &quot;user&quot;, content: &quot;What is the capital of France?&quot; }
+  ]
+)
+# content is an array of polymorphic block objects (TextBlock, ThinkingBlock,
+# ToolUseBlock, ...). .type is a Symbol - compare with :text, not &quot;text&quot;.
+# .text raises NoMethodError on non-TextBlock entries.
+message.content.each do |block|
+  puts block.text if block.type == :text
+end
+</code></pre>
+<hr />
+<h2>Extended Thinking</h2>
+<blockquote>
+<p><strong>Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking. <code>budget_tokens</code> is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<strong>Claude Opus 5:</strong> thinking is on by default - omitting <code>thinking:</code> runs adaptive (<code>{ type: "adaptive" }</code> is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. <code>{ type: "disabled" }</code> is accepted only at effort <code>high</code> or lower; pairing it with <code>xhigh</code>/<code>max</code> returns a 400.
+<strong>Older models:</strong> Use <code>thinking: { type: "enabled", budget_tokens: N }</code> (must be &lt; <code>max_tokens</code>, min 1024).</p>
+</blockquote>
+<pre><code class="language-ruby">message = client.messages.create(
+  model: :&quot;claude-opus-5&quot;,
+  max_tokens: 16000,
+  thinking: { type: &quot;adaptive&quot; },
+  messages: [{ role: &quot;user&quot;, content: &quot;Solve: 27 * 453&quot; }]
+)
+
+message.content.each do |block|
+  case block.type
+  when :thinking then puts &quot;Thinking: #{block.thinking}&quot;
+  when :text then puts &quot;Response: #{block.text}&quot;
+  end
+end
+</code></pre>
+<hr />
+<h2>Prompt Caching</h2>
+<p><code>system_:</code> (trailing underscore - avoids shadowing <code>Kernel#system</code>) takes an array of text blocks; set <code>cache_control</code> on the last block. Plain hashes work via the <code>OrHash</code> type alias. For placement patterns and the silent-invalidator audit checklist, see <code>shared/prompt-caching.md</code>.</p>
+<pre><code class="language-ruby">message = client.messages.create(
+  model: :&quot;claude-opus-5&quot;,
+  max_tokens: 16000,
+  system_: [
+    { type: &quot;text&quot;, text: long_system_prompt, cache_control: { type: &quot;ephemeral&quot; } }
+  ],
+  messages: [{ role: &quot;user&quot;, content: &quot;Summarize the key points&quot; }]
+)
+</code></pre>
+<p>For 1-hour TTL: <code>cache_control: { type: "ephemeral", ttl: "1h" }</code>. There's also a top-level <code>cache_control:</code> on <code>messages.create</code> that auto-places on the last cacheable block.</p>
+<p>Verify hits via <code>message.usage.cache_creation_input_tokens</code> / <code>message.usage.cache_read_input_tokens</code>.</p>
+<hr />
+<h2>Stop Details</h2>
+<p>When <code>stop_reason</code> is <code>:refusal</code>, the response includes structured <code>stop_details</code>:</p>
+<pre><code class="language-ruby">if message.stop_reason == :refusal &amp;&amp; message.stop_details
+  puts &quot;Category: #{message.stop_details.category}&quot;     # e.g. :cyber, :bio, :reasoning_extraction, :frontier_llm, or nil - see docs for the full set
+  puts &quot;Explanation: #{message.stop_details.explanation}&quot;
+end
+</code></pre>
+<p><strong>Refusal fallbacks (Claude Fable 5.1) - opt in by default.</strong> Fallbacks are opt-in: without them a refused request simply stops. New <code>claude-fable-5-1</code> code should include the server-side <code>fallbacks</code> parameter (beta header <code>server-side-fallback-2026-06-01</code>, <code>fallbacks: [{model: "claude-opus-4-8"}]</code> on the beta messages call) by default. The exact Ruby binding (and the client-side middleware for providers without server-side support) is not documented here - WebFetch the Ruby SDK repo's <code>examples/</code> from <code>shared/live-sources.md</code>; full semantics in <code>shared/model-migration.md</code> -&gt; Migrating to Claude Fable 5.1 -&gt; <code>refusal</code> stop reason.</p>
+<hr />
+<h2>Beta Features</h2>
+<p><code>betas:</code> is only valid on <code>client.beta.messages.create</code>, not the non-beta path.</p>
+<h3>Task budgets</h3>
+<pre><code class="language-ruby">response = client.beta.messages.create(
+  model: :&quot;claude-opus-5&quot;,
+  max_tokens: 16000,
+  output_config: { task_budget: { type: :tokens, total: 64_000 } },
+  tools: [...],
+  messages: [...],
+  betas: [&quot;task-budgets-2026-03-13&quot;]
+)
+</code></pre>
+<hr />
+<h2>Error Type</h2>
+<p><code>APIStatusError</code> exposes a <code>.type</code> field for programmatic error classification:</p>
+<pre><code class="language-ruby">begin
+  client.messages.create(...)
+rescue Anthropic::Errors::APIStatusError =&gt; e
+  puts e.type  # :rate_limit_error, :overloaded_error, etc.
+end
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

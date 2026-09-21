@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>game-stylization · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/game-stylization.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Stylization — the style contract for AI-generated game assets</h1>
+<p>Self-contained specification of the stylization layer for game pipelines.
+Owns everything that makes independently generated assets look like ONE game.
+Designed to be dropped into any game-generation skill: if your pipeline
+generates a single pixel of game art, it consumes this contract.</p>
+<p><strong>Interface in one paragraph:</strong> the pipeline derives ONE text string (the
+STYLE FORMULA) per game, gets it user-approved once, then inserts it
+byte-identical into every asset-generation prompt of every subsystem
+(sprites, animations, tiles, backgrounds, textures, 3D). This file defines
+how the formula is built, how prompts are assembled around it, which models
+to call with what parameters, and how style consistency is verified.</p>
+<hr />
+<h2>1. Why stylization exists</h2>
+<p>Every asset is produced by an independent model call — the model has no
+memory of previous calls. Different subsystems (and different team members'
+skills) generate different asset kinds. Without a shared rule the result is
+"three different games on one screen": photoreal floor + pixel-art hero +
+cartoon background.</p>
+<p>The STYLE FORMULA is the glue: the only piece of shared context that travels
+into every generation.</p>
+<h2>2. STYLE FORMULA recipe</h2>
+<p>One English paragraph, <strong>60–90 words</strong>, composed once per game right after
+the design brief is parsed, shown to the user for approval, stored in the
+pipeline's state (e.g. <code>gdd.json.style_formula</code>).</p>
+<p>Concatenate five blocks, in order:</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Block</th>
+<th>Pins down</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Rendering style</td>
+<td>what it's "drawn with"</td>
+<td><code>flat vector cartoon with soft gradients</code> / <code>chunky pixel art, 32x32 grid feel</code> / <code>soft hand-painted gouache</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Shape &amp; line language</td>
+<td>silhouettes and outlines</td>
+<td><code>rounded blobby shapes with thick dark-plum outlines</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Palette <strong>by role</strong></td>
+<td>readability, not uniformity</td>
+<td><code>environment in deep violet stone with charcoal shadows, hero in warm coral-cream tones contrasting the surroundings, hazards and pickups marked with acid-green glow</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Light &amp; mood</td>
+<td>one clause</td>
+<td><code>moody but playful underground atmosphere, flat ambient light</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Game-readability</td>
+<td>contrast + <strong>perspective word</strong></td>
+<td><code>high contrast between game elements and backgrounds, clean readable silhouettes, consistent side-view perspective across all assets</code></td>
+</tr>
+</tbody>
+</table>
+<p>Rules:</p>
+<ul>
+<li><strong>Block 3 is roles, not one global gamma.</strong> Environment gets its base
+  colors; the hero gets colors that CONTRAST with that base (the hero must
+  pop, never blend); hazards/pickups get one distinct signal hue. A single
+  flat color list paints the whole world one gamma and kills element
+  readability — style identity lives in blocks 1, 2 and 4, color serves
+  readability.</li>
+<li><strong>The perspective word in block 5 must match the genre</strong>: platformer /
+  runner → <code>side-view</code>; top-down → <code>top-down</code>; puzzle / clicker → <code>flat
+  frontal</code>. A top-down game with a side-view hero sprite is the most common
+  cross-asset failure; the formula is where it is prevented. (3D pipelines:
+  see section 8 — the perspective word is replaced, not reused.)</li>
+<li>If the user supplied a style reference image, describe ITS rendering style
+  in your own precise words in block 1 — never paste image URLs into the
+  formula.</li>
+<li>Do NOT put into the formula: asset-specific content (that's the per-asset
+  description), background/keying instructions (that's the kind suffix),
+  pixel dimensions or resolutions.</li>
+</ul>
+<h3>STYLE TOKEN (compressed form)</h3>
+<p>Some downstream fields are length-limited (e.g. Meshy <code>texture_prompt</code>
+≤600 chars — the full formula usually fits; some UI fields may not). When a
+consumer cannot take the full formula, it takes the <strong>STYLE TOKEN</strong>: blocks
+1 + 3-condensed + one accent from block 4, ≤120 chars, derived ONCE from the
+approved formula and then also frozen byte-identical. Example:
+<code>flat vector cartoon, deep violet dungeon palette, glowing teal accents, warm amber torchlight, thick dark-plum outlines</code>.
+The formula is the source of truth; the token is its compression — never
+maintain two competing style strings.</p>
+<h2>3. The byte-identical contract</h2>
+<blockquote>
+<p>The formula is inserted into EVERY generation prompt of EVERY subsystem
+<strong>without changing a single byte</strong>. No paraphrasing, no shortening, no
+"improving". Including single-asset regenerations during iteration.
+Re-deriving the formula mid-game is allowed only when the user explicitly
+asks to change the art style — that re-opens the approval gate and
+invalidates all existing assets.</p>
+</blockquote>
+<p>Consumers and their obligations:</p>
+<table>
+<thead>
+<tr>
+<th>Consumer</th>
+<th>Obligation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Static asset generation (sprites, tiles, backgrounds, UI)</td>
+<td>formula verbatim in every prompt (assembly in section 4)</td>
+</tr>
+<tr>
+<td>Character animation (sprite-sheet generation from a base sprite)</td>
+<td>formula verbatim in sheet prompts; the animation view parameter MUST match the formula's perspective word (<code>side-view</code> → sidescroller view, <code>top-down</code> → top-down view)</td>
+</tr>
+<tr>
+<td>Environment textures</td>
+<td>formula verbatim + seamless suffix (section 4)</td>
+</tr>
+<tr>
+<td>3D (image-to-3D, e.g. Meshy/Tripo)</td>
+<td>formula verbatim in concept/reference image prompts; formula (or token if limited) in <code>texture_prompt</code>; style fixes via retexture, not mesh regeneration (section 8)</td>
+</tr>
+<tr>
+<td>Level/map presentation sheets</td>
+<td>formula or token in the sheet prompt so map icons match the asset kit</td>
+</tr>
+</tbody>
+</table>
+<h2>4. Prompt assembly for 2D assets</h2>
+<p>Every asset prompt is a concatenation of exactly four parts, in order:</p>
+<pre><code>&lt;kind template&gt; + &lt;asset description&gt; + &lt;STYLE FORMULA byte-identical&gt; + &lt;kind suffix&gt;
+</code></pre>
+<p>The asset description is a stable 3-4 word shorthand from the design doc
+(<code>the round blue slime</code>), never a character name.</p>
+<h3>Kind templates and suffixes</h3>
+<p><strong>sprite</strong> (characters, objects — needs transparency)
+- template: <code>game sprite of &lt;description&gt;, single character/object, full body visible, centered,</code>
+- suffix: <code>, on a solid uniform bright &lt;KEY COLOR&gt; background, no shadows cast on the background, no ground plane, nothing cropped at the edges</code></p>
+<p><strong>tile</strong> (repeating surfaces)
+- template: <code>seamless tileable game texture tile of &lt;description&gt;, uniform pattern density,</code>
+- suffix: <code>, perfectly seamless edges that wrap horizontally and vertically, no border, no vignette, flat even lighting, no single focal object</code></p>
+<p><strong>background</strong> (full-frame)
+- template: <code>game background of &lt;description&gt;, wide establishing view,</code>
+- suffix: <code>, no characters, no UI elements, slightly muted detail so foreground game elements stay readable, soft depth layering</code></p>
+<p><strong>texture</strong> (3D surface)
+- template: <code>seamless tileable surface texture of &lt;description&gt;,</code>
+- suffix: <code>, perfectly seamless edges, flat even lighting, no perspective, no objects, photographed-flat appearance</code></p>
+<p><strong>ui</strong> (buttons, icons — needs transparency)
+- template: <code>game UI element: &lt;description&gt;, single element, centered,</code>
+- suffix: <code>, on a solid uniform bright &lt;KEY COLOR&gt; background, crisp edges, no drop shadow outside the element</code></p>
+<h2>5. Key-color selection (the "green screen")</h2>
+<p>Models cannot output alpha; asking for "transparent background" produces a
+fake checkerboard. Transparent assets are generated on a solid key color and
+keyed out in post-processing.</p>
+<p><strong>Choosing the key color is a mandatory per-asset step, driven by the
+formula's palette:</strong></p>
+<ol>
+<li>default: bright magenta <code>#FF00FF</code>;</li>
+<li>if the asset's own colors (its description OR the formula's role palette)
+   are anywhere near pink/magenta/purple → bright green <code>#00FF00</code>;</li>
+<li>if both are taken → bright blue <code>#0000FF</code>.</li>
+</ol>
+<p>The chosen color goes into BOTH the prompt suffix and the keying script.
+Real shipped failure: a pink donut generated on magenta — unkeyable, the
+donut hole stayed pink in the game. Post-processing must also clear
+ENCLOSED key-colored regions (a donut hole is not connected to the image
+corners, so corner flood-fill alone misses it).</p>
+<h2>6. Models and volumes</h2>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Model</th>
+<th>Params</th>
+<th>Volume per game</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sprites, tiles, backgrounds, textures</td>
+<td><code>nano_banana_2</code></td>
+<td>resolution <code>1k</code>; AR <code>1:1</code> (sprite/tile/texture/ui), <code>16:9</code> (background)</td>
+<td>≤10 assets, <code>count: 1</code> each, all submitted in parallel</td>
+</tr>
+<tr>
+<td>UI elements</td>
+<td><code>gpt_image_2</code></td>
+<td><code>high</code> / <code>1k</code>, AR <code>1:1</code></td>
+<td>0–1</td>
+</tr>
+<tr>
+<td>Character animation sheets</td>
+<td><code>gpt_image_2</code> (5×5 grid in one image)</td>
+<td>AR <code>1:1</code></td>
+<td>2–3 sheets max, hero only</td>
+</tr>
+<tr>
+<td>3D concept/reference images</td>
+<td><code>gpt_image_2</code> or <code>nano_banana_2</code></td>
+<td><code>1k</code>, AR <code>1:1</code></td>
+<td>one per 3D prop</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>One primary generator (<code>nano_banana_2</code>) across asset kinds is itself a
+  cohesion win — don't spread kinds across models without a reason.</li>
+<li>Pick resolution at generation time; never upscale afterwards.</li>
+<li><strong>Regeneration budget: 2 attempts per asset</strong> (style drift / keying /
+  tiling failures), then take the best attempt and compensate in code
+  (tint, scale, 1px overlap). Style drift usually heals with a re-roll of
+  the SAME prompt — it's sampling variance, not a prompt error; only edit
+  the description when the content itself is wrong.</li>
+<li>The only legitimate full-set regeneration: the user asked to change the
+  whole style (new formula → new approval → all assets redone). Never
+  regenerate everything in response to point feedback.</li>
+</ul>
+<h2>7. Scale, proportion and coherence checks</h2>
+<ul>
+<li>Every object in the design doc carries <code>relative_scale</code> — height in
+  hero-units (hero = <code>1.0</code>, spike trap ≈ <code>0.6</code>, doorway ≈ <code>2.0</code>). It drives
+  in-game sizing and the contact sheet; it is NOT inserted into generation
+  prompts.</li>
+<li><strong>Contact sheet before asset approval:</strong> paste all sprites side by side at
+  their relative scales on a strip of the generated tile. Check with eyes
+  (the agent reads the image): proportions read right? hero pops against the
+  tile or blends? A problem caught here costs one regen; caught after coding
+  it costs a debugging session.</li>
+<li>Per-set style checklist: same rendering style on every asset (block 1)?
+  outlines consistent (block 2)? palette roles respected — hero contrasts
+  environment, signal hue only on hazards/pickups (block 3)? one perspective
+  everywhere (block 5)?</li>
+<li>Final in-game sizes (2D): sprite 128px, tile 256px (power-of-two), background
+  1280×720. Downscale with NEAREST for pixel-art formulas (LANCZOS smears
+  them), LANCZOS otherwise.</li>
+</ul>
+<h2>8. 2D vs 3D stylization — what changes</h2>
+<p>3D consumes the same formula but through different mechanics:</p>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>2D</th>
+<th>3D (image-to-3D, e.g. Meshy)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Style carrier</td>
+<td>formula in every asset prompt</td>
+<td>formula in the CONCEPT IMAGE prompt; formula/token in <code>texture_prompt</code></td>
+</tr>
+<tr>
+<td>Background for subject shots</td>
+<td>solid key color (magenta/green) for keying</td>
+<td><strong>pure flat white, no shadow, no ground</strong> — shadows and clutter are the top cause of bad mesh reconstruction; keying is irrelevant, the mesh replaces it</td>
+</tr>
+<tr>
+<td>Perspective word</td>
+<td><code>side-view</code> / <code>top-down</code> / <code>flat frontal</code> everywhere</td>
+<td>replaced by <code>three-quarter isometric view</code> on concept images (shows top + two sides — maximum shape information for reconstruction); in-game camera is free</td>
+</tr>
+<tr>
+<td>Style drift fix</td>
+<td>regenerate the asset (budget: 2)</td>
+<td><strong>retexture the same mesh</strong> (<code>retexture</code> API with the style string) — never regenerate a well-shaped mesh for color reasons</td>
+</tr>
+<tr>
+<td>Extra style surface</td>
+<td>—</td>
+<td>engine lighting: light color, fog and ambient intensity must be derived from formula blocks 3-4, or a perfectly styled texture set still reads off-style in-game</td>
+</tr>
+<tr>
+<td>Geometry style</td>
+<td>—</td>
+<td>add a geometry clause to 3D concept prompts when the formula implies it (<code>low-poly faceted</code>, <code>smooth rounded blobby</code>); polycount tiers: ~8000 hero/interactive props, ~3000 + lowpoly for small decoration</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Full style change in 3D</strong> (user asks to restyle the whole game): new
+formula → <strong>re-approval gate</strong> (never skip it) → regenerate textures →
+<strong>re-derive engine lighting, fog and ambient from the new formula's blocks
+3-4</strong> → revisit the geometry clause. New textures on old lighting and old
+primitives read as "a picture slapped on the old game" — this exact failure
+shipped once (Roblox-style scene "restyled" to Mafia 3 by swapping textures
+only).</p>
+<p><strong>Realism ceiling (say it at the gate):</strong> without mesh generation, characters
+and props are primitives — a photoreal target style ("like Mafia 3") cannot
+be honestly met; textures will look pasted onto blocks. When the requested
+style implies realistic/detailed geometry, state the limit at the approval
+gate and offer the achievable version (gritty stylized: dark palette, warm
+hard light, fog, film grain) — or route through an image-to-3D mesh provider
+if the pipeline has one.</p>
+<p>Everything else (byte-identical contract, palette roles, regen budget,
+checks) applies to 3D unchanged.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

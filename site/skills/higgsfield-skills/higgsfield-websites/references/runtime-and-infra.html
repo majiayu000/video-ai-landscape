@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>runtime-and-infra · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/runtime-and-infra.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Skill: Runtime And Infra</h1>
+<p>Use this for TanStack Start routing, SSR, server functions, server routes,
+Cloudflare Worker runtime, D1/R2, Durable Objects, and deployment-facing
+changes. If the task touches current user, login, logout, or <code>/api/user</code>, also
+read <code>references/auth.md</code>.</p>
+<h2>Stack</h2>
+<ul>
+<li>React 19 + TanStack Start.</li>
+<li>File-based routes live under <code>app/src/routes/</code>.</li>
+<li>SSR entry goes through <code>app/src/server.ts</code>, which exports the Worker handler.</li>
+<li>Build emits <code>dist/server/server.js</code> and <code>dist/client</code>.</li>
+<li>No Next.js, Remix, Astro, <code>app/src/pages</code>, Hono app, Express app, or separate API
+  framework. App-local API endpoints are TanStack server routes under
+  <code>app/src/routes/api/**</code>.</li>
+</ul>
+<h2>SSR Safety</h2>
+<ul>
+<li>Every route renders on the server per request.</li>
+<li>Never touch <code>window</code>, <code>document</code>, <code>localStorage</code>, <code>navigator</code>, or
+  <code>matchMedia</code> at module top level or during render.</li>
+<li>Browser globals belong in <code>useEffect</code>, event handlers, or guarded branches.</li>
+</ul>
+<h2>Server-Only Code</h2>
+<ul>
+<li>Put server logic in <code>createServerFn(...).handler(...)</code> or <code>*.server.ts</code>.</li>
+<li>Secrets and Cloudflare bindings are read server-side per request.</li>
+<li>Do not pass secrets, bindings, or account tokens through React props.</li>
+<li>Use <code>createServerFn({ method: "POST" })</code> for mutations such as generation
+  submit, cost preview, media upload, workspace switch, database writes, and
+  other operations that change user-owned state. Use GET only for pure reads.</li>
+</ul>
+<h2>Supercomputer Design Mode</h2>
+<ul>
+<li><code>fnf-web</code> owns the parent inspector UI. The generated website owns only the child
+  bridge that runs inside the iframe.</li>
+<li>Child bridge code lives in <code>app/src/module/design-inspector</code>:
+  <code>registry.ts</code>, <code>runtime.ts</code>, and <code>vite.ts</code>.</li>
+<li><code>bun run build</code> is inspector-free by default: no inspector runtime, no
+  source metadata, and no per-element debug attributes. Setting
+  <code>HF_DESIGN_INSPECTOR=1</code> in the env turns the same build into the
+  inspector-enabled one (for LOCAL work only).</li>
+<li>The deploy platform CI sets <code>HF_DESIGN_INSPECTOR=1</code> on every deploy build,
+  so the live deployed site always carries the inspector.</li>
+<li>There is ONE deploy per website (<code>higgsfield website deploy &lt;website_id&gt;</code>),
+  and it ships the live public site immediately. The live site is the surface
+  Supercomputer Design mode opens.</li>
+<li>Never hard-code <code>HF_DESIGN_INSPECTOR=1</code> into the <code>build</code> script and never
+  hand-edit the build script to toggle it — the deploy build is controlled by
+  CI, not by these scripts.</li>
+<li>The design build attaches source metadata through callback refs and a
+  <code>WeakMap</code> registry. It must not add per-element DOM attributes.</li>
+<li>The design build instruments intrinsic DOM tags and ref-capable component
+  usages, including small icon components and compound component members. This
+  is automatic; agents must not add marker props by hand. Components that do not
+  forward refs fall back to nearest DOM/heuristic metadata.</li>
+<li>Keep the guarded dynamic import in <code>app/src/routes/__root.tsx</code>; do not make the
+  inspector a static root import. Inspector-free tree-shaking depends on the
+  compile-time <code>__HF_DESIGN_INSPECTOR__</code> guard.</li>
+<li>Never manually write <code>data-hf-*</code> attributes, source markers, inspector refs,
+  or postMessage handlers in website components. The design-inspector module and Vite config own all
+  child-side instrumentation.</li>
+<li>The only selector state allowed in DOM is global state such as
+  <code>body[data-selector-active="true"]</code> while Design mode is active.</li>
+<li>Do not log or post cookies, auth headers, tokens, local/session storage, input
+  values, raw HTML, raw uploaded bytes, or raw result URLs from the inspector.</li>
+</ul>
+<h2>Server Routes</h2>
+<p>Use TanStack Start server routes for browser-safe API proxies such as
+<code>/api/user</code>:</p>
+<pre><code class="language-ts">// app/src/routes/api/user.ts
+import { createFileRoute } from '@tanstack/react-router'
+
+export const Route = createFileRoute('/api/user')({
+  server: {
+    handlers: {
+      GET: async () =&gt; {
+        return Response.json({ ok: true })
+      },
+    },
+  },
+})
+</code></pre>
+<p>Server routes are part of the same Worker. Do not add Hono/Express or a second
+backend process.</p>
+<p><code>app/src/routeTree.gen.ts</code> is GENERATED — normally you don't hand-write it.
+After adding a route (<code>app/src/routes/api/user.ts</code>,
+<code>app/src/routes/api/media/upload.tsx</code>, …) the TanStack Router plugin
+regenerates it on <code>bun run dev</code>/<code>bun run build</code>; a stale tree that imports a
+nested route but never registers it as a child makes <code>/api/user</code> etc. look like
+backend failures when the route was simply never registered.</p>
+<p><strong>But the deploy build typechecks against the COMMITTED tree.</strong> <code>createFileRoute("/api/user")</code>
+type-checks its path string against <code>routeTree.gen.ts</code>, and the CI <code>build</code> runs
+<code>tsc</code> and <code>vite</code> <strong>in parallel</strong> — so <code>tsc</code> sees whatever route tree you
+committed, before Vite regenerates it. If you add a route, commit a stale tree,
+and can't run the toolchain in the sandbox (no <code>bun</code>, or the npm registry is
+blocked), CI fails with <code>TS2345: '"/api/user"' is not assignable to keyof
+FileRoutesByPath</code>. Two ways out, in order:</p>
+<ol>
+<li><strong>Regenerate locally and commit the result</strong> — run <code>bun run dev</code> (or <code>build</code>)
+   so the plugin rewrites <code>routeTree.gen.ts</code>, then commit it. Preferred.</li>
+<li><strong>Hand-register the route</strong> when you genuinely can't run the toolchain. The
+   file is deterministic: add the <code>*RouteImport</code>, the route const, all three
+   route maps, the <code>FileRoutesByPath</code> module augmentation, and the
+   <code>rootRouteChildren</code> entry — mirroring an existing route exactly. Then it
+   typechecks and the plugin will just reproduce the same tree on the CI build.</li>
+</ol>
+<h2>Binary Upload Routes</h2>
+<p>Do not send files through JSON server-function input. Browser <code>File</code>, <code>Blob</code>,
+<code>ArrayBuffer</code>, <code>Uint8Array</code>, base64 strings, and byte arrays must not be
+serialized into <code>createServerFn</code> data. This can produce <code>Maximum call stack size
+exceeded</code>, huge payloads, and corrupted upload sources.</p>
+<p>For uploads, use an app-local multipart route:</p>
+<pre><code class="language-ts">// app/src/routes/api/media/upload.ts
+import { createFileRoute } from '@tanstack/react-router'
+
+export const Route = createFileRoute('/api/media/upload')({
+  server: {
+    handlers: {
+      POST: async ({ request }) =&gt; {
+        const form = await request.formData()
+        const file = form.get('file')
+        if (!(file instanceof File)) {
+          return Response.json({ ok: false, code: 'missing_file' }, { status: 400 })
+        }
+
+        const bytes = new Uint8Array(await file.arrayBuffer())
+        return Response.json({
+          ok: true,
+          contentType: file.type,
+          size: bytes.byteLength,
+        })
+      },
+    },
+  },
+})
+</code></pre>
+<p>Client code must use <code>FormData</code> and must not set the <code>content-type</code> header:</p>
+<pre><code class="language-ts">const form = new FormData()
+form.append('file', file)
+await fetch('/api/media/upload', { method: 'POST', body: form })
+</code></pre>
+<p>For generation flows, upload first and return a small media reference/id. The
+later generation JSON request should contain prompt/settings/media refs only,
+never raw bytes.</p>
+<p>Route handlers must declare the HTTP methods the browser will use. For example,
+a generation proxy route must expose <code>POST</code>, not only <code>GET</code>:</p>
+<pre><code class="language-ts">// app/src/routes/api/generate.ts
+import { createFileRoute } from '@tanstack/react-router'
+
+export const Route = createFileRoute('/api/generate')({
+  server: {
+    handlers: {
+      POST: async ({ request }) =&gt; {
+        const body = await request.json()
+        return Response.json({ ok: true, body })
+      },
+    },
+  },
+})
+</code></pre>
+<p>If a generated website shows <code>Method Not Allowed</code>, first check whether the browser is
+POSTing to a route that only registered <code>GET</code>, or whether a mutation was built as
+a GET server function. This commonly breaks generation submit/cost/media flows.</p>
+<h2>Cloudflare Bindings</h2>
+<ul>
+<li>Read D1/R2 bindings through <code>app/src/lib/bindings.server.ts</code>.</li>
+<li>Use <code>import { env } from "cloudflare:workers"</code> only in server-only modules.</li>
+<li><code>app/app.manifest.json</code> declares infra. <code>app/wrangler.jsonc</code> is build/dev input; the
+  deploy platform overwrites authoritative bindings.</li>
+</ul>
+<h2>Live Data Warning</h2>
+<p>There is one deploy and one set of D1 and R2 resources backing it. Every
+migration or data change hits live production data directly. <code>env.HF_ENV</code> is
+always <code>"production"</code> on deployed builds; it does not give you a separate
+database or bucket to test against.</p>
+<ul>
+<li>Prefer additive migrations.</li>
+<li>Avoid <code>DROP</code>, destructive <code>UPDATE</code>, and destructive backfills unless the user
+  explicitly approves production data changes.</li>
+</ul>
+<h2>Durable Objects</h2>
+<p>If <code>app/app.manifest.json</code> declares <code>"durableObject": "ClassName"</code>, also export the
+class from <code>app/src/server.ts</code>:</p>
+<pre><code class="language-ts">export class ClassName extends DurableObject {
+  // ...
+}
+</code></pre>
+<p>Containers/code sandboxes are not deployable through this template yet.</p>
+<h2>SEO Infrastructure</h2>
+<p>Every site with a public face must include:</p>
+<ol>
+<li><strong>robots.txt</strong> — TanStack server route at <code>/robots.txt</code> returning
+   <code>User-agent: * / Allow: / / Sitemap: &lt;origin&gt;/sitemap.xml</code>. Drop-in:
+   <code>app/src/routes/robots.txt.ts</code>.</li>
+<li><strong>sitemap.xml</strong> — TanStack server route at <code>/sitemap.xml</code> enumerating all
+   public page routes. Drop-in: <code>app/src/routes/sitemap.xml.ts</code>.</li>
+<li><strong>Canonical URLs</strong> — every page route's <code>head()</code> must include
+   <code>links: [{ rel: 'canonical', href: '&lt;absolute URL&gt;' }]</code>.</li>
+<li><strong>Security headers</strong> — apply <code>applySecurityHeaders()</code> to every response — see
+   <code>## Worker Security</code> below.</li>
+<li><strong>No trailing slash</strong> — <code>/pricing/</code> must 301 to <code>/pricing</code>. Handle in
+   <code>server.ts</code> before the SSR handler.</li>
+</ol>
+<p>These are not optional for deployed sites. The SEO audit
+(<code>references/seo.md#audit</code>) checks them before deploy.</p>
+<h2>Worker Security</h2>
+<p>Every Worker must follow these constraints. Load
+<code>references/security.md#worker-hardening</code> for the full rules.</p>
+<ol>
+<li><strong>No global mutable state.</strong> Module-level variables are shared across requests
+   in the same V8 isolate. Never store request-scoped data at module scope.</li>
+<li><strong>Cryptographic randomness only.</strong> Use <code>crypto.randomUUID()</code> and
+   <code>crypto.getRandomValues()</code>. Never <code>Math.random()</code> for IDs, tokens, or nonces.</li>
+<li><strong>No hardcoded secrets.</strong> The platform injects auth via the outbound Worker.
+   Website code never handles platform tokens directly. For your OWN secrets (API
+   keys, etc.), set them with <code>higgsfield website secrets set &lt;website_id&gt; --name … --value …</code>
+   and read them server-side as <code>bindings().SECRET_NAME</code> — never hardcode them in source.</li>
+<li><strong>Security headers on every response.</strong> Apply <code>applySecurityHeaders()</code>
+   (frame-ancestors allowlist, no X-Frame-Options) — see
+   <code>references/security.md#worker-hardening</code>.</li>
+<li><strong>Validate server function inputs.</strong> <code>createServerFn</code> inputs come from the
+   client. Always validate shape and types before processing.</li>
+</ol></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

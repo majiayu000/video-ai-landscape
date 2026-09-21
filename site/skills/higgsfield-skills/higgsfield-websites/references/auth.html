@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>auth · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/auth.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Skill: Auth Boundary</h1>
+<p>Use this when a website needs signed-in user state, login, logout, account-gated
+pages, profile loading, or protected file downloads. This template does not
+implement its own identity provider. The platform owns auth and exposes a small
+contract to the website.</p>
+<h2>Contract</h2>
+<ul>
+<li>Browser code must call app-local endpoints only.</li>
+<li>Server code may call <code>https://fnf.internal/*</code>.</li>
+<li>Do not send auth headers to <code>fnf.internal</code>; identity is attached by the
+  platform/runtime automatically.</li>
+<li>Do not call <code>https://fnf.internal/*</code> from the browser. It is not reachable
+  there and would be a security bug even if it were.</li>
+</ul>
+<p>Endpoints:</p>
+<table>
+<thead>
+<tr>
+<th>Purpose</th>
+<th>Endpoint</th>
+<th>Caller</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Current user profile</td>
+<td><code>GET https://fnf.internal/user</code></td>
+<td>server only</td>
+</tr>
+<tr>
+<td>Browser-safe user proxy</td>
+<td><code>GET /api/user</code></td>
+<td>frontend/browser</td>
+</tr>
+<tr>
+<td>Start login</td>
+<td><code>GET /__auth/login?return=&lt;path&gt;</code></td>
+<td>browser navigation</td>
+</tr>
+<tr>
+<td>Start logout</td>
+<td><code>GET /__auth/logout?return=&lt;path&gt;</code></td>
+<td>browser navigation</td>
+</tr>
+</tbody>
+</table>
+<p><code>GET https://fnf.internal/user</code> returns the current user's profile JSON and
+returns <code>401</code> when the visitor is not signed in.</p>
+<p><code>GET /api/user</code> must call <code>https://fnf.internal/user</code> server-side and return the
+same status code and JSON body unchanged. This endpoint is the only user-profile
+endpoint browser components should fetch.</p>
+<h2>Choose The Correct Auth Mode</h2>
+<p>There are two different auth concepts. Pick intentionally:</p>
+<table>
+<thead>
+<tr>
+<th>Website need</th>
+<th>Auth mode</th>
+<th>Required behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Higgsfield SDK/model generation, media upload, profile, workspace, credits, feed/history</td>
+<td>Higgsfield platform auth</td>
+<td>Use <code>/api/user</code>, <code>/__auth/login</code>, <code>/__auth/logout</code>, and server-side <code>https://fnf.internal</code> guards</td>
+</tr>
+<tr>
+<td>The generated website's own product accounts, for example todos, notes, CRM records, dashboards, memberships</td>
+<td>In-app auth</td>
+<td>Build app-local auth/session/storage. Do not call <code>fnf.internal/user</code> unless the website also uses Higgsfield SDK features</td>
+</tr>
+<tr>
+<td>Both generation and product accounts</td>
+<td>Both, kept separate</td>
+<td>Gate SDK routes with Higgsfield auth and product data with in-app auth. Label UI clearly and never mix identities</td>
+</tr>
+</tbody>
+</table>
+<p>If the prompt mentions Higgsfield, SDK, model generation, Nano Banana, Seedance,
+image/video generation, media upload, credits, workspaces, or generation history,
+Higgsfield auth is implicit even if the user did not say "add sign in."</p>
+<p>If the prompt only asks for "sign in" for a normal generated product and does not
+use Higgsfield generation/profile/credits, default to in-app sign in. Do not use
+<code>/__auth/login</code> as the product's account system unless the prompt specifically
+asks for Higgsfield account sign-in.</p>
+<h2>Required <code>/api/user</code> Route</h2>
+<p>Create a TanStack Start server route, not a separate Hono/Express API:</p>
+<pre><code class="language-ts">// app/src/routes/api/user.ts
+import { createFileRoute } from '@tanstack/react-router'
+
+export const Route = createFileRoute('/api/user')({
+  server: {
+    handlers: {
+      GET: async () =&gt; {
+        const upstream = await fetch('https://fnf.internal/user')
+        const body = await upstream.text()
+
+        return new Response(body, {
+          status: upstream.status,
+          headers: {
+            'content-type': upstream.headers.get('content-type') ?? 'application/json',
+            'cache-control': 'no-store',
+          },
+        })
+      },
+    },
+  },
+})
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Preserve upstream status. A <code>401</code> from <code>fnf.internal/user</code> must remain <code>401</code>
+  at <code>/api/user</code>.</li>
+<li>Preserve upstream JSON body unchanged. Do not reshape fields in the proxy.</li>
+<li>Add <code>cache-control: no-store</code>; user identity is per request.</li>
+<li>Do not add <code>Authorization</code>, cookies, service secrets, <code>hf-user-id</code>, or
+  marketplace headers. The platform injects identity on server egress.</li>
+<li>Do not expose raw fnf internal URLs to the UI.</li>
+</ul>
+<h2>Frontend User Loader Pattern</h2>
+<p>Use <code>/api/user</code> from loaders, queries, or components:</p>
+<pre><code class="language-ts">export async function fetchCurrentUser() {
+  const response = await fetch('/api/user', { credentials: 'include' })
+  if (response.status === 401)
+    return null
+  if (!response.ok)
+    throw new Error('Failed to load user')
+  return response.json()
+}
+</code></pre>
+<p>For route loaders, return <code>null</code> for signed-out users rather than crashing the
+page. For account-required pages, redirect or render a sign-in action.</p>
+<h2>Login</h2>
+<p>Login is browser navigation, not an SDK call:</p>
+<pre><code class="language-ts">function login(returnPath = window.location.pathname + window.location.search) {
+  window.location.href = `/__auth/login?return=${encodeURIComponent(returnPath)}`
+}
+</code></pre>
+<p>Rules:</p>
+<ul>
+<li>Use the current path as <code>return</code> by default.</li>
+<li>Encode the return path.</li>
+<li>Keep the return path app-local. Do not pass full external URLs.</li>
+<li>After login completes, the platform redirects back to <code>return</code>; then
+  <code>/api/user</code> should succeed.</li>
+</ul>
+<h2>Logout</h2>
+<p>Logout is also browser navigation:</p>
+<pre><code class="language-ts">function logout(returnPath = '/') {
+  window.location.href = `/__auth/logout?return=${encodeURIComponent(returnPath)}`
+}
+</code></pre>
+<p>Rules:</p>
+<ul>
+<li>Use <code>/</code> or the current public route as the default <code>return</code>.</li>
+<li>Clear client-side query/cache state after navigation if the website stores user,
+  workspace, feed, or credits data in TanStack Query.</li>
+<li>Do not try to delete platform cookies manually from website code.</li>
+<li>Do not call <code>fnf.internal</code> for logout.</li>
+</ul>
+<h2>Authenticated File Downloads</h2>
+<p>Apps may run inside a cross-origin authenticated iframe. Native download
+navigation may not preserve that embedded authentication context and can return
+<code>401 Unauthorized</code>. For a protected app-local <code>/api/...</code> file, NEVER use:</p>
+<ul>
+<li><code>&lt;a href="/api/..." download&gt;</code></li>
+<li><code>window.location</code></li>
+<li><code>window.open</code></li>
+</ul>
+<p>Fetch the file with credentials and download the successful response through a
+temporary Blob URL instead. This is a browser-only helper: call it from an event
+handler, never during SSR or module initialization.</p>
+<pre><code class="language-ts">export async function downloadAuthenticatedFile(
+  url: string,
+  filename: string,
+): Promise&lt;void&gt; {
+  const downloadUrl = new URL(url, window.location.href)
+  if (
+    downloadUrl.origin !== window.location.origin
+    || !downloadUrl.pathname.startsWith('/api/')
+  ) {
+    throw new Error('Authenticated downloads require an app-local /api/... URL')
+  }
+
+  const response = await fetch(downloadUrl, {
+    credentials: 'include',
+  })
+
+  if (!response.ok) {
+    throw new Error(`Download failed (${response.status})`)
+  }
+
+  const blobUrl = URL.createObjectURL(await response.blob())
+  const anchor = document.createElement('a')
+
+  try {
+    anchor.href = blobUrl
+    anchor.download = filename
+    anchor.style.display = 'none'
+    document.body.appendChild(anchor)
+    anchor.click()
+  }
+  finally {
+    anchor.remove()
+    window.setTimeout(() =&gt; URL.revokeObjectURL(blobUrl), 0)
+  }
+}
+</code></pre>
+<p>Call the helper from a real Quanta button. The handler owns loading state and
+must catch and surface download errors through designed inline feedback or a
+toast.</p>
+<pre><code class="language-tsx">&lt;Button
+  type=&quot;button&quot;
+  disabled={isDownloading}
+  onClick={handleDownload}
+&gt;
+  {isDownloading ? 'Downloading…' : 'Download'}
+&lt;/Button&gt;
+</code></pre>
+<p>Requirements:</p>
+<ul>
+<li>The protected server route must re-check the current user and authorize that
+  specific file. Return <code>401</code>/<code>403</code> for unauthenticated/forbidden requests;
+  never redirect a download fetch to an HTML login page. Serve the file with a
+  truthful <code>Content-Type</code> and, when the route owns the filename, matching
+  <code>Content-Disposition</code>.</li>
+<li>Pass <code>credentials: 'include'</code>. The helper enforces a same-origin <code>/api/...</code>
+  URL; never weaken that check or pass it an untrusted arbitrary URL.</li>
+<li>Check <code>response.ok</code> before reading the body.</li>
+<li>Show loading and error states.</li>
+<li>Remove every temporary element and revoke every object URL after the click has
+  had a browser task to start the download.</li>
+<li>Do not nest a <code>&lt;button&gt;</code> inside an <code>&lt;a&gt;</code>.</li>
+<li>Raw download links are allowed only for public static files or self-contained
+  signed URLs that require no session.</li>
+<li>For large files, prefer a backend-generated short-lived signed URL with
+  <code>Content-Disposition: attachment</code> to avoid buffering the entire file in
+  browser memory.</li>
+<li>Test downloads inside the Higgsfield iframe, not only with the app opened
+  directly. Test both newly generated files and previously saved files.</li>
+<li>If a sandboxed host iframe blocks programmatic downloads, the host must grant
+  its download capability. Report that platform constraint; do not work around
+  it by navigating to the protected URL.</li>
+</ul>
+<p>For generated-media exports, also apply <code>references/fnf-sdk.md</code> → “Output and
+download format contract” so the downloaded bytes, MIME type, extension, and
+filename agree. A direct <code>getRawUrl()</code> link is safe only when it is public or a
+self-contained signed URL that needs no session; otherwise use the helper.</p>
+<h2>Auth UI Rules</h2>
+<ul>
+<li>Signed-out state should show a clear sign-in action using the website's normal
+  Quanta button style.</li>
+<li>Do not build email/password forms unless the task explicitly asks for a custom
+  identity UI and the platform supports it. The default is <code>/__auth/login</code>.</li>
+<li>Do not show fake profile data while loading. Use skeletons or neutral loading
+  states.</li>
+<li>Never render emails, names, workspace names, tokens, or raw profile payloads
+  into observability events.</li>
+</ul>
+<h2>FNF SDK Interaction</h2>
+<p>For generated websites using the fnf SDK, create SDK adapters server-side with
+<code>baseUrl: 'https://fnf.internal'</code>. The auth boundary above is for website UI
+identity. SDK calls should still use server functions or server-only modules and
+must not be made directly from browser components.</p>
+<h2>Required Auth For SDK Features</h2>
+<p>Any website that uses SDK-backed generation must be authenticated. This includes:</p>
+<ul>
+<li>generation submit, poll, cancel, feed/history, and cost preview</li>
+<li>media upload, media resolve, and media reads</li>
+<li>profile, workspace switch, wallet, and credits</li>
+<li>any UI that exposes model settings or writes paid/user-owned outputs</li>
+</ul>
+<p>When the user asks for a Higgsfield generation website, model form, image/video
+generator, Nano Banana/Seedance/etc. website, or anything that uses the SDK, auth is
+implicit even if the user does not say "add sign in." Add sign-in/logout,
+<code>/api/user</code>, server-side auth guards, profile/credits/workspace UI, and a
+feed/history surface automatically.</p>
+<p>The only exception is an offline/mock demo the user EXPLICITLY asked for — memory
+adapters only, never calling fnf.internal, apps-marketplace, media upload, or
+profile endpoints. Never choose a mock as the default: a real SDK app is
+end-to-end, with a real backend and D1 persistence (see references/app-flow.md rule 3a).</p>
+<p>Required flow:</p>
+<ol>
+<li>Implement <code>/api/user</code>.</li>
+<li>Browser loads <code>/api/user</code> before rendering SDK-backed controls.</li>
+<li>If <code>/api/user</code> returns <code>401</code>, show a signed-out state and a Quanta sign-in
+   button that navigates to <code>/__auth/login?return=&lt;current path&gt;</code>.</li>
+<li>Disable or hide submit/upload/cost/profile controls while signed out.</li>
+<li>Every server function or server route that performs an SDK operation must
+   call <code>https://fnf.internal/user</code> first and stop on <code>401</code>.</li>
+</ol>
+<p>The UI gate is for experience; the server-side auth check is the actual safety
+boundary. Do not rely on "button hidden when signed out" as protection.</p>
+<p>If a page needs both user state and generation data:</p>
+<ol>
+<li>Browser calls <code>/api/user</code> for display/auth gate.</li>
+<li>Server function submits/reads jobs through the selected SDK adapter.</li>
+<li>Browser receives only safe website data: user-safe fields, generation ids,
+   statuses, display credits, and sanitized errors.</li>
+</ol>
+<h2>Server Auth Guard Pattern</h2>
+<p>Use a small server-only helper for SDK server functions:</p>
+<pre><code class="language-ts">// app/src/lib/auth.server.ts
+export async function requireCurrentUser() {
+  const response = await fetch('https://fnf.internal/user')
+  const body = await response.json().catch(() =&gt; null)
+
+  if (response.status === 401) {
+    return {
+      ok: false as const,
+      status: 401,
+      body,
+    }
+  }
+
+  if (!response.ok) {
+    return {
+      ok: false as const,
+      status: response.status,
+      body,
+    }
+  }
+
+  return {
+    ok: true as const,
+    user: body,
+  }
+}
+</code></pre>
+<p>Then guard SDK operations:</p>
+<pre><code class="language-ts">const auth = await requireCurrentUser()
+if (!auth.ok) {
+  return new Response(JSON.stringify(auth.body), {
+    status: auth.status,
+    headers: { 'content-type': 'application/json' },
+  })
+}
+
+// Safe to create SDK adapter/client and submit/read user-owned data here.
+</code></pre>
+<p>For <code>createServerFn</code>, return a typed <code>{ ok: false, code: 'unauthorized' }</code>
+result or throw/redirect according to the website's route behavior, but still check
+auth before the SDK call.</p>
+<h2>Signed-Out UI Pattern</h2>
+<p>Use this Quanta pattern for <strong>app-shaped</strong> generation/tool UIs. Marketing
+waitlists and landing pages should use custom sign-in chrome per
+<code>references/design-taste-frontend.md</code> instead of Quanta buttons.</p>
+<pre><code class="language-tsx">import { Button } from '@higgsfield/quanta/button'
+
+function SignInRequired() {
+  return (
+    &lt;div className=&quot;grid min-h-72 place-items-center rounded-lg border border-q-border-subtle bg-q-background-secondary p-6 text-center&quot;&gt;
+      &lt;div className=&quot;grid max-w-sm gap-3&quot;&gt;
+        &lt;h2 className=&quot;text-q-title-md-semi-bold&quot;&gt;Sign in to generate&lt;/h2&gt;
+        &lt;p className=&quot;text-q-body-sm-regular text-q-text-secondary&quot;&gt;
+          Generation, uploads, credits, and history are connected to your account.
+        &lt;/p&gt;
+        &lt;div&gt;
+          &lt;Button
+            onClick={() =&gt; {
+              const returnPath = window.location.pathname + window.location.search
+              window.location.href = `/__auth/login?return=${encodeURIComponent(returnPath)}`
+            }}
+          &gt;
+            Sign in
+          &lt;/Button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  )
+}
+</code></pre>
+<p>Do not render active prompt fields, upload controls, generate buttons, cost
+buttons, workspace switchers, or job feeds as usable controls while signed out.</p>
+<h2>Anti-Patterns</h2>
+<pre><code class="language-ts">await fetch('https://fnf.internal/user') // bad in browser code
+await fetch('/api/user')                 // good in browser code
+</code></pre>
+<pre><code class="language-ts">fetch('https://fnf.internal/user', {
+  headers: { Authorization: `Bearer ${token}` },
+}) // bad; platform attaches identity automatically
+</code></pre>
+<pre><code class="language-ts">window.location.href = '/login' // bad; not the platform auth route
+window.location.href = '/__auth/login?return=%2Fdashboard' // good
+</code></pre>
+<pre><code class="language-ts">// bad: anonymous generation surface
+await jobs.submit(input)
+
+// good: server-side auth gate first
+const auth = await requireCurrentUser()
+if (!auth.ok) {
+  return new Response(JSON.stringify(auth.body), {
+    status: auth.status,
+    headers: { 'content-type': 'application/json' },
+  })
+}
+await jobs.submit(input)
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

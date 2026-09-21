@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>voice-changer · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/voice-changer/SKILL.md</span><button onclick="t()">🌓</button></nav>
+<main><div class="meta"><div class="m-name">voice-changer</div><div class="m-desc">Transform the voice in an audio recording into a different target voice while preserving emotion, timing, and delivery using the ElevenLabs Voice Changer (speech-to-speech) API. Use when converting one voice to another, changing the speaker/narrator of an existing recording, dubbing a voice-over in a different voice, creating character voices from a scratch performance, anonymizing a speaker, or any &quot;voice conversion / voice transfer / speech-to-speech&quot; task. Make sure to use this skill whenever the user mentions voice changing, voice conversion, speech-to-speech, swapping a voice in audio, re-voicing a clip, or applying a different voice to an existing recording — even if they don&#x27;t explicitly say &quot;voice changer&quot;. Do not use this skill to create or clone a new voice from a voice sample — that is voice cloning (IVC/PVC), a separate feature; this skill only converts an existing recording into an existing voice_id.</div><div class="m-src">源文件：<a href="https://github.com/elevenlabs/plugin/blob/main/skills/general/voice-changer/SKILL.md" target="_blank" rel="noopener">elevenlabs/plugin/skills/general/voice-changer/SKILL.md</a></div></div><h1>ElevenLabs Voice Changer</h1>
+<p>Transform the voice in an audio recording into a different target voice. Voice Changer (previously called Speech-to-Speech — the API endpoint and SDK methods still use the <code>speech_to_speech</code> / <code>speechToSpeech</code> name) keeps the original performance — emotion, pacing, intonation, breaths, whispers, laughs, cries — and only swaps who is speaking.</p>
+<blockquote>
+<p><strong>Setup:</strong> See <a href="references/installation.html">Installation Guide</a>. For JavaScript, use <code>@elevenlabs/*</code> packages only.</p>
+</blockquote>
+<h2>Key Facts</h2>
+<ul>
+<li><strong>Maximum input length:</strong> 5 minutes per request — split longer recordings into chunks and stitch the outputs.</li>
+<li><strong>Maximum file size:</strong> 50 MB per request — compress to MP3 if your source is larger.</li>
+<li><strong>Pricing:</strong> 1,000 characters per minute of audio processed (duration-based, not text-based).</li>
+<li><strong>Recommended model:</strong> <code>eleven_multilingual_sts_v2</code> — often outperforms <code>eleven_english_sts_v2</code> even for English-only content.</li>
+</ul>
+<h2>Quick Start</h2>
+<h3>Python</h3>
+<pre><code class="language-python">from elevenlabs import ElevenLabs
+
+client = ElevenLabs()
+
+with open(&quot;source.mp3&quot;, &quot;rb&quot;) as audio_file:
+    audio_stream = client.speech_to_speech.convert(
+        voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,  # George
+        audio=audio_file,
+        model_id=&quot;eleven_multilingual_sts_v2&quot;,
+        output_format=&quot;mp3_44100_128&quot;,
+    )
+
+with open(&quot;converted.mp3&quot;, &quot;wb&quot;) as f:
+    for chunk in audio_stream:
+        f.write(chunk)
+</code></pre>
+<h3>JavaScript</h3>
+<pre><code class="language-javascript">import { ElevenLabsClient } from &quot;@elevenlabs/elevenlabs-js&quot;;
+import { createReadStream, createWriteStream } from &quot;fs&quot;;
+
+const client = new ElevenLabsClient();
+
+const audioStream = await client.speechToSpeech.convert(&quot;JBFqnCBsd6RMkjVDRZzb&quot;, {
+  audio: createReadStream(&quot;source.mp3&quot;),
+  modelId: &quot;eleven_multilingual_sts_v2&quot;,
+  outputFormat: &quot;mp3_44100_128&quot;,
+});
+
+audioStream.pipe(createWriteStream(&quot;converted.mp3&quot;));
+</code></pre>
+<h3>CLI</h3>
+<pre><code class="language-bash">elevenlabs speech-to-speech convert \
+  --voice-id JBFqnCBsd6RMkjVDRZzb \
+  --audio source.mp3 \
+  --model-id eleven_multilingual_sts_v2 \
+  --output-format mp3_44100_128 \
+  --output converted.mp3
+</code></pre>
+<h2>Parameters</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>voice_id</code></td>
+<td>string (required)</td>
+<td>—</td>
+<td>Target voice to speak in. Use a pre-made voice ID, a cloned voice, or a voice from the library</td>
+</tr>
+<tr>
+<td><code>audio</code></td>
+<td>file (required)</td>
+<td>—</td>
+<td>Source audio whose performance (emotion, timing, delivery) will be preserved</td>
+</tr>
+<tr>
+<td><code>model_id</code></td>
+<td>string</td>
+<td><code>eleven_english_sts_v2</code></td>
+<td><code>eleven_multilingual_sts_v2</code> for 29 languages, <code>eleven_english_sts_v2</code> for English-only</td>
+</tr>
+<tr>
+<td><code>output_format</code></td>
+<td>string</td>
+<td><code>mp3_44100_128</code></td>
+<td>See output formats table below</td>
+</tr>
+<tr>
+<td><code>voice_settings</code></td>
+<td>JSON string</td>
+<td>—</td>
+<td>Override stored voice settings for this request only</td>
+</tr>
+<tr>
+<td><code>seed</code></td>
+<td>integer</td>
+<td>—</td>
+<td>Best-effort deterministic sampling (0 – 4294967295)</td>
+</tr>
+<tr>
+<td><code>remove_background_noise</code></td>
+<td>boolean</td>
+<td><code>false</code></td>
+<td>Run the isolation model on the input before conversion</td>
+</tr>
+<tr>
+<td><code>file_format</code></td>
+<td>string</td>
+<td><code>other</code></td>
+<td><code>other</code> for any encoded audio, or <code>pcm_s16le_16</code> for 16-bit PCM mono @ 16kHz little-endian (lower latency)</td>
+</tr>
+<tr>
+<td><code>optimize_streaming_latency</code></td>
+<td>int (query)</td>
+<td>—</td>
+<td>0–4. Trade quality for latency. <code>4</code> is fastest but disables the text normalizer</td>
+</tr>
+<tr>
+<td><code>enable_logging</code></td>
+<td>boolean (query)</td>
+<td><code>true</code></td>
+<td>Set to <code>false</code> for zero-retention mode (enterprise only — disables history/stitching)</td>
+</tr>
+</tbody>
+</table>
+<h2>Models</h2>
+<table>
+<thead>
+<tr>
+<th>Model ID</th>
+<th>Languages</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>eleven_multilingual_sts_v2</code></td>
+<td>29</td>
+<td>Recommended for everything — often outperforms the English model even on English audio</td>
+</tr>
+<tr>
+<td><code>eleven_english_sts_v2</code></td>
+<td>English</td>
+<td>API default — English-only fallback</td>
+</tr>
+</tbody>
+</table>
+<p>Only models whose <code>can_do_voice_conversion</code> property is true can be used here. Voice Changer does not currently have a low-latency "flash/turbo" tier — if you need one, keep <code>pcm_s16le_16</code> input, an <code>opus_*</code> / low-bitrate <code>mp3_*</code> output, and raise <code>optimize_streaming_latency</code>.</p>
+<h3>Languages (<code>eleven_multilingual_sts_v2</code>)</h3>
+<p>English (US, UK, AU, CA), Japanese, Chinese, German, Hindi, French (FR, CA), Korean, Portuguese (BR, PT), Italian, Spanish (ES, MX), Indonesian, Dutch, Turkish, Filipino, Polish, Swedish, Bulgarian, Romanian, Arabic (SA, AE), Czech, Greek, Finnish, Croatian, Malay, Slovak, Danish, Tamil, Ukrainian, Russian.</p>
+<h2>Target Voices</h2>
+<p>Use any voice ID from pre-made voices, your cloned voices, or the voice library.</p>
+<p><strong>Popular voices:</strong>
+- <code>JBFqnCBsd6RMkjVDRZzb</code> — George (male, narrative)
+- <code>EXAVITQu4vr4xnSDxMaL</code> — Sarah (female, soft)
+- <code>onwK4e9ZLuTAKqWW03F9</code> — Daniel (male, authoritative)
+- <code>XB0fDUnXU5powFXDhCwa</code> — Charlotte (female, conversational)</p>
+<pre><code class="language-python">voices = client.voices.get_all()
+for voice in voices.voices:
+    print(f&quot;{voice.voice_id}: {voice.name}&quot;)
+</code></pre>
+<h2>Converting from a URL</h2>
+<pre><code class="language-python">import requests
+from io import BytesIO
+from elevenlabs import ElevenLabs
+
+client = ElevenLabs()
+
+audio_url = &quot;https://storage.googleapis.com/eleven-public-cdn/audio/marketing/nicole.mp3&quot;
+response = requests.get(audio_url)
+audio_data = BytesIO(response.content)
+
+audio_stream = client.speech_to_speech.convert(
+    voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+    audio=audio_data,
+    model_id=&quot;eleven_multilingual_sts_v2&quot;,
+    output_format=&quot;mp3_44100_128&quot;,
+)
+
+with open(&quot;converted.mp3&quot;, &quot;wb&quot;) as f:
+    for chunk in audio_stream:
+        f.write(chunk)
+</code></pre>
+<h2>Voice Settings Override</h2>
+<p>Fine-tune the target voice for a single request without changing its stored defaults:</p>
+<pre><code class="language-python">from elevenlabs import VoiceSettings
+
+audio_stream = client.speech_to_speech.convert(
+    voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+    audio=audio_file,
+    model_id=&quot;eleven_multilingual_sts_v2&quot;,
+    voice_settings=VoiceSettings(
+        stability=0.5,
+        similarity_boost=0.75,
+        style=0.0,
+        use_speaker_boost=True,
+    ),
+)
+</code></pre>
+<ul>
+<li><strong>Stability</strong>: lower = more emotional range (follows the source more freely), higher = steadier delivery.</li>
+<li><strong>Similarity boost</strong>: higher = closer to the target voice's timbre, may amplify source artifacts.</li>
+<li><strong>Style</strong>: exaggerates the target voice's unique characteristics (v2+ models).</li>
+<li><strong>Speaker boost</strong>: post-processing to sharpen clarity of the target voice.</li>
+</ul>
+<h2>Cleaning Up Noisy Source Audio</h2>
+<p>If the input recording is noisy, either pre-process with the voice-isolator skill or pass <code>remove_background_noise=True</code> to do it in a single call:</p>
+<pre><code class="language-python">audio_stream = client.speech_to_speech.convert(
+    voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+    audio=audio_file,
+    model_id=&quot;eleven_multilingual_sts_v2&quot;,
+    remove_background_noise=True,
+)
+</code></pre>
+<p>Cleaner input almost always produces better conversion — the model is trying to match phonemes and prosody, and background noise gets in the way.</p>
+<h2>Low-Latency PCM Input</h2>
+<p>If you already have raw 16-bit PCM mono @ 16kHz, passing <code>file_format="pcm_s16le_16"</code> skips decoding and reduces latency:</p>
+<pre><code class="language-python">audio_stream = client.speech_to_speech.convert(
+    voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+    audio=pcm_bytes,
+    model_id=&quot;eleven_multilingual_sts_v2&quot;,
+    file_format=&quot;pcm_s16le_16&quot;,
+)
+</code></pre>
+<p>Pair this with <code>optimize_streaming_latency</code> (0–4) as a query param for further latency reductions at some quality cost.</p>
+<h2>Output Formats</h2>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mp3_44100_128</code></td>
+<td>MP3 44.1kHz 128kbps (default) — good for web/apps</td>
+</tr>
+<tr>
+<td><code>mp3_44100_192</code></td>
+<td>MP3 44.1kHz 192kbps (Creator+) — higher quality</td>
+</tr>
+<tr>
+<td><code>mp3_44100_64</code></td>
+<td>MP3 44.1kHz 64kbps — smaller files</td>
+</tr>
+<tr>
+<td><code>mp3_22050_32</code></td>
+<td>MP3 22.05kHz 32kbps — smallest MP3</td>
+</tr>
+<tr>
+<td><code>pcm_16000</code></td>
+<td>Raw PCM 16kHz — real-time pipelines</td>
+</tr>
+<tr>
+<td><code>pcm_24000</code></td>
+<td>Raw PCM 24kHz — good streaming balance</td>
+</tr>
+<tr>
+<td><code>pcm_44100</code></td>
+<td>Raw PCM 44.1kHz (Pro+) — CD quality</td>
+</tr>
+<tr>
+<td><code>pcm_48000</code></td>
+<td>Raw PCM 48kHz (Pro+) — highest quality</td>
+</tr>
+<tr>
+<td><code>ulaw_8000</code></td>
+<td>μ-law 8kHz — Twilio / telephony</td>
+</tr>
+<tr>
+<td><code>alaw_8000</code></td>
+<td>A-law 8kHz — telephony</td>
+</tr>
+<tr>
+<td><code>opus_48000_64</code></td>
+<td>Opus 48kHz 64kbps — efficient streaming</td>
+</tr>
+</tbody>
+</table>
+<h2>Deterministic Output</h2>
+<p>Pass a <code>seed</code> to make repeated conversions of the same input return (best-effort) identical audio — useful for testing and A/B comparisons.</p>
+<pre><code class="language-python">audio_stream = client.speech_to_speech.convert(
+    voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+    audio=audio_file,
+    model_id=&quot;eleven_multilingual_sts_v2&quot;,
+    seed=12345,
+)
+</code></pre>
+<h2>Input Audio Best Practices</h2>
+<p>The conversion quality is bounded by the input recording — the model can only swap the timbre, not rescue a bad source. A few practical rules:</p>
+<ul>
+<li><strong>Be expressive.</strong> Whisper, shout, laugh, cry — the model preserves all of it. Flat input gives you flat output.</li>
+<li><strong>Watch microphone gain.</strong> Too quiet and the model under-detects phonemes; too loud and clipping bleeds into the conversion. Aim for healthy peaks, no clipping.</li>
+<li><strong>Accent and cadence transfer from the source, not the target.</strong> If you read in an American accent and target the British "George" voice, you get George's timbre with an American accent. To dub <em>into</em> a different accent or language, record someone speaking in that target accent/language and convert into a cloned/library voice.</li>
+<li><strong>Clean up noise first.</strong> Either pass <code>remove_background_noise=True</code> or run the source through the voice-isolator skill before conversion. Noise hurts more here than in TTS.</li>
+<li><strong>Split long recordings.</strong> Anything over 5 minutes must be chunked. Cut at natural pauses, convert each piece, and concatenate the resulting audio.</li>
+</ul>
+<h2>Common Workflows</h2>
+<ul>
+<li><strong>Re-voice a narration</strong> — keep the performance of a scratch recording, swap in a different narrator voice.</li>
+<li><strong>Localize / dub</strong> — convert a voice-over into the same speaker's cloned voice in another language (using <code>eleven_multilingual_sts_v2</code>).</li>
+<li><strong>Create character voices</strong> — act out a line yourself, convert into a distinctive character voice for games or animation.</li>
+<li><strong>Anonymize a speaker</strong> — replace a recognizable voice with a neutral pre-made voice while preserving what was said and how.</li>
+<li><strong>Pair with voice-isolator</strong> — isolate the source voice first (or set <code>remove_background_noise=True</code>) for noisy field recordings before conversion.</li>
+<li><strong>Pair with voice cloning</strong> — clone a target voice from a short sample, then use its <code>voice_id</code> here as the conversion target.</li>
+</ul>
+<h2>Error Handling</h2>
+<pre><code class="language-python">try:
+    audio_stream = client.speech_to_speech.convert(
+        voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+        audio=audio_file,
+        model_id=&quot;eleven_multilingual_sts_v2&quot;,
+    )
+except Exception as e:
+    print(f&quot;Voice changer failed: {e}&quot;)
+</code></pre>
+<p>Common errors:
+- <strong>401</strong>: Invalid API key
+- <strong>422</strong>: Invalid parameters (check <code>voice_id</code>, <code>model_id</code>, or <code>file_format</code> vs the supplied audio)
+- <strong>429</strong>: Rate limit exceeded</p>
+<h2>References</h2>
+<ul>
+<li><a href="references/installation.html">Installation Guide</a></li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

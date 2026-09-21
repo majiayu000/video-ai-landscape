@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONTRIBUTING · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">CONTRIBUTING.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Contributing to Higgsfield Skills</h1>
+<p>Thanks for considering a contribution. This repo follows the <a href="https://agentskills.io/specification.md">Agent Skills specification</a> — every skill is one folder with a <code>SKILL.md</code> plus optional <code>references/</code> for on-demand details.</p>
+<h2>Git workflow</h2>
+<p>All changes go through pull requests. No direct pushes to <code>main</code>.</p>
+<pre><code class="language-bash"># 1. Create a branch from main
+git checkout main &amp;&amp; git pull
+git checkout -b &lt;type&gt;/&lt;short-description&gt;
+# e.g. feat/marketing-studio-presets, fix/soul-timeout, refactor/product-photoshoot
+
+# 2. Make changes, commit with clear messages
+git add -A
+git commit -m &quot;&lt;type&gt;: short summary of what changed
+
+- Why this change is needed (not just what)
+- Reference any test runs or eval results
+- Note any breaking changes to the skill interface&quot;
+
+# 3. Push and open a PR
+git push -u origin &lt;branch-name&gt;
+gh pr create
+</code></pre>
+<h3>Branch naming</h3>
+<table>
+<thead>
+<tr>
+<th>Prefix</th>
+<th>Use for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>feat/</code></td>
+<td>New capability (new mode, new model mapping, new flag)</td>
+</tr>
+<tr>
+<td><code>fix/</code></td>
+<td>Bug fix (wrong default, broken reference link, version desync)</td>
+</tr>
+<tr>
+<td><code>refactor/</code></td>
+<td>Internal cleanup (no user-visible behavior change)</td>
+</tr>
+<tr>
+<td><code>docs/</code></td>
+<td>README, CONTRIBUTING, references-only updates</td>
+</tr>
+</tbody>
+</table>
+<h3>Commit messages</h3>
+<p>Follow <a href="https://www.conventionalcommits.org/">Conventional Commits</a> so future automation (<code>release-please</code>) can read them:</p>
+<ul>
+<li><code>feat(generate): add Nano Banana 3 to model catalog</code></li>
+<li><code>fix(soul): handle 401 on first auth gracefully</code></li>
+<li><code>docs: clarify Marketing Studio avatar workflow</code></li>
+<li><code>refactor(product-photoshoot): extract interview flows into references/</code></li>
+</ul>
+<h2>PR checklist</h2>
+<p>Before merging, confirm:</p>
+<ol>
+<li><strong>Frontmatter is valid.</strong> YAML parses. <code>name</code> matches the directory exactly. <code>version</code> is set. <code>description</code> includes Use-when triggers, Chain rules, and a NOT-for boundary.</li>
+<li><strong>Versions are in sync.</strong> <code>VERSION</code>, every <code>*/SKILL.md</code> <code>version:</code> field, <code>.claude-plugin/marketplace.json</code>, <code>.claude-plugin/plugin.json</code>, <code>.codex-plugin/plugin.json</code>, and <code>.cursor-plugin/plugin.json</code> all match. Don't bump versions by hand on feature branches — release-please (when enabled) handles it on merge to <code>main</code>.</li>
+<li><strong>All references resolve.</strong> Every <code>references/X.md</code> mentioned in <code>SKILL.md</code> exists in the same skill's bundle. No <code>../</code> parent-directory references — each skill must be installable standalone via <code>gh skill install</code>.</li>
+<li><strong>No orphan reference files.</strong> Every file inside <code>&lt;skill&gt;/references/</code> is mentioned at least once in that skill's <code>SKILL.md</code>. If it isn't reachable, delete it or link it.</li>
+<li><strong><code>marketplace.json</code> is up to date.</strong> If you added or renamed a skill folder, update the <code>skills</code> array in <code>.claude-plugin/marketplace.json</code>.</li>
+<li><strong>UX rules unchanged or stricter.</strong> Don't loosen rules like "no raw IDs in chat", "polling is silent", "detect language and respond in it" without an explicit reason in the PR description.</li>
+<li><strong>CLI commands are real.</strong> Every <code>higgsfield …</code> example in your SKILL.md or references must be a real, current command. Run it locally before merging.</li>
+<li><strong>Behavior change → docs change.</strong> If you changed defaults, mode-selection logic, or chain semantics, the affected <code>SKILL.md</code> reflects it. An agent reading only <code>SKILL.md</code> should be able to execute the skill correctly.</li>
+<li><strong>Workflow changes → workflow reference.</strong> If FNF adds or changes a public chain/workflow, update <code>higgsfield-generate/references/workflows.md</code>. Public docs call FNF chains "workflows"; use <code>higgsfield workflow list/get</code> for discovery, <code>higgsfield generate workflow &lt;name&gt; ... --wait</code> for creation, <code>higgsfield generate cost workflow &lt;name&gt; ...</code> for cost, and <code>higgsfield generate get/wait &lt;job_id&gt;</code> for results.</li>
+</ol>
+<h2>Adding a new skill</h2>
+<p>A new skill is a new top-level folder named <code>higgsfield-&lt;name&gt;/</code> containing <code>SKILL.md</code>. Follow the existing structure:</p>
+<pre><code class="language-yaml">---
+version: 0.3.0
+name: higgsfield-&lt;name&gt;
+description: |
+  &lt;One paragraph: what it does and which API surface it wraps&gt;
+  Use when: &quot;&lt;trigger phrase&gt;&quot;, &quot;&lt;trigger phrase&gt;&quot;, ...
+  Chain with: &lt;other skill&gt; when ...
+  NOT for: &lt;case A&gt; (use &lt;skill A&gt;), &lt;case B&gt; (use &lt;skill B&gt;).
+argument-hint: &quot;[primary-arg] [--flag &lt;value&gt;]&quot;
+allowed-tools: Bash
+---
+
+# &lt;Title&gt;
+
+&lt;One sentence: what this is a wrapper around&gt;
+
+## Prerequisites
+
+## UX Rules
+1. Be concise. ...
+2. ...
+
+## Workflow
+1. ...
+
+## Errors
+- ...
+
+## Reference docs
+- references/...
+</code></pre>
+<p>Then:</p>
+<ol>
+<li>Add the folder to the <code>skills</code> array in <code>.claude-plugin/marketplace.json</code>.</li>
+<li>Update <code>README.md</code> with a row in the Skills table and Quick Reference.</li>
+<li>Add an <code>INSTALL.md</code> mention if the skill needs extra setup.</li>
+<li>Open a <code>feat/</code> PR.</li>
+</ol>
+<h2>Reference docs</h2>
+<p>If a section in <code>SKILL.md</code> would not break the agent's ability to decide what to do next, move it to <code>&lt;skill&gt;/references/</code>. The agent loads references on-demand — <code>SKILL.md</code> is injected on every turn, so keep it lean.</p>
+<p>Each skill bundles its own references. If two skills happen to share a doc (e.g. both have a <code>troubleshooting.md</code>), keep separate copies — drift between skills is acceptable as long as each skill is internally consistent.</p>
+<h2>Updating model and workflow knowledge</h2>
+<p><code>higgsfield-generate</code> owns model and workflow routing knowledge.</p>
+<p>For models:
+- Add or update intent and provider in <code>higgsfield-generate/references/model-catalog.md</code>.
+- Add media-role details in <code>higgsfield-generate/references/media-inputs.md</code> only for unusual roles, transforms, single-media limits, video analysis, 3D, or audio.
+- Touch <code>higgsfield-generate/SKILL.md</code> only when routing/defaults change.</p>
+<p>For workflows:
+- FNF may call them "chains"; public skill docs call them "workflows".
+- Verify the public catalog with <code>higgsfield workflow list</code> and <code>higgsfield workflow get &lt;workflow_name&gt;</code>.
+- Add/update <code>higgsfield-generate/references/workflows.md</code> with use case, create example, cost example when supported, and result retrieval.
+- Use <code>higgsfield generate workflow &lt;workflow_name&gt; ... --wait</code> for creation and <code>higgsfield generate cost workflow &lt;workflow_name&gt; ...</code> for cost.
+- Do not add workflow-only items to <code>model-catalog.md</code>.
+- <code>draw_to_video</code> and <code>reframe</code> are the current public workflows. Do not mention <code>game_character_creator</code> unless it is publicly exposed and explicitly requested.</p>
+<h2>License</h2>
+<p>By contributing, you agree your contribution is licensed under MIT.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

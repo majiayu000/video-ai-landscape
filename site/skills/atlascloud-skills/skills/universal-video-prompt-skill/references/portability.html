@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>portability · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/universal-video-prompt-skill/references/portability.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Portability</h1>
+<p>A spec is portable. Not every line in it is. Sort each line into one of three
+layers, because each needs different handling — and only one of them can be
+written once and trusted everywhere.</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>What it is</th>
+<th>Handling</th>
+<th>Where it lives</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Language</strong></td>
+<td>Structure and observable description</td>
+<td>Portable as written</td>
+<td>The spec</td>
+</tr>
+<tr>
+<td><strong>Bias</strong></td>
+<td>What counteracts a model's defaults</td>
+<td>Measured per model</td>
+<td>The model profile</td>
+</tr>
+<tr>
+<td><strong>Capability</strong></td>
+<td>What the interface can physically accept</td>
+<td>Probe, then degrade</td>
+<td>The model profile</td>
+</tr>
+</tbody>
+</table>
+<p>The most common cross-model mistake is treating a bias-layer line as a
+language-layer line — copying an anti-AI-look suffix that worked on one model
+into a prompt for another, and assuming it still helps.</p>
+<h2>Language layer — portable</h2>
+<ul>
+<li>Bucket structure and scope discipline</li>
+<li>End states, in all three forms</li>
+<li>Observable emotional cues</li>
+<li>Term-plus-description double writing</li>
+<li>Reference roles stated as <em>controls X, do not use Y</em></li>
+<li>Event-triggered progression</li>
+</ul>
+<p>These depend on the model reading language, nothing more. Write once.</p>
+<h2>Bias layer — measured, never assumed</h2>
+<p>Every generative model has defaults it returns to. Bias-layer text exists to
+counteract <em>that model's</em> defaults, which means it does not transfer:</p>
+<table>
+<thead>
+<tr>
+<th>Line</th>
+<th>Why it is bias-layer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>retain real fine pores and skin texture</code></td>
+<td>Counteracts a smoothing/beauty default. On a model that already renders coarse skin it overshoots and the face looks dirty</td>
+</tr>
+<tr>
+<td><code>no subtitles, no BGM</code></td>
+<td>Only needed where unrequested subtitles and music actually appear</td>
+</tr>
+<tr>
+<td>Specific transition vocabulary</td>
+<td>Recognition varies; some terms are culturally scoped</td>
+</tr>
+<tr>
+<td><code>@image1</code> vs <code>Reference Image 1</code></td>
+<td>Interface addressing syntax</td>
+</tr>
+<tr>
+<td>Negative lists generally</td>
+<td>The failure modes differ per model</td>
+</tr>
+</tbody>
+</table>
+<p>Two of these deserve special handling.</p>
+<h3>Anti-default suffixes: overshoot is a real failure</h3>
+<p>Do not port an anti-default phrase without checking the target's baseline. The
+test is cheap: generate once with the phrase and once without, on the same spec.
+If the version <em>without</em> it is already at or past the target, the phrase is
+counterproductive on this model. Record both results in the profile — the
+"ineffective or overshooting" field exists for this.</p>
+<h3>Addressing syntax: the one thing that must be translated</h3>
+<p>This is the only common case where description cannot substitute. If the model
+expects a particular token to bind a reference, that token has to be emitted
+correctly or the binding is lost. Keep the mapping in the profile and translate
+at compile time; leave the surrounding sentence structure alone.</p>
+<h2>Capability layer — probe, then degrade</h2>
+<p>These are not misunderstandings; they are hard limits on what the interface takes.</p>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reference addressing and count</td>
+<td>Determines how much of a multi-reference spec survives</td>
+</tr>
+<tr>
+<td>Multi-shot in one generation</td>
+<td>Determines whether cuts belong in the prompt or the edit</td>
+</tr>
+<tr>
+<td>Hard cut support</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>Duration ceiling</td>
+<td>Determines stage count per request</td>
+</tr>
+<tr>
+<td>Timing adherence</td>
+<td>Determines whether second-level granularity is honest</td>
+</tr>
+<tr>
+<td>Audio: native, reference, or none</td>
+<td>Determines whether audio lines belong in the prompt at all</td>
+</tr>
+</tbody>
+</table>
+<h3>Probing</h3>
+<p>No profile means no assumptions. Run the smallest test that settles the question,
+then record it. Order probes cheapest-first and stop as soon as the spec is
+satisfiable:</p>
+<ol>
+<li><strong>Read what is published</strong> — reference limits, durations, resolutions. Verify
+   against the live model page rather than a doc example; treat a 200 response as
+   inconclusive until the page content confirms the model exists.</li>
+</ol>
+<p>⚠️ <strong>A published enumeration is a hypothesis, not a limit.</strong> Documented ranges
+   are frequently narrower than what submission accepts, and pages contradict
+   themselves — the same page has been observed stating three different duration
+   ranges in three places. <strong>Submit the value you actually want and let the API
+   answer.</strong> A rejected submission creates no task and costs nothing, so testing
+   beats designing around the table.</p>
+<p>This error is asymmetric: believing a too-narrow table silently degrades the
+   spec, the run then succeeds, and nothing in the output reveals that a better
+   configuration was available. Nobody notices.
+2. <strong>One minimal generation</strong> for anything behaviour-dependent — timing adherence
+   and multi-shot cannot be read off a spec sheet.
+3. <strong>Record immediately</strong>, including failures. An unrecorded probe gets re-run by
+   the next person at full cost.</p>
+<p>For timing adherence specifically, the probe that pays: run the same spec at
+<code>stages</code> and at <code>second-level</code>, then measure the drift between requested and
+delivered beats. That single comparison decides the model's default granularity.</p>
+<h3>Degrading</h3>
+<table>
+<thead>
+<tr>
+<th>Missing capability</th>
+<th>Degrade to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Multi-reference addressing</td>
+<td>One reference for identity; carry everything else in text</td>
+</tr>
+<tr>
+<td>Multi-shot in one generation</td>
+<td>One shot per request; assemble the cuts in the edit</td>
+</tr>
+<tr>
+<td>Reference count below spec</td>
+<td>Merge roles by priority: identity &gt; key prop &gt; scene &gt; style</td>
+</tr>
+<tr>
+<td>Duration below spec</td>
+<td>Split into stages that each stand alone, then chain via boundary frames</td>
+</tr>
+<tr>
+<td>Weak timing adherence</td>
+<td>Drop to stages plus end states</td>
+</tr>
+<tr>
+<td>No native audio</td>
+<td>Remove audio lines from the prompt; plan a post-production pass</td>
+</tr>
+<tr>
+<td>Single-image I2V only</td>
+<td>Keep the start frame as the sole visual lock; the rest becomes text</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Always report a degrade.</strong> A silently degraded spec looks like a spec that ran
+as written, which makes the output impossible to interpret and quietly corrupts
+any comparison built on it.</p>
+<h2>Comparing models fairly</h2>
+<p>If the point is to compare rather than to ship, degrading defeats the purpose —
+you end up comparing two different specs. For a controlled comparison:</p>
+<ul>
+<li>Hold the spec at the <strong>intersection</strong> of both models' capabilities. Do not use
+  a 30-reference spec to compare a 30-reference model against a 9-reference one.</li>
+<li>Translate only the addressing syntax. Leave every other word identical.</li>
+<li>Keep bias-layer lines <strong>out</strong> of a comparison, or run them as a separate
+  variable. An anti-default suffix tuned for model A is a handicap for model B.</li>
+<li>Record what you had to hold back. A comparison whose constraints are unstated
+  reads as a general verdict when it is a narrow one.</li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li><a href="model-profile-schema.html">model-profile-schema</a> — the fields to record</li>
+<li><a href="verifiability.html">verifiability</a> — the language-layer patterns in full</li>
+<li><a href="spec-format.html">spec-format</a> — where each layer's content sits in a spec</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

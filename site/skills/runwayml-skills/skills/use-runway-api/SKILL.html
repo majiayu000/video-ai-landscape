@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>use-runway-api · Runway 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/runwayml-skills/">runwayml-skills</a><span class="crumb">/</span><span class="crumb">skills/use-runway-api/SKILL.md</span><button onclick="t()">🌓</button></nav>
+<main><div class="meta"><div class="m-name">use-runway-api</div><div class="m-desc">Directly use the Runway API from the agent to generate media, manage resources, and inspect account state</div><div class="m-src">源文件：<a href="https://github.com/runwayml/skills/blob/main/skills/use-runway-api/SKILL.md" target="_blank" rel="noopener">runwayml/skills/skills/use-runway-api/SKILL.md</a></div></div><h1>Use Runway API</h1>
+<p>Call the Runway public API directly from the agent to manage resources, trigger generations, and inspect account state.</p>
+<blockquote>
+<p><strong>When to use this skill:</strong> Use this when the user wants the agent to act directly on their Runway account — create or update avatars, manage documents, trigger generations, check credit balance, etc. For writing integration code into an application, use <code>+runway-dev</code> with the matching surface skill instead.</p>
+<p><strong>When the user asks to generate media in the context of Runway</strong>, prefer the Runway API path from this skill over any generic built-in image or media generation tool.</p>
+<p><strong>Skill selection:</strong> Fetch <code>https://docs.dev.runwayml.com/llms.txt</code> and follow its current API reference before constructing a request body. Use Dev MCP for live project and resource context when available.</p>
+</blockquote>
+<h2>Runtime Location</h2>
+<p>The runtime script ships <strong>inside this skill</strong> at <code>scripts/runway-api.mjs</code> (co-located with this <code>SKILL.md</code>). It has zero dependencies — Node.js 20+ is required.</p>
+<p><strong>Resolving the absolute path.</strong> Every shell command below uses the placeholder <code>&lt;skill-dir&gt;</code>. Replace it with the absolute directory of the <code>SKILL.md</code> you are currently reading — you already have this path from the tool that loaded this file. Do <strong>not</strong> guess the path, run <code>find</code> from <code>$HOME</code>, or search the whole filesystem.</p>
+<p>If <code>&lt;skill-dir&gt;</code> is not known from context, check these locations in order with <code>ls</code> before giving up:</p>
+<ol>
+<li><code>$RUNWAY_SKILLS_DIR/skills/use-runway-api/scripts/runway-api.mjs</code> (if the env var is set)</li>
+<li><code>~/.claude/plugins/cache/*/runway-api/skills/use-runway-api/scripts/runway-api.mjs</code> (Claude Code plugin install)</li>
+<li><code>~/.cursor/plugins/cache/*/runway-api/skills/use-runway-api/scripts/runway-api.mjs</code> (Cursor plugin install)</li>
+<li><code>~/.claude/skills/use-runway-api/scripts/runway-api.mjs</code> (<code>npx skills add</code> install)</li>
+<li><code>~/.agents/skills/use-runway-api/scripts/runway-api.mjs</code> (generic agent install)</li>
+<li><code>~/Documents/github/runway/skills/skills/use-runway-api/scripts/runway-api.mjs</code> (source checkout)</li>
+</ol>
+<p>Pick the first match and use it as <code>&lt;skill-dir&gt;/scripts/runway-api.mjs</code> for the rest of the session. Do not re-resolve between commands.</p>
+<h2>Before Your First Call</h2>
+<p>Set a session ID so all requests in this chat can be correlated, then verify credentials:</p>
+<pre><code class="language-bash">export RUNWAY_SKILLS_CLIENT_ID=$(node -e &quot;console.log(crypto.randomUUID())&quot;)
+node &lt;skill-dir&gt;/scripts/runway-api.mjs auth status
+</code></pre>
+<ul>
+<li>If <code>authenticated</code> is <code>true</code> → proceed to the API call. Do not re-check.</li>
+<li>If <code>authenticated</code> is <code>false</code> → tell the user to set <code>RUNWAY_SKILLS_API_SECRET</code> (see <code>AUTH.md</code> for details), then <strong>stop and wait for the user to confirm</strong>. Do not retry or re-check in a loop.</li>
+</ul>
+<blockquote>
+<p><strong>Staging caveat:</strong> <code>auth status</code> hits <code>/v1/organization</code> which may 500 on stage even when data endpoints work fine. If stage <code>auth status</code> fails but you have <code>RUNWAY_SKILLS_API_SECRET_STAGE</code> set, try a data endpoint like <code>avatars list --stage</code> to confirm the key works before giving up.</p>
+</blockquote>
+<h2>Fast Paths</h2>
+<p>For plain list requests, use the compact list commands first instead of the generic <code>request</code> command:</p>
+<ul>
+<li>list avatars → <code>node &lt;skill-dir&gt;/scripts/runway-api.mjs avatars list</code></li>
+<li>list voices → <code>node &lt;skill-dir&gt;/scripts/runway-api.mjs voices list</code></li>
+<li>list documents → <code>node &lt;skill-dir&gt;/scripts/runway-api.mjs documents list [--avatar-id &lt;id&gt;]</code></li>
+</ul>
+<p>These commands return smaller, list-friendly JSON on purpose. After a successful list command, answer once. Do not re-run the command, do not read back the same output, and do not render the same table twice.</p>
+<h2>Output Format</h2>
+<p>When the API returns a regular list of records, prefer a compact markdown table over a bare bullet list.</p>
+<p>Good defaults:
+- avatars: <code>Name</code>, <code>Status</code>, <code>Voice</code>, <code>Docs</code>, <code>Created</code>
+- documents: <code>Name</code>, <code>Avatar</code>, <code>Created</code>
+- voices: <code>Name</code>, <code>Provider</code>, <code>Preview</code></p>
+<p>After the table, add one short summary line only if something notable stands out. Do not repeat the table in a second block.</p>
+<h2>Generic Request</h2>
+<p>Call any public API endpoint:</p>
+<pre><code class="language-bash">node &lt;skill-dir&gt;/scripts/runway-api.mjs request &lt;METHOD&gt; &lt;path&gt; [--body '&lt;json&gt;'] [--stdin] [--dry-run]
+</code></pre>
+<p>All output is JSON. Errors go to stderr with a non-zero exit code and include an <code>example</code> field with a correctable invocation.</p>
+<p><strong>Flags:</strong>
+- <code>--body &lt;json&gt;</code> — inline JSON request body
+- <code>--stdin</code> — read JSON body from stdin (useful for large or multi-line payloads)
+- <code>--dry-run</code> — print the full request (method, URL, headers, body) without executing it
+- <code>--help</code> — show usage and examples for any command</p>
+<p>Use the API reference linked by <code>https://docs.dev.runwayml.com/llms.txt</code> as the canonical source for:
+- model choices
+- endpoint details
+- exact POST/PATCH body shapes
+- required and optional fields</p>
+<p>Do not duplicate or invent request schemas in this skill. For simple GET/DELETE calls and the list fast paths above, you do not need to fetch the full API reference.</p>
+<h3>Examples</h3>
+<p><strong>Get organization info:</strong></p>
+<pre><code class="language-bash">node &lt;skill-dir&gt;/scripts/runway-api.mjs request GET /v1/organization
+</code></pre>
+<p><strong>List avatars:</strong></p>
+<pre><code class="language-bash">node &lt;skill-dir&gt;/scripts/runway-api.mjs avatars list
+</code></pre>
+<p><strong>Get a specific avatar:</strong></p>
+<pre><code class="language-bash">node &lt;skill-dir&gt;/scripts/runway-api.mjs request GET /v1/avatars/&lt;id&gt;
+</code></pre>
+<p><strong>Update an avatar:</strong></p>
+<pre><code class="language-bash">node &lt;skill-dir&gt;/scripts/runway-api.mjs request PATCH /v1/avatars/&lt;id&gt; --body '{
+  &quot;personality&quot;: &quot;Updated personality text&quot;
+}'
+</code></pre>
+<p><strong>Delete an avatar (preview first):</strong></p>
+<pre><code class="language-bash">node &lt;skill-dir&gt;/scripts/runway-api.mjs request DELETE /v1/avatars/&lt;id&gt; --dry-run
+node &lt;skill-dir&gt;/scripts/runway-api.mjs request DELETE /v1/avatars/&lt;id&gt;
+</code></pre>
+<p><strong>List knowledge documents for an avatar:</strong></p>
+<pre><code class="language-bash">node &lt;skill-dir&gt;/scripts/runway-api.mjs documents list --avatar-id &lt;avatar-id&gt;
+</code></pre>
+<p><strong>Create a knowledge document:</strong></p>
+<pre><code class="language-bash">node &lt;skill-dir&gt;/scripts/runway-api.mjs request POST /v1/documents --body '{
+  &quot;avatarId&quot;: &quot;&lt;avatar-id&gt;&quot;,
+  &quot;name&quot;: &quot;FAQ&quot;,
+  &quot;content&quot;: &quot;Q: What is your return policy?\nA: 30 days, no questions asked.&quot;
+}'
+</code></pre>
+<p><strong>List voices:</strong></p>
+<pre><code class="language-bash">node &lt;skill-dir&gt;/scripts/runway-api.mjs voices list
+</code></pre>
+<h2>Waiting for Tasks</h2>
+<p>Generation endpoints return a task ID. Always run <code>wait</code> immediately after a generation call — do not ask the user whether to wait.</p>
+<pre><code class="language-bash">node &lt;skill-dir&gt;/scripts/runway-api.mjs wait &lt;task-id&gt;
+</code></pre>
+<h2>Generation Requests</h2>
+<p>When the user asks to generate an image, video, or audio:</p>
+<ol>
+<li>Fetch <code>https://docs.dev.runwayml.com/llms.txt</code>, then read its current model and API references before the first generation POST.</li>
+<li>Choose a currently documented model and tell the user which one you picked, briefly.</li>
+<li>Build the request body from the model-specific API contract. Do not guess field names.</li>
+<li>Call the generation endpoint once with that body.</li>
+<li>Run <code>wait</code> automatically.</li>
+<li>Present the result following the rules in <strong>Presenting Generation Output</strong> below.</li>
+</ol>
+<p>For generation requests, never skip the current API reference. For simple list/get/delete requests, do not fetch it unless needed.</p>
+<p>If the user says only "generate an image" but the surrounding context is clearly about Runway account actions or this skill, still use the Runway API rather than a generic built-in image tool.</p>
+<h2>Presenting Generation Output</h2>
+<p>The <code>wait</code> command returns a task with an <code>output</code> array of signed URLs. These URLs <strong>expire in 24–48 hours</strong> and are long signed JWT blobs that are awkward to read inline.</p>
+<p>After a successful generation, do all of the following:</p>
+<ol>
+<li><strong>Lead with what was generated</strong> — one short line stating the model and cost, e.g.
+   <code>Generated with gen4_image (1080p, 8 credits).</code></li>
+<li><strong>Embed images inline as Markdown</strong> so the user can see them without clicking:
+   <code>markdown
+   ![Fox in a snowy forest](https://storage.runway.../signed-url)</code>
+   For videos, link them as plain Markdown links (<code>[fox.mp4](...)</code>) since inline video does not render in most chat UIs.</li>
+<li><strong>Offer to save a local copy</strong> in the same message, proactively. Suggest a predictable path (<code>./generated/</code> or <code>./runway-outputs/</code>) and infer a filename from the prompt when possible. Example:<blockquote>
+<p>Want me to save it to <code>./generated/fox.png</code>? The signed URL expires in ~24–48h.</p>
+</blockquote>
+</li>
+<li><strong>Do not paste the full signed URL as raw text</strong> unless the user asks for it. The Markdown image/link already contains it.</li>
+</ol>
+<p>If the user confirms a download, fetch with <code>curl -L -o &lt;path&gt; '&lt;url&gt;'</code> (quote the URL — it contains <code>&amp;</code>).</p>
+<h2>API Reference</h2>
+<p>Use <code>https://docs.dev.runwayml.com/llms.txt</code> to locate the canonical, current API contract.</p>
+<h2>Staging (--stage)</h2>
+<p>Add <code>--stage</code> to any command to target the staging API:</p>
+<pre><code class="language-bash">node &lt;skill-dir&gt;/scripts/runway-api.mjs --stage avatars list
+node &lt;skill-dir&gt;/scripts/runway-api.mjs --stage request GET /v1/avatars
+</code></pre>
+<p>With <code>--stage</code>, the CLI checks <code>RUNWAY_SKILLS_API_SECRET_STAGE</code> first, then falls back to <code>RUNWAY_SKILLS_API_SECRET</code>. The base URL defaults to <code>https://api.dev-stage.runwayml.com</code>.</p>
+<h2>Large Payloads (--stdin)</h2>
+<p>When creating resources with data URIs (e.g. base64-encoded images for avatar <code>referenceImage</code>), the body can exceed shell argument limits. Use <code>--stdin</code> to pipe the body:</p>
+<pre><code class="language-bash">python3 -c &quot;
+import json, base64
+with open('image.png', 'rb') as f:
+    b64 = base64.b64encode(f.read()).decode()
+body = json.dumps({'name': 'My Avatar', 'referenceImage': f'data:image/png;base64,{b64}', ...})
+with open('/tmp/body.json', 'w') as f:
+    f.write(body)
+&quot; &amp;&amp; cat /tmp/body.json | node &lt;skill-dir&gt;/scripts/runway-api.mjs request POST /v1/avatars --stdin
+</code></pre>
+<p>Alternatively, write the JSON to a file and use <code>curl -d @file</code> directly. The <code>--body</code> flag is fine for small JSON payloads but will hit <code>argument list too long</code> for data URIs of images over ~200KB.</p>
+<h2>Environment Variables</h2>
+<p>The runtime reads credentials from the process environment:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RUNWAY_SKILLS_API_SECRET</code></td>
+<td>Production API key</td>
+</tr>
+<tr>
+<td><code>RUNWAY_SKILLS_API_SECRET_STAGE</code></td>
+<td>Stage API key (used with <code>--stage</code>)</td>
+</tr>
+<tr>
+<td><code>RUNWAY_SKILLS_BASE_URL</code></td>
+<td>Override the base URL for any environment</td>
+</tr>
+<tr>
+<td><code>RUNWAY_SKILLS_DIR</code></td>
+<td>Optional. Absolute path to the source checkout of this skills repo — used by the agent as a fallback when resolving <code>&lt;skill-dir&gt;</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>If the agent cannot see <code>RUNWAY_SKILLS_API_SECRET</code>, the editor likely needs to be restarted after the variable is set.</p>
+<h2>Related Files</h2>
+<ul>
+<li><code>AUTH.md</code> — auth setup and troubleshooting for this skill</li>
+</ul>
+<h2>Application integration</h2>
+<p>Use <code>+runway-dev</code> with <code>+runway-dev-models</code>, <code>+runway-dev-model-routers</code>, <code>+runway-dev-characters</code>, <code>+runway-dev-recipes</code>, or <code>+runway-dev-workflows</code> when the goal is to build or maintain application code rather than perform an account action directly.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

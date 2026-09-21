@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>fnf-react · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/fnf-react.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Skill: FNF React</h1>
+<p>Use this when the task touches <code>@higgsfield/fnf-react</code>: React providers,
+TanStack Query options, generation run controllers, attachments, profile
+queries, workspace switching, cache keys, or request previews.</p>
+<p>Before coding, read <code>app/packages/fnf-react/ai/AGENTS.md</code> and, for model contracts,
+<code>app/packages/fnf/ai/AGENTS.md</code>. For generated apps with real generation/media/
+profile/credits, also read <code>references/auth.md</code>. For the visible UI around these
+hooks, also read <code>app/packages/quanta/ai/AGENTS.md</code> and <code>references/quanta-design.md</code>.</p>
+<h2>Package Philosophy</h2>
+<ul>
+<li><code>fnf-react</code> is UI-free.</li>
+<li>It provides stable clients, query options, cache helpers, and external-store
+  controllers.</li>
+<li>It must not add product copy, toasts, auth redirects, plan gates, or visual
+  components.</li>
+<li>It pairs with Quanta in generated websites: fnf-react owns data/lifecycles,
+  Quanta owns controls/layout/feedback.</li>
+<li>It does not make anonymous generation safe. The host must provide auth gating
+  and safe adapter boundaries before exposing generation/media/profile actions.</li>
+<li>Any real generation screen must include both the submit lifecycle and a
+  feed/history surface. Do not build a submit-only page for SDK-backed models.</li>
+</ul>
+<h2>Provider Shape</h2>
+<p>Use <code>QueryClientProvider</code> above the website, then <code>FnfProvider</code> where SDK clients
+are needed.</p>
+<p>For real SDK-backed generation/media/profile/credits, render <code>FnfProvider</code> only
+inside an authenticated website boundary or pass clients that call authenticated
+server functions. Signed-out users should see sign-in UI, not active generation
+controls.</p>
+<p>This boundary means Higgsfield auth, not the generated website's own local sign-in.
+If the website also has in-app accounts for its product data, keep those sessions
+separate. <code>FnfProvider</code> and every SDK-backed route still require <code>/api/user</code> and
+server-side <code>https://fnf.internal/user</code> guards.</p>
+<pre><code class="language-tsx">import { FnfProvider } from '@higgsfield/fnf-react'
+
+&lt;FnfProvider
+  adapter={adapter}
+  jobs={jobs}
+  mediaAdapter={adapter}
+  profileAdapter={adapter}
+  scopeKey={workspaceId}
+&gt;
+  {children}
+&lt;/FnfProvider&gt;
+</code></pre>
+<p>Provider hooks:</p>
+<ul>
+<li><code>useFnf()</code> returns the composed client bundle.</li>
+<li><code>useFnfJobClient()</code> returns the SDK job client.</li>
+<li><code>useFnfRealtimeClient()</code> returns the stateful image-editing/custom-style
+  client when the adapter implements the realtime backend (or an explicit
+  <code>realtimeAdapter</code> is supplied).</li>
+<li><code>useFnfCharacterClient()</code> returns the character-training client.</li>
+<li><code>useFnfReferenceClient()</code> returns the signed-in user's Elements client.</li>
+<li><code>useFnfMediaClient()</code> returns the SDK media client.</li>
+<li><code>useFnfProfileClient()</code> returns the SDK profile client.</li>
+<li><code>useFnfLlmClient()</code> returns the LLM chat/text client (OpenAI-shape
+  <code>complete</code>/<code>stream</code>, tool-calling) when a browser-safe <code>llm</code> backend is
+  passed to <code>FnfProvider</code>; the hook throws if none was provided. The raw
+  <code>createLlmClient({ baseUrl: 'https://fnf.internal/llm' })</code> client is
+  Worker-side only (zero-token — the platform attaches the visitor's identity
+  and bills their credits) and must be called through authenticated app-local
+  server functions or routes. Discover the exact available model ids there via
+  <code>listModels()</code>; never ship the raw client or a hardcoded catalog to browser
+  code. App-only, not for a <code>type: "website"</code> build. See
+  <code>references/fnf-sdk.md</code> → "LLM chat / text".</li>
+<li><code>useFnfJobs()</code> returns the registered model entries.</li>
+<li><code>useFnfScopeKey()</code> returns the cache scope.</li>
+<li><code>useFnfObservability()</code> returns the observer config.</li>
+</ul>
+<p>Keep <code>adapter</code>, <code>jobs</code>, <code>blobUploader</code>, <code>resolveJob</code>, and <code>observability</code>
+references stable. Do not create a new adapter or new job array on every render.</p>
+<h2>Cache Rules</h2>
+<ul>
+<li>Use exported query option factories and <code>fnfKeys</code>.</li>
+<li>Do not hand-build query key arrays.</li>
+<li>Use cache-door helpers for generation updates.</li>
+<li>Workspace switches should scope or clear generation/feed/job-set/cost and
+  realtime caches.</li>
+<li>Use <code>scopeKey</code> for user/workspace-aware websites, usually
+  <code>${userId}:${workspaceId}</code>.</li>
+<li>Use profile query options for profile panels and workspace switchers.</li>
+</ul>
+<p>Common query helpers:</p>
+<pre><code class="language-ts">characterQueryOptions(characterClient, characterId, { scopeKey })
+referenceQueryOptions(referenceClient, elementId, { scopeKey })
+referencesQueryOptions(referenceClient, { category: 'character' }, { scopeKey })
+generationQueryOptions(jobClient, id, { scopeKey })
+jobSetQueryOptions(jobClient, jobSetId, { scopeKey })
+jobsFeedQueryOptions(jobClient, { type: 'image', size: 20 }, { scopeKey })
+profileSnapshotQueryOptions(profileClient, { scopeKey })
+profileCreditsQueryOptions(profileClient, { scopeKey, includeOnDemand: true })
+costQueryOptions(jobClient, input, { scopeKey, enabled })
+realtimeChainCostQueryOptions(realtimeClient, input, { scopeKey, enabled })
+realtimeCustomStylesQueryOptions(realtimeClient, query, { scopeKey, enabled })
+</code></pre>
+<p>The realtime query helpers cache read-only cost estimates and saved-style
+pages. Run <code>editChain</code>, <code>finalizeChain</code>, and style mutations through the
+realtime client and the authenticated server boundary; after a style mutation,
+invalidate the matching <code>fnfKeys.realtime({ scopeKey })</code> subtree. Poll edit
+results with <code>getEditJob</code> / <code>pollEditJob</code> and render their normal <code>Generation</code>
+shape. Workspace switching clears the previous scope's realtime cache. Full
+contract: <code>references/fnf-sdk.md</code> → "Stateful realtime image editing and saved
+custom styles".</p>
+<p>For Elements and character workflows, use <code>referencesQueryOptions</code> for the
+Elements picker and <code>characterQueryOptions</code> to poll newly trained characters.
+After training
+completes, invalidate the matching <code>fnfKeys.references(...)</code> query so the new
+Character Element appears. The Element id and <code>reference.characterId</code> are
+different; Soul generation uses <code>characterId</code> as
+<code>settings.customReferenceId</code>. Full server recipe:
+<code>references/fnf-sdk.md</code> → "Elements and custom-reference character training".</p>
+<p>Use <code>flattenFeedPages</code> with infinite feeds. Use <code>applyGenerations</code>,
+<code>prependGenerations</code>, and <code>removeGenerationQueries</code> for generation cache writes.
+Do not call <code>queryClient.setQueryData</code> on generation caches directly unless the
+package guide documents the exact helper path.</p>
+<p>For any model form generated from a prompt, the default React structure is:</p>
+<ul>
+<li>auth gate from <code>/api/user</code></li>
+<li>profile/credits/workspace tab or side panel</li>
+<li>settings form and upload controls</li>
+<li>cost preview query</li>
+<li>confirmation modal before submit: <code>run.start</code> fires only after the user
+  confirms (model + settings summary + cost preview); the server wires the
+  adapter <code>confirm</code> gate — see the fnf-sdk reference, "Submission Confirmation
+  Gate"</li>
+<li><code>useGenerationRun</code> for submit + poll</li>
+<li><code>jobsFeedQueryOptions</code> / <code>jobSetQueryOptions</code> for feed/history</li>
+<li><code>prependGenerations</code> after submit when the returned generations should appear
+  immediately in the visible feed</li>
+<li><code>HiggsfieldGenerationCard</code> for every submitted and historical generation item
+  so completed jobs render real previews, not status-only placeholders</li>
+</ul>
+<p>If the website uses SDK generation and lacks a feed/history view, treat it as
+incomplete.</p>
+<h2>Generation Feed And Preview Rendering</h2>
+<p>For SDK-backed generators, React UI must handle both the submit lifecycle and
+the historical feed:</p>
+<pre><code class="language-tsx">import { HiggsfieldGenerationCard } from &quot;@/components/higgsfield-generation-card&quot;
+import { jobsFeedQueryOptions, flattenFeedPages, useGenerationRun } from &quot;@higgsfield/fnf-react&quot;
+</code></pre>
+<p>Required behavior:</p>
+<ul>
+<li>Use <code>useGenerationRun</code> for submit + polling until terminal status.</li>
+<li>After EVERY accepted submit, insert the returned queued/running generations
+  into the visible feed with <code>prependGenerations</code> before polling completes.
+  <code>preset</code> activates History/Results in the same transition; inline-feed
+  layouts scroll or focus the inserted card. Never leave an accepted submit
+  visible only on the form or preset screen.</li>
+<li>Use <code>applyGenerations</code> or the built-in run/cache helpers to fold polling
+  updates into generation caches.</li>
+<li>Load history with <code>jobsFeedQueryOptions</code> and <code>flattenFeedPages</code>; refresh by
+  invalidating the exported <code>fnfKeys</code> query, not by hand-building keys.</li>
+<li>Render all run results and feed items with <code>HiggsfieldGenerationCard</code> or an
+  equivalent component using <code>getPreviewUrl</code>, <code>getRawUrl</code>, <code>getMediaType</code>,
+  <code>getJobPhase</code>, <code>hasResult</code>, and <code>isTerminalJobStatus</code> from
+  <code>@higgsfield/fnf/client</code>.</li>
+<li>Image cards use the optimized preview URL and raw URL for open/download.</li>
+<li>Video cards use raw URL for playback and thumbnail/preview URL as poster.</li>
+<li>Completed jobs with no result URL show an explicit preview-unavailable state
+  plus refresh/get behavior.</li>
+<li>Show prompt, model, status, created time, and failure reason where available.</li>
+<li>Opening a ready History generation keeps the feed mounted and presents its
+  image/video and metadata in the shipped detail surface. Previous/Next moves
+  through the current filtered/sorted feed without closing. Close restores the
+  History tab, search/filter state, and scroll position; changing detail
+  selection must not refetch or reset the feed.</li>
+</ul>
+<p>Never render a completed generation as a blank rectangle that only says
+<code>completed</code> or only shows an id. That means the website ignored SDK
+<code>Generation.results</code> or the backend response was not normalized correctly.</p>
+<h2>Request Helpers</h2>
+<ul>
+<li>Use <code>useFnfWirePreview(input)</code> or <code>getWirePreview(input, jobs)</code> to show local
+  validation/wire params before submit.</li>
+<li>Use <code>costQueryOptions(jobClient, input, { scopeKey, enabled })</code> for cached
+  cost previews. Returned <code>credits</code> are display credits.</li>
+<li>Use <code>useGenerationRun</code> for submit-through-poll lifecycle; <code>run.start()</code> does
+  not throw for normal lifecycle failures, so render from <code>run.error</code> and
+  generation statuses. Call <code>run.start</code> only after the confirmation modal is
+  accepted; render <code>run.error?.code === 'confirmation_rejected'</code> as a quiet
+  user-cancelled state, not an error toast.</li>
+<li>Use <code>useAttachments</code> for uploads and submit-ready <code>MediaRef</code> values.</li>
+<li>The job client passed to React helpers must ultimately call a server-side SDK
+  path. If it wraps TanStack server functions or <code>/api/*</code> routes, submit, cost,
+  media upload, and workspace switch must be backed by <code>POST</code> handlers. GET is
+  for reads only. A generation <code>Method Not Allowed</code> error usually means the
+  generated website built a GET route/function for a write operation.</li>
+<li>Do not pass browser <code>File</code>, <code>Blob</code>, <code>ArrayBuffer</code>, <code>Uint8Array</code>, base64, or
+  byte arrays through React Query variables or <code>createServerFn</code> JSON input. For
+  server-only auth/fnf.internal flows, upload files with multipart <code>FormData</code> to
+  a <code>POST /api/media/upload</code> route, then give React generation state only the
+  returned <code>MediaRef</code>.</li>
+</ul>
+<p><code>useGenerationRun</code> is the right default for generator screens:</p>
+<ul>
+<li><code>start(input)</code> submits and polls until terminal state.</li>
+<li>It supersedes/aborts stale runs when a newer run starts.</li>
+<li>It folds progress into TanStack caches.</li>
+<li>It exposes lifecycle state; UI decides copy, toasts, redirects, and billing.</li>
+<li>Do not treat the submit response as the final result. Read statuses and media
+  URLs from the polled generations and feed queries.</li>
+</ul>
+<p><code>useAttachments</code> is the right default for upload controls:</p>
+<ul>
+<li>Render uploading, ready, blocked, failed, retry, remove, and clear states.</li>
+<li>Use the returned refs in job submit input.</li>
+<li>Keep file names and upload URLs out of logs and observability.</li>
+<li>Use it only with a media client whose upload path is valid for the current
+  runtime. If the actual SDK adapter/token must stay server-side, do not push
+  raw files through a JSON server function; build a multipart upload route and
+  adapt your UI state around its returned <code>MediaRef</code>.</li>
+</ul>
+<h2>Profile And Workspace</h2>
+<p>Use profile query options for profile/credits/workspace panels. Use
+<code>useSwitchWorkspaceMutation</code> or <code>switchWorkspaceMutationOptions</code> for backend
+context switching. On success, update host auth/session/router state if needed;
+the package only updates SDK/profile caches and clears scoped generation data.</p>
+<h2>Client Boundary</h2>
+<p>Use <code>fnf-react</code> in client React code only after the server has provided a safe
+adapter/proxy boundary. Browser components must not receive fnf service secrets
+or raw backend credentials.</p>
+<p>When in doubt, keep privileged fnf work in a TanStack server function and let
+client components call that app-local server function.</p>
+<p>For generated websites, browser auth display should use <code>/api/user</code> from
+<code>references/auth.md</code>. Do not use <code>fnf-react</code> profile queries as a replacement for
+the app-local auth proxy unless the adapter is explicitly safe for browser use.</p>
+<p>Auth enforcement rule:</p>
+<ul>
+<li>Browser checks <code>/api/user</code> for signed-in state.</li>
+<li>UI disables or hides <code>run.start</code>, upload controls, cost buttons, feed/history,
+  profile, credits, and workspace switching when signed out.</li>
+<li>Server functions still call the auth guard before submit/upload/cost/profile
+  SDK operations.</li>
+<li>On logout, clear/invalidate scoped fnf query caches before or during
+  navigation to <code>/__auth/logout?return=...</code>.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

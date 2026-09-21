@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>troubleshooting · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/seedance-2-5-skill/references/troubleshooting.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Troubleshooting</h1>
+<p>Fix the failed shot or seam rather than restarting a complete sequence.</p>
+<h2>Identity and reference problems</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely cause</th>
+<th>Targeted fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Person changes face or outfit</td>
+<td>Weak or mixed identity reference</td>
+<td>Use a clean face close-up and separate full-body image; name their roles clearly</td>
+</tr>
+<tr>
+<td>Duplicate people</td>
+<td>A composite human reference reads as several subjects</td>
+<td>Replace the turnaround or contact sheet with one single-person image; state the one-person constraint</td>
+</tr>
+<tr>
+<td>Product form or label changes</td>
+<td>Product reference has insufficient priority</td>
+<td>Use one clean product image, bind it as <code>Image 1</code>, and explicitly preserve proportion and label</td>
+</tr>
+<tr>
+<td>Style changes across cuts</td>
+<td>Conflicting light or art direction</td>
+<td>Lock the same dominant light direction, palette, and material language in every relevant shot</td>
+</tr>
+</tbody>
+</table>
+<h2>Motion and shot problems</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely cause</th>
+<th>Targeted fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wobble or morphing</td>
+<td>Too much action or competing camera instructions</td>
+<td>Reduce to one continuous action and one primary move, or describe one synchronized composite move</td>
+</tr>
+<tr>
+<td>Face warps in close-up</td>
+<td>Tight framing plus aggressive rotation</td>
+<td>Use wider framing, gentler motion, or a planned cut</td>
+</tr>
+<tr>
+<td>Endpoint is missed</td>
+<td>I2V lacks a usable end keyframe</td>
+<td>Regenerate a clean end keyframe and use it as <code>last_image</code></td>
+</tr>
+<tr>
+<td>R2V ignores storyboard order</td>
+<td>Sequence is ambiguous or panels are too small</td>
+<td>Write <code>Shot 1 / Shot 2 / Shot 3</code>; simplify only the ambiguous board; switch to I2V only when individual control is required</td>
+</tr>
+</tbody>
+</table>
+<h2>Seams and edit problems</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely cause</th>
+<th>Targeted fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A continuous chain jumps or rewinds</td>
+<td>Generated tail does not align sufficiently with the next segment</td>
+<td>Rework the ending action, regenerate the boundary segment, and trim only after visual inspection</td>
+</tr>
+<tr>
+<td>Hard cut feels arbitrary</td>
+<td>No planned visual or audio relationship</td>
+<td>Add a match cut, occlusion, cutaway, or strong beat before the cut</td>
+</tr>
+<tr>
+<td>Dissolve looks muddy</td>
+<td>Two unrelated compositions are blended</td>
+<td>Use a hard, match, or occlusion cut; reserve dissolves for true time or place changes</td>
+</tr>
+<tr>
+<td>Input audio fails</td>
+<td>A supplied reference audio file or URL was rejected</td>
+<td>Fix or replace <code>audio.references</code>; do not expect silent removal of the input audio</td>
+</tr>
+<tr>
+<td>Output audio fails after retries</td>
+<td>Seedance returned no audio stream or reported audio-generation failure</td>
+<td>Inspect the request and rerun that segment with <code>generate_audio:true</code> rather than silently falling back to silent video</td>
+</tr>
+<tr>
+<td>Native audio ends with a click</td>
+<td>Generated clip audio is truncated</td>
+<td>Regenerate the segment with native audio; add a short fade only after the new generation is acceptable</td>
+</tr>
+</tbody>
+</table>
+<h2>Multi-reference problems</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely cause</th>
+<th>Targeted fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wrong reference applied to a subject</td>
+<td>Bound as a group (<code>images 1–4 define four characters</code>)</td>
+<td>One binding line per subject, each naming its own reference</td>
+</tr>
+<tr>
+<td>One object appears twice</td>
+<td>Multi-view references read as several objects</td>
+<td>State the output count: <code>all three images define one lamp; exactly one appears throughout</code></td>
+</tr>
+<tr>
+<td>Props migrate between characters</td>
+<td>Ownership never stated</td>
+<td>Add <code>belongs only to &lt;subject&gt;</code></td>
+</tr>
+<tr>
+<td>Every reference crowds into every shot</td>
+<td>No per-scene selection</td>
+<td>List which references each scene uses</td>
+</tr>
+<tr>
+<td>Reference background leaks in</td>
+<td>Role stated one-sided</td>
+<td>Add the <code>do not use</code> half</td>
+</tr>
+<tr>
+<td>Re-described motion conflicts with a motion reference</td>
+<td>Text competes with the video</td>
+<td>State only which attributes to inherit</td>
+</tr>
+</tbody>
+</table>
+<h2>Stage and timing problems</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely cause</th>
+<th>Targeted fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Stage ends in the wrong state</td>
+<td>No end state written</td>
+<td>State what is visibly true when the stage ends</td>
+</tr>
+<tr>
+<td>Piece trails off</td>
+<td>Final stage has no end state</td>
+<td>Add one — the most common omission</td>
+</tr>
+<tr>
+<td>Model invents pauses or extra cuts</td>
+<td>Second-level granularity on a continuous action</td>
+<td>Drop to stages, or to event order only</td>
+</tr>
+<tr>
+<td>Beats land consistently late</td>
+<td>Model timing drift</td>
+<td>Check the profile; write beats earlier, or drop to stages</td>
+</tr>
+<tr>
+<td>Events dropped inside a range</td>
+<td>Too much content in one time range</td>
+<td>Split into more stages</td>
+</tr>
+<tr>
+<td>Style holds early then drifts</td>
+<td>A global rule was written inside stage 1</td>
+<td>Move it to the global block</td>
+</tr>
+<tr>
+<td>Later characters appear too early in a backward extension</td>
+<td>Source's first frame not stated as an end state</td>
+<td>State it explicitly, and name what must not appear early</td>
+</tr>
+</tbody>
+</table>
+<h2>Review order</h2>
+<p>Review identity, locks, stage end states, composition, motion, seam, then sound.
+<strong>Stop at the first failure</strong> — later polish cannot repair wrong identity or a
+missed endpoint, so checking past the first break wastes the pass.</p>
+<p>When the same lock breaks repeatedly on one model, that is a profile finding, not
+a prompt problem. Record it in <a href="model-profile.html">model profile</a> instead of
+rewriting the prompt again.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

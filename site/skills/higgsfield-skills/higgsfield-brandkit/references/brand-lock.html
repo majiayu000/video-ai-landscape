@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>brand-lock · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-brandkit/references/brand-lock.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Brand Lock</h1>
+<p>The Brand Lock is the single source of truth for every requested graphic. Create it after intake and asset analysis, before paid generation.</p>
+<p>It is not a new brand strategy document. It records supplied context, measured rules, and the minimum proposed visual decisions needed for this job.</p>
+<h2>Lock states</h2>
+<p>Mark each field as one of:</p>
+<ul>
+<li><code>fixed</code> — supplied or approved; never change without explicit permission.</li>
+<li><code>proposed</code> — fills a missing visual rule; may be revised.</li>
+<li><code>not_applicable</code> — intentionally absent.</li>
+<li><code>unknown</code> — unresolved and unsafe to invent.</li>
+</ul>
+<p>Also attach an evidence label from <code>asset-analysis.md</code>: <code>source-declared</code>, <code>measured</code>, <code>visually-observed</code>, or <code>inferred</code>.</p>
+<h2>Canonical shape</h2>
+<p>Use this structure internally. Keep it compact enough to copy relevant blocks verbatim into generation prompts.</p>
+<pre><code class="language-json">{
+  &quot;version&quot;: 1,
+  &quot;brand_context&quot;: {
+    &quot;name&quot;: &quot;&quot;,
+    &quot;offering&quot;: &quot;&quot;,
+    &quot;industry&quot;: &quot;&quot;,
+    &quot;positioning&quot;: &quot;&quot;,
+    &quot;audience&quot;: &quot;&quot;,
+    &quot;tone&quot;: []
+  },
+  &quot;concept&quot;: {
+    &quot;name&quot;: &quot;&quot;,
+    &quot;visual_premise&quot;: &quot;&quot;,
+    &quot;research_principles&quot;: [],
+    &quot;reference_preferences&quot;: [],
+    &quot;avoid&quot;: []
+  },
+  &quot;visual_axes&quot;: {
+    &quot;restrained_expressive&quot;: 50,
+    &quot;geometric_organic&quot;: 50,
+    &quot;familiar_experimental&quot;: 50
+  },
+  &quot;authoritative_assets&quot;: {
+    &quot;logo&quot;: {
+      &quot;origin&quot;: &quot;user_supplied | brandkit_generated&quot;,
+      &quot;source&quot;: &quot;&quot;,
+      &quot;upload_or_job_id&quot;: &quot;&quot;,
+      &quot;variants&quot;: {
+        &quot;color&quot;: &quot;&quot;,
+        &quot;black&quot;: &quot;&quot;,
+        &quot;white&quot;: &quot;&quot;
+      },
+      &quot;status&quot;: &quot;fixed&quot;
+    },
+    &quot;fonts&quot;: [],
+    &quot;references&quot;: []
+  },
+  &quot;palette&quot;: {
+    &quot;origin&quot;: &quot;user_supplied | brandkit_generated&quot;,
+    &quot;primary&quot;: [],
+    &quot;accent&quot;: [],
+    &quot;neutral&quot;: [],
+    &quot;semantic_roles&quot;: {},
+    &quot;forbidden&quot;: []
+  },
+  &quot;typography&quot;: {
+    &quot;origin&quot;: &quot;user_supplied | brandkit_generated&quot;,
+    &quot;display&quot;: {},
+    &quot;body&quot;: {},
+    &quot;fallbacks&quot;: [],
+    &quot;font_links&quot;: [],
+    &quot;specimen_svg&quot;: &quot;&quot;
+  },
+  &quot;layout&quot;: {
+    &quot;grid&quot;: &quot;&quot;,
+    &quot;margins&quot;: &quot;&quot;,
+    &quot;spacing_scale&quot;: [],
+    &quot;alignment&quot;: &quot;&quot;,
+    &quot;density&quot;: &quot;&quot;
+  },
+  &quot;shape_language&quot;: {
+    &quot;corner_radii&quot;: [],
+    &quot;borders&quot;: [],
+    &quot;shadows&quot;: [],
+    &quot;forms&quot;: []
+  },
+  &quot;graphic_devices&quot;: {
+    &quot;motifs&quot;: [],
+    &quot;patterns&quot;: [],
+    &quot;textures&quot;: [],
+    &quot;rules&quot;: []
+  },
+  &quot;composition&quot;: {
+    &quot;hierarchy&quot;: &quot;&quot;,
+    &quot;logo_placement&quot;: [],
+    &quot;image_behavior&quot;: &quot;&quot;,
+    &quot;text_behavior&quot;: &quot;&quot;
+  },
+  &quot;applications&quot;: {},
+  &quot;unknowns&quot;: []
+}
+</code></pre>
+<p>For each exact token, retain its state, evidence, and source when ambiguity exists. Do not bloat every obvious field with metadata.</p>
+<h2>Required minimum</h2>
+<p>Before paid generation, the lock must contain the fields that the requested output actually uses:</p>
+<ul>
+<li>Exact brand/product spelling</li>
+<li>Requested deliverables and formats</li>
+<li>Logo source when the output uses a logo, or explicit <code>not_applicable</code></li>
+<li>Palette behavior when the output uses color (exact colors when supplied)</li>
+<li>An approved display/body typography system only when readable text appears</li>
+<li>Composition/hierarchy and shape rules relevant to the requested asset</li>
+<li>At least two concrete avoid rules</li>
+</ul>
+<p>If a missing value would materially affect a paid generation, ask once. If it only affects a reversible layout detail, make a <code>proposed</code> decision.</p>
+<h2>Prompt lock block</h2>
+<p>For every image-model call, include one compact block:</p>
+<pre><code class="language-text">[BRAND LOCK — DO NOT DEVIATE]
+Brand spelling: &lt;exact&gt;
+Authoritative logo: &lt;reference index/id and preservation instruction&gt;
+Palette: &lt;exact hex + role&gt;
+Typography: &lt;exact font/style when rendered&gt;
+Layout: &lt;grid/alignment/spacing&gt;
+Shape language: &lt;radius/border/forms&gt;
+Graphic device: &lt;motif/pattern rule&gt;
+Must preserve: &lt;fixed invariants&gt;
+Never: &lt;forbidden treatments&gt;
+</code></pre>
+<p>Repeat the block verbatim across related assets. Change only the asset-specific content, dimensions, and composition section.</p>
+<h2>Reference discipline</h2>
+<ul>
+<li>Keep one authoritative absolute local path or remote ID and reuse it everywhere.</li>
+<li>Reference a prior generated output by its original job ID; do not download and re-upload it unless the receiving tool requires a file.</li>
+<li>Label references by role in prompts: <code>Image 1: official logo</code>, <code>Image 2: approved base scene</code>.</li>
+<li>State what each reference controls and what it must not control.</li>
+<li>For an existing logo, require exact preservation of spelling, geometry, proportions, and colors. Prefer deterministic placement/compositing when the logo does not need to interact physically with the scene.</li>
+</ul>
+<h2>Per-format overrides</h2>
+<p>Store format differences under <code>applications</code>, not by changing core tokens. Examples:</p>
+<ul>
+<li>A carousel may use tighter spacing than a deck.</li>
+<li>A poster may use the display font at extreme scale.</li>
+<li>A light kraft/paper/cardboard mockup uses the approved black logo.</li>
+<li>A dark mockup uses the approved white reverse logo.</li>
+<li>Embossing, debossing, foil, stamps, engraving, and one-color printing use an approved monochrome logo, never the full-color mark.</li>
+</ul>
+<p>An override must name its format and cannot contradict a fixed core rule.</p>
+<h2>Project-local approval persistence</h2>
+<p>The working Brand Lock may contain draft concept language, but final approvals live only in the local <code>"$BRANDKIT_STATE"</code> file.</p>
+<ul>
+<li>Call the Brandkit state script's <code>get_status</code> action at the start of every Brandkit turn, then load only the module needed by the active stage.</li>
+<li>Lock user-supplied official slots immediately with the matching <code>lock_authoritative_*</code> action and persist normalized axes with <code>set_visual_axes</code>.</li>
+<li>Save each generated selection immediately through <code>approve_logo</code>, <code>approve_palette</code>, or <code>approve_typography</code>.</li>
+<li>Save final downstream elements only through <code>approve_brandbook_element</code> after user approval, with the exact <code>required_slots</code> used.</li>
+<li>Do not duplicate Brandkit approval state in user memory, chat prose, or another state file.</li>
+<li>Do not infer approval from generated recency, todo completion, model ranking, or your own visual assessment.</li>
+</ul>
+<p>When the user revises one rule:</p>
+<ol>
+<li>Save only the revised approved slot through the Brandkit state script.</li>
+<li>Keep every unrelated approved slot unchanged.</li>
+<li>Respect the returned list of invalidated downstream elements.</li>
+<li>Identify actual dependents from their <code>required_slots</code>.</li>
+<li>Regenerate/recompose only affected outputs and request approval again.</li>
+</ol></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

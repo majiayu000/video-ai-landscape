@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>verifiability · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/universal-video-prompt-skill/references/verifiability.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Verifiability</h1>
+<p>One rule underneath every pattern here: <strong>an instruction that cannot be checked
+on the output cannot be debugged either.</strong> Rewrite intent as observable result.</p>
+<p>This is not about being verbose. Observable writing is usually <em>shorter</em> than the
+adjective stack it replaces, because it commits to one reading instead of hedging
+across several.</p>
+<h2>End states</h2>
+<p>The highest-leverage pattern in the whole skill. Instead of asking for
+consistency, state what is visibly true when a stage ends.</p>
+<pre><code class="language-text">weak:   the two of them keep working on the bouquet
+strong: end state: the florist holds the bouquet in the left hand;
+        the scissors are back on the right side of the bench
+</code></pre>
+<p>An end state must be <strong>visible</strong>. "She feels relieved" is not an end state;
+"her shoulders drop and the frown clears" is.</p>
+<h3>Three forms of the same idea</h3>
+<p>End states are not only a text device. The same concept has a form in each input
+modality, and they compose:</p>
+<table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Carrier</th>
+<th>Use when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Stage end state</td>
+<td>Text</td>
+<td>Default. Multi-event pieces</td>
+</tr>
+<tr>
+<td>Keyframe sequence</td>
+<td>Images — each image <em>is</em> one stage's end state</td>
+<td>You can draw or generate the stages</td>
+</tr>
+<tr>
+<td>Boundary frame</td>
+<td>Video — the seam between source and extension</td>
+<td>Extending or continuing existing footage</td>
+</tr>
+</tbody>
+</table>
+<p>For a keyframe sequence, state the order explicitly and give each image one role:</p>
+<pre><code class="language-text">Use Image 1 through Image 4 as keyframes in this order.
+Image 1 is the first frame: &lt;opening composition and subject state&gt;.
+Image 2 is the second keyframe: &lt;visible end state of stage 1&gt;.
+Image 3 is the third keyframe: &lt;visible end state of stage 2&gt;.
+Image 4 is the last frame: &lt;closing composition and subject state&gt;.
+The video passes through these states in order, moving continuously between them.
+</code></pre>
+<p>Separate images align more reliably than several stages combined into one grid.
+Keyframes control stage order and key states; they do not reproduce every frame.</p>
+<h3>Extension needs the boundary written on the correct side</h3>
+<p>Forward extension (after the source): describe the source's <strong>last frame</strong> as the
+continuing state, then what happens next.</p>
+<p>Backward extension (before the source): describe the new content first, then
+state the source's <strong>first frame as the explicit end state</strong> of what you are
+generating. Writing only "then it connects to the source video" is the known
+failure — it lets later characters and effects appear too early, or lets the
+image keep changing after it has already reached the target state.</p>
+<p>Also state what must <em>not</em> appear early: <code>materials that belong after the source
+begins must not appear in the backward extension</code>.</p>
+<h2>Emotion becomes observable cues</h2>
+<p>Emotion words set a direction but leave the performance open. Anchor them:</p>
+<pre><code class="language-text">weak:   she is reluctant to let him go
+strong: her gaze shifts off his face to the empty space beside him;
+        her eyelids lower; the corners of her mouth lift briefly and fall;
+        her chest rises once, held quiet
+</code></pre>
+<p><strong>Two to four cues is enough for one emotional turn.</strong> Listing every facial
+feature does not increase control — it competes with itself. Draw from: gaze
+direction and shift, brow tension, mouth movement, breathing, throat, hands,
+posture.</p>
+<p>For multiple emotional turns, trigger each one on an event rather than a
+timestamp:</p>
+<pre><code class="language-text">When &lt;first event&gt; happens, &lt;first observable reaction&gt;.
+When &lt;second event&gt; happens, &lt;change in gaze, breathing, or expression&gt;.
+After confirming &lt;critical information&gt;, what the subject was suppressing
+becomes visible through &lt;observable behaviour&gt;.
+</code></pre>
+<p>Event-triggered turns survive a change of model better than timed ones, because
+they do not depend on timing adherence.</p>
+<h2>Pick the property that carries the concept</h2>
+<p>Making a line checkable is necessary but not sufficient. A lock can be perfectly
+verifiable and still measure the wrong thing — and when that happens the model
+satisfies it exactly while the piece fails.</p>
+<p>A worked case. A hand-drawn VFX piece needed its drawn layer to stay hand-drawn,
+so the lock read:</p>
+<pre><code class="language-text">the drawn forms stay graphically flat; never rendered as photoreal creatures
+</code></pre>
+<p>Checkable, unambiguous, and two different models both honoured it — by producing
+smooth neon-tube vector outlines with even fill. Flat: yes. Hand-drawn: no. The
+lock measured <em>flatness</em>, but the property that made the concept work was <em>visible
+tooling</em>. The fix names the tool:</p>
+<pre><code class="language-text">crayon, chalk, coloured pencil, coarse brush; visible stroke direction, uneven
+fill, ragged edges, line weight trembling frame to frame
+</code></pre>
+<p>The test to apply before trusting a lock: <strong>can the model satisfy this sentence
+and still lose the thing I wanted?</strong> If yes, the lock is aimed at a side effect
+rather than the cause.</p>
+<p>This failure has a signature: the output is defensible against the spec line by
+line, and still obviously wrong to anyone who knows the reference. When that
+happens, do not add more locks — find the one property that is actually carrying
+the concept and name it concretely.</p>
+<p>Concrete over abstract, as a rule of thumb:</p>
+<table>
+<thead>
+<tr>
+<th>Abstract lock</th>
+<th>Concrete replacement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>graphically flat</code></td>
+<td>the drawing tool and its marks</td>
+</tr>
+<tr>
+<td><code>cinematic lighting</code></td>
+<td>key direction, quality, what it falls on</td>
+</tr>
+<tr>
+<td><code>realistic texture</code></td>
+<td>the specific surface: pores, dust, wear, grain</td>
+</tr>
+<tr>
+<td><code>dynamic camera</code></td>
+<td>handheld, arriving late, following which subject</td>
+</tr>
+<tr>
+<td><code>high quality</code></td>
+<td>delete it — it locks nothing</td>
+</tr>
+</tbody>
+</table>
+<h2>Name the mechanism, not just the effect</h2>
+<p>A subjective effect usually has more than one physical route to it. State the
+effect alone and the model picks a route — often not yours.</p>
+<p>A worked case. A shot needed a huge drawn mouth to feel threatening. Two drafts:</p>
+<pre><code class="language-text">draft A:  the open jaws span the entire domed ceiling
+draft B:  the skull looms in the centre of the hall, front-on, jaws wide,
+          teeth closing in from top and bottom
+</code></pre>
+<p>Draft B reads as the more aggressive instruction, and it produced a <strong>worse</strong>
+result: the drawn mouth turned into a rendered, volumetric skull. Removing
+<code>span the entire ceiling</code> removed the only <strong>scale reference</strong> in the shot, so the
+model reached for the other available route to menace — volume — and volume
+requires solidity, which broke the flat hand-drawn look the piece depended on.</p>
+<p>The same effect, two mechanisms:</p>
+<table>
+<thead>
+<tr>
+<th>Effect wanted</th>
+<th>Mechanism A</th>
+<th>Mechanism B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Menace</td>
+<td><strong>Scale</strong>: it fills the frame / spans a known structure</td>
+<td><strong>Volume</strong>: it is solid and coming at you</td>
+</tr>
+<tr>
+<td>Grandeur</td>
+<td>Subject small against something known</td>
+<td>Wide lens, high vantage</td>
+</tr>
+<tr>
+<td>Intimacy</td>
+<td>Tight framing</td>
+<td>Shallow focus, soft light</td>
+</tr>
+<tr>
+<td>Speed</td>
+<td>Motion blur, things passing frame</td>
+<td>Camera shake, cutting rhythm</td>
+</tr>
+</tbody>
+</table>
+<p>Ask before writing an effect word: <strong>how many ways could this be achieved?</strong> If
+more than one, and one of them conflicts with another lock, say which mechanism.</p>
+<p>The failure signature here is distinctive: <strong>one lock quietly cancels another.</strong>
+The piece satisfies the effect and violates a constraint elsewhere, and the two
+lines never look related. Scale-versus-volume did exactly that — a change in the
+final beat's phrasing broke the texture rule stated three paragraphs later.</p>
+<h2>Craft terms: keep the term, add the description</h2>
+<p>Any term whose recognition varies — across models, across languages, across
+industry usage — gets written twice:</p>
+<pre><code class="language-text">&lt;term&gt; + &lt;target subject&gt; + &lt;visible change&gt; + &lt;foreground/background relation&gt;
+      + &lt;direction or speed&gt;
+</code></pre>
+<pre><code class="language-text">rack focus: shift focus from the foreground leaves to the person behind them.
+  The leaves go soft while the face resolves from soft to sharp.
+
+bullet time: freeze the moment the bat meets the ball; the camera orbits
+  clockwise around the contact point while debris hangs in the air.
+</code></pre>
+<p>A model that knows the term takes the shortcut. A model that does not follows the
+description. One prompt serves both, which is why this beats maintaining a
+per-model vocabulary table. See <a href="portability.html">portability</a>.</p>
+<p>Terms that are usually safe unqualified: shot sizes (wide, medium, close-up,
+extreme close-up), basic moves (push in, pull out, pan, tilt, tracking, orbit,
+handheld), basic positions (low angle, overhead, first-person).</p>
+<p>Terms that usually need the description: dolly zoom, bullet time, speed ramp,
+rack focus, whip-pan transition, match cut, bounce ramp, and anything named after
+a film, director, or platform trend.</p>
+<p>Numeric values (aperture, focal length, shutter) are allowed, but the intended
+visible result controls more reliably than the number alone.</p>
+<h2>References: both halves, always</h2>
+<p>A reference role is incomplete until it says what <em>not</em> to take:</p>
+<pre><code class="language-text">Image 1 controls the character's face, hairstyle, and jacket.
+  Do not use its background or composition.
+Video 1 controls motion path, blocking, and cut points.
+  Do not use its appearance, materials, or setting.
+Audio 1 controls the narrator's voice.
+  Do not inherit its room tone.
+</code></pre>
+<p>When a reference video already defines motion accurately, state only what to
+inherit. Re-describing the same motion in text competes with the reference.</p>
+<h2>Anti-patterns</h2>
+<table>
+<thead>
+<tr>
+<th>Do not write</th>
+<th>Why it fails</th>
+<th>Write instead</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>keep it consistent</code></td>
+<td>Nothing to check</td>
+<td>The visible end state</td>
+</tr>
+<tr>
+<td><code>cinematic</code>, <code>high quality</code>, <code>masterpiece</code></td>
+<td>No visual commitment</td>
+<td>The specific light, palette, texture</td>
+</tr>
+<tr>
+<td><code>she looks sad</code></td>
+<td>Performance unconstrained</td>
+<td>2–4 observable cues</td>
+</tr>
+<tr>
+<td><code>Images 1–4 define four characters</code></td>
+<td>States no mapping</td>
+<td>One binding line per subject</td>
+</tr>
+<tr>
+<td><code>make it feel epic</code></td>
+<td>Unfalsifiable</td>
+<td>Scale cue: what is in frame, how small the subject is against it</td>
+</tr>
+<tr>
+<td><code>perfect lip sync</code></td>
+<td>Not an instruction</td>
+<td>Supply the audio; state the speaker</td>
+</tr>
+<tr>
+<td><code>no bad anatomy, no artifacts, no blur...</code></td>
+<td>Inherited blocklist, unrelated to this piece</td>
+<td>The two or three risks this piece actually has</td>
+</tr>
+<tr>
+<td><code>complete three actions in one second</code></td>
+<td>Impossible pacing demand</td>
+<td>Give each action its own stage</td>
+</tr>
+</tbody>
+</table>
+<h2>Limits worth stating honestly</h2>
+<p>Verifiable writing raises the probability of a hit; it does not make generation
+deterministic.</p>
+<ul>
+<li>Timestamps allocate a time budget. They are <strong>not</strong> frame-accurate edit points,
+  and actions may land slightly before or after a boundary.</li>
+<li>Boundary frames connect visually. They are not pixel-identical splices.</li>
+<li>Multi-reference work selects and combines the right materials for each moment.
+  It does not make every reference appear at once.</li>
+<li>Content that must be exactly right — subtitles, formulas, signage, product
+  specs, frame-level timing — should come from prepared assets and
+  post-production, not from prompt text.</li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li><a href="spec-format.html">spec-format</a> — where each of these lines belongs</li>
+<li><a href="portability.html">portability</a> — which of these survive a model change</li>
+<li><a href="checklist.html">checklist</a> — pre-submission review</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

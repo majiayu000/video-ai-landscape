@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>review-rubric · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/review-rubric.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>review-rubric — Phase 5 mechanical gate</h1>
+<p>§A runs BEFORE deploy and is a completion gate, not a suggestion. Most items
+are verified by grep/code inspection. <strong>Item 9f is the hard machine gate for the
+animated-website default: a website that ships without the scroll-scrub component
++ scene media (and without an explicit <code>non-animated</code> choice in the brief) FAILS, no matter
+how polished the rest is</strong> — this is the single most common miss, so run 9f every
+time. For the animated website, item 9e adds its interactive runtime checks in
+local preview before the final deploy. There is no post-deploy visual/screenshot
+review — this mechanical gate is the only verification.</p>
+<h2>§A. Mechanical gate (pre-deploy, code-level)</h2>
+<p>Check each item; fix every hit before deploying.</p>
+<ol>
+<li><strong>Placeholders</strong> — zero <code>&lt;...&gt;</code>-style tokens (e.g. <code>&lt;brand name&gt;</code>, <code>&lt;product&gt;</code>),
+   <code>lorem</code>, <code>REMOVE_THIS</code>, <code>blank-app-v1</code>, or empty <code>src=""</code>. Grep for the
+   literal markers: <code>grep -rniE 'lorem ipsum|REMOVE_THIS|blank-app-v1' app/src/</code>,
+   and scan for any remaining <code>&lt;...&gt;</code> placeholder tokens in quoted strings.</li>
+<li><strong>Em-dash ban</strong> — <code>grep -rn "—\|–" app/src/</code> over user-visible strings returns
+   nothing (code comments exempt).</li>
+<li><strong>Banned default palette</strong> — none of the banned palette families from
+   <code>design-recipe.md</code> §2 appear in <code>styles.css</code>/tokens: beige/brass/espresso
+   hexes, graphite/near-black + orange/amber/ember accent, near-black + neon
+   cyan/blue/green accent, AI purple/violet glow, or the palette family of your
+   previous build in this chat. Overridable ONLY by the user's explicit brand
+   colors, justified in the design brief.</li>
+<li><strong>Eyebrow ration</strong> — count <strong>eyebrow-position section labels only</strong>. An
+   eyebrow is a small uppercase/mono kicker sitting DIRECTLY above the
+   section's display headline in the same column; nothing else counts. Must
+   be ≤ ceil(sectionCount / 3). Uppercase mono in non-eyebrow roles (spec
+   strips, table/metric captions, rail labels, footer column heads) is
+   exempt — especially when the reference boards show them. Grep for
+   <code>uppercase tracking</code> to find candidates, then classify by position.</li>
+<li><strong>Asset kit complete + referenced</strong> — every file downloaded into
+   <code>app/public/</code> is actually referenced by a route/component; the hero
+   references a real generated asset (no picsum/stock/CSS-gradient-only hero);
+   the icon slots use the generated icon set (or the documented library
+   fallback), and no kit item from <code>asset-system.md</code>'s "always" list is
+   silently missing.
+5b. <strong>Head kit complete</strong> — the full favicon/meta set from <code>asset-system.md</code>
+   §7 is present and wired: favicon (ico/svg + png sizes), apple-touch-icon,
+   192/512 + maskable icons with a <code>site.webmanifest</code>, <code>theme-color</code>, and the
+   full OG + twitter card block with absolute image URLs. An empty <code>&lt;head&gt;</code>
+   or the scaffold's default favicon is a gate failure.</li>
+<li><strong><code>h-screen</code></strong> — zero occurrences; use <code>h-dvh</code> / <code>min-h-dvh</code>.</li>
+<li><strong>SSR safety</strong> — no <code>window</code> / <code>document</code> / <code>localStorage</code> / <code>navigator</code> at
+   module top level or in render; every <code>[C]</code>/<code>[W]</code> component behind a mounted
+   gate; <code>[W]</code> additionally <code>React.lazy</code>.</li>
+<li><strong>Reduced motion</strong> — every animation source (<code>motion/react</code>, GSAP, registry
+   components) paired with a <code>prefers-reduced-motion</code> guard or static fallback.</li>
+<li><strong>CTA integrity + bespoke chrome</strong> — one label per intent page-wide (no "Get
+   in touch" + "Contact us"); no CTA label longer than ~3 words for primaries;
+   AND no shared site-wide button style: grep for a repeated CTA class string /
+   <code>Button</code> utility component reused across sections — every CTA per the brief's
+   inventory has its own component with its own interaction identity.
+9b. <strong>Screenshot-safe reveals</strong> — flag any <code>opacity: 0</code> / <code>opacity-0</code> <strong>whose
+   removal depends on a viewport/scroll trigger</strong> (<code>whileInView</code>,
+   IntersectionObserver entry, ScrollTrigger-gated fade-ins). Hover-state
+   decorations at opacity-0 are fine. Nothing may sit invisible waiting for a
+   viewport trigger; animate from visible states (y-offset/blur) or fire on
+   mount. Video elements need a <code>poster</code> (or a rendered first frame) so
+   headless shots never show a black box. A full-page headless screenshot
+   must show every section.
+9c. <strong>No Higgsfield branding on <code>type: "website"</code> builds</strong> —
+   <code>grep -rin "higgsfield\|quanta" app/src/</code> returns no user-visible strings,
+   no Quanta imports, no q-prefixed tokens, no "Powered by / Built on" badge,
+   no Higgsfield marks in page chrome. fnf/auth strings in server/service
+   code are fine — that's the functional contract, not branding. On
+   <code>type: "app"</code> builds this check inverts for the design system: Quanta
+   imports and q- tokens are REQUIRED there and "Sign in with Higgsfield" is
+   part of the product — only gratuitous "Powered by / Built on Higgsfield"
+   marketing badges remain forbidden.
+9d. <strong>Anti-convergence ledger honored</strong> — the brief lists the previous
+   build's six identity axes (palette family, type pairing, hero
+   architecture, Tier-1 technique, CTA garments, corner language) and this
+   build differs on ≥4; the rationed garments (drawing underline, hover
+   flood-fill, framed block) appear at most once page-wide combined. On the
+   <code>non-animated</code> path the Tier-1 technique carries a <code>wow-catalog.md</code> ID and is
+   interactive (not a passive loop); on the default <code>animated-website</code> path the
+   Tier-1 technique IS the scroll-scrub animated website (enforced by 9f) — a
+   generic wow-catalog ID does NOT satisfy the default path.
+9e. <strong>Animated website — A4 seam-locked scroll scrub (every website by default;
+   skip only if the user explicitly opted out)</strong> — verify every media segment
+   has a first-frame poster extracted from the
+   exact deployed clip; chapter copy is server-rendered in semantic document
+   flow (not hidden until a viewport callback); <code>prefers-reduced-motion</code>
+   performs no video fetch and shows the complete static story; desktop and
+   lighter mobile encodes are wired; connector/leg handoffs use the neighboring
+   rendered clips' ACTUAL boundary frames; camera velocity does not reverse
+   accidentally; initialization runs only in an effect; and teardown aborts
+   fetches, removes listeners/video nodes, cancels RAF, and revokes Blob URLs.
+   Scrub videos directly from seekable MP4/Blob URLs, ensure CSP <code>media-src</code>
+   permits <code>blob:</code>, and ensure no second ScrollTrigger timeline drives the same
+   media. Inspect each seam immediately before/after in both scroll directions
+   and test source swapping, a fast mobile flick, and unmount/remount in local
+   preview before final deploy.
+9f. <strong>Animation mode gate (machine-verifiable — HARD, every website).</strong> This is
+   the completion gate for the animated-website default; a site that passes every
+   other check but this one is NOT done. Steps:</li>
+<li><code>grep -n "^Animation mode:" app/design-brief.md</code> — there MUST be exactly
+      one such line. Zero matches → FAIL (the brief never declared the state).</li>
+<li>If the value is <strong><code>animated-website</code></strong>, ALL of these must hold, or FAIL:<ul>
+<li>the scroll-scrub component exists —
+    <code>ls app/src/components/scroll-scrub/scroll-scrub.tsx</code> succeeds — and is
+    actually imported/rendered by a route (grep for its import);</li>
+<li>real film shipped — at least ONE clip (<code>single-shot</code> ships exactly
+    one; a <code>multi-leg</code> journey ships one per leg) under
+    <code>app/public/assets/**/*.mp4</code> (the seam-locked chain), each with a
+    first-frame poster (item 9e);</li>
+<li>the brief carries the journey block (Journey scenes + Camera
+    architecture A/B) written in Phase 0.
+  A website on this path with no scroll-scrub component or no scene MP4s is
+  the failure mode this gate exists to catch — do NOT deploy it; go build the
+  camera journey.</li>
+</ul>
+</li>
+<li>If the value is <strong><code>non-animated</code></strong>, the line MUST record the user's choice
+      (an intake pick or a verbatim request). No scroll-scrub artifacts are
+      required; instead confirm the site clears the <code>wow-maker.md</code> craft floor and
+      any chosen <code>wow-catalog.md</code> technique is actually built (9d). A
+      <code>non-animated</code> with no recorded user choice → FAIL (treat as
+      <code>animated-website</code> and go back to step 2).</li>
+<li><strong>Section plan honored</strong> — the built page matches <code>app/design-brief.md</code>'s
+    section plan (families, order, no consecutive family repeats). If the plan
+    changed during the build, the brief was updated to match.</li>
+<li><strong>Copy self-audit</strong> — every visible string re-read; nothing grammatically
+    broken, referent-unclear, filler-verb ("Elevate", "Seamless"…), or fake-precise
+    (<code>92%</code>, <code>4.1×</code> without a source).</li>
+</ol></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

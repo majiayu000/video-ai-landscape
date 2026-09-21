@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>state-payloads · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-brandkit/references/state-payloads.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Exact Brandkit state payloads</h1>
+<p>Write these complete JSON shapes into files under <code>"$BRANDKIT_WORKDIR"</code>. Replace values only. Keep asset objects, arrays, key names, and nesting unchanged.</p>
+<h2>Visual axes</h2>
+<p>Use with <code>state --action set_visual_axes</code>:</p>
+<pre><code class="language-json">{
+  &quot;visual_axes&quot;: {
+    &quot;restrained_expressive&quot;: 50,
+    &quot;geometric_organic&quot;: 50,
+    &quot;familiar_experimental&quot;: 50
+  }
+}
+</code></pre>
+<h2>Logo</h2>
+<p>Use with <code>state --action approve_logo</code>. For a user-supplied official logo, use the same <code>logo</code> object with <code>lock_authoritative_logo</code> and replace <code>approval_summary</code> with <code>source_summary</code>.</p>
+<pre><code class="language-json">{
+  &quot;approval_summary&quot;: &quot;User selected the Northline symbol.&quot;,
+  &quot;logo&quot;: {
+    &quot;name&quot;: &quot;Northline symbol&quot;,
+    &quot;asset&quot;: {
+      &quot;id&quot;: &quot;replace-with-upload-or-job-id&quot;,
+      &quot;url&quot;: &quot;https://replace-with-exact-approved-logo.svg&quot;
+    },
+    &quot;geometry_fingerprint&quot;: &quot;replace-with-logo-inspect-fingerprint&quot;
+  }
+}
+</code></pre>
+<p><code>logo.asset</code> is always an object, never a URL string. It requires at least one durable locator: <code>id</code>, <code>url</code>, or an absolute local <code>path</code>. For a user-supplied local SVG, use:</p>
+<pre><code class="language-json">{&quot;path&quot;: &quot;/absolute/path/to/official-logo.svg&quot;}
+</code></pre>
+<p>Get <code>geometry_fingerprint</code> from <code>logo-inspect --source &lt;exact SVG URL or absolute path&gt;</code> before approval. This uses the same full-canvas-background handling as <code>logo-export</code>.</p>
+<h2>Palette</h2>
+<p>Use with <code>state --action approve_palette</code>. For a user-supplied official palette, use <code>lock_authoritative_palette</code> and replace <code>approval_summary</code> with <code>source_summary</code>.</p>
+<pre><code class="language-json">{
+  &quot;approval_summary&quot;: &quot;User selected the Ink and Signal palette.&quot;,
+  &quot;palette&quot;: {
+    &quot;colors&quot;: [
+      {
+        &quot;hex&quot;: &quot;#101820&quot;,
+        &quot;name&quot;: &quot;Ink&quot;,
+        &quot;role&quot;: &quot;background&quot;
+      },
+      {
+        &quot;hex&quot;: &quot;#F7F7F5&quot;,
+        &quot;name&quot;: &quot;Paper&quot;,
+        &quot;role&quot;: &quot;text&quot;
+      },
+      {
+        &quot;hex&quot;: &quot;#00AEEF&quot;,
+        &quot;name&quot;: &quot;Signal Blue&quot;,
+        &quot;role&quot;: &quot;accent&quot;
+      }
+    ],
+    &quot;gradients&quot;: []
+  }
+}
+</code></pre>
+<p><code>palette.colors</code> contains 2–12 color objects. Every hex value includes <code>#</code>.</p>
+<h2>Typography</h2>
+<p>Use with <code>state --action approve_typography</code>. For user-supplied official typography, use <code>lock_authoritative_typography</code> and replace <code>approval_summary</code> with <code>source_summary</code>.</p>
+<pre><code class="language-json">{
+  &quot;approval_summary&quot;: &quot;User selected Fraunces with Inter.&quot;,
+  &quot;typography&quot;: {
+    &quot;display&quot;: {
+      &quot;family&quot;: &quot;Fraunces&quot;,
+      &quot;source&quot;: &quot;google:Fraunces&quot;,
+      &quot;style&quot;: &quot;normal&quot;,
+      &quot;weight&quot;: 700
+    },
+    &quot;body&quot;: {
+      &quot;family&quot;: &quot;Inter&quot;,
+      &quot;source&quot;: &quot;google:Inter&quot;,
+      &quot;style&quot;: &quot;normal&quot;,
+      &quot;weight&quot;: 400
+    },
+    &quot;font_links&quot;: [
+      &quot;https://fonts.google.com/specimen/Fraunces&quot;,
+      &quot;https://fonts.google.com/specimen/Inter&quot;
+    ]
+  }
+}
+</code></pre>
+<h2>Approved downstream element</h2>
+<p>Use with <code>state --action approve_brandbook_element</code> only after explicit approval:</p>
+<pre><code class="language-json">{
+  &quot;approval_summary&quot;: &quot;User approved the primary poster.&quot;,
+  &quot;required_slots&quot;: [
+    &quot;logo&quot;,
+    &quot;palette&quot;,
+    &quot;typography&quot;
+  ],
+  &quot;brandbook_element&quot;: {
+    &quot;key&quot;: &quot;poster-primary&quot;,
+    &quot;kind&quot;: &quot;poster&quot;,
+    &quot;name&quot;: &quot;Primary campaign poster&quot;,
+    &quot;asset&quot;: {
+      &quot;path&quot;: &quot;/absolute/path/to/approved-poster.svg&quot;
+    }
+  }
+}
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

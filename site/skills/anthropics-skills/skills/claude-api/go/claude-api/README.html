@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>README · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/go/claude-api/README.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Claude API - Go</h1>
+<blockquote>
+<p><strong>Note:</strong> The Go SDK supports the Claude API and beta tool use with <code>BetaToolRunner</code>. Agent SDK is not yet available for Go.</p>
+</blockquote>
+<h2>Installation</h2>
+<pre><code class="language-bash">go get github.com/anthropics/anthropic-sdk-go
+</code></pre>
+<h2>Client Initialization</h2>
+<pre><code class="language-go">import (
+    &quot;github.com/anthropics/anthropic-sdk-go&quot;
+    &quot;github.com/anthropics/anthropic-sdk-go/option&quot;
+)
+
+// Default (uses ANTHROPIC_API_KEY env var)
+client := anthropic.NewClient()
+
+// Explicit API key
+client := anthropic.NewClient(
+    option.WithAPIKey(&quot;your-api-key&quot;),
+)
+</code></pre>
+<hr />
+<h2>Model Constants</h2>
+<p>The Go SDK provides typed model constants: <code>anthropic.ModelClaudeFable5</code>, <code>anthropic.ModelClaudeOpus4_8</code>, <code>anthropic.ModelClaudeOpus4_7</code>, <code>anthropic.ModelClaudeSonnet4_6</code>, <code>anthropic.ModelClaudeHaiku4_5_20251001</code>. Default to Claude Opus 5 unless the user specifies otherwise; if they ask for Fable or the most powerful model, use <code>anthropic.ModelClaudeFable5</code> (see <code>shared/models.md</code> for the full resolution table).</p>
+<p><code>anthropic.Model</code> is an alias for <code>string</code>, so a model with no typed constant yet - including Claude Opus 5 - is passed as the plain id: <code>Model: "claude-opus-5"</code>. Check the SDK release notes for a typed <code>Claude Opus 5</code> constant before assuming one exists.</p>
+<hr />
+<h2>Basic Message Request</h2>
+<pre><code class="language-go">response, err := client.Messages.New(context.Background(), anthropic.MessageNewParams{
+    Model:     &quot;claude-opus-5&quot;,
+    MaxTokens: 16000,
+    Messages: []anthropic.MessageParam{
+        anthropic.NewUserMessage(anthropic.NewTextBlock(&quot;What is the capital of France?&quot;)),
+    },
+})
+if err != nil {
+    log.Fatal(err)
+}
+for _, block := range response.Content {
+    switch variant := block.AsAny().(type) {
+    case anthropic.TextBlock:
+        fmt.Println(variant.Text)
+    }
+}
+</code></pre>
+<hr />
+<h2>Thinking</h2>
+<p>Enable Claude's internal reasoning by setting <code>Thinking</code> in <code>MessageNewParams</code>. The response will contain <code>ThinkingBlock</code> content before the final <code>TextBlock</code>.</p>
+<p><strong>Adaptive thinking is the recommended mode for Claude 4.6+ models.</strong> Claude decides dynamically when and how much to think. Combine with the <code>effort</code> parameter for cost-quality control.</p>
+<p>Derived from <code>anthropic-sdk-go/message.go</code> (<code>ThinkingConfigParamUnion</code>, <code>ThinkingConfigAdaptiveParam</code>).</p>
+<pre><code class="language-go">// There is no ThinkingConfigParamOfAdaptive helper - construct the union
+// struct-literal directly and take the address of the variant.
+adaptive := anthropic.ThinkingConfigAdaptiveParam{}
+params := anthropic.MessageNewParams{
+    Model:     anthropic.ModelClaudeSonnet4_6,
+    MaxTokens: 16000,
+    Thinking:  anthropic.ThinkingConfigParamUnion{OfAdaptive: &amp;adaptive},
+    Messages: []anthropic.MessageParam{
+        anthropic.NewUserMessage(anthropic.NewTextBlock(&quot;How many r's in strawberry?&quot;)),
+    },
+}
+
+resp, err := client.Messages.New(context.Background(), params)
+if err != nil {
+    log.Fatal(err)
+}
+
+// ThinkingBlock(s) precede TextBlock in content
+for _, block := range resp.Content {
+    switch b := block.AsAny().(type) {
+    case anthropic.ThinkingBlock:
+        fmt.Println(&quot;[thinking]&quot;, b.Thinking)
+    case anthropic.TextBlock:
+        fmt.Println(b.Text)
+    }
+}
+</code></pre>
+<blockquote>
+<p><strong>Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking (above). <code>ThinkingConfigParamOfEnabled(budgetTokens)</code> is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<strong>Claude Opus 5:</strong> thinking is on by default - leaving <code>Thinking</code> unset runs adaptive (the adaptive union is equivalent), unlike Opus 4.8/4.7 where leaving it unset meant no thinking.
+<strong>Older models:</strong> Use <code>anthropic.ThinkingConfigParamOfEnabled(N)</code> (budget must be &lt; <code>MaxTokens</code>, min 1024).</p>
+</blockquote>
+<p>To disable: <code>anthropic.ThinkingConfigParamUnion{OfDisabled: &amp;anthropic.ThinkingConfigDisabledParam{}}</code>. On Claude Opus 5 that is accepted only at effort <code>high</code> or lower - pairing it with <code>xhigh</code>/<code>max</code> returns a 400.</p>
+<hr />
+<h2>Prompt Caching</h2>
+<p><code>System</code> is <code>[]TextBlockParam</code>; set <code>CacheControl</code> on the last block to cache tools + system together. For placement patterns and the silent-invalidator audit checklist, see <code>shared/prompt-caching.md</code>.</p>
+<pre><code class="language-go">System: []anthropic.TextBlockParam{{
+    Text:         longSystemPrompt,
+    CacheControl: anthropic.NewCacheControlEphemeralParam(), // default 5m TTL
+}},
+</code></pre>
+<p>For 1-hour TTL: <code>anthropic.CacheControlEphemeralParam{TTL: anthropic.CacheControlEphemeralTTLTTL1h}</code>. There's also a top-level <code>CacheControl</code> on <code>MessageNewParams</code> that auto-places on the last cacheable block.</p>
+<p>Verify hits via <code>resp.Usage.CacheCreationInputTokens</code> / <code>resp.Usage.CacheReadInputTokens</code>.</p>
+<hr />
+<h2>Stop Details</h2>
+<p>When <code>StopReason</code> is <code>anthropic.StopReasonRefusal</code>, the response includes structured <code>StopDetails</code>:</p>
+<pre><code class="language-go">if resp.StopReason == anthropic.StopReasonRefusal {
+    fmt.Println(&quot;Category:&quot;, resp.StopDetails.Category)     // e.g. &quot;cyber&quot;, &quot;bio&quot;, &quot;reasoning_extraction&quot;, &quot;frontier_llm&quot;, or &quot;&quot; - see docs for the full set
+    fmt.Println(&quot;Explanation:&quot;, resp.StopDetails.Explanation)
+}
+</code></pre>
+<p><strong>Refusal fallbacks (Claude Fable 5.1) - opt in by default.</strong> Fallbacks are opt-in: without them a refused request simply stops. In <code>claude-fable-5-1</code> code, include <code>Fallbacks: []anthropic.BetaFallbackParam{{Model: "claude-opus-4-8"}}</code> plus the <code>anthropic.AnthropicBetaServerSideFallback2026_06_01</code> beta on <code>client.Beta.Messages.New</code> by default - a policy decline is re-served by the fallback model inside the same call. Not available on Amazon Bedrock, Vertex AI, or Microsoft Foundry - register the client-side middleware there: <code>option.WithMiddleware(betafallback.BetaRefusalFallbackMiddleware(...))</code> from <code>lib/betafallback</code>, with per-conversation state via <code>betafallback.WithBetaFallbackState(&amp;betafallback.BetaFallbackState{})</code>. Full semantics (billing, sticky routing, streaming) and a runnable example: <code>shared/model-migration.md</code> -&gt; Migrating to Claude Fable 5.1 -&gt; <code>refusal</code> stop reason, and the Go SDK repo's <code>examples/</code> (WebFetch via <code>shared/live-sources.md</code>).</p>
+<hr />
+<h2>PDF / Document Input</h2>
+<p><code>NewDocumentBlock</code> generic helper accepts any source type. <code>MediaType</code>/<code>Type</code> are auto-set.</p>
+<pre><code class="language-go">b64 := base64.StdEncoding.EncodeToString(pdfBytes)
+
+msg := anthropic.NewUserMessage(
+    anthropic.NewDocumentBlock(anthropic.Base64PDFSourceParam{Data: b64}),
+    anthropic.NewTextBlock(&quot;Summarize this document&quot;),
+)
+</code></pre>
+<p>Other sources: <code>URLPDFSourceParam{URL: "https://..."}</code>, <code>PlainTextSourceParam{Data: "..."}</code>.</p>
+<hr />
+<h2>Context Editing / Compaction (Beta)</h2>
+<p>Use <code>Beta.Messages.New</code> with <code>ContextManagement</code> on <code>BetaMessageNewParams</code>. There is no <code>NewBetaAssistantMessage</code> - use <code>.ToParam()</code> for the round-trip.</p>
+<pre><code class="language-go">params := anthropic.BetaMessageNewParams{
+    Model:     &quot;claude-opus-5&quot;,  // also supported: ModelClaudeOpus4_8, ModelClaudeSonnet4_6
+    MaxTokens: 16000,
+    Betas:     []anthropic.AnthropicBeta{&quot;compact-2026-01-12&quot;},
+    ContextManagement: anthropic.BetaContextManagementConfigParam{
+        Edits: []anthropic.BetaContextManagementConfigEditUnionParam{
+            {OfCompact20260112: &amp;anthropic.BetaCompact20260112EditParam{}},
+        },
+    },
+    Messages: []anthropic.BetaMessageParam{ /* ... */ },
+}
+
+resp, err := client.Beta.Messages.New(ctx, params)
+if err != nil {
+    log.Fatal(err)
+}
+
+// Round-trip: append response to history via .ToParam()
+params.Messages = append(params.Messages, resp.ToParam())
+
+// Read compaction blocks from the response
+for _, block := range resp.Content {
+    if c, ok := block.AsAny().(anthropic.BetaCompactionBlock); ok {
+        fmt.Println(&quot;compaction summary:&quot;, c.Content)
+    }
+}
+</code></pre>
+<p>Other edit types: <code>BetaClearToolUses20250919EditParam</code>, <code>BetaClearThinking20251015EditParam</code> - these need <code>Betas: []anthropic.AnthropicBeta{"context-management-2025-06-27"}</code>, not <code>compact-2026-01-12</code>.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

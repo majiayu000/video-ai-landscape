@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>gpt-image-2 · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/fal-prompting/references/gpt-image-2.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Prompting GPT Image 2</h1>
+<p>OpenAI's image model on fal.ai. Excels at detailed images with fine typography. Three modes: text-to-image, edit, and multi-image compositing.</p>
+<p>Endpoints:</p>
+<ul>
+<li><code>openai/gpt-image-2</code>: generate from prompt</li>
+<li><code>openai/gpt-image-2/edit</code>: edit one image (or composite up to 16)</li>
+</ul>
+<h2>Key strengths</h2>
+<ul>
+<li>Superior text rendering and typography (significantly better than 1.5)</li>
+<li>UI / interface design with proper hierarchy</li>
+<li>Detail preservation in photoreal and editorial photography</li>
+<li>Reliable object placement and geometric accuracy in edits</li>
+<li>Up to 16 reference images for compositing tasks</li>
+</ul>
+<h2>Prompt structure: five-section template</h2>
+<p>GPT Image 2 responds to organized, structured input:</p>
+<pre><code class="language-text">Scene: [environment, lighting, time of day]
+Subject: [main focus, who/what]
+Important details: [materials, texture, lighting, camera angle, mood]
+Use case: [editorial photo, product mockup, UI screen, etc.]
+Constraints: [no watermark, preserve face, no logos, etc.]
+</code></pre>
+<p>The fifth slot is where most mediocre prompts fail silently. Describe the idea without bounding it and the model gets inventive in directions you will regret.</p>
+<h2>Anti-slop rules</h2>
+<p><strong>1. Visual facts beat vague praise.</strong> Replace "stunning, incredible, masterpiece" with "overcast daylight, brushed aluminum, soft bounce light, 50mm feel."</p>
+<p><strong>2. Style tags need visual targets.</strong> Instead of "minimalist brutalist editorial," specify "cream background, heavy black sans serif, asymmetrical type block, generous negative space."</p>
+<p><strong>3. Say the real thing.</strong> Use explicit language. "transit kiosk", "boarding pass", "preserve the face", rather than mood language.</p>
+<p><strong>4. In edits, separate change from preserve.</strong> Structure edits with clear "change only X" and "keep everything else the same" sections.</p>
+<p><strong>5. Treat text like typography.</strong> Wrap literal text in quotes or ALL CAPS; specify font style, size, color, placement. Spell difficult words letter-by-letter if needed.</p>
+<p><strong>6. One revision per turn.</strong> Small iterative edits outperform giant rewrites.</p>
+<h2>Three operational modes</h2>
+<h3>Mode 1: Generate from scratch</h3>
+<p>Endpoint: <code>openai/gpt-image-2</code></p>
+<p>Use cases: editorial photos, posters, product scenes, UI screenshots, illustrations.</p>
+<p>Apply the five-section template above.</p>
+<h3>Mode 2: Edit one image</h3>
+<p>Endpoint: <code>openai/gpt-image-2/edit</code></p>
+<p>Use cases: object replacement, clothing changes, background removal, relighting, weather swaps.</p>
+<pre><code class="language-text">Change: [exactly what should change]
+Preserve: [face, identity, pose, lighting, framing, background]
+Constraints: [no extra objects, no watermark]
+</code></pre>
+<h3>Mode 3: Combine multiple images</h3>
+<p>Label each input by role and reference the labels in the instruction:</p>
+<pre><code class="language-text">Image 1: base scene to preserve.
+Image 2: jacket reference.
+Instruction: Dress the person from Image 1 using the jacket from Image 2.
+Preserve the face, body shape, pose, background, lighting from Image 1.
+</code></pre>
+<p>Up to 16 input images supported; always assign a role to each.</p>
+<h2>Text-in-image patterns</h2>
+<p>GPT Image 2 is the strongest fal.ai endpoint for accurate readable text inside generated images. To get clean typography:</p>
+<ul>
+<li>Wrap exact text in quotes: <code>the sign reads "GRAND OPENING"</code></li>
+<li>Or use ALL CAPS for the literal: <code>text on the cup: HELLO WORLD</code></li>
+<li>Specify font: <code>bold serif, condensed sans, hand-lettered</code></li>
+<li>Specify placement: <code>centered upper third</code>, <code>bottom-left corner</code></li>
+<li>Add <code>no extra words</code>, <code>no duplicate text</code></li>
+<li>Spell hard words letter-by-letter if drift occurs: <code>"X-R-A-Y"</code></li>
+</ul>
+<h2>Pattern examples</h2>
+<p><strong>Photoreal:</strong> describe the photograph with lens choice, surface wear, ordinary background detail, believable imperfection. Include named light sources and specific materials.</p>
+<p><strong>Product:</strong> material accuracy, lighting consistency, label fidelity, clean use case. Example: "museum archive photograph...under soft overhead museum light...neutral beige backdrop."</p>
+<p><strong>UI / Screenshots:</strong> screen type, hierarchy, exact copy, state, layout logic, typography behavior. Include "clean survival HUD along the bottom, believable UI spacing."</p>
+<p><strong>Edits, three-sentence pattern:</strong></p>
+<ol>
+<li>What changes.</li>
+<li>What stays.</li>
+<li>Physical realism (lighting match, contact shadow, perspective consistency).</li>
+</ol>
+<p><strong>Style transfer:</strong> name the parts. "Chunky pixel forms, limited arcade palette, bright glow accents, clean silhouette edges, playful 1980s poster energy."</p>
+<p><strong>Character consistency:</strong> first image establishes anchor (clothing, proportions, palette). Second image repeats anchor details with instruction "do not redesign the character."</p>
+<h2>Vague vs visual</h2>
+<p><strong>Weak:</strong></p>
+<pre><code class="language-text">A stunning ultra-detailed cinematic masterpiece of a woman in a museum,
+beautiful, photoreal, 8K, award-winning.
+</code></pre>
+<p><strong>Strong:</strong></p>
+<pre><code class="language-text">Scene: museum gallery, late afternoon, soft overhead spotlights.
+Subject: a woman in her 30s in a charcoal wool coat standing three meters from
+a marble bust, looking sideways at the artwork.
+Important details: 50mm lens feel, shallow depth of field, neutral cream walls,
+warm tungsten accent on the bust, cool ambient on her face.
+Use case: editorial magazine photo.
+Constraints: no watermark, no logos, no heavy retouching, single subject in
+focus.
+</code></pre>
+<h2>Common parameters</h2>
+<p>Run <code>genmedia schema openai/gpt-image-2 --json</code> for authoritative list. Typical:</p>
+<ul>
+<li><code>prompt</code>: the structured prompt above</li>
+<li><code>image_size</code>: <code>landscape_4_3</code>, <code>square</code>, <code>portrait_3_4</code>, custom dimensions</li>
+<li><code>quality</code>: <code>high</code> for production; lower tiers for drafts</li>
+<li><code>num_images</code>: quantity per request</li>
+<li><code>output_format</code>: <code>png</code>, <code>jpeg</code>, <code>webp</code></li>
+<li><code>input_fidelity</code>: for edits, <code>high</code> enforces strict preservation</li>
+<li><code>image_urls</code>: array for edit / compositing modes</li>
+<li><code>mask_image_url</code>: optional mask for edit mode</li>
+</ul>
+<h2>Quick code example</h2>
+<pre><code class="language-bash">genmedia run openai/gpt-image-2 \
+ --prompt &quot;&lt;five-section structured prompt&gt;&quot; \
+ --image_size landscape_4_3 \
+ --quality high \
+ --num_images 1 \
+ --output_format png \
+ --download &quot;./out/{request_id}_{index}.{ext}&quot; \
+ --json
+</code></pre>
+<p>For edits, swap to <code>openai/gpt-image-2/edit</code> and pass <code>image_urls</code> (array) plus optional <code>mask_image_url</code>.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

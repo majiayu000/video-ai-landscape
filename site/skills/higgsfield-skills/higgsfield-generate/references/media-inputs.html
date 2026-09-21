@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>media-inputs · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-generate/references/media-inputs.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Media Inputs</h1>
+<p>How to pass reference images, videos, audio, and videos for analysis. Mirrored from MCP server media-handling logic.</p>
+<h2>Path or UUID — both work</h2>
+<p>Each media flag accepts either a local file path or a UUID. The CLI auto-uploads paths before submission and auto-detects whether a UUID is an upload id (from <code>higgsfield upload create</code>) or a previous job id.</p>
+<pre><code class="language-bash"># Local path — CLI uploads automatically
+higgsfield generate create nano_banana_2 --prompt &quot;stylize in watercolor&quot; --image ./photo.png --wait
+
+# Upload id (from higgsfield upload create)
+higgsfield generate create nano_banana_2 --prompt &quot;...&quot; --image &lt;upload_id&gt; --wait
+
+# Job id from a previous generation
+higgsfield generate create seedance_2_5 --prompt &quot;anim&quot; --mode omni_reference --start-image &lt;previous_job_id&gt; --wait
+
+# Video analysis — CLI uploads the file, Virality Predictor returns a text score/report plus an Open report link.
+# The output is text, but the task is still video analysis.
+higgsfield generate create brain_activity --video ./ad.mp4 --wait
+</code></pre>
+<p>Type auto-detected from extension:</p>
+<ul>
+<li>Image: <code>png</code>, <code>jpg</code>/<code>jpeg</code>, <code>webp</code>, <code>gif</code></li>
+<li>Video: <code>mp4</code>, <code>mov</code>, <code>webm</code></li>
+<li>Audio: <code>mp3</code>, <code>wav</code>, <code>m4a</code>, <code>ogg</code></li>
+</ul>
+<h2>Roles by model family</h2>
+<p>Each model declares a closed set of accepted roles or <code>*_references</code> params. Pass the right flag; the CLI rejects unknown media locally before submission.</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Accepted roles</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Most image models (<code>nano_banana_2</code>, <code>flux_2</code>, <code>seedream_v4_5</code>, <code>gpt_image_2</code>, …)</td>
+<td><code>image</code></td>
+<td>1+ references, often up to 8.</td>
+</tr>
+<tr>
+<td><code>nano_banana_2_lite</code></td>
+<td><code>image_references</code></td>
+<td>Up to 14 image references. Use repeated <code>--image-references</code> or short alias <code>--image</code>; <code>aspect_ratio=auto</code> requires at least one reference.</td>
+</tr>
+<tr>
+<td><code>gemini_omni</code></td>
+<td><code>image_references</code>, <code>video_references</code></td>
+<td>Fast reference-to-video. Use repeated <code>--image-references</code>/<code>--video-references</code> or aliases <code>--image</code>/<code>--video</code>. Max 1 video reference; max 7 image references, or max 5 when a video reference is included.</td>
+</tr>
+<tr>
+<td><code>gpt_image_2_5</code></td>
+<td><code>image_references</code></td>
+<td>Use repeated <code>--image-references</code> or the short alias <code>--image</code>.</td>
+</tr>
+<tr>
+<td><code>seedance_2_5</code></td>
+<td><code>start_image</code>, <code>end_image</code>, <code>image_references</code>, <code>video_references</code>, <code>audio_references</code></td>
+<td>Use <code>--mode omni_reference</code> for reference generation. <code>t2v</code> accepts no media.</td>
+</tr>
+<tr>
+<td><code>seedance_2_0</code></td>
+<td><code>image</code>, <code>start_image</code>, <code>end_image</code>, <code>video</code>, <code>audio</code></td>
+<td>Audio is via <code>medias</code> (role <code>audio</code>), NOT via <code>--generate-audio</code>.</td>
+</tr>
+<tr>
+<td><code>brain_activity</code></td>
+<td><code>video</code></td>
+<td>Virality Predictor analyzes one uploaded clip and returns a text score report plus an Open report link; no prompt required. Treat "analyze this video" / "score this ad" as this video-analysis flow even though the output is text. Raw <code>.glb</code> and <code>.bin</code> artifacts stay in JSON/debug output, not normal chat output.</td>
+</tr>
+<tr>
+<td><code>grok_video_v15</code></td>
+<td><code>start_image</code></td>
+<td>Required single start frame. CLI also accepts <code>--image</code> and maps it to <code>start_image</code>.</td>
+</tr>
+<tr>
+<td><code>kling3_0</code></td>
+<td><code>start_image</code>, <code>end_image</code></td>
+<td>Image-to-video with optional last-frame transition.</td>
+</tr>
+<tr>
+<td><code>kling3_0_turbo</code></td>
+<td><code>start_image</code></td>
+<td>Fast text-to-video or single start-frame animation. Max 1 reference; CLI also accepts <code>--image</code> and maps it to <code>start_image</code>.</td>
+</tr>
+<tr>
+<td><code>kling2_6</code></td>
+<td><code>start_image</code></td>
+<td>Single frame anchor.</td>
+</tr>
+<tr>
+<td><code>veo3_1</code></td>
+<td><code>start_image</code></td>
+<td>Max 1 reference.</td>
+</tr>
+<tr>
+<td><code>veo3</code></td>
+<td><code>image</code></td>
+<td>Single image-to-video.</td>
+</tr>
+<tr>
+<td><code>marketing_studio_video</code></td>
+<td><code>image</code>, <code>start_image</code>, <code>end_image</code></td>
+<td>Plus <code>avatars</code>, <code>product_ids</code>, <code>assets</code> as separate fields.</td>
+</tr>
+<tr>
+<td><code>multi_image_to_3d</code></td>
+<td><code>image</code></td>
+<td>1–4 object/product reference images. Returns a 3D asset rather than an image/video.</td>
+</tr>
+<tr>
+<td><code>seed_audio</code></td>
+<td><code>audio_references</code> or <code>image_references</code></td>
+<td>Default text-to-audio model. Requires <code>--prompt</code>; optional references use repeated <code>--audio-references</code>/<code>--image-references</code> (short aliases: <code>--audio</code>/<code>--image</code>). Audio and image references are mutually exclusive.</td>
+</tr>
+<tr>
+<td><code>mirelo_text_to_audio</code></td>
+<td>(none)</td>
+<td>Text-to-audio / SFX generation. Pass <code>--prompt</code> and <code>--duration</code>; do not pass media inputs.</td>
+</tr>
+<tr>
+<td><code>sonilo_music</code></td>
+<td>(none)</td>
+<td>Text-to-music generation. Pass <code>--prompt</code> and <code>--duration</code>; do not pass media inputs.</td>
+</tr>
+<tr>
+<td><code>z_image</code>, <code>recraft_v4_1</code>, <code>soul_cast</code>, <code>soul_location</code></td>
+<td>(none)</td>
+<td>Prompt-only. Reject media inputs.</td>
+</tr>
+</tbody>
+</table>
+<p>For simple image-to-video on a video model that only declares <code>image</code> (e.g. <code>veo3</code>), plain <code>--image</code> is auto-remapped to <code>start_image</code> by the CLI when unambiguous. When in doubt:</p>
+<pre><code class="language-bash">higgsfield model get &lt;model_id&gt;   # shows the accepted media roles for this model
+</code></pre>
+<h2>Multiple images</h2>
+<p>Most image models accept multiple references — repeat the <code>--image</code> flag:</p>
+<pre><code class="language-bash">higgsfield generate create nano_banana_2 --prompt &quot;...&quot; \
+  --image ./a.png --image ./b.png --image &lt;upload_id&gt; \
+  --wait
+</code></pre>
+<p>Single-reference video models (<code>grok_video_v15</code>, <code>veo3</code>, <code>veo3_1</code>, <code>kling3_0_turbo</code>, <code>kling2_6</code>) reject extra images — the CLI errors locally before submission with <code>Model accepts only one image reference</code>.</p>
+<p>3D asset generation with <code>multi_image_to_3d</code> accepts 1–4 images. Repeat <code>--image</code> for front/side/back/detail views:</p>
+<pre><code class="language-bash">higgsfield generate create multi_image_to_3d \
+  --image ./front.png --image ./side.png --image ./back.png \
+  --should_texture true \
+  --wait
+</code></pre>
+<h2>Audio reference (Seedance)</h2>
+<p><code>seedance_2_5</code> accepts <code>--audio-references</code> (or <code>--audio</code>) in <code>omni_reference</code> mode. Its <code>--generate_audio</code> flag separately controls output audio.</p>
+<p>For <code>seedance_2_0</code>, audio references work differently. Pass via <code>medias</code> with role <code>audio</code>:</p>
+<pre><code class="language-bash">higgsfield generate create seedance_2_0 \
+  --prompt &quot;person speaking&quot; \
+  --start-image ./headshot.png \
+  --audio ./voice.mp3 \
+  --duration 8 \
+  --wait
+</code></pre>
+<p><strong>Do NOT pass <code>--generate-audio</code> to <code>seedance_2_0</code></strong> — the model schema doesn't declare it. Use the audio media role instead.</p>
+<p>Seed Audio is the default text-to-audio model. It can run prompt-only, or use optional audio/image references:</p>
+<pre><code class="language-bash">higgsfield generate create seed_audio \
+  --prompt &quot;glass breaking in a large hall&quot; \
+  --wait
+
+higgsfield generate create seed_audio \
+  --prompt &quot;same voice, calmer delivery&quot; \
+  --audio-references ./voice.wav \
+  --wait
+</code></pre>
+<p>Sonilo and Mirelo are specialist/legacy alternatives. Use them only when the user names them or Seed Audio is not appropriate:</p>
+<pre><code class="language-bash">higgsfield generate create sonilo_music \
+  --prompt &quot;cinematic synthwave track&quot; \
+  --duration 12 \
+  --wait
+
+higgsfield generate create mirelo_text_to_audio \
+  --prompt &quot;glass breaking in a large hall&quot; \
+  --duration 4 \
+  --wait
+</code></pre>
+<h2>Schema mismatches</h2>
+<p>The CLI returns specific error messages for known shape mismatches:</p>
+<ul>
+<li><code>Model accepts only --image (no roles)</code> — the model uses the legacy <code>input_images</code> shape, not <code>medias</code> with roles. Drop role-prefixed flags and use plain <code>--image</code>.</li>
+<li><code>Model does not accept media inputs</code> — the model is prompt-only or non-media (<code>z_image</code>, <code>recraft_v4_1</code>, <code>mirelo_text_to_audio</code>, <code>sonilo_music</code>, <code>soul_location</code>, <code>soul_cast</code>, <code>wan2_6</code> for some configs). Drop all media flags.</li>
+<li><code>Unknown media role "&lt;role&gt;"</code> — the role isn't in this model's media schema. Run <code>higgsfield model get &lt;model&gt;</code> and check accepted media roles or <code>*_references</code> params.</li>
+<li><code>Missing required params: medias</code> for <code>brain_activity</code> — pass exactly one clip with <code>--video &lt;path-or-id&gt;</code>.</li>
+</ul>
+<h2>Seeing what a model accepts</h2>
+<pre><code class="language-bash">higgsfield model get &lt;model_id&gt; --json | jq '{aspect_ratios, durations, parameters, medias}'
+</code></pre>
+<p>Returns the full schema: aspect ratios (closed enum or open), durations (closed list or <code>min/max</code> range), parameters (with descriptions and defaults), and media roles per slot.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

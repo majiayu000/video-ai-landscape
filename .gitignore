@@ -1,0 +1,15 @@
+# 7 个厂商技能仓库为外部克隆（各自含 .git），不直接入库，由 setup.sh 按固定 SHA 重建
+/higgsfield-skills/
+/runwayml-skills/
+/runway-mcp-plugin/
+/atlascloud-skills/
+/fal-community-skills/
+/elevenlabs-plugin/
+/anthropics-skills/
+
+# 本地工具产物
+.wrangler/
+.playwright-mcp/
+__pycache__/
+.DS_Store
+*.bak

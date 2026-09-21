@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>happy-horse · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/fal-prompting/references/happy-horse.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Prompting Happy Horse 1.0</h1>
+<p>Alibaba's text-to-video model on fal.ai. Translates short, declarative text directions into video, particularly strong with camera moves and atmospheric lighting.</p>
+<p>Endpoints:</p>
+<ul>
+<li><code>alibaba/happy-horse/text-to-video</code></li>
+<li><code>alibaba/happy-horse/image-to-video</code></li>
+</ul>
+<h2>Core principle</h2>
+<p><strong>Brevity wins.</strong> The default template is roughly 20 words:</p>
+<pre><code class="language-text">[Subject] [does action] in [setting], [time of day], [one atmosphere or camera cue].
+</code></pre>
+<p>If you keep adding adjectives, quality drops. The model wants direction, not enthusiasm.</p>
+<h2>Strengths</h2>
+<ul>
+<li>Camera moves: tracking shots, dolly-ins, steadicam glides, aerials</li>
+<li>Atmospheric lighting recipes: neon noir, blue hour, single-key setups</li>
+<li>Vehicles and metallic reflections</li>
+<li>Cloth / fabric motion in wind</li>
+<li>Fire and embers</li>
+<li>Wide establishing shots</li>
+<li>Mirror reflections with geometric consistency</li>
+<li>Short legible text (2-3 words max)</li>
+</ul>
+<h2>Prompt structure</h2>
+<h3>Single-beat (~20 words)</h3>
+<pre><code class="language-text">A young woman in a red coat walks down a wet city street at night, neon
+reflections.
+</code></pre>
+<p>That is a complete prompt. Don't expand.</p>
+<h3>With camera language (40-60 words)</h3>
+<p>Add lens type, camera move, and lighting cue at the end:</p>
+<pre><code class="language-text">A young woman in a red coat walks down a wet city street at night, neon
+reflections, 35mm telephoto compression, slow tracking shot from behind,
+sodium vapor practicals.
+</code></pre>
+<h3>Multi-beat action, use shot lists with timecodes</h3>
+<pre><code class="language-text">Shot 1 (wide establishing, 0-1s): empty wet street under neon signs.
+Shot 2 (mid tracking, 1-4s): woman in red coat walks toward camera.
+Shot 3 (close push-in, 4-6s): rain hitting her shoulder, breath visible in cold air.
+</code></pre>
+<h3>Long single-take prompts</h3>
+<p>For extended single-take videos, use markdown sections (Subject, Action, Setting, Camera, Lighting, Mood). Keep each section short.</p>
+<h2>Don't</h2>
+<ul>
+<li><strong>Hedging adjectives.</strong> "Beautiful", "stunning", "epic", "hyperrealistic", drop them all.</li>
+<li><strong>Stacked synonyms for colors.</strong> "Red, crimson, scarlet", pick one.</li>
+<li><strong>Negative cues</strong> unless addressing concrete risks.</li>
+<li><strong>Bare director name references.</strong> "In the style of Wes Anderson" rarely works; describe the visual qualities you want instead.</li>
+<li><strong>Booru tags, JSON, weighted parentheses.</strong> Plain prose only.</li>
+<li><strong>Multi-step prose sequences in a single prompt.</strong> Use timecoded shot lists.</li>
+<li><strong>Extreme slow-motion cues</strong> (1000fps).</li>
+<li><strong>Heavy wardrobe details during fast action.</strong></li>
+</ul>
+<h2>Use instead</h2>
+<ul>
+<li>Specific cinematography terms: "overcast daylight", "35mm telephoto", "sodium vapor lamps"</li>
+<li>One strong technical cue per shot</li>
+<li>Plain English prose</li>
+<li>Concrete framing labels: "wide establishing", "slow push-in close"</li>
+</ul>
+<h2>Pattern matrix</h2>
+<p><strong>Works well:</strong></p>
+<ul>
+<li>Camera moves with lens specifications</li>
+<li>Atmospheric moods with color/lighting detail</li>
+<li>Single-character movement</li>
+<li>Environmental establishing shots</li>
+</ul>
+<p><strong>Struggles:</strong></p>
+<ul>
+<li>Multi-step sequences in prose (use timecoded shot lists instead)</li>
+<li>Extreme time-dilation effects</li>
+<li>Intricate wardrobe during motion</li>
+<li>Long readable text inside the frame (limit to 2-3 words)</li>
+</ul>
+<h2>Pre-generation checklist</h2>
+<p>Before submitting a prompt, verify:</p>
+<ul>
+<li>Subject and action in opening sentence?</li>
+<li>Under 30 words, or justified length?</li>
+<li>One cinematography cue maximum (per shot)?</li>
+<li>All non-specific adjectives cut?</li>
+<li>Multi-beat shots formatted as shot lists?</li>
+<li>Plain English, no structured syntax markup?</li>
+</ul>
+<h2>Image-to-video</h2>
+<p>When chaining from a still:</p>
+<pre><code class="language-text">slow camera push-in toward the subject, subtle wind, ambient haze
+</code></pre>
+<p>That is the entire prompt. The reference frame already carries identity, wardrobe, lighting direction. Don't re-describe the still, describe motion only.</p>
+<h2>Common parameters</h2>
+<p>Run <code>genmedia schema alibaba/happy-horse/text-to-video --json</code> for authoritative list. Typical:</p>
+<ul>
+<li><code>prompt</code>: short declarative direction</li>
+<li><code>aspect_ratio</code>: <code>16:9</code>, <code>9:16</code>, <code>1:1</code></li>
+<li><code>duration</code>: typically 4s or 6s</li>
+<li><code>seed</code>: for reproducible iterations</li>
+<li><code>image_url</code> (image-to-video), reference frame</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>realtime-events · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/speech-to-text/references/realtime-events.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Real-Time Event Reference</h1>
+<p>Complete reference for events in real-time speech-to-text streaming.</p>
+<h2>Sent Events (Client → Server)</h2>
+<h3>input_audio_chunk</h3>
+<p>Send audio data for transcription.</p>
+<pre><code class="language-json">{
+  &quot;message_type&quot;: &quot;input_audio_chunk&quot;,
+  &quot;audio_base_64&quot;: &quot;&lt;base64-encoded-pcm-audio&gt;&quot;,
+  &quot;commit&quot;: false,
+  &quot;sample_rate&quot;: 16000
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>message_type</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Always <code>"input_audio_chunk"</code></td>
+</tr>
+<tr>
+<td><code>audio_base_64</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Base64-encoded PCM audio data</td>
+</tr>
+<tr>
+<td><code>commit</code></td>
+<td>boolean</td>
+<td>Yes</td>
+<td>Whether to commit after this chunk</td>
+</tr>
+<tr>
+<td><code>sample_rate</code></td>
+<td>number</td>
+<td>No</td>
+<td>Sample rate in Hz (8000-48000)</td>
+</tr>
+<tr>
+<td><code>previous_text</code></td>
+<td>string</td>
+<td>No</td>
+<td>Context from prior transcript (first chunk only, max 50 chars)</td>
+</tr>
+</tbody>
+</table>
+<h3>commit</h3>
+<p>Finalize the current transcript segment.</p>
+<pre><code class="language-json">{
+  &quot;message_type&quot;: &quot;commit&quot;
+}
+</code></pre>
+<h2>Received Events (Server → Client)</h2>
+<p>All received events use <code>message_type</code> as the discriminator field.</p>
+<h3>session_started</h3>
+<p>Connection established successfully.</p>
+<pre><code class="language-json">{
+  &quot;message_type&quot;: &quot;session_started&quot;,
+  &quot;session_id&quot;: &quot;0b0a72b57fd743ebbed6555d44836cf2&quot;,
+  &quot;config&quot;: {
+    &quot;sample_rate&quot;: 16000,
+    &quot;audio_format&quot;: &quot;pcm_16000&quot;,
+    &quot;language_code&quot;: &quot;en&quot;,
+    &quot;model_id&quot;: &quot;scribe_v2_realtime&quot;,
+    &quot;commit_strategy&quot;: &quot;manual&quot;,
+    &quot;enable_logging&quot;: true,
+    &quot;include_timestamps&quot;: true
+  }
+}
+</code></pre>
+<h3>partial_transcript</h3>
+<p>Interim transcription results, updates frequently as audio is processed.</p>
+<pre><code class="language-json">{
+  &quot;message_type&quot;: &quot;partial_transcript&quot;,
+  &quot;text&quot;: &quot;Hello, how are&quot;
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>message_type</code></td>
+<td>string</td>
+<td><code>"partial_transcript"</code></td>
+</tr>
+<tr>
+<td><code>text</code></td>
+<td>string</td>
+<td>Current partial transcription</td>
+</tr>
+</tbody>
+</table>
+<h3>final_transcript</h3>
+<p>A stable result for a segment after speech settles but before the segment is committed.</p>
+<pre><code class="language-json">{
+  &quot;message_type&quot;: &quot;final_transcript&quot;,
+  &quot;text&quot;: &quot;Hello, how are you today?&quot;
+}
+</code></pre>
+<h3>final_transcript_with_timestamps</h3>
+<p>A delayed final result sent when timestamps or language detection are enabled.</p>
+<pre><code class="language-json">{
+  &quot;message_type&quot;: &quot;final_transcript_with_timestamps&quot;,
+  &quot;text&quot;: &quot;Hello, how are you today?&quot;,
+  &quot;language_code&quot;: &quot;en&quot;,
+  &quot;words&quot;: [
+    {&quot;text&quot;: &quot;Hello&quot;, &quot;start&quot;: 0.0, &quot;end&quot;: 0.32, &quot;type&quot;: &quot;word&quot;, &quot;logprob&quot;: -0.03}
+  ]
+}
+</code></pre>
+<p><code>language_code</code> and <code>words</code> are optional and depend on the enabled session options.</p>
+<h3>committed_transcript</h3>
+<p>Final transcription after commit.</p>
+<pre><code class="language-json">{
+  &quot;message_type&quot;: &quot;committed_transcript&quot;,
+  &quot;text&quot;: &quot;Hello, how are you today?&quot;
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>message_type</code></td>
+<td>string</td>
+<td><code>"committed_transcript"</code></td>
+</tr>
+<tr>
+<td><code>text</code></td>
+<td>string</td>
+<td>Finalized transcription</td>
+</tr>
+</tbody>
+</table>
+<h3>committed_transcript_with_timestamps</h3>
+<p>Final transcription with word-level timing. Sent after <code>committed_transcript</code> when <code>include_timestamps=true</code>.</p>
+<pre><code class="language-json">{
+  &quot;message_type&quot;: &quot;committed_transcript_with_timestamps&quot;,
+  &quot;text&quot;: &quot;Hello, how are you today?&quot;,
+  &quot;language_code&quot;: &quot;en&quot;,
+  &quot;words&quot;: [
+    {&quot;text&quot;: &quot;Hello&quot;, &quot;start&quot;: 0.0, &quot;end&quot;: 0.32, &quot;type&quot;: &quot;word&quot;},
+    {&quot;text&quot;: &quot; &quot;, &quot;start&quot;: 0.32, &quot;end&quot;: 0.35, &quot;type&quot;: &quot;spacing&quot;},
+    {&quot;text&quot;: &quot;how&quot;, &quot;start&quot;: 0.40, &quot;end&quot;: 0.55, &quot;type&quot;: &quot;word&quot;}
+  ]
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>message_type</code></td>
+<td>string</td>
+<td><code>"committed_transcript_with_timestamps"</code></td>
+</tr>
+<tr>
+<td><code>text</code></td>
+<td>string</td>
+<td>Full transcription text</td>
+</tr>
+<tr>
+<td><code>language_code</code></td>
+<td>string</td>
+<td>Detected language code</td>
+</tr>
+<tr>
+<td><code>words</code></td>
+<td>array</td>
+<td>Word-level timing data</td>
+</tr>
+<tr>
+<td><code>words[].text</code></td>
+<td>string</td>
+<td>The word or token</td>
+</tr>
+<tr>
+<td><code>words[].start</code></td>
+<td>number</td>
+<td>Start time in seconds</td>
+</tr>
+<tr>
+<td><code>words[].end</code></td>
+<td>number</td>
+<td>End time in seconds</td>
+</tr>
+<tr>
+<td><code>words[].type</code></td>
+<td>string</td>
+<td><code>"word"</code>, <code>"spacing"</code>, or <code>"audio_event"</code></td>
+</tr>
+<tr>
+<td><code>words[].speaker_id</code></td>
+<td>string</td>
+<td>Speaker identifier (if diarization enabled)</td>
+</tr>
+</tbody>
+</table>
+<h3>committed_transcript_entities</h3>
+<p>Entities detected in a committed segment when the connection includes <code>entity_detection</code>.</p>
+<pre><code class="language-json">{
+  &quot;message_type&quot;: &quot;committed_transcript_entities&quot;,
+  &quot;text&quot;: &quot;My name is Alice.&quot;,
+  &quot;entities&quot;: [
+    {
+      &quot;text&quot;: &quot;Alice&quot;,
+      &quot;entity_type&quot;: &quot;name_given&quot;,
+      &quot;start_char&quot;: 11,
+      &quot;end_char&quot;: 16
+    }
+  ]
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>message_type</code></td>
+<td>string</td>
+<td><code>"committed_transcript_entities"</code></td>
+</tr>
+<tr>
+<td><code>text</code></td>
+<td>string</td>
+<td>Committed transcript segment scanned for entities</td>
+</tr>
+<tr>
+<td><code>entities</code></td>
+<td>array</td>
+<td>Detected entities; empty when none are found</td>
+</tr>
+<tr>
+<td><code>entities[].text</code></td>
+<td>string</td>
+<td>Text identified as an entity</td>
+</tr>
+<tr>
+<td><code>entities[].entity_type</code></td>
+<td>string</td>
+<td>Detected entity type</td>
+</tr>
+<tr>
+<td><code>entities[].start_char</code></td>
+<td>integer</td>
+<td>Start character offset in <code>text</code></td>
+</tr>
+<tr>
+<td><code>entities[].end_char</code></td>
+<td>integer</td>
+<td>End character offset in <code>text</code></td>
+</tr>
+</tbody>
+</table>
+<h2>Error Events</h2>
+<h3>error</h3>
+<p>Sent when an error occurs.</p>
+<pre><code class="language-json">{
+  &quot;message_type&quot;: &quot;error&quot;,
+  &quot;error&quot;: &quot;input_error&quot;
+}
+</code></pre>
+<h3>Error Codes</h3>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>auth_error</code></td>
+<td>Invalid API key or token</td>
+</tr>
+<tr>
+<td><code>quota_exceeded</code></td>
+<td>Usage limit reached</td>
+</tr>
+<tr>
+<td><code>input_error</code></td>
+<td>Unsupported audio format or invalid input</td>
+</tr>
+<tr>
+<td><code>rate_limited</code></td>
+<td>Too many requests</td>
+</tr>
+<tr>
+<td><code>commit_throttled</code></td>
+<td>Commits sent too frequently</td>
+</tr>
+<tr>
+<td><code>invalid_request</code></td>
+<td>Connection parameters were rejected; the session closes</td>
+</tr>
+<tr>
+<td><code>session_time_limit_exceeded</code></td>
+<td>Session exceeded max duration</td>
+</tr>
+<tr>
+<td><code>unaccepted_terms</code></td>
+<td>Terms not accepted in dashboard</td>
+</tr>
+<tr>
+<td><code>resource_exhausted</code></td>
+<td>Server capacity reached</td>
+</tr>
+<tr>
+<td><code>queue_overflow</code></td>
+<td>Server queue capacity reached</td>
+</tr>
+<tr>
+<td><code>chunk_size_exceeded</code></td>
+<td>Audio chunk too large</td>
+</tr>
+<tr>
+<td><code>insufficient_audio_activity</code></td>
+<td>Not enough speech detected</td>
+</tr>
+<tr>
+<td><code>transcriber_error</code></td>
+<td>Internal processing error</td>
+</tr>
+</tbody>
+</table>
+<h2>Connection Events</h2>
+<h3>open</h3>
+<p>WebSocket connection established (standard WebSocket event, not a JSON message).</p>
+<h3>close</h3>
+<p>WebSocket connection closed (standard WebSocket close frame with code and reason).</p>
+<h2>Event Handling Examples</h2>
+<h3>Python</h3>
+<p>The Python SDK abstracts the wire protocol. You can use <code>event.type</code> (not <code>message_type</code>) when using the SDK's event objects:</p>
+<pre><code class="language-python">async for event in connection:
+    if event.type == &quot;session_started&quot;:
+        print(f&quot;Session: {event.session_id}&quot;)
+    elif event.type == &quot;partial_transcript&quot;:
+        print(f&quot;Partial: {event.text}&quot;)
+    elif event.type == &quot;final_transcript&quot;:
+        print(f&quot;Stable segment: {event.text}&quot;)
+    elif event.type == &quot;committed_transcript&quot;:
+        print(f&quot;Final: {event.text}&quot;)
+    elif event.type == &quot;committed_transcript_with_timestamps&quot;:
+        for word in event.words:
+            print(f&quot;  {word.text}: {word.start}s - {word.end}s&quot;)
+    elif event.type == &quot;error&quot;:
+        print(f&quot;Error: {event.error}&quot;)
+    elif event.type == &quot;invalid_request&quot;:
+        print(f&quot;Connection rejected: {event.error}&quot;)
+</code></pre>
+<h3>JavaScript</h3>
+<p>The JavaScript SDK uses event names matching the <code>message_type</code> values:</p>
+<pre><code class="language-javascript">connection.on(&quot;session_started&quot;, (data) =&gt; {
+  console.log(&quot;Session:&quot;, data.sessionId);
+});
+
+connection.on(&quot;partial_transcript&quot;, (data) =&gt; {
+  console.log(&quot;Partial:&quot;, data.text);
+});
+
+connection.on(&quot;final_transcript&quot;, (data) =&gt; {
+  console.log(&quot;Stable segment:&quot;, data.text);
+});
+
+connection.on(&quot;committed_transcript&quot;, (data) =&gt; {
+  console.log(&quot;Final:&quot;, data.text);
+});
+
+connection.on(&quot;committed_transcript_with_timestamps&quot;, (data) =&gt; {
+  for (const word of data.words) {
+    console.log(`  ${word.text}: ${word.start}s - ${word.end}s`);
+  }
+});
+
+connection.on(&quot;error&quot;, (error) =&gt; {
+  console.error(&quot;Error:&quot;, error);
+});
+
+connection.on(&quot;invalid_request&quot;, (error) =&gt; {
+  console.error(&quot;Connection rejected:&quot;, error.error);
+});
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

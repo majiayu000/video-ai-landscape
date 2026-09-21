@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>handoff · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-brandkit/references/handoff.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Local Brandkit state routing</h1>
+<p>Store approval state in the active project's <code>brandkit/state.json</code>. Drafts never enter it. The bundled script writes atomically and tracks independent logo, palette, typography, visual-axis, and downstream-element revisions.</p>
+<p>Use the path variables established by <code>SKILL.md</code>:</p>
+<pre><code class="language-bash">python3 &quot;$SKILL_ROOT/scripts/brandkit.py&quot; state \
+  --state-file &quot;$BRANDKIT_STATE&quot; \
+  --action ACTION [--input &quot;$BRANDKIT_WORKDIR/input.json&quot;]
+</code></pre>
+<p>Create payload files as JSON under <code>"$BRANDKIT_WORKDIR"</code>. Never interpolate user text into a shell command argument. Before the first state write, load <a href="state-payloads.html">exact state payloads</a> and replace values, not keys or nesting.</p>
+<h2>Persistence</h2>
+<ul>
+<li>The local state file survives turns and agent restarts. Do not export it into chat or paste it into prompts.</li>
+<li>Read state only through the script. Do not hand-edit revisions, origins, dependencies, or approvals.</li>
+<li>Store durable references: absolute local paths, confirmed URLs, upload IDs, or completed job IDs.</li>
+<li>If the state file is missing but the conversation claims prior approvals, stop and ask whether to restart or locate the previous project directory. Never infer approvals.</li>
+<li>Do not commit <code>brandkit/state.json</code> unless the user explicitly wants brand state versioned with the project.</li>
+</ul>
+<h2>Call moments</h2>
+<h3>Start of every Brandkit turn</h3>
+<pre><code class="language-bash">python3 &quot;$SKILL_ROOT/scripts/brandkit.py&quot; state \
+  --state-file &quot;$BRANDKIT_STATE&quot; --action get_status
+</code></pre>
+<h3>Lock user-supplied official assets</h3>
+<p>Immediately after asset analysis, call only the matching action:</p>
+<pre><code class="language-text">lock_authoritative_logo       {&quot;source_summary&quot;: &quot;...&quot;, &quot;logo&quot;: {...}}
+lock_authoritative_palette    {&quot;source_summary&quot;: &quot;...&quot;, &quot;palette&quot;: {...}}
+lock_authoritative_typography {&quot;source_summary&quot;: &quot;...&quot;, &quot;typography&quot;: {...}}
+</code></pre>
+<p>These actions preserve official assets. They do not approve generated drafts, and a generated choice cannot replace an authoritative slot.</p>
+<h3>Persist visual axes</h3>
+<p>Call <code>set_visual_axes</code> with:</p>
+<pre><code class="language-json">{
+  &quot;visual_axes&quot;: {
+    &quot;restrained_expressive&quot;: 50,
+    &quot;geometric_organic&quot;: 50,
+    &quot;familiar_experimental&quot;: 50
+  }
+}
+</code></pre>
+<h3>Read only the required slot</h3>
+<ul>
+<li><code>get_logo</code> before placement, export, or logo-dependent revisions.</li>
+<li><code>get_palette</code> before color-dependent work.</li>
+<li><code>get_typography</code> before type-dependent work.</li>
+<li><code>get_essential_kit</code> only when all three slots are genuinely required.</li>
+</ul>
+<p>Never make <code>get_essential_kit</code> a universal gate for partial outputs.</p>
+<h3>Approve generated foundation slots</h3>
+<p>After an explicit user selection:</p>
+<pre><code class="language-text">approve_logo       {&quot;approval_summary&quot;: &quot;...&quot;, &quot;logo&quot;: {...}}
+approve_palette    {&quot;approval_summary&quot;: &quot;...&quot;, &quot;palette&quot;: {...}}
+approve_typography {&quot;approval_summary&quot;: &quot;...&quot;, &quot;typography&quot;: {...}}
+</code></pre>
+<p>A generated logo records the active palette revision. Replacing that palette removes the generated logo and invalidates logo-dependent outputs. Replacing typography does not invalidate a symbol-only logo.</p>
+<h3>Browse and approve downstream elements</h3>
+<p>Call <code>list_brandbook_elements</code>, then <code>get_brandbook_element</code> with:</p>
+<pre><code class="language-json">{ &quot;key&quot;: &quot;exact-element-key&quot; }
+</code></pre>
+<p>After explicit approval, call <code>approve_brandbook_element</code> with the exact slots used:</p>
+<pre><code class="language-json">{
+  &quot;approval_summary&quot;: &quot;User approved the primary mockup.&quot;,
+  &quot;required_slots&quot;: [&quot;logo&quot;, &quot;palette&quot;],
+  &quot;brandbook_element&quot;: {
+    &quot;key&quot;: &quot;mockup-primary&quot;,
+    &quot;kind&quot;: &quot;mockup&quot;,
+    &quot;name&quot;: &quot;Primary packaging mockup&quot;,
+    &quot;asset&quot;: {
+      &quot;path&quot;: &quot;/absolute/path/to/mockup.png&quot;
+    }
+  }
+}
+</code></pre>
+<h2>Never</h2>
+<ul>
+<li>Never put drafts into state.</li>
+<li>Never delay locking a user-declared official asset.</li>
+<li>Never infer approval from generation success or recency.</li>
+<li>Never require an unrelated missing slot.</li>
+<li>Never use this state outside Brandkit.</li>
+<li>Never overwrite or clear the state file without explicit user instruction.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

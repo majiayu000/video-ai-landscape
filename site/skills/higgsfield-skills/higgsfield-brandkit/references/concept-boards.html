@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>concept-boards · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-brandkit/references/concept-boards.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Essential Kit selection</h1>
+<p>The visual concept is not a separate abstract direction. It is the combined result of the user's selected palette, logo mark, and typography.</p>
+<p>Each generated element remains draft only until the user selects that element. Approved palette, logo, and typography slots persist independently.</p>
+<h2>Input analysis</h2>
+<p>Build options from:</p>
+<ul>
+<li>Brand/product brief</li>
+<li>Audience, positioning, and tone supplied by the user</li>
+<li>User preferences and comments</li>
+<li>Uploaded references, screenshots, logos, fonts, colors, or existing assets</li>
+</ul>
+<p>Invite uploads before starting. Ask what the user specifically likes about each reference: palette, typography, composition, shape language, material, or overall aesthetic. If they give no explanation, use the overall character as inspiration without copying distinctive elements.</p>
+<h2>Step 1 — Palette options</h2>
+<p>For every interactive new-identity flow that needs a logo, start here and complete this review before Step 2. Intake phrases such as “pastel,” “blue,” or “warm neutrals” are preferences used to build the options, not a selected palette. Skip this review only when the user supplied an authoritative palette or explicitly selected exact palette colors, or when the user requested auto/no-question mode. In auto/no-question mode, build one exact palette from the brief and call <code>approve_palette</code> before Step 2; continue only after the state script confirms success. Never merely describe that palette as locked.</p>
+<p>Create 2–3 considered palette options from the brief and references. Each option must include:</p>
+<ul>
+<li>Named flat colors with exact hex values</li>
+<li>Background and text colors</li>
+<li>Optional gradients only when relevant</li>
+<li>One-sentence rationale</li>
+<li>Small usage examples</li>
+<li>2–3 rough logo mechanism seeds showing what the palette could support</li>
+</ul>
+<p><code>logo_ideas</code> is mandatory for every palette option. The preview script rejects a palette review that omits them.</p>
+<p>Render all options in editable HTML with <code>python3 "$SKILL_ROOT/scripts/brandkit.py" preview</code>, then show them per <code>inline-widgets.md</code> (local board PNG screenshots plus editable HTML paths). Do not generate image-model duplicates.</p>
+<p>Every palette review object must set <code>stage: "palette"</code>. Omit <code>display_font</code>, <code>body_font</code>, <code>logo_svg</code>, <code>headline</code>, and <code>body</code>; <code>logo_ideas</code> must contain 2–3 entries. The palette board must not display a typography specimen, placeholder font pairing, or wordmark. Typography appears only after the user selects a logo.</p>
+<p>Load <code>inline-widgets.md</code>. Screenshot every returned board, inspect it, show each option's PNG inline when supported, and provide the absolute HTML path. For 2–3 options, stack the complete option blocks vertically in one message.</p>
+<p>After showing the assets, send a normal assistant message:</p>
+<blockquote>
+<p>Take your time reviewing the palettes. Reply with the option you prefer and any colors you want changed, added, or removed.</p>
+</blockquote>
+<p>Do not use a structured question tool or a multiple-choice list. Wait for the user's ordinary next message.</p>
+<p>When the user selects a palette, immediately call the Brandkit state script's <code>approve_palette</code> action with that exact palette and the selection message as approval evidence. Continue only if the original request needs another missing slot or output.</p>
+<h2>Step 2 — Logo mark options</h2>
+<p>Enter this step only after Step 1 produced a user-selected and persisted palette, or after an authoritative/explicitly selected palette was already available. Never treat general color preferences from intake as palette selection.</p>
+<p>For this entire internal sequence, send at most one short user-facing status: “I’m generating three logo options now.” After it, send no other process/status text until the finished review. Do not mention Design Brain, mechanisms, enhancer prompts, model lookup, Recraft parameters, or intermediate validation.</p>
+<p>Using the selected draft palette plus Brandkit Design Brain:</p>
+<ol>
+<li>Design Brain returns exactly three original logo mechanisms.</li>
+<li>Apply <code>logo-prompt-enhancer.md</code> once per mechanism to produce its enhanced prompt.</li>
+<li>Pass each enhanced prompt separately to <code>higgsfield generate create recraft_v4_1 --model_type vector --wait --json</code>, with the selected logo color subset in <code>--colors</code> and selected background in <code>--background_color</code>. Use the one, two, or three logo colors the concept needs; never pad to three. Exceed three only when the user explicitly requested more.</li>
+<li>Use Recraft's returned SVG URLs directly. Do not pass them through the HTML preview script.</li>
+<li>Show all three per the logo review in <code>inline-widgets.md</code> with direct SVG links. This review is mandatory in interactive and explicit auto/no-question modes; bare SVG URLs are not a review.</li>
+</ol>
+<p>Ask the user to review and comment. In explicit no-question mode, show the same review without an additional questionnaire, but still stop for the user's logo selection. Do not self-select, treat your own visual assessment as approval, or start typography before the user responds.</p>
+<p>When the user selects a logo, run <code>logo-inspect --source &lt;selected SVG URL or absolute path&gt;</code>, then immediately call the Brandkit state script's <code>approve_logo</code> action with the exact Recraft SVG asset, name, returned canonical fingerprint, and any explicitly requested variants. A logo-only request is complete at this point; typography is not mandatory.</p>
+<h2>Step 3 — Typography options</h2>
+<p>Using Design Brain with the selected draft palette and selected Recraft SVG:</p>
+<ul>
+<li>Propose 2–3 suitable font pairs.</li>
+<li>Use user-uploaded licensed fonts when supplied; otherwise use verified Google Fonts and include official download links.</li>
+<li>Render the real brand name and short sample copy through <code>python3 "$SKILL_ROOT/scripts/brandkit.py" preview</code>.</li>
+<li>Show the selected mark next to each wordmark treatment so type/mark cohesion is visible.</li>
+<li>Use one contrasting <code>text_color</code> for both display and body samples; it must not equal the background color.</li>
+<li>Return a visible preview and downloadable HTML. Present both through the typography review in <code>inline-widgets.md</code>.</li>
+</ul>
+<p>Every typography review object must set <code>stage: "typography"</code> and include <code>display_font</code>, <code>body_font</code>, <code>logo_svg</code>, and one shared contrasting <code>text_color</code>.</p>
+<p>Ask for feedback in a normal message and wait. Do not use a choice list.</p>
+<p>When the user selects a type pair, immediately call the Brandkit state script's <code>approve_typography</code> action with the exact approved font metadata and specimen.</p>
+<h2>Optional combined Essential Kit HTML</h2>
+<p>Render a combined board only when all three slots are approved and the user requested a full identity/Brandkit or asks to see them together. Otherwise show the available individual review boards. Use <code>python3 "$SKILL_ROOT/scripts/brandkit.py" preview</code> with one <code>stage: "essential"</code> review containing the approved logo, palette, and type slots.</p>
+<p>Publish the returned HTML board per <code>inline-widgets.md</code> (inline PNG + full-screen/editable HTML links). This board is a presentation view, not another approval gate. Do not ask the user to approve the system again.</p>
+<h2>Continue the original request</h2>
+<p>Once the slots required by the first-message deliverables are approved, load those output modules and continue. Never force missing unrelated slots or ask the user to choose scope again.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

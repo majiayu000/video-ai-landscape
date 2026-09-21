@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>app-quickstart · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/app-quickstart.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>App quickstart — the working critical path</h1>
+<p>Read this FIRST when building a <code>type: "app"</code> product. It is the copy-paste
+spine every generation app shares: auth → SDK client → submit/poll → render, plus
+the handful of Quanta components you'll reach for. Everything here is real,
+correct, and enough to build from — you do <strong>not</strong> need to open
+<code>app/packages/{quanta,fnf,fnf-react}/src/**</code> to confirm any of it. For the full
+detail behind each step, the deeper references are cross-linked; for component
+props, <code>app/packages/quanta/ai/AGENTS.md</code> has the per-component reference.</p>
+<p><strong>Golden rules (violating these is the usual cause of a broken or slow build):</strong></p>
+<ol>
+<li><strong>Don't read package source.</strong> Props are in <code>app/packages/quanta/ai/AGENTS.md</code>;
+   SDK/hooks are in <code>app/packages/fnf/ai/AGENTS.md</code> + <code>.../fnf-react/ai/AGENTS.md</code>
+   (mirrored by <code>references/fnf-sdk.md</code> + <code>references/fnf-react.md</code>). Reading
+   <code>src/</code> is the single biggest time sink. If a detail is truly missing, make the
+   reasonable call and let <code>bun run typecheck</code> catch a mistake.</li>
+<li><strong>fnf runs server-side only</strong> against <code>https://fnf.internal</code> — never from the
+   browser, never with tokens in app code (<code>references/auth.md</code>, rule 3 in
+   <code>app-flow.md</code>).</li>
+<li><strong>Always dark, no app header.</strong> <code>data-theme="default-dark"</code> is pinned; the
+   Higgsfield host provides the global header/account chrome. Container is
+   <code>mx-auto w-full max-w-7xl</code> (<code>references/quanta-design.md</code>).</li>
+<li><strong>Real backend + real D1, never a mock.</strong> (rule 3a in <code>app-flow.md</code>.)</li>
+</ol>
+<hr />
+<h2>1. Auth — the <code>/api/user</code> proxy + login/logout</h2>
+<p>Every app is authenticated. Full contract in <code>references/auth.md</code>; the three
+pieces you always write:</p>
+<pre><code class="language-ts">// app/src/routes/api/user.ts — browser-safe proxy; preserve status + body 1:1
+import { createFileRoute } from '@tanstack/react-router'
+
+export const Route = createFileRoute('/api/user')({
+  server: {
+    handlers: {
+      GET: async () =&gt; {
+        const upstream = await fetch('https://fnf.internal/user')
+        const body = await upstream.text()
+        return new Response(body, {
+          status: upstream.status, // a 401 must stay a 401
+          headers: {
+            'content-type': upstream.headers.get('content-type') ?? 'application/json',
+            'cache-control': 'no-store',
+          },
+        })
+      },
+    },
+  },
+})
+</code></pre>
+<pre><code class="language-ts">// Browser: read the current user; null = signed out (don't crash the page)
+export async function fetchCurrentUser() {
+  const res = await fetch('/api/user', { credentials: 'include' })
+  if (res.status === 401) return null
+  if (!res.ok) throw new Error('Failed to load user')
+  return res.json()
+}
+
+// Login / logout are browser NAVIGATION, not SDK calls:
+const login = (ret = location.pathname + location.search) =&gt;
+  { location.href = `/__auth/login?return=${encodeURIComponent(ret)}` }
+const logout = (ret = '/') =&gt;
+  { location.href = `/__auth/logout?return=${encodeURIComponent(ret)}` }
+</code></pre>
+<p>A signed-out surface renders a sign-in action that calls <code>login()</code>; a server-side
+re-check guards every SDK operation. Do not invent an email/password form.</p>
+<h2>2. Create the SDK clients (server-side)</h2>
+<p>One adapter satisfies jobs + media + profile. Import the adapter from
+<code>@higgsfield/fnf/workflow-platform</code> (NOT <code>/adapters</code> — that subpath is gone):</p>
+<pre><code class="language-ts">import { createJobClient } from '@higgsfield/fnf/client'
+import { createMediaClient } from '@higgsfield/fnf/media'
+import { createProfileClient } from '@higgsfield/fnf/profile'
+import { createWorkflowPlatformAdapter } from '@higgsfield/fnf/workflow-platform'
+import { gptImage2 } from '@higgsfield/fnf/jobs' // register ONLY the jobs you use
+
+const adapter = createWorkflowPlatformAdapter({ baseUrl: 'https://fnf.internal' })
+const jobs = createJobClient({ adapter, jobs: [gptImage2] })
+const media = createMediaClient({ mediaAdapter: adapter })
+const profile = createProfileClient({ profileAdapter: adapter })
+</code></pre>
+<p>The <code>jobs: [...]</code> registry is what gives <code>model</code>/<code>settings</code> their TypeScript
+narrowing. Catalog of models in <code>app/packages/fnf/ai/AGENTS.md</code> ("Current SDK
+catalog") — e.g. <code>gptImage2</code>→<code>gpt_image_2</code>, <code>nanoBanana2</code>→<code>nano_banana_2</code>,
+<code>seedance2_0</code>, <code>kling3_0</code>.</p>
+<h2>3. Submit (with the confirmation gate) → poll → read the URL</h2>
+<p>The <code>confirm</code> gate is passed to the <strong>adapter factory</strong>; it runs once per submit,
+after validation, before any network call. Rejecting is a user choice, not a
+failure (typed <code>confirmation_rejected</code>).</p>
+<pre><code class="language-ts">const adapter = createWorkflowPlatformAdapter({
+  baseUrl: 'https://fnf.internal',
+  confirm: async ({ jobSetType }) =&gt; {
+    // UI host opens its cost-preview modal here and resolves; reject to cancel.
+    if (!(await openConfirmModal(jobSetType))) throw new Error('declined')
+  },
+})
+
+const { generations } = await jobs.submit({
+  model: 'gpt_image_2',
+  prompt: { instruction: userPrompt },
+  settings: { aspectRatio: '1:1', quality: 'high', resolution: '2k', batchSize: 1 },
+})
+
+const [done] = await jobs.wait(generations, {
+  signal,
+  onProgress: g =&gt; console.log(g.status),
+})
+</code></pre>
+<p>Prefer <code>safeSubmit</code> across a client/server or iframe boundary and branch on
+<code>error.code</code> (survives JSON; <code>instanceof</code> does not):</p>
+<pre><code class="language-ts">const r = await jobs.safeSubmit(input)
+if (!r.ok) {
+  if (r.error.code === 'out_of_credits') return showBillingUI()
+  if (r.error.code === 'confirmation_rejected') return // declined — not an error
+  throw r.error
+}
+</code></pre>
+<p>Common codes: <code>out_of_credits</code>, <code>rate_limit</code>, <code>prompt_nsfw</code>, <code>ip_detected</code>,
+<code>job_failed</code>, <code>timeout</code>, <code>validation</code>, <code>confirmation_rejected</code>
+(<code>app/packages/fnf/ai/AGENTS.md</code>, "Errors and boundaries").</p>
+<h2>4. Render the result</h2>
+<p><code>generation.results</code> is a single object <code>{ rawUrl, minUrl?, thumbnailUrl? }</code>,
+present only once completed. Do NOT hand-roll URL selection — use the selectors:</p>
+<pre><code class="language-ts">import { getPreviewUrl, getRawUrl, getJobPhase } from '@higgsfield/fnf/client'
+
+getPreviewUrl(done)  // grids/cards — precedence minUrl → thumbnailUrl → rawUrl
+getRawUrl(done)      // full quality
+getJobPhase(done)    // 'progress' | 'completed' | 'failed' — drives state UI
+</code></pre>
+<p>In-app, compose result cards from <code>app/src/lib/higgsfield-generation-results.ts</code>
+(<code>selectGenerationMedia(generation)</code> returns a resolved <code>image | video | empty</code>
+union). A completed generation with no <code>rawUrl</code> must show an explicit
+"preview unavailable" state with refresh — never a blank card.</p>
+<p>Carry media geometry across the server/client boundary as part of the flat DTO:
+prefer result <code>width</code>/<code>height</code> when available, otherwise retain the canonical
+submitted <code>aspectRatio</code>. Use that geometry for both the pending skeleton and the
+ready card. Preview optimization may change encoding, never composition: preserve
+the whole result and do not hardcode <code>square</code>, <code>16:9</code>, or <code>object-cover</code> for a
+generation gallery.</p>
+<h2>5. React wiring (fnf-react hooks)</h2>
+<ul>
+<li><strong><code>useGenerationRun(client, opts?)</code></strong> — drives one submission end-to-end.
+  Returns <code>{ status, generations, isRunning, error, start(input), abort(), reset() }</code>;
+  <code>start</code> never rejects (errors land in <code>error</code>). <code>client</code> must be referentially
+  stable. Best for the "generate" button flow.</li>
+<li><strong>Live read of one job:</strong> <code>useQuery(generationQueryOptions(jobClient, jobId, { scopeKey }))</code>
+  — polls every 5s while non-terminal, stops when terminal. (There is no
+  <code>useGeneration</code> hook.)</li>
+<li><strong><code>useAttachments(media, opts?)</code></strong> — upload controller for input images/media:
+  <code>{ items, refs, isUploading, add(files, { role }), settled(), remove(key) }</code>.
+  <code>await controller.settled()</code> yields submit-ready <code>MediaRef[]</code>.</li>
+</ul>
+<h2>6. Media upload — binary never goes through JSON</h2>
+<p>Never pass <code>File</code>/<code>Blob</code>/<code>ArrayBuffer</code>/base64 through <code>createServerFn</code> input or a
+JSON body. Use multipart to an app-local route:</p>
+<pre><code class="language-txt">browser File → POST multipart /api/media/upload → media.upload(...) → MediaRef
+MediaRef + prompt/settings → submit
+</code></pre>
+<p>Server reads <code>await file.arrayBuffer()</code>, calls <code>media.upload({ source: bytes, … })</code>,
+returns only the <code>MediaRef</code>. Detail in <code>references/fnf-sdk.md</code> ("Media recipes").</p>
+<h2>7. Server functions + bindings</h2>
+<p>App data operations run through TanStack server functions or <code>/api/*</code> routes:</p>
+<pre><code class="language-ts">import { createServerFn } from '@tanstack/react-start'
+import { z } from 'zod'
+
+export const generateMeme = createServerFn({ method: 'POST' })
+  .inputValidator(z.object({ prompt: z.string().min(1) }))
+  .handler(async ({ data }) =&gt; {
+    // re-check auth, build the server-side adapter, submit, persist to D1…
+  })
+</code></pre>
+<p>Cloudflare bindings (D1 <code>DB</code>, R2 <code>STORAGE</code>, KV <code>KV</code>) are read server-side via
+<code>app/src/lib/bindings.server.ts</code> (<code>import { env } from "cloudflare:workers"</code>), and
+only exist if declared in <code>app/app.manifest.json</code> (<code>"db": true</code>, etc.). Guard
+before use. Runtime detail in <code>references/runtime-and-infra.md</code>.</p>
+<p><strong>Return flat, fully-typed DTOs — never a raw SDK object.</strong> TanStack Start
+compile-time-checks that every server-function return value is serializable, and
+SDK types like <code>Generation</code> carry <code>input.settings: Record&lt;string, unknown&gt;</code> —
+<code>unknown</code> fails that check and breaks the build. Map the SDK object to a small
+DTO with only the fields the client needs (<code>{ id, status, previewUrl, … }</code>),
+typed explicitly. Same rule for anything you hand back across the server/client
+boundary: no <code>unknown</code>, no class instances, plain JSON-shaped data.</p>
+<p><strong><code>import type</code> React types.</strong> In module files there is no <code>React</code> UMD global,
+so bare <code>React.ReactNode</code> / <code>React.CSSProperties</code> fail to compile — write
+<code>import type { ReactNode, CSSProperties } from "react"</code> and use them unqualified.</p>
+<h2>8. The Quanta components you'll actually use</h2>
+<p>All dark, composed — never restyled. Props reference:
+<code>app/packages/quanta/ai/AGENTS.md</code> ("Component API reference"). The core set:</p>
+<pre><code class="language-tsx">import { Button } from '@higgsfield/quanta/button'
+import { Textarea } from '@higgsfield/quanta/textarea'
+import { Loader } from '@higgsfield/quanta/loader'
+import { toast } from '@higgsfield/quanta/sonner'
+
+// The generation CTA is ALWAYS marketingPrimary with the credit cost inside:
+&lt;Button variant=&quot;marketingPrimary&quot;&gt;
+  Generate &lt;SparklesIcon /&gt; {credits}
+&lt;/Button&gt;
+
+// Prompt field: helper/error props are `description`/`error` (NOT helperText/errorText)
+&lt;Textarea label=&quot;Prompt&quot; description=&quot;Describe your meme&quot; value={v} onChange={e =&gt; setV(e.target.value)} /&gt;
+
+// Mixed-ratio result tile: keep the submitted/result frame and the whole media.
+// Put this app-local component in app/src/components/; it uses Quanta tokens.
+const cssRatio = (ratio: string) =&gt; {
+  const [width, height] = ratio.split(':').map(Number)
+  return width &gt; 0 &amp;&amp; height &gt; 0 ? `${width} / ${height}` : '1 / 1'
+}
+
+&lt;div
+  className=&quot;grid w-full place-items-center overflow-hidden rounded-lg bg-q-background-secondary&quot;
+  style={{ aspectRatio: cssRatio(result.aspectRatio) }}
+&gt;
+  {phase === 'completed' &amp;&amp; result.previewUrl
+    ? &lt;img
+        className=&quot;block h-full w-full object-contain&quot;
+        src={result.previewUrl}
+        alt={prompt}
+      /&gt;
+    : &lt;Loader variant=&quot;stars&quot; /&gt;}
+&lt;/div&gt;
+</code></pre>
+<p>Reach for: <code>Button</code> (actions/CTA), <code>Textarea</code>/<code>Input</code> (prompt/fields),
+<code>Select</code>/<code>Dropdown</code> (options), <code>Slider</code>/<code>Switch</code>/<code>Chip</code> (settings), <code>Media</code>
+(canonical-ratio media), an app-local ratio-preserving frame for mixed generation
+results, <code>Card</code>/<code>Glass</code> (surfaces), <code>Grid</code>/<code>VirtualGrid</code> (feeds),
+<code>Loader</code>/<code>Progress</code> (busy), <code>Modal</code>/<code>Vault</code> (dialogs/sheets), <code>toast</code> (notices).
+For a gap, build a small component from Quanta primitives in
+<code>app/src/components/</code> — never a third-party UI library, never restyle Quanta.</p>
+<hr />
+<p><strong>Then follow <code>app-flow.md</code> steps 6–8:</strong> deploy → cover + metadata (generate the
+cover per <code>references/app-cover.md</code>) → publish (automatically if the user opted in
+at intake, else when asked), then suggest the contest.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

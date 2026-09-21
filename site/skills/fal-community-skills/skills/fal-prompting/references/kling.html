@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>kling · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/fal-prompting/references/kling.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Prompting Kling</h1>
+<p>Kling is Kuaishou's video model family. Two generations are routinely useful on fal.ai:</p>
+<ul>
+<li><strong>Kling O3</strong>: most powerful tier, separate Standard and Pro endpoints</li>
+<li><strong>Kling v3</strong>: multi-prompt and element controls</li>
+</ul>
+<h2>Endpoints (Kling O3)</h2>
+<h3>Image generation</h3>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Tier</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fal-ai/kling-image/o3/text-to-image</code></td>
+<td>Pro (only)</td>
+</tr>
+</tbody>
+</table>
+<h3>Video generation</h3>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Tier</th>
+<th>Mode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fal-ai/kling-video/o3/standard/text-to-video</code></td>
+<td>Standard</td>
+<td>Text → Video</td>
+</tr>
+<tr>
+<td><code>fal-ai/kling-video/o3/pro/text-to-video</code></td>
+<td>Pro</td>
+<td>Text → Video</td>
+</tr>
+<tr>
+<td><code>fal-ai/kling-video/o3/standard/image-to-video</code></td>
+<td>Standard</td>
+<td>Image → Video</td>
+</tr>
+<tr>
+<td><code>fal-ai/kling-video/o3/pro/image-to-video</code></td>
+<td>Pro</td>
+<td>Image → Video</td>
+</tr>
+</tbody>
+</table>
+<h3>Video editing</h3>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Tier</th>
+<th>Mode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fal-ai/kling-video/o3/standard/video-to-video/edit</code></td>
+<td>Standard</td>
+<td>Content edit</td>
+</tr>
+<tr>
+<td><code>fal-ai/kling-video/o3/pro/video-to-video/edit</code></td>
+<td>Pro</td>
+<td>Content edit</td>
+</tr>
+<tr>
+<td><code>fal-ai/kling-video/o3/standard/video-to-video/reference</code></td>
+<td>Standard</td>
+<td>Style remix</td>
+</tr>
+<tr>
+<td><code>fal-ai/kling-video/o3/pro/video-to-video/reference</code></td>
+<td>Pro</td>
+<td>Style remix</td>
+</tr>
+</tbody>
+</table>
+<h3>Endpoints (Kling v3): multi-shot storytelling</h3>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Mode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fal-ai/kling-video/v3/pro/text-to-video</code></td>
+<td>Text → Video, supports multi-prompt</td>
+</tr>
+<tr>
+<td><code>fal-ai/kling-video/v3/pro/image-to-video</code></td>
+<td>Image → Video</td>
+</tr>
+</tbody>
+</table>
+<h2>Standard vs Pro</h2>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Use for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Pro</strong></td>
+<td>Final output, commercial work, hero shots, best quality</td>
+</tr>
+<tr>
+<td><strong>Standard</strong></td>
+<td>Drafts, iteration, A/B exploration. ~2x faster, ~half the cost</td>
+</tr>
+</tbody>
+</table>
+<p>Default to Pro for delivery. Use Standard only when iteration count matters more than per-frame quality.</p>
+<h2>Prompt structure</h2>
+<p>Kling responds well to <strong>direct, declarative prompts</strong>. Don't pad with prestige adjectives.</p>
+<p>Single-shot template (text-to-video, image-to-video):</p>
+<pre><code class="language-text">[subject doing action] in [setting], [time of day], [camera framing/movement],
+[lighting/mood]
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-text">A samurai walking through a misty bamboo forest at dawn, low handheld tracking
+shot from behind, soft golden backlight filtering through leaves
+</code></pre>
+<h2>Multi-prompt sequences (Kling v3)</h2>
+<p>When the schema exposes a prompt array or shot list, write each shot as one declarative line. Keep cross-shot anchors (character, location, palette) in a global section if supported.</p>
+<pre><code class="language-text">SHOT 1: wide establishing of the bamboo forest at dawn
+SHOT 2: medium tracking shot of the samurai walking forward
+SHOT 3: close-up of his hand on the sword hilt
+</code></pre>
+<p>Inspect schema first, multi-prompt fields differ between endpoints.</p>
+<pre><code class="language-bash">genmedia schema fal-ai/kling-video/v3/pro/text-to-video --json
+</code></pre>
+<h2>Camera and motion vocabulary that works</h2>
+<ul>
+<li><strong>Movement:</strong> "slow push-in", "dolly left", "tracking shot", "crane up", "handheld", "locked-off", "orbit"</li>
+<li><strong>Framing:</strong> "wide", "medium", "close-up", "macro", "POV", "over-the-shoulder", "Dutch angle"</li>
+<li><strong>Lens feel:</strong> "35mm cinematic", "85mm portrait", "100mm macro", "wide 24mm"</li>
+<li><strong>Lighting:</strong> "rim light", "backlight", "soft key", "noir hard key", "practical lights", "blue hour"</li>
+</ul>
+<p>For full cinema vocabulary across families, see <a href="../../fal-recipes/references/cinematography.html">fal-recipes/references/cinematography.md</a>.</p>
+<h2>Image-to-video specifics</h2>
+<p>When chaining from a still:</p>
+<ul>
+<li>The reference frame defines identity, wardrobe, lighting direction.</li>
+<li>The prompt should describe <strong>motion only</strong>, not re-describe the static scene.</li>
+<li>Keep motion physically plausible. Kling is conservative with implausible physics.</li>
+</ul>
+<p>Good motion prompt:</p>
+<pre><code class="language-text">slow camera push-in toward the subject, subtle wind in hair, ambient haze drift
+</code></pre>
+<p>Bad (over-describes the still):</p>
+<pre><code class="language-text">A samurai with long dark hair wearing armor in a misty bamboo forest, cinematic
+mood, walking forward... [Kling interprets as a fresh shot, may drift]
+</code></pre>
+<h2>Edit mode (video-to-video)</h2>
+<ul>
+<li><strong><code>/edit</code></strong> changes content while preserving motion (e.g., "change the sky to a starry night").</li>
+<li><strong><code>/reference</code></strong> restyles the entire video to match a style cue (e.g., "transform into watercolor").</li>
+</ul>
+<p>For <code>/edit</code>, state preservation explicitly:</p>
+<pre><code class="language-text">Change: the sky becomes a starry night with a visible moon.
+Preserve: the subject, all motion, the foreground composition, the camera move.
+</code></pre>
+<h2>Don't</h2>
+<ul>
+<li>Stack synonyms: "beautiful, gorgeous, stunning, magnificent", drop them all.</li>
+<li>Over-describe the static frame in image-to-video, describe motion.</li>
+<li>Use weighted parentheses or booru tags. Kling ignores them.</li>
+<li>Request extreme slow-motion (1000fps+), falls apart.</li>
+<li>Cram more than 30-40 words into a single-shot prompt unless schema explicitly supports more.</li>
+</ul>
+<h2>Common parameters</h2>
+<p>Run <code>genmedia schema &lt;endpoint_id&gt; --json</code> for the authoritative list. Frequently exposed:</p>
+<ul>
+<li><code>prompt</code>: the shot description</li>
+<li><code>negative_prompt</code>: when supported, list specific things to avoid (not vague)</li>
+<li><code>aspect_ratio</code>: <code>16:9</code>, <code>9:16</code>, <code>1:1</code> are usually the safe set</li>
+<li><code>duration</code>: typically 5s or 10s; longer durations cost more and risk drift</li>
+<li><code>seed</code>: for reproducible iterations</li>
+<li><code>image_url</code> (image-to-video), uploaded reference frame</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

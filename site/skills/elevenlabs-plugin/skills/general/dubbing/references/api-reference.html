@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>api-reference · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/dubbing/references/api-reference.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Dubbing Projects API Reference</h1>
+<p>Full endpoint-by-endpoint reference for the Dubbing Projects API.</p>
+<ul>
+<li><strong>Base URL:</strong> <code>https://api.elevenlabs.io</code></li>
+<li><strong>Authentication:</strong> <code>xi-api-key</code> header on every request (the SDKs read <code>ELEVENLABS_API_KEY</code>)</li>
+<li><strong>SDK:</strong> <code>elevenlabs.dubbing.project.*</code> in Python and JavaScript (camelCase methods in JS). The older <code>client.dubbing.*</code> methods are the legacy v1 API — do not use them</li>
+<li><strong>Model:</strong> <code>dubbing_v2</code> (default)</li>
+<li><strong>Source size limit:</strong> up to 3 GiB per source (upload or URL)</li>
+<li><strong>Enterprise:</strong> transcript editing and regeneration endpoints are available to enterprise workspaces only</li>
+</ul>
+<h2>Contents</h2>
+<ul>
+<li><a href="#endpoint-quick-reference">Endpoint quick reference</a></li>
+<li><a href="#projects">Projects</a></li>
+<li><a href="#source-transcript">Source transcript</a></li>
+<li><a href="#languages">Languages</a></li>
+<li><a href="#language-transcript-translations">Language transcript (translations)</a></li>
+<li><a href="#regeneration">Regeneration</a></li>
+<li><a href="#revisions">Revisions</a></li>
+</ul>
+<h2>Endpoint quick reference</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Python SDK method</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/v1/dubbing/project</code></td>
+<td><code>dubbing.project.create</code></td>
+<td>Create a project (file or URL)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/dubbing/project</code></td>
+<td><code>dubbing.project.list</code></td>
+<td>List projects (paginated)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/dubbing/project/{project_id}</code></td>
+<td><code>dubbing.project.get</code></td>
+<td>Get a project</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/dubbing/project/{project_id}</code></td>
+<td><code>dubbing.project.delete</code></td>
+<td>Delete a project and its languages</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/dubbing/project/{project_id}/transcript</code></td>
+<td><code>dubbing.project.transcript.get</code></td>
+<td>Get the source transcript</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/v1/dubbing/project/{project_id}/transcript/segment/{segment_id}</code></td>
+<td><code>dubbing.project.transcript.update_segment</code></td>
+<td>Edit a source segment</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/dubbing/project/{project_id}/transcript/segment</code></td>
+<td><code>dubbing.project.transcript.create_segment</code></td>
+<td>Add a source segment</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/dubbing/project/{project_id}/transcript/segment/{segment_id}</code></td>
+<td><code>dubbing.project.transcript.delete_segment</code></td>
+<td>Delete a source segment</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/dubbing/project/{project_id}/language</code></td>
+<td><code>dubbing.project.language.create</code></td>
+<td>Add a language target</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/dubbing/project/{project_id}/language</code></td>
+<td><code>dubbing.project.language.list</code></td>
+<td>List language targets (paginated)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/dubbing/project/{project_id}/language/{language_id}</code></td>
+<td><code>dubbing.project.language.get</code></td>
+<td>Get a language target</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/dubbing/project/{project_id}/language/{language_id}</code></td>
+<td><code>dubbing.project.language.delete</code></td>
+<td>Delete a language target</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/dubbing/project/{project_id}/language/{language_id}/transcript</code></td>
+<td><code>dubbing.project.language.transcript.get</code></td>
+<td>Get a language's transcript (translations)</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/v1/dubbing/project/{project_id}/language/{language_id}/transcript/segment/{segment_id}</code></td>
+<td><code>dubbing.project.language.transcript.update_segment</code></td>
+<td>Edit a translation</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/dubbing/project/{project_id}/language/{language_id}/transcript/regenerate</code></td>
+<td><code>dubbing.project.language.transcript.regenerate</code></td>
+<td>Regenerate a language from its edited transcript</td>
+</tr>
+</tbody>
+</table>
+<p>JS methods are the same paths in camelCase (e.g. <code>dubbing.project.transcript.updateSegment</code>).</p>
+<h2>Projects</h2>
+<h3>Create a project</h3>
+<p><code>POST /v1/dubbing/project</code> — <code>multipart/form-data</code> with <strong>either</strong> <code>file</code> <strong>or</strong> <code>source_url</code> (not both).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>file</code></td>
+<td>one of file/source_url</td>
+<td>The source media to dub (audio or video)</td>
+</tr>
+<tr>
+<td><code>source_url</code></td>
+<td>one of file/source_url</td>
+<td>Public URL to fetch the source media from</td>
+</tr>
+<tr>
+<td><code>source_language</code></td>
+<td>no</td>
+<td>ISO 639 code (e.g. <code>en</code>). Omit to auto-detect</td>
+</tr>
+<tr>
+<td><code>reference</code></td>
+<td>no</td>
+<td>Free-form label to identify the project on your end (max 500 chars)</td>
+</tr>
+<tr>
+<td><code>model_id</code></td>
+<td>no</td>
+<td><code>dubbing_v2</code> (default)</td>
+</tr>
+<tr>
+<td><code>target_language</code></td>
+<td>no</td>
+<td>Optionally queue the first language target at creation; add more with <code>language.create</code></td>
+</tr>
+<tr>
+<td><code>keyterms</code></td>
+<td>no</td>
+<td>Terms to bias transcription/translation toward (e.g. product or brand names), up to 1000 terms; each at most 50 characters and 5 words; <code>&lt;&gt;{}[]\</code> not allowed. In multipart, repeat the field once per term</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Auto-detected source language:</strong> if <code>source_language</code> is omitted, the project's <code>source_language</code> stays <code>null</code>; the detected language is reported as the <code>language</code> field on the source transcript.</p>
+<p><strong>Response (<code>201 Created</code>)</strong> — the project starts in <code>queued</code>; <code>media</code> is <code>null</code> until preparation finishes:</p>
+<pre><code class="language-json">{
+  &quot;project_id&quot;: &quot;proj_1601kwkyxp0hfzvtmyxwqxx6mcy3&quot;,
+  &quot;status&quot;: &quot;queued&quot;,
+  &quot;reference&quot;: &quot;Q3 marketing video&quot;,
+  &quot;source_language&quot;: &quot;en&quot;,
+  &quot;model_id&quot;: &quot;dubbing_v2&quot;,
+  &quot;media&quot;: null,
+  &quot;language_ids&quot;: [],
+  &quot;revision&quot;: 0,
+  &quot;created_at&quot;: &quot;2026-07-03T10:15:30Z&quot;,
+  &quot;updated_at&quot;: &quot;2026-07-03T10:15:30Z&quot;
+}
+</code></pre>
+<p>The source is fetched (for a URL) and transcribed asynchronously — poll the project until it reaches <code>ready</code>.</p>
+<h3>Get a project</h3>
+<p><code>GET /v1/dubbing/project/{project_id}</code></p>
+<p>Once <code>ready</code>, <code>media</code> is populated:</p>
+<pre><code class="language-json">{
+  &quot;project_id&quot;: &quot;proj_1601kwkyxp0hfzvtmyxwqxx6mcy3&quot;,
+  &quot;status&quot;: &quot;ready&quot;,
+  &quot;reference&quot;: &quot;Q3 marketing video&quot;,
+  &quot;source_language&quot;: &quot;en&quot;,
+  &quot;model_id&quot;: &quot;dubbing_v2&quot;,
+  &quot;media&quot;: {
+    &quot;filename&quot;: &quot;promo.mp4&quot;,
+    &quot;duration_s&quot;: 42.5,
+    &quot;has_video&quot;: true,
+    &quot;mime_type&quot;: &quot;video/mp4&quot;
+  },
+  &quot;language_ids&quot;: [],
+  &quot;revision&quot;: 0,
+  &quot;created_at&quot;: &quot;2026-07-03T10:15:30Z&quot;,
+  &quot;updated_at&quot;: &quot;2026-07-03T10:17:12Z&quot;
+}
+</code></pre>
+<p><code>language_ids</code> stays empty until languages are added; <code>revision</code> stays 0 until the source transcript is edited (transcription itself doesn't bump it).</p>
+<p><strong>Project states:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>queued</code></td>
+<td>Created; the source is being fetched and preparation is enqueued, but no worker has started it yet</td>
+</tr>
+<tr>
+<td><code>preparing</code></td>
+<td>Preparation tasks are running</td>
+</tr>
+<tr>
+<td><code>ready</code></td>
+<td>Preparation finished. The source transcript is available and languages can be added/generated. A project <strong>stays</strong> at <code>ready</code> — per-language progress lives on the languages</td>
+</tr>
+<tr>
+<td><code>failed</code></td>
+<td>Preparation failed (e.g. the source couldn't be fetched or decoded)</td>
+</tr>
+</tbody>
+</table>
+<h3>List projects</h3>
+<p><code>GET /v1/dubbing/project</code> — cursor-paginated.</p>
+<p>Query params: <code>page_size</code> (default 20, max 100), <code>cursor</code>, <code>status</code> (<code>queued</code>/<code>preparing</code>/<code>ready</code>/<code>failed</code>), <code>sort_direction</code> (<code>DESCENDING</code> default).</p>
+<pre><code class="language-json">{ &quot;projects&quot;: [ /* ProjectResponse... */ ], &quot;next_cursor&quot;: null }
+</code></pre>
+<p>Pass <code>next_cursor</code> back as <code>cursor</code> to fetch the next page; <code>null</code> means the end.</p>
+<h3>Delete a project</h3>
+<p><code>DELETE /v1/dubbing/project/{project_id}</code> — deletes the project and its languages.</p>
+<h2>Source transcript</h2>
+<p>Transcript editing (and regeneration) is available to <strong>enterprise workspaces only</strong>. Every source edit bumps the project's <code>revision</code>; each edit response returns the new value. Editing the source after a language exists marks that language's output <code>stale</code> and requires a regeneration — finalize the source <strong>before</strong> adding languages.</p>
+<h3>Get the source transcript</h3>
+<p><code>GET /v1/dubbing/project/{project_id}/transcript</code></p>
+<pre><code class="language-json">{
+  &quot;language&quot;: &quot;en&quot;,
+  &quot;segments&quot;: [
+    {
+      &quot;id&quot;: &quot;0199a3f0-1c2d-7abc-8def-0123456789ab&quot;,
+      &quot;text&quot;: &quot;Welcome to our product demo.&quot;,
+      &quot;speaker_id&quot;: &quot;default_speaker&quot;,
+      &quot;start_s&quot;: 0.0,
+      &quot;end_s&quot;: 2.5
+    }
+  ],
+  &quot;revision&quot;: 0
+}
+</code></pre>
+<p>Each segment has a stable <code>id</code> used to edit or delete it.</p>
+<h3>Edit a segment</h3>
+<p><code>PATCH /v1/dubbing/project/{project_id}/transcript/segment/{segment_id}</code></p>
+<p>Send only the fields to change (<code>text</code>, <code>speaker_id</code>, <code>start_s</code>, <code>end_s</code>); at least one is required. If sending both <code>start_s</code> and <code>end_s</code>, <code>end_s</code> must be greater than <code>start_s</code>.</p>
+<pre><code class="language-json">{
+  &quot;segment&quot;: {
+    &quot;id&quot;: &quot;0199a3f0-1c2d-7abc-8def-0123456789ab&quot;,
+    &quot;text&quot;: &quot;Welcome to our latest product demo.&quot;,
+    &quot;speaker_id&quot;: &quot;default_speaker&quot;,
+    &quot;start_s&quot;: 0.0,
+    &quot;end_s&quot;: 2.5
+  },
+  &quot;revision&quot;: 1
+}
+</code></pre>
+<h3>Add a segment</h3>
+<p><code>POST /v1/dubbing/project/{project_id}/transcript/segment</code></p>
+<p>All fields required (<code>text</code>, <code>speaker_id</code>, <code>start_s</code>, <code>end_s</code>). The server assigns the segment <code>id</code>. Use a <code>speaker_id</code> that already appears in the source transcript so the new line is dubbed with that speaker's voice.</p>
+<p>The response echoes the new segment with its server-assigned <code>id</code> plus the new project <code>revision</code>.</p>
+<h3>Delete a segment</h3>
+<p><code>DELETE /v1/dubbing/project/{project_id}/transcript/segment/{segment_id}</code></p>
+<pre><code class="language-json">{ &quot;revision&quot;: 3 }
+</code></pre>
+<h2>Languages</h2>
+<h3>Add a language</h3>
+<p><code>POST /v1/dubbing/project/{project_id}/language</code></p>
+<p>JSON body:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>target_language</code></td>
+<td>yes</td>
+<td>ISO 639 code (e.g. <code>es</code>)</td>
+</tr>
+<tr>
+<td><code>model_id</code></td>
+<td>no</td>
+<td>Defaults to the project's model</td>
+</tr>
+<tr>
+<td><code>voice_settings</code></td>
+<td>no</td>
+<td>e.g. <code>{"cloning_strength": 7}</code> — <code>cloning_strength</code> accepts values between 0 and 10 inclusive (default 7); controls how strongly dubbed speakers clone the source voices</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response (<code>201 Created</code>)</strong> — starts <code>queued</code>:</p>
+<pre><code class="language-json">{
+  &quot;language_id&quot;: &quot;lang_1001kwkyxp0je6ktn4knsfrasx5s&quot;,
+  &quot;project_id&quot;: &quot;proj_1601kwkyxp0hfzvtmyxwqxx6mcy3&quot;,
+  &quot;target_language&quot;: &quot;es&quot;,
+  &quot;status&quot;: &quot;queued&quot;,
+  &quot;model_id&quot;: &quot;dubbing_v2&quot;,
+  &quot;outputs&quot;: null,
+  &quot;revision&quot;: 0,
+  &quot;output_revision&quot;: null,
+  &quot;created_at&quot;: &quot;2026-07-03T10:16:00Z&quot;,
+  &quot;updated_at&quot;: &quot;2026-07-03T10:16:00Z&quot;
+}
+</code></pre>
+<p>A language can be added to a project that isn't <code>ready</code> yet — it stays <code>queued</code> and starts automatically once the project becomes <code>ready</code>. You can also queue the first language when creating the project by passing <code>target_language</code> to <code>project.create</code>.</p>
+<p><strong>Language states:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>queued</code></td>
+<td>Created and waiting — either on the project becoming <code>ready</code>, or on a worker to pick up its generation</td>
+</tr>
+<tr>
+<td><code>processing</code></td>
+<td>The dub is being generated</td>
+</tr>
+<tr>
+<td><code>completed</code></td>
+<td>The dub finished; <code>outputs</code> is populated</td>
+</tr>
+<tr>
+<td><code>stale</code></td>
+<td>Previously completed, but its transcript (source or translation) changed, so the current output no longer matches. It keeps its last output until regenerated</td>
+</tr>
+<tr>
+<td><code>failed</code></td>
+<td>Generation failed</td>
+</tr>
+</tbody>
+</table>
+<h3>Get a language</h3>
+<p><code>GET /v1/dubbing/project/{project_id}/language/{language_id}</code></p>
+<p>Once <code>completed</code>, <code>outputs</code> carries a signed, time-limited download URL (valid ~1 hour; re-fetch the language for a fresh URL):</p>
+<pre><code class="language-json">{
+  &quot;language_id&quot;: &quot;lang_1001kwkyxp0je6ktn4knsfrasx5s&quot;,
+  &quot;project_id&quot;: &quot;proj_1601kwkyxp0hfzvtmyxwqxx6mcy3&quot;,
+  &quot;target_language&quot;: &quot;es&quot;,
+  &quot;status&quot;: &quot;completed&quot;,
+  &quot;model_id&quot;: &quot;dubbing_v2&quot;,
+  &quot;outputs&quot;: {
+    &quot;lossless_audio&quot;: &quot;https://storage.googleapis.com/eleven-dubbing/.../output.wav?X-Goog-Signature=...&quot;
+  },
+  &quot;revision&quot;: 0,
+  &quot;output_revision&quot;: 0,
+  &quot;created_at&quot;: &quot;2026-07-03T10:16:00Z&quot;,
+  &quot;updated_at&quot;: &quot;2026-07-03T10:20:45Z&quot;
+}
+</code></pre>
+<p>When <code>output_revision</code> equals <code>revision</code>, the downloadable output reflects the current transcript. When it's behind (and status is <code>stale</code>), the output is out of date and needs a regeneration.</p>
+<h3>List languages</h3>
+<p><code>GET /v1/dubbing/project/{project_id}/language</code> — cursor-paginated, optional <code>status</code> filter.</p>
+<h3>Delete a language</h3>
+<p><code>DELETE /v1/dubbing/project/{project_id}/language/{language_id}</code> → <code>204 No Content</code>.</p>
+<h2>Language transcript (translations)</h2>
+<h3>Get a language's transcript</h3>
+<p><code>GET /v1/dubbing/project/{project_id}/language/{language_id}/transcript</code></p>
+<p>Pairs each source segment with its translation (<code>null</code> = not yet translated). Segment ids match the source transcript, so translations line up against the source.</p>
+<pre><code class="language-json">{
+  &quot;source_language&quot;: &quot;en&quot;,
+  &quot;target_language&quot;: &quot;es&quot;,
+  &quot;segments&quot;: [
+    {
+      &quot;id&quot;: &quot;0199a3f0-1c2d-7abc-8def-0123456789ab&quot;,
+      &quot;speaker_id&quot;: &quot;default_speaker&quot;,
+      &quot;start_s&quot;: 0.0,
+      &quot;end_s&quot;: 2.5,
+      &quot;source_text&quot;: &quot;Welcome to our latest product demo.&quot;,
+      &quot;translation&quot;: &quot;Bienvenido a la demostración de nuestro producto.&quot;
+    }
+  ],
+  &quot;revision&quot;: 0
+}
+</code></pre>
+<h3>Edit a translation</h3>
+<p><code>PATCH /v1/dubbing/project/{project_id}/language/{language_id}/transcript/segment/{segment_id}</code></p>
+<p>Body: <code>{"translation": "..."}</code>. Pass <code>null</code> to clear it and mark the segment for re-translation.</p>
+<p>A translation edit affects only this language — the source transcript and other languages are untouched. It bumps this language's <code>revision</code>, and a <code>completed</code> language becomes <code>stale</code>: its downloadable output still reflects the previous <code>output_revision</code> until regenerated.</p>
+<h2>Regeneration</h2>
+<p><code>POST /v1/dubbing/project/{project_id}/language/{language_id}/transcript/regenerate</code></p>
+<p>Produces a fresh dub from the current transcript after editing a language's translation (or after source edits marked it <code>stale</code>). <strong>Charged like a generation.</strong></p>
+<p><strong>Response (<code>202 Accepted</code>)</strong> — the language goes back to <code>queued</code>; <code>output_revision</code> still points at the previous output until the new one finishes:</p>
+<pre><code class="language-json">{
+  &quot;language_id&quot;: &quot;lang_1001kwkyxp0je6ktn4knsfrasx5s&quot;,
+  &quot;project_id&quot;: &quot;proj_1601kwkyxp0hfzvtmyxwqxx6mcy3&quot;,
+  &quot;target_language&quot;: &quot;es&quot;,
+  &quot;status&quot;: &quot;queued&quot;,
+  &quot;model_id&quot;: &quot;dubbing_v2&quot;,
+  &quot;outputs&quot;: null,
+  &quot;revision&quot;: 1,
+  &quot;output_revision&quot;: 0,
+  &quot;created_at&quot;: &quot;2026-07-03T10:16:00Z&quot;,
+  &quot;updated_at&quot;: &quot;2026-07-03T10:25:10Z&quot;
+}
+</code></pre>
+<p>Poll the language until <code>completed</code>, then download the refreshed <code>outputs.lossless_audio</code>. At that point <code>output_revision</code> equals <code>revision</code>.</p>
+<p>Returns <code>409 Conflict</code> if the project isn't <code>ready</code> or the language isn't in a settled state (e.g. it's already generating).</p>
+<h2>Revisions</h2>
+<p>Every project and language carries its own monotonic revision counter, each starting at 0 and independent of the others:</p>
+<ul>
+<li>The <strong>project's</strong> <code>revision</code> increases on each source-transcript edit (transcription itself doesn't bump it).</li>
+<li>A <strong>language's</strong> <code>revision</code> starts at 0 when the language is created — it does <strong>not</strong> inherit the project's current revision — and increases when its translation is edited <strong>or</strong> when a source edit affects it.</li>
+<li>A language's <code>output_revision</code> is the revision its current audio was generated from. When <code>output_revision</code> is behind <code>revision</code>, the output is out of date and needs a regeneration.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

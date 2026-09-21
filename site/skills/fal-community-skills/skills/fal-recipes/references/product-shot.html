@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>product-shot · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/fal-recipes/references/product-shot.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Product Shot Recipe</h1>
+<p>Use this recipe when the user has a product image (packshot, packaging photo, transparent PNG) and needs a hero shot in a styled environment. This is a focused subset of <a href="commercial.html">commercial.md</a>, same principles, narrower scope.</p>
+<h2>When to use this recipe vs commercial.md</h2>
+<ul>
+<li><strong>product-shot.md</strong>: single hero image from one product reference. Fast, deterministic, e-commerce-grade.</li>
+<li><strong>commercial.md</strong>: campaign-level production: multiple platforms, lifestyle context, video reveals, ad creative sets.</li>
+</ul>
+<p>If the user wants more than one image and there's a story or sequence, switch to <code>commercial.md</code> or <code>storytelling.md</code>.</p>
+<h2>Inputs to collect</h2>
+<ul>
+<li><strong>Product reference</strong>: packshot or transparent PNG. Required.</li>
+<li><strong>Surface</strong>: pale stone, dark velvet, brushed wood, seamless paper, glass, water surface.</li>
+<li><strong>Background</strong>: gradient, environmental scene, brand color, neutral void.</li>
+<li><strong>Lighting style</strong>: softbox, hard rim, natural window, studio strobe, golden hour.</li>
+<li><strong>Crop / aspect ratio</strong>: square (Instagram), 4:5 (PDP), 16:9 (banner), 9:16 (story).</li>
+<li><strong>Material cue</strong>: glass / metal / plastic / fabric / food / jewelry (drives lighting choice).</li>
+</ul>
+<h2>Flow</h2>
+<pre><code class="language-bash">URL_PRODUCT=$(genmedia upload ./product.png --json | jq -r '.url')
+
+genmedia run fal-ai/nano-banana-pro/edit \
+ --image_urls &quot;$URL_PRODUCT&quot; \
+ --prompt &quot;&lt;structured product hero prompt&gt;&quot; \
+ --download &quot;./outputs/product-shot/{request_id}_{index}.{ext}&quot; \
+ --json
+</code></pre>
+<p>For top-quality output, the recommended endpoint order is:</p>
+<ol>
+<li><code>fal-ai/nano-banana-pro/edit</code>, fast, strong product fidelity</li>
+<li><code>openai/gpt-image-2/edit</code>, best for text-on-packaging accuracy</li>
+<li><code>fal-ai/bytedance/seedream/v5/lite/edit</code>, alternative when above fail</li>
+</ol>
+<p>See <a href="../../fal-models-catalog/references/image-to-image.html">fal-models-catalog/image-to-image.md</a> for the full editing endpoint table.</p>
+<h2>Prompt template</h2>
+<p>Apply commercial prompt build order, condensed to product-shot specifics:</p>
+<pre><code class="language-text">[exact product] preserved exactly from the reference image as the only hero
+object, [material and color], placed on [surface], [background], [lighting
+setup matched to material], [camera angle], [lens feel], [crop],
+premium product photography, accurate packaging, no extra text, no warped
+label, no extra products
+</code></pre>
+<h2>Material-driven lighting</h2>
+<table>
+<thead>
+<tr>
+<th>Material</th>
+<th>Lighting recipe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Glass / liquid</strong></td>
+<td>Backlight + thin rim light along edges, transparent caustics, controlled reflections</td>
+</tr>
+<tr>
+<td><strong>Polished metal</strong></td>
+<td>Hard strip highlights, dark flags off-camera to control specular</td>
+</tr>
+<tr>
+<td><strong>Plastic / matte</strong></td>
+<td>Soft directional key, clean shadow, no over-gloss</td>
+</tr>
+<tr>
+<td><strong>Fabric</strong></td>
+<td>Side light to reveal weave, gentle natural folds, accurate color</td>
+</tr>
+<tr>
+<td><strong>Food</strong></td>
+<td>Soft directional key, plausible steam/condensation only</td>
+</tr>
+<tr>
+<td><strong>Jewelry / small precious</strong></td>
+<td>100mm macro feel, dark cards behind subject, crisp pinpoint sparkle</td>
+</tr>
+</tbody>
+</table>
+<h2>Background and surface combinations</h2>
+<ul>
+<li><strong>E-commerce PDP</strong>: seamless white or light gray paper, even softbox.</li>
+<li><strong>Premium beauty</strong>: pale stone, warm beige, single key from upper-left.</li>
+<li><strong>Athletic / launch</strong>: concrete, high-contrast strobe, slight motion dust.</li>
+<li><strong>Food editorial</strong>: matte ceramic or natural wood, window-style light, plausible scatter (crumbs, sauce).</li>
+<li><strong>Tech / minimal</strong>: gradient void, single rim, polished surface reflection.</li>
+</ul>
+<h2>Examples</h2>
+<h3>Skincare bottle on stone</h3>
+<pre><code class="language-text">amber glass skincare serum bottle preserved exactly from the reference, matte
+black dropper, standing on pale travertine, soft diffused key light from upper
+left, thin rim light on glass edges, subtle water condensation, warm beige
+background, square crop, premium beauty product photography, no added text,
+no extra bottles
+</code></pre>
+<h3>Sneaker hover</h3>
+<pre><code class="language-text">single white running sneaker preserved exactly from the reference, blue
+outsole accents intact, three-quarter side view, suspended just above clean
+concrete, sharp shadow under sole, crisp studio flash, slight motion dust
+behind heel, athletic launch campaign style, 4:5 crop with safe space upper
+right for headline
+</code></pre>
+<h3>Coffee mug background swap</h3>
+<pre><code class="language-text">preserve the uploaded ceramic coffee mug exactly, replace background with a
+bright Scandinavian kitchen counter, soft morning window light from left,
+realistic contact shadow and reflection on counter, warm lifestyle product
+photography, no new logo, no deformation, no text
+</code></pre>
+<h3>Watch macro</h3>
+<pre><code class="language-text">luxury watch preserved from reference image, brushed steel case, three-quarter
+top-down macro, thin strip light reflected along the bevel, black velvet
+surface, shallow depth of field on dial face, dark commercial grade, square
+crop, no added text
+</code></pre>
+<h2>Quality bar</h2>
+<p>Before returning:</p>
+<ul>
+<li>Product geometry, packaging, label, and color are not invented or distorted.</li>
+<li>Lighting matches the material (glass gets backlit, metal gets specular highlights).</li>
+<li>Background does not compete with the product, it supports it.</li>
+<li>Composition leaves room for platform crop / copy if requested.</li>
+<li>No extra products or extra text in frame.</li>
+<li>Output paths come from <code>downloaded_files[]</code>.</li>
+</ul>
+<h2>Common refinements</h2>
+<p>If the first output drifts:</p>
+<ul>
+<li>Logo distortion → re-upload at higher resolution; switch to <code>openai/gpt-image-2/edit</code> for better text fidelity.</li>
+<li>Wrong material feel → name the lighting recipe specifically (rim + caustics for glass, etc.).</li>
+<li>Background fights the product → simplify to a gradient or single-color void.</li>
+<li>Color shift → mention the exact color in the prompt and add "do not shift product color".</li>
+</ul>
+<p>For multi-shot product narratives (hero + lifestyle + reveal video), graduate to <a href="commercial.html">commercial.md</a> or <a href="storytelling.html">storytelling.md</a>.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

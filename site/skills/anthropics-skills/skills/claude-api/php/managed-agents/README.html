@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>README · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/php/managed-agents/README.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Managed Agents - PHP</h1>
+<blockquote>
+<p><strong>Bindings not shown here:</strong> This README covers the most common managed-agents flows for PHP. If you need a class, method, namespace, field, or behavior that isn't shown, WebFetch the PHP SDK repo <strong>or the relevant docs page</strong> from <code>shared/live-sources.md</code> rather than guess. Do not extrapolate from cURL shapes or another language's SDK.</p>
+<p><strong>Agents are persistent - create once, reference by ID.</strong> Store the agent ID returned by <code>$client-&gt;beta-&gt;agents-&gt;create</code> and pass it to every subsequent <code>-&gt;sessions-&gt;create</code>; do not call <code>agents-&gt;create</code> in the request path. <strong>Recommended:</strong> define agents and environments as version-controlled YAML applied with the <code>ant</code> CLI - see <code>shared/anthropic-cli.md</code> (its live-docs URL is in <code>shared/live-sources.md</code>). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.</p>
+</blockquote>
+<h2>Installation</h2>
+<pre><code class="language-bash">composer require &quot;anthropic-ai/sdk&quot; &quot;guzzlehttp/guzzle:^7&quot;
+</code></pre>
+<h2>Client Initialization</h2>
+<pre><code class="language-php">use Anthropic\Client;
+
+// Default (uses ANTHROPIC_API_KEY env var)
+$client = new Client();
+
+// Explicit API key
+$client = new Client(apiKey: 'your-api-key');
+</code></pre>
+<hr />
+<h2>Create an Environment</h2>
+<pre><code class="language-php">$environment = $client-&gt;beta-&gt;environments-&gt;create(
+    name: 'my-dev-env',
+    config: ['type' =&gt; 'cloud', 'networking' =&gt; ['type' =&gt; 'unrestricted']],
+);
+echo &quot;Environment ID: {$environment-&gt;id}\n&quot;; // env_...
+</code></pre>
+<hr />
+<h2>Create an Agent (required first step)</h2>
+<blockquote>
+<p>Warning: <strong>There is no inline agent config.</strong> <code>model</code>/<code>system</code>/<code>tools</code> live on the agent object, not the session. Always start with <code>$client-&gt;beta-&gt;agents-&gt;create()</code> - the session takes either <code>agent: $agent-&gt;id</code> or the typed <code>BetaManagedAgentsAgentParams::with(type: 'agent', id: $agent-&gt;id, version: $agent-&gt;version)</code>.</p>
+</blockquote>
+<h3>Minimal</h3>
+<pre><code class="language-php">use Anthropic\Beta\Agents\BetaManagedAgentsAgentToolset20260401Params;
+
+// 1. Create the agent (reusable, versioned)
+$agent = $client-&gt;beta-&gt;agents-&gt;create(
+    name: 'Coding Assistant',
+    model: 'claude-opus-5',
+    system: 'You are a helpful coding assistant.',
+    tools: [
+        BetaManagedAgentsAgentToolset20260401Params::with(
+            type: 'agent_toolset_20260401',
+        ),
+    ],
+);
+
+// 2. Start a session
+$session = $client-&gt;beta-&gt;sessions-&gt;create(
+    agent: ['type' =&gt; 'agent', 'id' =&gt; $agent-&gt;id, 'version' =&gt; $agent-&gt;version],
+    environmentID: $environment-&gt;id,
+    title: 'Quickstart session',
+);
+echo &quot;Session ID: {$session-&gt;id}\n&quot;;
+echo &quot;Trace: https://platform.claude.com/workspaces/default/sessions/{$session-&gt;id}\n&quot;; // swap 'default' for your workspace ID if the API key is not in the Default workspace
+</code></pre>
+<h3>Updating an Agent</h3>
+<p>Updates create new versions; the agent object is immutable per version.</p>
+<pre><code class="language-php">$updatedAgent = $client-&gt;beta-&gt;agents-&gt;update(
+    $agent-&gt;id,
+    version: $agent-&gt;version,
+    system: 'You are a helpful coding agent. Always write tests.',
+);
+echo &quot;New version: {$updatedAgent-&gt;version}\n&quot;;
+
+// List all versions
+foreach ($client-&gt;beta-&gt;agents-&gt;versions-&gt;list($agent-&gt;id)-&gt;pagingEachItem() as $version) {
+    echo &quot;Version {$version-&gt;version}: {$version-&gt;updatedAt-&gt;format(DateTimeInterface::ATOM)}\n&quot;;
+}
+
+// Archive the agent
+$archived = $client-&gt;beta-&gt;agents-&gt;archive($agent-&gt;id);
+echo &quot;Archived at: {$archived-&gt;archivedAt-&gt;format(DateTimeInterface::ATOM)}\n&quot;;
+</code></pre>
+<hr />
+<h2>Send a User Message</h2>
+<pre><code class="language-php">$client-&gt;beta-&gt;sessions-&gt;events-&gt;send(
+    $session-&gt;id,
+    events: [
+        [
+            'type' =&gt; 'user.message',
+            'content' =&gt; [['type' =&gt; 'text', 'text' =&gt; 'Review the auth module']],
+        ],
+    ],
+);
+</code></pre>
+<blockquote>
+<p>Tip: <strong>Stream-first:</strong> Open the stream <em>before</em> (or concurrently with) sending the message. The stream only delivers events that occur after it opens - stream-after-send means early events arrive buffered in one batch. See <a href="../../shared/managed-agents-events.html#steering-patterns">Steering Patterns</a>.</p>
+</blockquote>
+<hr />
+<h2>Stream Events (SSE)</h2>
+<blockquote>
+<p>Note: <strong>Streaming transporter:</strong> PHP's default buffered PSR-18 client never returns for the open-ended session event stream. Use a streaming Guzzle transporter for <code>streamStream()</code> calls - other calls keep the default client.</p>
+</blockquote>
+<pre><code class="language-php">$streamingClient = new GuzzleHttp\Client(['stream' =&gt; true]);
+
+// Open the stream first, then send the user message
+$stream = $client-&gt;beta-&gt;sessions-&gt;events-&gt;streamStream(
+    $session-&gt;id,
+    requestOptions: ['transporter' =&gt; $streamingClient],
+);
+$client-&gt;beta-&gt;sessions-&gt;events-&gt;send(
+    $session-&gt;id,
+    events: [
+        [
+            'type' =&gt; 'user.message',
+            'content' =&gt; [['type' =&gt; 'text', 'text' =&gt; 'Summarize the repo README']],
+        ],
+    ],
+);
+
+foreach ($stream as $event) {
+    match ($event-&gt;type) {
+        'agent.message' =&gt; array_walk(
+            $event-&gt;content,
+            static fn($block) =&gt; $block-&gt;type === 'text' ? print($block-&gt;text) : null,
+        ),
+        'agent.tool_use' =&gt; print(&quot;\n[Using tool: {$event-&gt;name}]\n&quot;),
+        'session.error' =&gt; printf(&quot;\n[Error: %s]&quot;, $event-&gt;error?-&gt;message ?? 'unknown'),
+        default =&gt; null,
+    };
+    if ($event-&gt;type === 'session.status_idle' || $event-&gt;type === 'session.error') {
+        break;
+    }
+}
+$stream-&gt;close();
+</code></pre>
+<h3>Reconnecting and Tailing</h3>
+<p>When reconnecting mid-session, list past events first to dedupe, then tail live events:</p>
+<pre><code class="language-php">$stream = $client-&gt;beta-&gt;sessions-&gt;events-&gt;streamStream(
+    $session-&gt;id,
+    requestOptions: ['transporter' =&gt; $streamingClient],
+);
+
+// Stream is open and buffering. List history before tailing live.
+$seenEventIds = [];
+foreach ($client-&gt;beta-&gt;sessions-&gt;events-&gt;list($session-&gt;id)-&gt;pagingEachItem() as $event) {
+    $seenEventIds[$event-&gt;id] = true;
+}
+
+// Tail live events, skipping anything already seen
+foreach ($stream as $event) {
+    if (isset($seenEventIds[$event-&gt;id])) {
+        continue;
+    }
+    $seenEventIds[$event-&gt;id] = true;
+    match ($event-&gt;type) {
+        'agent.message' =&gt; array_walk(
+            $event-&gt;content,
+            static fn($block) =&gt; $block-&gt;type === 'text' ? print($block-&gt;text) : null,
+        ),
+        default =&gt; null,
+    };
+    if ($event-&gt;type === 'session.status_idle') {
+        break;
+    }
+}
+$stream-&gt;close();
+</code></pre>
+<hr />
+<h2>Provide Custom Tool Result</h2>
+<blockquote>
+<p>Note: The PHP managed-agents bindings for <code>user.custom_tool_result</code> are not yet documented in this skill or in the apps source examples. Refer to <code>shared/managed-agents-events.md</code> for the wire format and the <code>anthropic-ai/sdk</code> PHP repository for the corresponding params.</p>
+</blockquote>
+<hr />
+<h2>Poll Events</h2>
+<pre><code class="language-php">foreach ($client-&gt;beta-&gt;sessions-&gt;events-&gt;list($session-&gt;id)-&gt;pagingEachItem() as $event) {
+    echo &quot;{$event-&gt;type}: {$event-&gt;id}\n&quot;;
+}
+</code></pre>
+<hr />
+<h2>Upload a File</h2>
+<blockquote>
+<p>Note: <strong>PHP file upload:</strong> The PHP SDK's beta managed-agents file upload binding is not shown in the apps source examples; the canonical PHP example uses raw cURL against <code>POST /v1/files</code>. If your codebase prefers the SDK, WebFetch the <code>anthropic-ai/sdk</code> PHP repository for the latest binding before writing code.</p>
+</blockquote>
+<pre><code class="language-php">use Anthropic\Beta\Sessions\BetaManagedAgentsFileResourceParams;
+
+// Raw cURL upload (canonical example from the apps source)
+$csvPath = 'data.csv';
+$ch = curl_init('https://api.anthropic.com/v1/files');
+curl_setopt_array($ch, [
+    CURLOPT_RETURNTRANSFER =&gt; true,
+    CURLOPT_POST =&gt; true,
+    CURLOPT_HTTPHEADER =&gt; [
+        'x-api-key: ' . getenv('ANTHROPIC_API_KEY'),
+        'anthropic-version: 2023-06-01',
+        'anthropic-beta: files-api-2025-04-14',
+    ],
+    CURLOPT_POSTFIELDS =&gt; ['file' =&gt; new CURLFile($csvPath, 'text/csv', 'data.csv')],
+]);
+$file = json_decode(curl_exec($ch));
+echo &quot;File ID: {$file-&gt;id}\n&quot;;
+
+// Mount in a session
+$session = $client-&gt;beta-&gt;sessions-&gt;create(
+    agent: $agent-&gt;id,
+    environmentID: $environment-&gt;id,
+    resources: [
+        BetaManagedAgentsFileResourceParams::with(
+            type: 'file',
+            fileID: $file-&gt;id,
+            mountPath: '/workspace/data.csv',
+        ),
+    ],
+);
+</code></pre>
+<h3>Add and Manage Resources on an Existing Session</h3>
+<pre><code class="language-php">// Attach an additional file to an open session
+$resource = $client-&gt;beta-&gt;sessions-&gt;resources-&gt;add(
+    $session-&gt;id,
+    type: 'file',
+    fileID: $file-&gt;id,
+);
+echo &quot;{$resource-&gt;id}\n&quot;; // &quot;sesrsc_01ABC...&quot;
+
+// List resources on the session
+$listed = $client-&gt;beta-&gt;sessions-&gt;resources-&gt;list($session-&gt;id);
+foreach ($listed-&gt;data as $entry) {
+    echo &quot;{$entry-&gt;id} {$entry-&gt;type}\n&quot;;
+}
+
+// Detach a resource
+$client-&gt;beta-&gt;sessions-&gt;resources-&gt;delete($resource-&gt;id, sessionID: $session-&gt;id);
+</code></pre>
+<hr />
+<h2>List and Download Session Files</h2>
+<pre><code class="language-php">$files = $client-&gt;beta-&gt;files-&gt;list(
+    scopeID: 'sesn_abc123',
+    betas: ['managed-agents-2026-04-01'],
+);
+$content = $client-&gt;beta-&gt;files-&gt;download($files-&gt;data[0]-&gt;id);
+file_put_contents('output.txt', $content);
+</code></pre>
+<hr />
+<h2>Session Management</h2>
+<pre><code class="language-php">// List environments
+$environments = $client-&gt;beta-&gt;environments-&gt;list();
+
+// Retrieve a specific environment
+$env = $client-&gt;beta-&gt;environments-&gt;retrieve($environment-&gt;id);
+
+// Archive an environment (read-only, existing sessions continue)
+$client-&gt;beta-&gt;environments-&gt;archive($environment-&gt;id);
+
+// Delete an environment (only if no sessions reference it)
+$client-&gt;beta-&gt;environments-&gt;delete($environment-&gt;id);
+
+// Delete a session
+$client-&gt;beta-&gt;sessions-&gt;delete($session-&gt;id);
+</code></pre>
+<hr />
+<h2>MCP Server Integration</h2>
+<pre><code class="language-php">use Anthropic\Beta\Agents\BetaManagedAgentsAgentToolset20260401Params;
+use Anthropic\Beta\Agents\BetaManagedAgentsMCPToolsetParams;
+use Anthropic\Beta\Agents\BetaManagedAgentsURLMCPServerParams;
+use Anthropic\Beta\Sessions\BetaManagedAgentsAgentParams;
+
+// Agent declares MCP server (no auth here - auth goes in a vault)
+$agent = $client-&gt;beta-&gt;agents-&gt;create(
+    name: 'GitHub Assistant',
+    model: 'claude-opus-5',
+    mcpServers: [
+        BetaManagedAgentsURLMCPServerParams::with(
+            type: 'url',
+            name: 'github',
+            url: 'https://api.githubcopilot.com/mcp/',
+        ),
+    ],
+    tools: [
+        BetaManagedAgentsAgentToolset20260401Params::with(type: 'agent_toolset_20260401'),
+        BetaManagedAgentsMCPToolsetParams::with(
+            type: 'mcp_toolset',
+            mcpServerName: 'github',
+        ),
+    ],
+);
+
+// Session attaches vault(s) containing credentials for those MCP server URLs
+$session = $client-&gt;beta-&gt;sessions-&gt;create(
+    agent: BetaManagedAgentsAgentParams::with(
+        type: 'agent',
+        id: $agent-&gt;id,
+        version: $agent-&gt;version,
+    ),
+    environmentID: $environment-&gt;id,
+    vaultIDs: [$vault-&gt;id],
+);
+</code></pre>
+<p>See <code>shared/managed-agents-tools.md</code> §Vaults for creating vaults and adding credentials.</p>
+<hr />
+<h2>Vaults</h2>
+<pre><code class="language-php">// Create a vault
+$vault = $client-&gt;beta-&gt;vaults-&gt;create(
+    displayName: 'Alice',
+    metadata: ['external_user_id' =&gt; 'usr_abc123'],
+);
+echo $vault-&gt;id . &quot;\n&quot;; // &quot;vlt_01ABC...&quot;
+
+// Add an OAuth credential
+$credential = $client-&gt;beta-&gt;vaults-&gt;credentials-&gt;create(
+    vaultID: $vault-&gt;id,
+    displayName: &quot;Alice's Slack&quot;,
+    auth: [
+        'type' =&gt; 'mcp_oauth',
+        'mcp_server_url' =&gt; 'https://mcp.slack.com/mcp',
+        'access_token' =&gt; 'xoxp-...',
+        'expires_at' =&gt; '2026-04-15T00:00:00Z',
+        'refresh' =&gt; [
+            'token_endpoint' =&gt; 'https://slack.com/api/oauth.v2.access',
+            'client_id' =&gt; '1234567890.0987654321',
+            'scope' =&gt; 'channels:read chat:write',
+            'refresh_token' =&gt; 'xoxe-1-...',
+            'token_endpoint_auth' =&gt; [
+                'type' =&gt; 'client_secret_post',
+                'client_secret' =&gt; 'abc123...',
+            ],
+        ],
+    ],
+);
+
+// Rotate the credential (e.g., after a token refresh)
+$client-&gt;beta-&gt;vaults-&gt;credentials-&gt;update(
+    $credential-&gt;id,
+    vaultID: $vault-&gt;id,
+    auth: [
+        'type' =&gt; 'mcp_oauth',
+        'access_token' =&gt; 'xoxp-new-...',
+        'expires_at' =&gt; '2026-05-15T00:00:00Z',
+        'refresh' =&gt; ['refresh_token' =&gt; 'xoxe-1-new-...'],
+    ],
+);
+
+// Archive a vault
+$client-&gt;beta-&gt;vaults-&gt;archive($vault-&gt;id);
+</code></pre>
+<hr />
+<h2>GitHub Repository Integration</h2>
+<p>Mount a GitHub repository as a session resource (a vault holds the GitHub MCP credential):</p>
+<pre><code class="language-php">$session = $client-&gt;beta-&gt;sessions-&gt;create(
+    agent: $agent-&gt;id,
+    environmentID: $environment-&gt;id,
+    vaultIDs: [$vault-&gt;id],
+    resources: [
+        [
+            'type' =&gt; 'github_repository',
+            'url' =&gt; 'https://github.com/org/repo',
+            'mount_path' =&gt; '/workspace/repo',
+            'authorization_token' =&gt; 'ghp_your_github_token',
+        ],
+    ],
+);
+</code></pre>
+<p>Multiple repositories on the same session:</p>
+<pre><code class="language-php">$resources = [
+    [
+        'type' =&gt; 'github_repository',
+        'url' =&gt; 'https://github.com/org/frontend',
+        'mount_path' =&gt; '/workspace/frontend',
+        'authorization_token' =&gt; 'ghp_your_github_token',
+    ],
+    [
+        'type' =&gt; 'github_repository',
+        'url' =&gt; 'https://github.com/org/backend',
+        'mount_path' =&gt; '/workspace/backend',
+        'authorization_token' =&gt; 'ghp_your_github_token',
+    ],
+];
+</code></pre>
+<p>Rotating a repository's authorization token:</p>
+<pre><code class="language-php">$listed = $client-&gt;beta-&gt;sessions-&gt;resources-&gt;list($session-&gt;id);
+$repoResourceId = $listed-&gt;data[0]-&gt;id;
+
+$client-&gt;beta-&gt;sessions-&gt;resources-&gt;update(
+    $repoResourceId,
+    sessionID: $session-&gt;id,
+    authorizationToken: 'ghp_your_new_github_token',
+);
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

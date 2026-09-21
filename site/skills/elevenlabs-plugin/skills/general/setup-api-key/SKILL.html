@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>setup-api-key · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/setup-api-key/SKILL.md</span><button onclick="t()">🌓</button></nav>
+<main><div class="meta"><div class="m-name">setup-api-key</div><div class="m-desc">Guides users through setting up an ElevenLabs API key for ElevenLabs MCP tools. Use when the user needs to configure an ElevenLabs API key, when ElevenLabs tools fail due to missing API key, or when the user mentions needing access to ElevenLabs. First checks whether ELEVENLABS_API_KEY is already configured and valid, and only runs full setup when needed.</div><div class="m-src">源文件：<a href="https://github.com/elevenlabs/plugin/blob/main/skills/general/setup-api-key/SKILL.md" target="_blank" rel="noopener">elevenlabs/plugin/skills/general/setup-api-key/SKILL.md</a></div></div><h1>ElevenLabs API Key Setup</h1>
+<p>Guide the user through obtaining and configuring an ElevenLabs API key.</p>
+<h2>Workflow</h2>
+<h3>Step 0: Check for an existing API key first</h3>
+<p>Before asking the user for a key, check for an existing <code>ELEVENLABS_API_KEY</code>:</p>
+<ol>
+<li>Check whether <code>ELEVENLABS_API_KEY</code> exists in the current environment. If it does, use that value for this initial check.</li>
+<li>Only if it is not in the environment, check <code>.env</code> for <code>ELEVENLABS_API_KEY=&lt;value&gt;</code>.</li>
+<li>Do not print, quote, or repeat the key. If you mention it, redact it.</li>
+<li>If an existing key is found, validate it:
+   <code>text
+   GET https://api.elevenlabs.io/v1/user
+   Header: xi-api-key: &lt;existing-api-key&gt;</code></li>
+<li><strong>If existing key validation succeeds:</strong>
+   - Tell the user ElevenLabs is already configured and working
+   - Skip the setup flow
+   - Ask whether they want to replace/rotate the key; if not, stop</li>
+<li><strong>If existing key validation fails:</strong>
+   - Tell the user the existing key appears invalid or expired
+   - Continue to Step 1</li>
+</ol>
+<h3>Step 1: Request the API key</h3>
+<p>Tell the user:</p>
+<blockquote>
+<p>To set up ElevenLabs, open the API keys page: https://elevenlabs.io/app/settings/api-keys</p>
+<p>(Need an account? Create one at https://elevenlabs.io/app/sign-up first)</p>
+<p>If you don't have an API key yet:
+1. Click "Create key"
+2. Name it (or use the default)
+3. Set permission for your key. If you provide a key with "User" permission set to "Read" this skill will automatically verify if your key works
+4. Click "Create key" to confirm
+5. <strong>Copy the key immediately</strong> - it's only shown once!</p>
+<p>Do not paste the key into this chat. Instead, copy/paste it into your local <code>.env</code> file:</p>
+<p><code>ELEVENLABS_API_KEY=your-api-key</code></p>
+<p>If <code>.env</code> already has an <code>ELEVENLABS_API_KEY=...</code> line, replace that line.
+Tell me when you've saved it, without sharing the key.</p>
+</blockquote>
+<p>Then wait for the user to confirm that the key is saved locally.</p>
+<h3>Step 2: Validate and configure</h3>
+<p>After the user says the key is saved:</p>
+<ol>
+<li>Re-check both <code>.env</code> and the current environment for <code>ELEVENLABS_API_KEY</code>, but treat <code>.env</code> as the source of truth for this step.</li>
+<li>If <code>.env</code> contains a value, validate that value even when the current environment also has a different <code>ELEVENLABS_API_KEY</code>.</li>
+<li>If <code>.env</code> does not contain the key:
+   - Tell the user <code>.env</code> does not appear to contain <code>ELEVENLABS_API_KEY</code>.
+   - Show the expected line again.
+   - If the current environment does contain a key, note that this step still requires saving the key in <code>.env</code>.
+   - Remind them not to paste the key into chat.</li>
+<li>If a <code>.env</code> key is found, validate it:
+   <code>text
+   GET https://api.elevenlabs.io/v1/user
+   Header: xi-api-key: &lt;local-api-key&gt;</code></li>
+<li>If validation fails:
+   - Tell the user the local key appears invalid or expired.
+   - Remind them of the API keys page.
+   - Ask them to replace the <code>.env</code> value and tell you when it is saved.</li>
+<li>If validation succeeds, confirm:<blockquote>
+<p>Done. ElevenLabs is configured and the key in <code>.env</code> works.</p>
+</blockquote>
+</li>
+</ol>
+<h2>Safety Rules</h2>
+<ul>
+<li>Never ask the user to paste an API key, token, or secret into chat.</li>
+<li>Never print or echo API key values from environment variables or <code>.env</code>.</li>
+<li>Prefer <code>.env</code> or managed secrets over shell history for persistent local configuration.</li>
+<li>For browser or client-side apps, keep <code>ELEVENLABS_API_KEY</code> on the server and issue short-lived tokens where applicable.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

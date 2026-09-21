@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>wow-maker · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/wow-maker.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>wow-maker — everything you need to make a website wow</h1>
+<p>This is THE design source for every site you build. There are no fixed templates to
+pick and fill — you <strong>compose</strong> a distinctive, award-tier site from the directory
+below: bespoke AI-generated assets, signature animation patterns, motion/3D
+libraries, and copy-paste component/block registries.</p>
+<p><strong>The mandatory wow on a website is the ANIMATED WEBSITE.</strong> On every
+<code>--type website</code> build the Tier-1 wow is fixed by the brief's <code>Animation mode</code>
+(<code>references/website-flow.md</code> Phase 0): the DEFAULT is the <strong>animated website</strong> —
+the seam-locked scroll-scrub camera journey in <code>references/scroll-scrub.md</code> — and
+that is what "ships a real wow moment" MEANS here. This file is the ingredient
+directory you build the SURROUNDING craft with (bespoke assets, section motion,
+component registries); it is NOT a menu of alternatives to the animated website.
+Use <code>design-recipe.md</code> for HOW to execute with taste; this file is WHAT to build
+the supporting layer with.</p>
+<h2>What counts as "done" (every site)</h2>
+<p>Wow is part of DONE, not optional polish. The bar is the <code>Animation mode</code> the
+brief committed to — nothing lighter:</p>
+<ol>
+<li><strong>The Tier-1 wow matches <code>Animation mode</code>.</strong> Default <code>animated-website</code> → the
+   scroll-scrub camera journey is built (component + scene media), per
+   <code>references/scroll-scrub.md</code> and enforced by the Phase 5 gate item 9f. The
+   items below are the craft AROUND it, not a substitute: a ticker, hover motion,
+   entrance transitions, animated numbers, a shader gradient, or any single §2
+   effect DO NOT satisfy the animated-website requirement. Only when the brief
+   records <code>Animation mode: non-animated</code> (the user picked Non-animated at intake)
+   does a §2 signature effect / lighter technique become the Tier-1 wow.</li>
+<li><strong>≥1 bespoke generated asset</strong>, downloaded into <code>app/public/</code> and actually
+   referenced — never stock, picsum, an icon-font hero, or a CSS-only hero. (§1)</li>
+<li><strong>Motivated entrance motion</strong> (scroll reveals / spring transitions via
+   <code>motion/react</code>, GSAP, or a registry reveal), <code>prefers-reduced-motion</code>-gated. Not a
+   dead static page.</li>
+<li><strong>Reach into the component/block directory (§5) instead of hand-rolling</strong> generic
+   sections — Tailark for full marketing sections; Magic UI / Cult UI / SmoothUI /
+   motion-primitives for effects. Hand-built-from-scratch is slower and more generic.</li>
+<li><strong>Where they fit:</strong> an animated headline (<code>split-type</code> + GSAP, Magic UI
+   <code>morphing-text</code>/<code>aurora-text</code>) and animated numbers (<code>@number-flow/react</code>) instead
+   of static text.</li>
+</ol>
+<p><strong>Order of work — the camera journey FIRST.</strong> On the animated-website default,
+decide the journey and generate the scene media BEFORE you build the page, so the
+scroll-scrub spine drives the design. Do not ship a generic static structure and
+plan to "add the animation later" — you won't, and the gate will fail it.</p>
+<p><strong>Restraint is NOT an escape hatch from the animated website.</strong> "Clean",
+"minimal", "trustworthy", "Linear-like", "Notion-like" briefs are STILL
+<code>Animation mode: animated-website</code> — restraint means the journey is <em>calm and
+deliberate</em> (slower camera, quieter scenes), not absent. A minimal or serious
+brief does NOT make it <code>non-animated</code>; only the user's own Non-animated choice
+does. Never use "it's minimal" as cover to ship a plain page or downgrade
+the animated website to a soft effect.</p>
+<h2>Rules (short)</h2>
+<ul>
+<li><strong>License (the only hard rule for us):</strong> use ONLY what is listed here — every entry
+  is free + permissively licensed (MIT / Apache-2.0 / BSD / Zlib / Unlicense). Never
+  add a proprietary/paid source (Unicorn Studio, Cult Pro, React Bits, Spline, Rive,
+  Origin UI, hover.dev, Aceternity Pro, Motion+). What the end user adds to their own
+  site later is their responsibility.</li>
+<li><strong>SSR tags (Cloudflare Worker):</strong> <code>[S]</code> static = server-safe anywhere. <code>[C]</code>
+  client-only = render under a mounted gate / client boundary, no <code>window</code> at module
+  top. <code>[W]</code> webgl/canvas = <code>[C]</code> <strong>plus</strong> <code>React.lazy</code> + code-split so it never
+  enters the SSR render path. See the SSR pattern at the bottom.</li>
+<li><strong>Motion budget:</strong> one signature/hero effect per page (don't stack two). Motion must
+  be motivated (<code>design-recipe.md</code> §6). Honor <code>prefers-reduced-motion</code>:
+  every animated effect needs a static fallback.</li>
+</ul>
+<hr />
+<h2>1. Generate bespoke AI assets — this is our biggest edge</h2>
+<p>A site with real, generated art looks dramatically cooler than one built from stock,
+icon-fonts, CSS gradients, or empty placeholders — and generating it is <strong>our
+product's superpower</strong>. Treat bespoke asset generation as a <strong>default step on every
+build</strong>, not an afterthought. A hero with a generated image / video / 3D subject is
+often the single biggest wow upgrade available.</p>
+<p><strong>Commands</strong> (<code>higgsfield generate create &lt;job_type&gt; --prompt "…" [flags]</code>).
+Jobs are async — <strong>submit (no <code>--wait</code> when batching; each prints a job id) →
+poll <code>higgsfield generate wait &lt;id&gt;</code> / <code>higgsfield generate get &lt;id&gt;</code> → use the
+result</strong> (a single job can pass <code>--wait</code> to block and print the result URL). If
+a param/model is rejected, run <code>higgsfield model list</code> +
+<code>higgsfield model get &lt;job_type&gt;</code> and use what they report.</p>
+<ul>
+<li>Images — <code>gpt_image_2</code> (general / art-directed), <code>nano_banana_pro</code>
+  (photoreal + reference-image driven, e.g. try-ons / product normalization).</li>
+<li>Video — <code>seedance_2_0</code> (seamless loops + short films).</li>
+<li><code>image_background_remover</code> — turn a product/subject shot into a transparent
+  PNG cutout.</li>
+<li><code>multi_image_to_3d</code> — turn 1-4 approved images into a textured <code>.glb</code>
+  (repeated <code>--image</code>, <code>--should_texture true</code>; no rigging).</li>
+</ul>
+<p><strong>Pipeline:</strong> generate → poll → <strong>download into <code>app/public/</code></strong> (e.g. <code>assets/</code>,
+<code>media/</code>, <code>frames/</code>) → reference <strong>same-origin</strong> (<code>/assets/...</code>). The Worker serves
+<code>public/</code> at the root. Never ship <code>&lt;img src=""&gt;</code> / <code>&lt;video src=""&gt;</code> blanks or
+stock/picsum as the final asset.</p>
+<p><strong>What to generate, and where it lands:</strong>
+- <strong>Hero image / background</strong> — the centerpiece visual (full-bleed or behind glass).
+- <strong>Section textures / atmospheric plates</strong> — backdrops that crossfade per section.
+- <strong>Video loop / showreel</strong> — a seamless <code>seedance_2_0</code> clip for a hero or band.
+- <strong>Product cutouts</strong> — generate the image → <code>image_background_remover</code> →
+  transparent PNG.
+- <strong>3D subject</strong> — approved image → <code>multi_image_to_3d</code> → <code>.glb</code> for an R3F scene.
+- <strong>OG image + favicon</strong> — generate, wire into <code>&lt;head&gt;</code> / <code>app-meta</code>.
+- <strong>People / avatars / testimonial faces, icon &amp; logo glyphs</strong> — bespoke, not stock.</p>
+<p><strong>Rules:</strong> prompt for "no text, no logos, no watermark" (IP-safe + lets you set type
+in HTML); match the palette/mood to the brief; downscale large outputs (hero ≤2k,
+cutouts ~800px); <strong>verify an image before the expensive <code>multi_image_to_3d</code>
+step</strong>; for a monochrome look force grayscale in the prompt AND on export.</p>
+<hr />
+<h2>2. Signature effects you can build (patterns)</h2>
+<p>High-impact, award-tier mechanics — build any of these from scratch with the libs
+named, adapt them to the brief, combine, or invent your own. These are ideas, not
+mandates. Pair every one with generated assets (§1) and the SSR pattern (bottom).</p>
+<ul>
+<li><strong>Particle-morph hero</strong> <code>[W]</code> — ~4-6k Three.js instanced points that morph through
+  the scroll (sphere → the product's silhouette → disperse), recolored/relit per
+  scroll stage. <em>Build:</em> <code>three</code> instanced points + a scroll-driven lerp between
+  precomputed target positions. <em>Fits:</em> premium product/brand (perfume, spirits,
+  jewelry, tech). Tune shape/finish/<code>envColor</code> to the niche so it never reads generic.</li>
+<li><strong>Fluid + smooth-scroll studio</strong> <code>[W]</code> — a fixed WebGL fluid/gradient backdrop with
+  a rotating point cloud, weighty Lenis scroll, GSAP ScrollTrigger reveals, and a
+  <strong>staggered 2-column video grid</strong> (not a carousel). <em>Build:</em> <code>three</code> + <code>gsap</code> +
+  <code>lenis</code> (or <code>@shadergradient/react</code> for the backdrop). <em>Fits:</em> studios, agencies.</li>
+<li><strong>Camera-dolly product switcher</strong> <code>[W]</code> — the active product dollies toward camera
+  while the next approaches from depth and the bg color lerps; drag/wheel/tabs +
+  spring snap + autoplay. <em>Build:</em> <code>@react-three/fiber</code> + <code>gsap</code>, scenes as data.
+  <em>Fits:</em> multi-variant product / flavor showcases.</li>
+<li><strong>Hold-to-spin 3D showroom</strong> <code>[W]</code> — a clay/toy-look turntable: a 3D subject on a
+  stepped platform, hold to spin with inertia, click hotspots for detail. <em>Build:</em>
+  <code>three</code> + <code>@react-three/fiber</code> + <code>@react-three/drei</code> (+ <code>image_to_3d</code> assets).
+  <em>Fits:</em> apparel, physical products, collectibles.</li>
+<li><strong>Cursor X-ray reveal</strong> <code>[C]</code> — a full-screen photo with an aligned "X-ray"
+  substrate beneath; a soft feathered lens follows the cursor and dissolves the cover
+  into the truth underneath. <em>Build:</em> pure React + a CSS <code>mask-image</code> at the cursor,
+  no 3D/GSAP. <em>Fits:</em> editorial deep-dives, "look inside" product stories. (Strictly
+  B&amp;W + one breathing accent reads most premium.)</li>
+<li><strong>Scroll-scrub film</strong> <code>[C]</code> — an AI-generated ~15s film extracted to frames and
+  drawn on a <code>&lt;canvas&gt;</code>, scrubbed forward/back by scroll, caption cards fading in.
+  <em>Build:</em> generate the film (§1) → ffmpeg frames into <code>public/frames/</code> → canvas +
+  rAF scrub. <em>Fits:</em> high-impact brand reveals / launches (dark, cinematic).</li>
+<li><strong>Frosted-card scrubber</strong> <code>[C]</code> — the warm, light variant: a lifestyle film scrubs
+  behind translucent frosted serif cards, then resolves into content panels. <em>Fits:</em>
+  boutiques, cafés, florists, ateliers.</li>
+<li><strong>Magnetic gallery wall</strong> <code>[C]</code> — an infinite draggable wall of tiles with magnetic
+  hover, 3D tilt, a burst intro, and click-to-zoom into a circular gallery. <em>Build:</em>
+  one shared pointer-physics handler + inertia + modulo wrap. <em>Fits:</em> portfolios,
+  galleries, visual merch.</li>
+<li><strong>Kinetic portfolio</strong> <code>[C]</code> — the full motion suite: Lenis smooth scroll, GSAP
+  reveals + scroll-velocity skew, magnetic elements, custom cursor + hero spotlight,
+  one marquee, a Swiper vinyl carousel, live clock. <em>Build:</em> <code>gsap</code> + <code>lenis</code> +
+  <code>swiper</code>. <em>Fits:</em> personal sites, résumés, creative showcases.</li>
+</ul>
+<hr />
+<h2>3. Quick "I need X" index</h2>
+<ul>
+<li><strong>Animated hero backdrop</strong> → <code>@shadergradient/react</code>, <code>three</code>+R3F, Magic UI
+  <code>light-rays</code>/<code>warp-background</code>/<code>retro-grid</code>, Cult UI <code>hero-*</code>, Kokonut
+  <code>beams-background</code>, <code>@tsparticles/slim</code>, <code>cobe</code> (globe) — or generate a hero image/video (§1).</li>
+<li><strong>Animated headline / text</strong> → Magic UI <code>aurora-text</code>/<code>morphing-text</code>/<code>hyper-text</code>,
+  motion-primitives <code>text-*</code>, Cult UI <code>text-animate</code>, chanhdai <code>apple-hello-effect</code>,
+  Eldora <code>*text</code>, or <code>split-type</code> + GSAP.</li>
+<li><strong>Scroll reveal</strong> → motion-primitives <code>in-view</code>/<code>animated-group</code>, Magic UI
+  <code>blur-fade</code>/<code>text-reveal</code>, <code>motion/react</code> <code>useInView</code>, GSAP ScrollTrigger.</li>
+<li><strong>Marquee / logo strip</strong> → Magic UI <code>marquee</code>/<code>scroll-based-velocity</code>,
+  motion-primitives <code>infinite-slider</code>, Animata/Eldora <code>marquee</code>.</li>
+<li><strong>Card with flair</strong> → Magic UI <code>magic-card</code>/<code>neon-gradient-card</code>, motion-primitives
+  <code>tilt</code>/<code>border-trail</code>, Cult UI <code>shift-card</code>, SmoothUI <code>glow-hover-card</code>.</li>
+<li><strong>Nav / dock / command</strong> → shadcn <code>navigation-menu</code>/<code>command</code>, Cult UI
+  <code>dock</code>/<code>floating-panel</code>, motion-primitives <code>dock</code>.</li>
+<li><strong>Animated numbers</strong> → <code>@number-flow/react</code>, motion-primitives <code>sliding-number</code>,
+  Magic UI <code>number-ticker</code>.</li>
+<li><strong>Custom cursor / magnetic</strong> → motion-primitives <code>cursor</code>/<code>magnetic</code>, Magic UI
+  <code>smooth-cursor</code>, SmoothUI <code>magnetic-button</code>.</li>
+<li><strong>Full marketing section</strong> (hero/features/pricing/testimonials/CTA/footer) → <strong>Tailark</strong>.</li>
+<li><strong>App shell / dashboard / auth / table / chart</strong> → <strong>shadcn blocks</strong>.</li>
+<li><strong>Confetti / celebration</strong> → <code>@tsparticles/confetti</code>, Magic UI <code>confetti</code>.</li>
+<li><strong>3D scene / particle field</strong> → <code>three</code>+R3F+<code>drei</code> (+<code>@react-three/postprocessing</code>, <code>maath</code>).</li>
+</ul>
+<hr />
+<h2>4. Framework toolkit (npm deps — add to <code>app/package.json</code> when used)</h2>
+<table>
+<thead>
+<tr>
+<th>Library (npm)</th>
+<th>License</th>
+<th>Wow it adds</th>
+<th>SSR</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>motion</code> (<code>motion/react</code>)</td>
+<td>MIT</td>
+<td>enter/exit (<code>AnimatePresence</code>), layout/FLIP, springs, <code>useScroll</code>/<code>useInView</code>, gestures</td>
+<td><code>[C]</code></td>
+</tr>
+<tr>
+<td><code>gsap</code> + <code>@gsap/react</code></td>
+<td>GSAP Standard License (free, all plugins)</td>
+<td>ScrollTrigger pinned/scrubbed sequences, timelines, <code>SplitText</code>; use <code>useGSAP()</code></td>
+<td><code>[C]</code></td>
+</tr>
+<tr>
+<td><code>lenis</code> (<code>lenis/react</code>)</td>
+<td>MIT</td>
+<td>weighted buttery smooth scroll; <code>&lt;ReactLenis root&gt;</code></td>
+<td><code>[C]</code></td>
+</tr>
+<tr>
+<td><code>three</code> + <code>@react-three/fiber</code> + <code>@react-three/drei</code></td>
+<td>MIT</td>
+<td>real-time 3D, GLTF/PBR, glass, particle fields, camera flythroughs</td>
+<td><code>[W]</code></td>
+</tr>
+<tr>
+<td><code>@react-three/postprocessing</code> + <code>postprocessing</code></td>
+<td>Zlib/MIT</td>
+<td>bloom, DOF, glitch, chromatic aberration on the R3F stack</td>
+<td><code>[W]</code></td>
+</tr>
+<tr>
+<td><code>@shadergradient/react</code></td>
+<td>MIT</td>
+<td>premium animated 3D gradient hero/section backdrop (peers: <code>three</code>, <code>@react-three/fiber</code>, <code>three-stdlib</code>, <code>camera-controls</code>)</td>
+<td><code>[W]</code></td>
+</tr>
+<tr>
+<td><code>@tsparticles/react</code> + <code>@tsparticles/slim</code> / <code>@tsparticles/confetti</code></td>
+<td>MIT</td>
+<td>particle fields, interactive backgrounds, confetti (vanilla canvas)</td>
+<td><code>[C]</code></td>
+</tr>
+<tr>
+<td><code>cobe</code></td>
+<td>MIT</td>
+<td>the 5KB rotating WebGL globe</td>
+<td><code>[W]</code></td>
+</tr>
+<tr>
+<td><code>ogl</code></td>
+<td>Unlicense</td>
+<td>bespoke custom-shader hero without three.js bulk</td>
+<td><code>[W]</code></td>
+</tr>
+<tr>
+<td><code>maath</code></td>
+<td>MIT</td>
+<td>math/easing helpers for R3F (point spheres, <code>easing.damp</code>)</td>
+<td><code>[S]</code></td>
+</tr>
+<tr>
+<td><code>animejs</code> (v4)</td>
+<td>MIT</td>
+<td>SVG line-draw/morph, staggered reveals, timelines</td>
+<td><code>[C]</code></td>
+</tr>
+<tr>
+<td><code>@number-flow/react</code></td>
+<td>MIT</td>
+<td>animated odometer number/price transitions</td>
+<td><code>[C]</code></td>
+</tr>
+<tr>
+<td><code>split-type</code></td>
+<td>MIT</td>
+<td>split text into lines/words/chars (pair with GSAP/Motion)</td>
+<td><code>[C]</code></td>
+</tr>
+<tr>
+<td><code>swiper</code></td>
+<td>MIT</td>
+<td>touch sliders / coverflow carousels</td>
+<td><code>[C]</code></td>
+</tr>
+</tbody>
+</table>
+<p>drei caveat: use <code>&lt;Environment files={…}&gt;</code> with a self-hosted CC0 HDRI in <code>public/</code>,
+not <code>preset=</code> (it fetches a CDN at runtime). Keep all <code>three</code>/shader code in a
+<code>React.lazy</code> + mounted client boundary.</p>
+<hr />
+<h2>5. Component &amp; block directory (copy-paste; the source lands in the repo)</h2>
+<p><code>shadcn add</code> drops the component SOURCE into <code>app/src/components/</code> — the user owns it.
+Namespaced registries must be registered in <code>app/components.json</code> first (block below);
+URL-based ones install directly.</p>
+<h3><code>app/components.json</code> → <code>registries</code></h3>
+<pre><code class="language-jsonc">&quot;registries&quot;: {
+  &quot;@magicui&quot;:           &quot;https://magicui.design/r/{name}.json&quot;,
+  &quot;@cult-ui&quot;:           &quot;https://www.cult-ui.com/r/{name}.json&quot;,
+  &quot;@smoothui&quot;:          &quot;https://smoothui.dev/r/{name}.json&quot;,
+  &quot;@ncdai&quot;:             &quot;https://chanhdai.com/r/{name}.json&quot;,
+  &quot;@motion-primitives&quot;: &quot;https://motion-primitives.com/c/{name}.json&quot;,
+  &quot;@kokonutui&quot;:         &quot;https://kokonutui.com/r/{name}.json&quot;,
+  &quot;@tailark&quot;:           &quot;https://tailark.com/r/{name}.json&quot;,
+  &quot;@eldoraui&quot;:          &quot;https://eldoraui.site/r/{name}.json&quot;
+}
+</code></pre>
+<p>(<code>@shadcn</code> is built in. Verify a URL at wire-time if an <code>add</code> 404s.)</p>
+<h3>shadcn/ui — base layer + app blocks · <code>npx shadcn@latest add &lt;name&gt;</code></h3>
+<p>Primitives (mostly <code>[S]</code>/<code>[C]</code>): <code>button</code> <code>card</code> <code>input</code> <code>select</code> <code>dialog</code> <code>drawer</code> <code>sheet</code> <code>sonner</code> <code>tabs</code> <code>accordion</code> <code>breadcrumb</code> <code>navigation-menu</code> <code>command</code> (⌘K) <code>table</code> <code>skeleton</code> <code>spinner</code>. Rich <code>[C]</code>: <code>carousel</code> (embla), <code>data-table</code> (TanStack Table), <code>chart</code> (recharts), <code>date-picker</code>. Full blocks: <code>sidebar-07/03/08/15/16</code>, <code>dashboard-01</code>, <code>login-01/03/04</code>, <code>calendar-01…32</code>, <code>products-01</code>.</p>
+<h3>Magic UI — effects/backgrounds/text · <code>npx shadcn@latest add "https://magicui.design/r/&lt;name&gt;.json"</code></h3>
+<p>Backgrounds: <code>light-rays</code> <code>[W]</code>, <code>warp-background</code> <code>[C]</code>, <code>retro-grid</code> <code>[S]</code>, <code>ripple</code> <code>[S]</code>, <code>meteors</code> <code>[S]</code>, <code>particles</code> <code>[C]</code>, <code>flickering-grid</code> <code>[C]</code>, <code>dot-pattern</code>/<code>grid-pattern</code> <code>[S]</code>, <code>border-beam</code> <code>[S]</code>. Cards: <code>magic-card</code> <code>[C]</code>, <code>neon-gradient-card</code> <code>[S]</code>, <code>bento-grid</code> <code>[S]</code>, <code>shine-border</code> <code>[S]</code>. Buttons: <code>shimmer-button</code>/<code>rainbow-button</code>/<code>interactive-hover-button</code>/<code>pulsating-button</code> <code>[S]</code>. Text: <code>aurora-text</code>/<code>animated-shiny-text</code> <code>[S]</code>, <code>sparkles-text</code>/<code>morphing-text</code>/<code>hyper-text</code>/<code>number-ticker</code> <code>[C]</code>. Scroll/marquee: <code>text-reveal</code>/<code>blur-fade</code> <code>[C]</code>, <code>marquee</code> <code>[S]</code>, <code>scroll-based-velocity</code> <code>[C]</code>. Misc: <code>globe</code> <code>[W]</code>, <code>orbiting-circles</code> <code>[S]</code>, <code>animated-beam</code> <code>[C]</code>, <code>confetti</code> <code>[C]</code>, <code>dock</code> <code>[C]</code>, <code>terminal</code> <code>[C]</code>, <code>safari</code>/<code>iphone</code> mockups <code>[S]</code>, <code>smooth-cursor</code> <code>[C]</code>.</p>
+<h3>Cult UI (free) · <code>npx shadcn@latest add https://www.cult-ui.com/r/&lt;name&gt;.json</code></h3>
+<p>Heroes: <code>hero-liquid-metal</code>/<code>hero-dithering</code>/<code>hero-heatmap</code> <code>[W]</code>, <code>hero-color-panel</code> <code>[C]</code>, <code>hero-static-radial-gradient</code> <code>[S]</code>. Backgrounds/shader: <code>shader-lens-blur</code>/<code>canvas-fractal-grid</code>/<code>distorted-glass</code>/<code>dither-image</code>/<code>morph-surface</code> <code>[W]</code>, <code>bg-animated-gradient</code>/<code>bg-media</code> <code>[C]</code>, <code>stripe-bg-guides</code> <code>[S]</code>. Text: <code>gradient-heading</code> <code>[S]</code>, <code>text-animate</code>/<code>typewriter</code>/<code>pixel-heading-word</code>/<code>text-gif</code> <code>[C]</code>. Buttons: <code>texture-button</code>/<code>metal-button</code>/<code>neumorph-button</code> <code>[S]</code>, <code>family-button</code>/<code>bg-animate-button</code>/<code>border-beam-button</code> <code>[C]</code>. Cards: <code>texture-card</code>/<code>minimal-card</code>/<code>cutout-card</code> <code>[S]</code>, <code>expandable-card</code>/<code>shift-card</code> <code>[C]</code>. Nav/misc <code>[C]</code>: <code>dock</code>/<code>floating-panel</code>/<code>side-panel</code>/<code>direction-aware-tabs</code>/<code>three-d-carousel</code>/<code>feature-carousel</code>/<code>logo-carousel</code>/<code>dynamic-island</code>/<code>sortable-list</code>/<code>color-picker</code>/<code>terminal-animation</code>/<code>animated-number</code>.</p>
+<h3>SmoothUI · <code>npx shadcn@latest add @smoothui/&lt;name&gt;</code></h3>
+<p>Cards: <code>apple-invites</code>/<code>app-download-stack</code>/<code>expandable-cards</code>/<code>glow-hover-card</code>/<code>scrollable-card-stack</code> <code>[C]</code>. Text: <code>reveal-text</code>/<code>scramble-hover</code>/<code>typewriter-text</code>/<code>wave-text</code>/<code>number-flow</code>/<code>price-flow</code>/<code>scroll-reveal-paragraph</code> <code>[C]</code>. Buttons: <code>magnetic-button</code>/<code>clip-corners-button</code>/<code>dot-morph-button</code>/<code>button-copy</code> <code>[C]</code>. Inputs: <code>power-off-slide</code>/<code>exposure-slider</code>/<code>scrubber</code>/<code>animated-file-upload</code> <code>[C]</code>. Misc: <code>siri-orb</code>/<code>dynamic-island</code>/<code>animated-tabs</code>/<code>gooey-popover</code>/<code>cursor-follow</code>/<code>infinite-slider</code>/<code>reviews-carousel</code>/<code>book</code>/<code>animated-avatar-group</code> <code>[C]</code>, <code>contribution-graph</code> <code>[S]</code>.</p>
+<h3>chanhdai (@ncdai) · <code>npx shadcn@latest add @ncdai/&lt;name&gt;</code></h3>
+<p>Text: <code>apple-hello-effect</code> (handwritten SVG signature)/<code>shimmering-text</code>/<code>fluid-gradient-text</code>/<code>text-flip</code> <code>[C]</code>, <code>spinning-circular-text</code> <code>[S]</code>. Hero/bg/cards <code>[C]</code>: <code>hero-01</code>/<code>dot-grid-spotlight</code>/<code>glow-card-grid</code>/<code>testimonial-spotlight</code>/<code>team-01</code>. Inputs <code>[C]</code>: <code>wheel-picker</code>/<code>elastic-slider</code>/<code>slide-to-unlock</code>. Marquee/nav: <code>testimonials-marquee</code> <code>[S]</code>, <code>logos-carousel</code>/<code>line-nav</code>/<code>share-menu</code>/<code>toc-minimap</code>/<code>scroll-fade-effect</code> <code>[C]</code>. Misc <code>[C]</code>: <code>theme-switcher</code>/<code>copy-button</code>/<code>spotlight-logo</code>/<code>icon-swap</code>/<code>github-contributions</code>.</p>
+<h3>motion-primitives · <code>npx shadcn@latest add "https://motion-primitives.com/c/&lt;name&gt;.json"</code></h3>
+<p>Text <code>[C]</code>: <code>text-effect</code>/<code>text-shimmer</code>/<code>text-morph</code>/<code>text-scramble</code>/<code>text-roll</code>/<code>text-loop</code>/<code>spinning-text</code>/<code>animated-number</code>/<code>sliding-number</code>. Scroll <code>[C]</code>: <code>in-view</code>/<code>animated-group</code>/<code>scroll-progress</code>. Surfaces: <code>glow-effect</code>/<code>spotlight</code>/<code>border-trail</code>/<code>tilt</code>/<code>animated-background</code> <code>[C]</code>, <code>progressive-blur</code> <code>[S]</code>. Interaction <code>[C]</code>: <code>magnetic</code>/<code>cursor</code>/<code>dock</code>/<code>infinite-slider</code>/<code>carousel</code>/<code>image-comparison</code>/<code>morphing-dialog</code>/<code>morphing-popover</code>/<code>transition-panel</code>/<code>disclosure</code>/<code>accordion</code>.</p>
+<h3>Kokonut UI (free) · <code>npx shadcn@latest add @kokonutui/&lt;name&gt;</code></h3>
+<p>Backgrounds/hero <code>[C]</code>: <code>background-paths</code>/<code>beams-background</code>/<code>shape-hero</code>. Cards: <code>liquid-glass-card</code>/<code>tweet-card</code>/<code>bento-grid</code> <code>[S]</code>, <code>card-flip</code>/<code>card-stack</code>/<code>apple-activity-card</code>/<code>carousel-cards</code> <code>[C]</code>. Text: <code>shimmer-text</code>/<code>glitch-text</code> <code>[S]</code>, <code>type-writer</code>/<code>matrix-text</code>/<code>dynamic-text</code>/<code>scroll-text</code> <code>[C]</code>. Buttons: <code>gradient-button</code>/<code>social-button</code>/<code>switch-button</code> <code>[S]</code>, <code>particle-button</code>/<code>attract-button</code>/<code>hold-button</code> <code>[C]</code>. AI inputs <code>[C]</code>: <code>ai-prompt</code>/<code>ai-input-search</code>/<code>ai-voice</code>/<code>action-search-bar</code>/<code>file-upload</code>. Nav/misc <code>[C]</code>: <code>smooth-tab</code>/<code>toolbar</code>/<code>profile-dropdown</code>/<code>smooth-drawer</code>.</p>
+<h3>Tailark — full marketing blocks · <code>npx shadcn@latest add @tailark/&lt;name&gt;</code> (themes: <code>dusk</code> dark, <code>mist</code> light) — nearly all <code>[S]</code></h3>
+<p>Heroes: <code>hero-section-1/4/7/9</code>, <code>mist-hero-section-1</code>. Features: <code>features-2/8/11</code>, <code>mist-features-3</code>. Pricing: <code>pricing-1/4</code>, <code>mist-pricing-1</code>. Testimonials: <code>testimonials-1/4</code>, <code>mist-testimonials-2</code>. CTA: <code>call-to-action-1/3</code>. Footer: <code>footer-1/4</code>, <code>mist-footer-2</code>. Also: <code>faqs-2</code> <code>[C]</code>, <code>stats-1</code>, <code>logo-cloud-1</code>, <code>integrations-1</code>, <code>team-1</code>, <code>comparator-1</code>, <code>content-1</code>, <code>contact-1</code>/<code>login-1</code>/<code>sign-up-1</code> <code>[C]</code>.</p>
+<h3>Animata · <code>npx shadcn add https://animata.design/r/&lt;category&gt;/&lt;name&gt;.json</code></h3>
+<p>Backgrounds: <code>animated-beam</code>/<code>blurry-blob</code>/<code>moving-gradient</code> <code>[S]</code>, <code>shooting-stars</code>/<code>interactive-grid</code> <code>[C]</code>, <code>boids-ecosystem</code> <code>[W]</code>. Buttons: <code>ai-button</code>/<code>shining-button</code>/<code>duolingo</code>/<code>slide-arrow-button</code> <code>[S]</code>, <code>ripple-button</code> <code>[C]</code>. Cards: <code>flip-card</code>/<code>animated-border-trail</code> <code>[S]</code>, <code>glowing-card</code>/<code>tilted-card</code>/<code>card-stack</code>/<code>expandable</code> <code>[C]</code>. Text: <code>animated-gradient-text</code>/<code>glitch-text</code> <code>[S]</code>, <code>typing-text</code>/<code>wave-reveal</code>/<code>counter</code>/<code>scroll-reveal</code> <code>[C]</code>. Misc: <code>marquee</code>/<code>spinner</code> <code>[S]</code>, <code>animated-dock</code>/<code>cursor-tracker</code>/<code>trailing-image</code>/<code>images-reveal</code>/<code>orbiting-items</code>/<code>split-reveal</code> <code>[C]</code>.</p>
+<h3>Eldora UI (@eldoraui) · <code>npx shadcn@latest add @eldoraui/&lt;name&gt;</code></h3>
+<p>Text <code>[C]</code>: <code>wavytext</code>/<code>blurintext</code>/<code>wordpullup</code>/<code>letterpullup</code>/<code>fadetext</code>/<code>gradualspacing</code>/<code>multidirectionslide</code>/<code>scaleletter</code>/<code>docktext</code>. Backgrounds: <code>novatrixbackground</code> <code>[W]</code>, <code>grid</code>/<code>hackerbackground</code>/<code>photonbeam</code> <code>[C]</code>. 3D/maps: <code>cobeglobe</code> <code>[W]</code>, <code>map</code>/<code>animatedframeworks</code> <code>[C]</code>. Sections/misc: <code>marquee</code> <code>[S]</code>, <code>animatedlist</code>/<code>testimonialslider</code>/<code>logotimeline</code>/<code>integrations</code>/<code>terminal</code> <code>[C]</code>, <code>cardfliphover</code>/<code>animatedbadge</code>/<code>animatedshinybutton</code>/<code>livebutton</code> <code>[S]</code>, device frames (<code>safaribrowser</code>/<code>macbookpro</code>/<code>iphone17pro</code>/<code>ipad</code>/<code>browser</code>) <code>[S]</code>.</p>
+<hr />
+<h2>6. SSR pattern (use for every <code>[C]</code> / <code>[W]</code> item)</h2>
+<pre><code class="language-tsx">// app/src/components/client-only.tsx — render children only after mount
+import { useEffect, useState, type ReactNode } from &quot;react&quot;;
+export function ClientOnly({ children, fallback = null }: { children: ReactNode; fallback?: ReactNode }) {
+  const [m, setM] = useState(false);
+  useEffect(() =&gt; setM(true), []);
+  return m ? &lt;&gt;{children}&lt;/&gt; : &lt;&gt;{fallback}&lt;/&gt;;
+}
+</code></pre>
+<pre><code class="language-tsx">// [W] WebGL: lazy + ClientOnly so three/shaders never run during SSR
+const Scene = lazy(() =&gt; import(&quot;./scene&quot;)); // default export
+&lt;ClientOnly fallback={&lt;div className=&quot;min-h-dvh bg-[var(--bg)]&quot; /&gt;}&gt;
+  &lt;Suspense fallback={null}&gt;&lt;Scene /&gt;&lt;/Suspense&gt;
+&lt;/ClientOnly&gt;
+</code></pre>
+<p>Gate motion behind reduced-motion: <code>useReducedMotion()</code> (Motion) or
+<code>matchMedia("(prefers-reduced-motion: reduce)")</code>, and render the static fallback when set.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

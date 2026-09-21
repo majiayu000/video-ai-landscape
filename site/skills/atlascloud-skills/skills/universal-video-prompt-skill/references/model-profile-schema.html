@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>model-profile-schema · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/universal-video-prompt-skill/references/model-profile-schema.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Model profile schema</h1>
+<p>A profile is what makes this skill adjust to a model instead of merely describing
+one. This file defines the <strong>fields</strong>; each model gets its own filled instance.</p>
+<p>Two rules govern every entry:</p>
+<ol>
+<li><strong>Record the measurement, not the impression.</strong> <code>timing drifts</code> is unusable;
+   <code>requested beats land ~2s late across a 15s piece</code> compiles into a decision.</li>
+<li><strong>Unknown is a valid value.</strong> An empty field prompts a probe. A guessed field
+   silently corrupts every compile and every comparison built on it.</li>
+</ol>
+<h2>Template</h2>
+<pre><code class="language-markdown"># Model profile: &lt;provider&gt;/&lt;model&gt;
+
+Last verified: &lt;date&gt; · Verified by: &lt;who&gt; · Provider: &lt;what you called&gt;
+
+## Capability layer
+
+| Field | Value | How verified |
+|---|---|---|
+| Reference addressing syntax | | |
+| Max references (image / video / audio) | | |
+| Multi-shot in one generation | yes / no / partial | |
+| Hard cut support | yes / no | |
+| Duration range | | |
+| Resolution options | | |
+| Native audio | native / reference / none | |
+| Timing adherence | | |
+| Recommended granularity | none / stages / second-level | |
+| First frame / first-and-last frame | | |
+| Extension or chaining | | |
+| Video editing | | |
+
+## Bias layer
+
+| Field | Value | How verified |
+|---|---|---|
+| Default aesthetic bias | | |
+| Effective anti-default phrasing | | |
+| Ineffective or overshooting phrasing | | |
+| Negative-lock behaviour | | |
+| Transition vocabulary recognised | | |
+| Language sensitivity | | |
+
+## Known failure modes
+
+- &lt;what breaks, under what conditions, and the workaround if there is one&gt;
+
+## Compile notes
+
+- &lt;anything the compiler must do for this model specifically&gt;
+</code></pre>
+<h2>Field definitions</h2>
+<h3>Capability layer</h3>
+<p><strong>Reference addressing syntax</strong> — the exact token that binds a reference. The one
+thing that must be translated rather than described. Record the literal form.</p>
+<p><strong>Max references</strong> — per type, and the combined ceiling if one exists. Note the
+<em>stable</em> range separately from the documented maximum when the provider publishes
+both; stability usually degrades before the hard limit.</p>
+<p><strong>Multi-shot in one generation</strong> — can one request produce ordered shots with cuts?
+<code>partial</code> means it works but unreliably; say what makes it fail.</p>
+<p><strong>Hard cut support</strong> — separate from multi-shot. Some models produce multiple
+shots but always bridge them with movement.</p>
+<p><strong>Duration range</strong> — and whether duration is set by parameter or inferred from
+inputs. Note any task type that locks it.</p>
+<p><strong>Native audio</strong> — <code>native</code> generates sound, <code>reference</code> only accepts audio input,
+<code>none</code> means audio lines should be stripped at compile time.</p>
+<p><strong>Timing adherence</strong> — the measurement, with the piece length it was measured on.
+Direction matters: consistently late is correctable by writing earlier;
+inconsistent is not correctable at all.</p>
+<p><strong>Recommended granularity</strong> — the conclusion drawn from timing adherence. This is
+the field the compiler reads.</p>
+<p><strong>First frame / first-and-last frame</strong> — supported, and whether it locks aspect
+ratio or duration.</p>
+<p><strong>Extension or chaining</strong> — supported, the ceiling, and whether it nests.</p>
+<p><strong>Video editing</strong> — supported, scope granularity, what it locks.</p>
+<h3>Bias layer</h3>
+<p><strong>Default aesthetic bias</strong> — where the model lands with no styling instruction.
+Be concrete: <code>smoothed beauty-filter faces</code>, <code>CG-looking surfaces</code>,
+<code>over-saturated grade</code>. This is what anti-default phrasing has to fight.</p>
+<p><strong>Effective anti-default phrasing</strong> — what measurably shifted the output on <em>this</em>
+model.</p>
+<p><strong>Ineffective or overshooting phrasing</strong> — equally valuable, and the field people
+skip. A phrase that overshoots is worse than one that does nothing, and this is
+where you record that a technique imported from another model backfired.</p>
+<p><strong>Negative-lock behaviour</strong> — do negatives get respected? Which kinds fail?</p>
+<p><strong>Transition vocabulary recognised</strong> — which named transitions land unqualified.
+Everything else needs term-plus-description.</p>
+<p><strong>Language sensitivity</strong> — does prompt language change results? Which language is
+strongest? Note if a term only works in one language.</p>
+<h2>Filled example: <code>bytedance/seedance-2.0</code></h2>
+<pre><code class="language-markdown"># Model profile: bytedance/seedance-2.0
+
+Last verified: 2026-08-03 · Provider: Atlas Cloud
+
+## Capability layer
+
+| Field | Value | How verified |
+|---|---|---|
+| Reference addressing syntax | `@image1`, `@image2`, … | Generation |
+| Max references (image / video / audio) | 9 images | Provider docs |
+| Multi-shot in one generation | yes — ordered segments with cuts | 15s multi-segment generation |
+| Hard cut support | yes | Same |
+| Duration range | 4–15s | Provider docs |
+| Native audio | native | Generation with audio enabled |
+| Timing adherence | Requested beats land ~2s late across a 15s piece; segment *order* holds | Controlled 15s run against a timestamped prompt |
+| Recommended granularity | stages | Derived from the row above |
+| Extension or chaining | via tail-frame chaining | — |
+
+## Bias layer
+
+| Field | Value | How verified |
+|---|---|---|
+| Default aesthetic bias | Strong cinematic priors; interprets sparse prompts well | A/B against an over-specified variant |
+| Effective anti-default phrasing | Explicit flatness lock when a 2D medium must stay graphic | Iteration on a hand-drawn VFX piece |
+| Ineffective or overshooting phrasing | Storyboard-grid over-specification — suppresses good camera priors and scores *worse* than a text-only version | A/B on the same segment |
+| Negative-lock behaviour | Respected; front-load them | Iteration |
+
+## Known failure modes
+
+- Small UI text and signage render with character-level errors. Use post-production
+  for anything that must read exactly.
+- Enumerated menu items get partially dropped; only some list entries render.
+- Explicit camera-move instructions are sometimes ignored while the rest of the
+  segment lands. Re-state the move as the segment's primary intent if it matters.
+
+## Compile notes
+
+- Emit `@imageN`. Do not emit bracketed or spelled-out reference labels.
+- Default to `stages`; when second-level is genuinely required, write beats
+  ~2s early and verify.
+- Prefer text-driven staging over feeding a storyboard grid.
+</code></pre>
+<h2>Where profiles come from</h2>
+<p>Profiles are the output of comparison work, not a prerequisite for it. Running the
+same spec across models <strong>is</strong> how these fields get filled — which means a
+comparison matrix is a data-collection exercise whose deliverable is the filled
+table, not only the videos.</p>
+<p>The highest-information single test: run one spec at <code>stages</code> and at
+<code>second-level</code>, measure the drift, and fill three fields at once — timing
+adherence, recommended granularity, and usually one failure mode.</p>
+<h2>Related</h2>
+<ul>
+<li><a href="portability.html">portability</a> — how the compiler consumes these fields</li>
+<li><a href="checklist.html">checklist</a> — pre-submission review</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

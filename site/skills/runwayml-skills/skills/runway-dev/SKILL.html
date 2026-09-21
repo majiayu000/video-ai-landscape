@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>runway-dev · Runway 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/runwayml-skills/">runwayml-skills</a><span class="crumb">/</span><span class="crumb">skills/runway-dev/SKILL.md</span><button onclick="t()">🌓</button></nav>
+<main><div class="meta"><div class="m-name">runway-dev</div><div class="m-desc">Foundation for building, modifying, debugging, or verifying Runway Dev Platform integrations in an application: connect Dev MCP, use llms.txt to find current resources, resolve project context, use SDK wait helpers, and handle errors. Load with relevant runway-dev-* surface skills. Not for direct media generation scripts or REST CLI shortcuts.</div><div class="m-src">源文件：<a href="https://github.com/runwayml/skills/blob/main/skills/runway-dev/SKILL.md" target="_blank" rel="noopener">runwayml/skills/skills/runway-dev/SKILL.md</a></div></div><h1>Runway Dev Platform</h1>
+<p>Workflow for integrating Runway Dev products into an application. Use MCP for live account state and management, the SDK for application code, and current docs for API contracts.</p>
+<blockquote>
+<p><strong>When to use:</strong> Building, modifying, debugging, or verifying a Runway integration, including work started from Dev Portal.</p>
+<p><strong>Do not use for:</strong> one-off media generation from the agent or direct REST CLI actions.</p>
+</blockquote>
+<h2>Start with the work</h2>
+<p>Make useful progress before explaining setup. Inspect the workspace and existing configuration without narrating each check. Ask a question only when missing information blocks the next change.</p>
+<ul>
+<li>Existing project: find its server boundary and user-facing integration point. Add a server route or function before integrating a frontend-only project.</li>
+<li>Empty workspace: ask what the user wants to build. You may recommend a small web app with visible inputs and output as a Runway starting point, but do not claim the user requested one.</li>
+<li>Before giving credential setup instructions, test whether <code>RUNWAYML_API_SECRET</code> is present without printing its value, for example with <code>test -n "${RUNWAYML_API_SECRET:-}"</code>. If it is present, skip dotenv instructions.</li>
+<li>Use the official SDK. Install <code>@runwayml/sdk</code> for Node or <code>runwayml</code> for Python only if the project needs it and does not already have it.</li>
+<li>Keep updates short. Do not narrate a long setup sequence or checklist.</li>
+</ul>
+<h2>Current contracts</h2>
+<p>Installed skill prose is workflow guidance, not the canonical API schema. Resolve current contracts in this order:</p>
+<ol>
+<li>Fetch https://docs.dev.runwayml.com/llms.txt.</li>
+<li>Fetch only the exact linked documentation subset relevant to the task.</li>
+<li>If that subset does not define the contract, read https://docs.dev.runwayml.com/api.md.</li>
+<li>If machine-readable detail is still needed, use https://docs.dev.runwayml.com/openapi.json.</li>
+</ol>
+<p>Do not invent endpoints, field names, or model constraints.</p>
+<h2>MCP policy</h2>
+<p>Encourage connecting Dev MCP as the happy path for live account context and management. Connect <code>https://dev.runwayml.com/mcp</code> with Runway OAuth. Never put an API key in MCP config or automate browser OAuth.</p>
+<p>If the user declines or the connection fails, never block account-independent work. Continue with live docs, existing application config, or environment configuration. SDK and API integration code remain allowed. Stop only when the next requested step requires live account discovery, account or resource mutations, or billable verification.</p>
+<p>Never imitate an unavailable MCP account-management or resource-management tool with a REST call. Explain the MCP dependency only when it blocks the requested action.</p>
+<p>Call MCP tools only when the result affects the next step:</p>
+<ul>
+<li><code>whoami</code> when identity or access is uncertain.</li>
+<li><code>list_projects</code> when a live <code>projectId</code> must be selected or verified. Never guess one.</li>
+<li><code>list_models</code> when model access, selection, or current constraints matter.</li>
+<li><code>get_credit_balance</code> immediately before an approved billable verification.</li>
+</ul>
+<h2>API key (SDK only)</h2>
+<p>MCP uses OAuth. SDK calls use an organization-scoped API key from Developer Portal settings. Probe <code>RUNWAYML_API_SECRET</code> without printing it. If missing when a live SDK call is imminent, ask the user to store the key in a server-side environment file or secret manager. Never expose it client-side, in chat, or in source control; ensure local environment files are ignored.</p>
+<h2>SDK requests</h2>
+<ol>
+<li>Build one valid SDK request from the current API docs and, when needed, MCP <code>list_models</code> constraints.</li>
+<li>Chain the wait helper directly from the create call: <code>await client.&lt;operation&gt;.create({...}).waitForTaskOutput()</code> in Node or <code>client.&lt;operation&gt;.create(...).wait_for_task_output()</code> in Python. Do not await <code>create()</code> before calling the helper.</li>
+<li>Catch the SDK's <code>TaskFailedError</code> and surface its task details. Submit once; do not add a manual polling loop or auto-resubmit.</li>
+<li>Use MCP <code>get_task</code> only to inspect or debug an existing task outside the application's SDK flow.</li>
+<li>Wire successful output into the application's intended UI or consumer. Persist outputs if the app needs them after signed URLs expire (~24–48h).</li>
+</ol>
+<h2>Terminology</h2>
+<table>
+<thead>
+<tr>
+<th>UI / quickstart</th>
+<th>MCP / API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Characters</td>
+<td>avatars (<code>list_avatars</code>, <code>get_avatar</code>)</td>
+</tr>
+<tr>
+<td>Character ID</td>
+<td>avatar UUID</td>
+</tr>
+<tr>
+<td>Model Router config ID</td>
+<td>immutable slug (<code>configId</code>)</td>
+</tr>
+<tr>
+<td>live Session</td>
+<td><code>POST /v1/realtime_sessions</code></td>
+</tr>
+</tbody>
+</table>
+<h2>Errors</h2>
+<ul>
+<li>Validation error → show message, fix field from MCP constraints or docs, retry once.</li>
+<li>Auth/permission → stop; ask user to authenticate or pick accessible project.</li>
+<li>Rate limit → honor retry interval.</li>
+<li><code>FAILED</code> task → report failure details; do not auto-resubmit.</li>
+<li>Missing MCP tool → continue account-independent implementation; stop only when live account state or management is required.</li>
+</ul>
+<h2>Surface skills</h2>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>+runway-dev-models</code></td>
+<td>Model generation integration</td>
+</tr>
+<tr>
+<td><code>+runway-dev-model-routers</code></td>
+<td>Model Router setup and routed calls</td>
+</tr>
+<tr>
+<td><code>+runway-dev-characters</code></td>
+<td>Characters / realtime sessions</td>
+</tr>
+<tr>
+<td><code>+runway-dev-recipes</code></td>
+<td>Recipe pipelines</td>
+</tr>
+<tr>
+<td><code>+runway-dev-workflows</code></td>
+<td>Runway app workflows → API endpoints</td>
+</tr>
+</tbody>
+</table>
+<p>Use <code>+runway-dev</code> with the relevant surface skill or skills when both are installed. Surface skills repeat their minimum setup so they remain useful when installed alone. Usually one surface matches the user's goal; load more when the task crosses surfaces.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLAUDE · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">CLAUDE.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>CLAUDE.md — Higgsfield Skills</h1>
+<h2>What this is</h2>
+<p>Seven skills that drive the <a href="https://github.com/higgsfield-ai/cli"><code>higgsfield</code> CLI</a> — image/video generation, narrated explainers, browser games, Marketing Studio, Virality Predictor scoring, Soul Character training, branded product photography, marketplace cards, and full-stack websites.</p>
+<pre><code>higgsfield-soul-id     →  trains identity, returns reference_id
+higgsfield-generate →  consumes reference_id, plus 30+ models, plus Marketing Studio
+higgsfield-product-photoshoot  →  self-contained, brand visuals via gpt_image_2
+higgsfield-marketplace-cards  →  marketplace main, secondary, and A+ style images
+higgsfield-websites  →  build/edit/deploy full-stack sites via `higgsfield website …`
+higgsfield-video-explainer  →  audio + video blocks assembled by `explainer_video`
+higgsfield-game-generation  →  game design + assets + browser build + deploy
+</code></pre>
+<h2>Repository structure</h2>
+<pre><code>skills/
+├── README.md                          # public-facing description
+├── INSTALL.md                         # human-facing install (5 options)
+├── INSTALL_FOR_AGENTS.md              # agent-driven install runbook
+├── CONTRIBUTING.md                    # PR workflow + checklist
+├── CLAUDE.md                          # this file
+├── COOKBOOK.md                        # end-to-end recipes
+├── CHANGELOG.md                       # generated by release-please (when wired up)
+├── VERSION                            # repo-wide version (currently 0.3.0)
+├── LICENSE
+├── setup                              # bash, idempotent first-time install
+├── scripts/
+│   └── update-check.sh                # opt-in version check
+├── .claude-plugin/
+│   ├── marketplace.json               # Claude Code marketplace
+│   └── plugin.json
+├── .codex-plugin/plugin.json          # Codex
+├── .cursor-plugin/plugin.json         # Cursor
+├── .github/
+│   ├── workflows/validate-skills.yml  # CI: frontmatter, version sync, refs, orphans
+│   ├── ISSUE_TEMPLATE/
+│   ├── pull_request_template.md
+│   └── CODEOWNERS
+├── higgsfield-generate/
+│   ├── SKILL.md
+│   └── references/
+│       ├── model-catalog.md
+│       ├── prompt-engineering.md
+│       ├── media-inputs.md
+│       ├── workflows.md
+│       ├── marketing-{avatars,products,modes}.md
+│       └── troubleshooting.md
+├── higgsfield-soul-id/
+│   ├── SKILL.md
+│   └── references/{photo-guide,troubleshooting}.md
+├── higgsfield-product-photoshoot/
+│   └── SKILL.md
+├── higgsfield-marketplace-cards/
+│   └── SKILL.md
+├── higgsfield-websites/
+│   ├── SKILL.md
+│   └── references/                    # stack, wow-maker, auth, fnf-sdk, seo-*, security-*
+├── higgsfield-video-explainer/
+│   ├── SKILL.md
+│   └── references/prompts.md
+├── higgsfield-game-generation/
+│   ├── SKILL.md
+│   ├── references/                    # design, build, 2D/3D, texture, audio, multiplayer
+│   └── scripts/                       # deterministic texture/GLB/rig helpers
+├── evals/                             # dev-only test infrastructure
+│   ├── README.md
+│   └── scenarios.md
+└── assets/                            # logo, icon, demo GIFs
+    └── README.md
+</code></pre>
+<h2>API conventions</h2>
+<p>All skills route through one binary: the <a href="https://github.com/higgsfield-ai/cli"><code>higgsfield</code> CLI</a>. <strong>Do not call <code>api.higgsfield.ai</code> directly with curl.</strong> The CLI handles auth, retries, polling, schema validation, and auto-uploads. Skipping it bypasses critical behavior.</p>
+<ul>
+<li>Auth: <code>higgsfield auth login</code> (device-flow, persists to <code>~/.config/higgsfield/credentials.json</code>).</li>
+<li>Pattern: <code>higgsfield &lt;noun&gt; &lt;verb&gt;</code> — e.g. <code>higgsfield generate create</code>, <code>higgsfield soul-id create</code>, <code>higgsfield product-photoshoot create</code>, <code>higgsfield marketing-studio products fetch</code>.</li>
+<li>One-shot create+wait: <code>higgsfield generate create &lt;model&gt; ... --wait</code> blocks until terminal and prints the result itself (media URL or Virality Predictor text summary). Prefer this over the legacy two-step <code>create</code> → <code>wait</code>. Tunables: <code>--wait-timeout</code>, <code>--wait-interval</code>. <code>product-photoshoot create</code> waits internally — no <code>--wait</code> needed.</li>
+<li>Machine output: add <code>--json</code> to any command for parseable output.</li>
+<li>Media inputs: every <code>--image</code>, <code>--start-image</code>, <code>--video</code>, etc. flag accepts a local path (auto-uploaded) OR a UUID (upload id or previous job id).</li>
+<li>Source of truth: never invent model or workflow names. Run <code>higgsfield model list</code> for the live model catalog and <code>higgsfield workflow list</code> for public workflows. Reference catalogs in <code>references/model-catalog.md</code> and <code>references/workflows.md</code> are mappings (intent → command), not the database.</li>
+<li>Explainer presets are live CMS data: list them with <code>higgsfield preset list video-explainer</code> and import a chosen style with <code>higgsfield preset resolve video-explainer &lt;id&gt;</code>. Never embed the catalog in a skill.</li>
+<li>Animation actions are live server-managed data: search them with <code>higgsfield preset list animation-action</code>; never embed the catalog in a skill.</li>
+</ul>
+<h2>Model and workflow knowledge</h2>
+<p>When FNF adds a model executor or chain executor, update the generate skill knowledge instead of relying on memory.</p>
+<p>For models:
+- Update <code>higgsfield-generate/references/model-catalog.md</code> with the model's purpose and provider.
+- Update <code>higgsfield-generate/references/media-inputs.md</code> only for unusual media roles, transforms, single-media limits, video analysis, 3D, or audio.
+- Update <code>higgsfield-generate/SKILL.md</code> only when model routing/defaults change.</p>
+<p>For workflows:
+- FNF may call these "chains"; public docs and user-facing instructions call them "workflows".
+- Verify public exposure with <code>higgsfield workflow list</code> and inspect schema with <code>higgsfield workflow get &lt;workflow_name&gt;</code>.
+- Update <code>higgsfield-generate/references/workflows.md</code> with the use case, create command, cost command when available, and result retrieval.
+- Use public command shapes: <code>higgsfield generate workflow &lt;workflow_name&gt; ... --wait</code>, <code>higgsfield generate cost workflow &lt;workflow_name&gt; ...</code>, and <code>higgsfield generate get/wait &lt;job_id&gt;</code>.
+- Do not add workflow-only entries to <code>model-catalog.md</code>.
+- Current public workflows are <code>draw_to_video</code> and <code>reframe</code>. Do not mention <code>game_character_creator</code> unless the CLI exposes it publicly and the user explicitly asks for it.</p>
+<h2>The 300-line rule</h2>
+<p>Each <code>SKILL.md</code> should aim for under 300 lines. Skill files are loaded into the agent's context whenever the skill triggers — every line costs latency and tokens.</p>
+<p><strong>The test:</strong> if removing a section from <code>SKILL.md</code> would NOT break the agent's ability to decide what to do next, it belongs in <code>references/</code>. If it WOULD break decision-making, it stays.</p>
+<p><strong>What stays in SKILL.md:</strong></p>
+<ul>
+<li>Frontmatter (<code>name</code>, <code>description</code>, <code>argument-hint</code>, <code>allowed-tools</code>).</li>
+<li>Stage flow overview — what stages exist, when to enter each.</li>
+<li>Decision trees — model selection, mode selection, target detection.</li>
+<li>UX rules that apply on every turn.</li>
+<li>Short pointers: <code>See references/X.md for details</code>.</li>
+</ul>
+<p><strong>What moves to references/:</strong></p>
+<ul>
+<li><code>higgsfield</code> command examples and full flag tables.</li>
+<li>Asset classification tables and routing matrices.</li>
+<li>Prompt galleries and style preset libraries.</li>
+<li>Error handling patterns and troubleshooting trees.</li>
+<li>Anything an agent only needs once, after deciding the path.</li>
+</ul>
+<h2>Self-contained skills</h2>
+<p>Each skill folder is <strong>independent</strong>. No <code>../</code> parent-directory references. Every file in <code>references/</code> is reachable from that skill's <code>SKILL.md</code>. This lets each skill install standalone via <code>gh skill install higgsfield-ai/skills &lt;skill-name&gt;</code>, even though we ship them together.</p>
+<p>If two skills happen to share a doc (e.g. both <code>higgsfield-generate</code> and <code>higgsfield-soul-id</code> have <code>troubleshooting.md</code>), keep separate copies. Drift between skills is acceptable as long as each skill is internally consistent. CI verifies self-containment on every PR.</p>
+<h2>Version sync</h2>
+<p>A single repo-wide version must match every skill and plugin manifest:</p>
+<ul>
+<li><code>VERSION</code> — the source of truth.</li>
+<li><code>higgsfield-generate/SKILL.md</code> — <code>version:</code> in frontmatter.</li>
+<li><code>higgsfield-soul-id/SKILL.md</code> — <code>version:</code> in frontmatter.</li>
+<li><code>higgsfield-product-photoshoot/SKILL.md</code> — <code>version:</code> in frontmatter.</li>
+<li><code>higgsfield-marketplace-cards/SKILL.md</code> — <code>version:</code> in frontmatter.</li>
+<li><code>higgsfield-video-explainer/SKILL.md</code> — <code>version:</code> in frontmatter.</li>
+<li><code>higgsfield-game-generation/SKILL.md</code> — <code>version:</code> in frontmatter.</li>
+<li><code>.claude-plugin/marketplace.json</code> — <code>plugins[0].version</code>.</li>
+<li><code>.claude-plugin/plugin.json</code> — top-level <code>version</code>.</li>
+<li><code>.codex-plugin/plugin.json</code> — top-level <code>version</code>.</li>
+<li><code>.cursor-plugin/plugin.json</code> — top-level <code>version</code>.</li>
+</ul>
+<p>CI fails if any drift. Don't bump versions by hand on feature branches — let release automation handle it on merge to <code>main</code> (when wired up).</p>
+<h2>Skill chaining</h2>
+<p>Skills communicate through return values, not implicit state.</p>
+<ul>
+<li><code>higgsfield-soul-id</code> returns a <code>reference_id</code> (Soul Character).</li>
+<li><code>higgsfield-generate</code> consumes it via <code>--soul-id</code> for Soul-aware models (<code>text2image_soul_v2</code>, <code>soul_cinematic</code>) or as <code>custom</code> avatar in Marketing Studio.</li>
+<li><code>higgsfield-product-photoshoot</code> does not chain — it owns its own pipeline.</li>
+<li><code>higgsfield-marketplace-cards</code> does not chain by default; it can reuse an existing main image job through <code>--main-job</code>.</li>
+<li><code>higgsfield-video-explainer</code> owns complete narrated explainers: live style resolve, Seed Audio blocks, Gemini Omni clips, then <code>explainer_video</code> assembly. Generic short video generation stays in <code>higgsfield-generate</code>.</li>
+<li><code>higgsfield-game-generation</code> may use generation models internally, but owns the game-wide design, asset, build, verification, and deployment contract.</li>
+</ul>
+<p>When the user asks for both identity AND output in one request ("train Soul on these photos AND make a video of me"), run <code>higgsfield-soul-id</code> first, then <code>higgsfield-generate</code>. Don't batch-ask questions across skills — finish Soul, then start the video conversation.</p>
+<h2>Adding a new skill</h2>
+<p>See <a href="./CONTRIBUTING.html">CONTRIBUTING.md</a> → "Adding a new skill". TL;DR: new top-level <code>higgsfield-&lt;name&gt;/SKILL.md</code> folder, follow the existing frontmatter convention (<code>Use when</code> triggers, <code>Chain</code> rules, <code>NOT for</code> boundaries), update <code>marketplace.json</code>, update <code>README.md</code>.</p>
+<h2>Eval discipline (when running evals)</h2>
+<p>When data exists, fix it in place:</p>
+<blockquote>
+<p><strong>Key Decisions (Do Not Revisit Without Data)</strong></p>
+<p>[Empty for now. Each entry should be a defended choice — "X over Y because: Z% on metric M across N runs." Adding here means the next contributor cannot revert without showing other numbers.]</p>
+</blockquote>
+<p>Until then, treat any major default (model selection, mode selection, prompt enhancer behavior) as conventional rather than empirical.</p>
+<h2>Related projects</h2>
+<ul>
+<li><a href="https://github.com/higgsfield-ai/cli"><code>higgsfield</code> CLI</a> — the binary every skill drives.</li>
+<li><a href="https://agentskills.io/specification.md">Agent Skills spec</a> — frontmatter format and validation.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

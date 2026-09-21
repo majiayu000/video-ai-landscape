@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>utility-endpoints · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/fal-workflow/references/utility-endpoints.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Utility endpoint reference</h1>
+<p>These are workflow utility candidates from the falgen workflow notes. Verify
+availability with <code>genmedia models --endpoint_id &lt;id&gt; --json</code> or search, then
+inspect schema before use.</p>
+<h2>Image resize and transform</h2>
+<ul>
+<li><code>workflowutils/resize-image</code>: resize to explicit dimensions.</li>
+<li><code>workflowutils/resize-to-max-pixels</code>: resize while preserving aspect ratio.</li>
+<li><code>workflowutils/crop-image</code>: crop with percentage-based coordinates.</li>
+<li><code>workflowutils/image-size</code>: return width and height.</li>
+<li><code>workflow-utilities/compress-image</code>: compress and optionally resize.</li>
+</ul>
+<h2>Image compositing and layout</h2>
+<ul>
+<li><code>workflowutils/composite-image</code>: layer images together.</li>
+<li><code>workflow-utilities/overlay-image</code>: overlay with position, scale, opacity,
+  and stroke.</li>
+<li><code>workflow-utilities/concat-image</code>: concatenate images horizontally or
+  vertically.</li>
+<li><code>workflow-utilities/image-grid</code>: create a grid from multiple images.</li>
+<li><code>workflow-utilities/add-text-to-image</code>: add controlled text after generation.</li>
+</ul>
+<h2>Image conversion and masks</h2>
+<ul>
+<li><code>workflowutils/rgba-to-rgb</code>: convert transparent image to RGB.</li>
+<li><code>workflow-utilities/split</code>: split multiple images into individual outputs.</li>
+<li><code>workflow-utilities/merge</code>: merge multiple images into one output array.</li>
+<li><code>workflowutils/sam-hq</code>: segmentation masks.</li>
+<li><code>workflowutils/invert_mask</code>: invert a mask.</li>
+<li><code>workflowutils/blur_mask</code>: soften mask edges.</li>
+<li><code>workflowutils/grow_mask</code>: expand mask region.</li>
+<li><code>workflowutils/shrink_mask</code>: contract mask region.</li>
+<li><code>workflowutils/transparent-image-to_mask</code>: create a mask from alpha.</li>
+</ul>
+<h2>Detection and safety</h2>
+<ul>
+<li><code>workflowutils/teed</code>: edge detector.</li>
+<li><code>workflowutils/canny</code>: Canny edge detector.</li>
+<li><code>workflowutils/image-preprocessors-canny</code>: alternate Canny endpoint.</li>
+<li><code>workflowutils/face</code>: face detection or face processing.</li>
+<li><code>workflowutils/brand-checker</code>: brand detection check.</li>
+<li><code>workflowutils/llm-nsfw-checker</code>: text safety check.</li>
+</ul>
+<h2>Video utilities</h2>
+<ul>
+<li><code>workflow-utilities/overlay-video</code>: overlay one video on another.</li>
+<li><code>workflow-utilities/setpts-video</code>: change playback speed. Keep within
+  schema bounds.</li>
+<li><code>workflow-utilities/add-subtitles-to-video</code>: add provided subtitles.</li>
+<li><code>workflow-utilities/auto-subtitle</code>: transcribe and add karaoke-style
+  subtitles.</li>
+<li><code>workflowutils/join-audio-video</code>: combine audio and video.</li>
+<li><code>workflow-utilities/video-to-gif</code>: convert video segment to GIF.</li>
+<li><code>workflow-utilities/gif-to-video</code>: convert GIF to video.</li>
+</ul>
+<h2>Audio utilities</h2>
+<ul>
+<li><code>workflow-utilities/extract-audio</code>: extract audio from video.</li>
+<li><code>workflow-utilities/split-audio</code>: split by timestamps.</li>
+<li><code>workflow-utilities/merge-audio</code>: merge files with optional gaps.</li>
+<li><code>workflow-utilities/amix-audio</code>: mix streams with weights and normalization.</li>
+</ul>
+<h2>Text utilities</h2>
+<ul>
+<li><code>workflow-utilities/merge-text</code>: merge strings with a separator.</li>
+<li><code>workflow-utilities/split-text</code>: split text by delimiter.</li>
+<li><code>workflowutils/text-concat</code>: concatenate text, prompts, or trigger strings.</li>
+</ul>
+<h2>Common utility chains</h2>
+<p>Background replacement:</p>
+<pre><code class="language-text">source image -&gt; sam-hq mask -&gt; invert or refine mask -&gt; new background -&gt; composite-image
+</code></pre>
+<p>Social resize:</p>
+<pre><code class="language-text">master asset -&gt; resize 1:1 -&gt; resize 9:16 -&gt; compress-image
+</code></pre>
+<p>Subtitled video:</p>
+<pre><code class="language-text">video -&gt; auto-subtitle -&gt; optional setpts-video -&gt; final download
+</code></pre>
+<p>Product catalog:</p>
+<pre><code class="language-text">product image -&gt; segment -&gt; composite clean background -&gt; image-grid -&gt; compress
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

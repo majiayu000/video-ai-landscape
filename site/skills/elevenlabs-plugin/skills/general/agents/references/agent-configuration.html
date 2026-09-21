@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>agent-configuration · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/agents/references/agent-configuration.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Agent Configuration</h1>
+<p>Complete reference for configuring conversational AI agents.</p>
+<h2>Configuration Structure</h2>
+<pre><code class="language-python">agent = client.conversational_ai.agents.create(
+    name=&quot;My Agent&quot;,
+    conversation_config={
+        &quot;agent&quot;: {
+            &quot;first_message&quot;: &quot;Hello!&quot;,
+            &quot;language&quot;: &quot;en&quot;,
+            &quot;prompt&quot;: {           # LLM, system prompt, tools, and knowledge base
+                &quot;prompt&quot;: &quot;You are helpful.&quot;,
+                &quot;llm&quot;: &quot;gemini-2.0-flash&quot;,
+                &quot;tools&quot;: [...],
+                &quot;built_in_tools&quot;: {...}
+            }
+        },
+        &quot;tts&quot;: {...},             # Voice and TTS model settings
+        &quot;asr&quot;: {...},             # Speech recognition settings
+        &quot;turn&quot;: {...},            # Turn-taking behavior
+        &quot;conversation&quot;: {...},    # Duration, events, monitoring
+        &quot;vad&quot;: {...},             # Voice activity detection config
+        &quot;language_presets&quot;: {...}  # Language-specific overrides
+    },
+    platform_settings={...}       # Auth, call limits
+)
+</code></pre>
+<h2>conversation_config</h2>
+<p>Controls the real-time conversation behavior.</p>
+<h3>agent</h3>
+<pre><code class="language-python">conversation_config={
+    &quot;agent&quot;: {
+        &quot;first_message&quot;: &quot;Hello! How can I help you today?&quot;,
+        &quot;language&quot;: &quot;en&quot;,
+        &quot;disable_first_message_interruptions&quot;: False,
+        &quot;prompt&quot;: {
+            &quot;prompt&quot;: &quot;You are a helpful assistant.&quot;,
+            &quot;llm&quot;: &quot;gemini-2.0-flash&quot;,
+            &quot;temperature&quot;: 0.7
+        }
+    }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>first_message</code></td>
+<td>string</td>
+<td><code>""</code></td>
+<td>What the agent says when conversation starts</td>
+</tr>
+<tr>
+<td><code>language</code></td>
+<td>string</td>
+<td><code>"en"</code></td>
+<td>ISO 639-1 language code (en, es, fr, etc.)</td>
+</tr>
+<tr>
+<td><code>disable_first_message_interruptions</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Prevent user from interrupting the first message</td>
+</tr>
+<tr>
+<td><code>max_conversation_duration_message</code></td>
+<td>string</td>
+<td>-</td>
+<td>If non-empty, the message sent when <code>conversation.max_duration_seconds</code> is reached</td>
+</tr>
+<tr>
+<td><code>text_behavior_overrides</code></td>
+<td>object</td>
+<td>-</td>
+<td>Per-channel text behavior overrides. Map of <code>ConversationInitiationSource</code> -&gt; <code>BehaviorOverride</code> (<code>verbosity</code>, <code>output_format</code>, <code>interaction_budget</code>). Interaction budgets are <code>realtime</code>, <code>5_minutes</code>, <code>10_minutes</code>, or <code>1_hour</code>. See <a href="https://elevenlabs.io/docs/api-reference/agents/create#request.body.conversation_config.agent.text_behavior_overrides">API reference</a>.</td>
+</tr>
+<tr>
+<td><code>hinglish_mode</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>When enabled and language is Hindi, agent responds in Hinglish</td>
+</tr>
+<tr>
+<td><code>dynamic_variables</code></td>
+<td>object</td>
+<td>-</td>
+<td>Config with <code>dynamic_variable_placeholders</code> containing key-value pairs</td>
+</tr>
+<tr>
+<td><code>prompt</code></td>
+<td>object</td>
+<td>-</td>
+<td>LLM configuration (see prompt section below)</td>
+</tr>
+</tbody>
+</table>
+<h3>tts (Text-to-Speech)</h3>
+<pre><code class="language-python">conversation_config={
+    &quot;tts&quot;: {
+        &quot;voice_id&quot;: &quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+        &quot;model_id&quot;: &quot;eleven_flash_v2_5&quot;,
+        &quot;stability&quot;: 0.5,
+        &quot;similarity_boost&quot;: 0.8,
+        &quot;speed&quot;: 1.0,
+        &quot;expressive_mode&quot;: True
+    }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>voice_id</code></td>
+<td>string</td>
+<td><code>"cjVigY5qzO86Huf0OWal"</code></td>
+<td>Voice to use</td>
+</tr>
+<tr>
+<td><code>model_id</code></td>
+<td>string</td>
+<td>-</td>
+<td>TTS model (see below)</td>
+</tr>
+<tr>
+<td><code>stability</code></td>
+<td>float</td>
+<td><code>0.5</code></td>
+<td>0-1, lower = more expressive</td>
+</tr>
+<tr>
+<td><code>similarity_boost</code></td>
+<td>float</td>
+<td><code>0.8</code></td>
+<td>0-1, higher = closer to original voice</td>
+</tr>
+<tr>
+<td><code>speed</code></td>
+<td>float</td>
+<td><code>1.0</code></td>
+<td>0.7-1.2, speech speed multiplier</td>
+</tr>
+<tr>
+<td><code>expressive_mode</code></td>
+<td>bool</td>
+<td><code>true</code></td>
+<td>Enable expressive voice generation</td>
+</tr>
+<tr>
+<td><code>agent_output_audio_format</code></td>
+<td>string</td>
+<td>-</td>
+<td>Output audio codec format</td>
+</tr>
+<tr>
+<td><code>pronunciation_dictionary_locators</code></td>
+<td>array</td>
+<td>-</td>
+<td>Pronunciation overrides</td>
+</tr>
+<tr>
+<td><code>enable_phoneme_tags</code></td>
+<td>bool</td>
+<td><code>true</code></td>
+<td>Parse inline and pronunciation-dictionary SSML phoneme tags into IPA for V3 models</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Available TTS models for agents:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Model ID</th>
+<th>Languages</th>
+<th>Latency</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>eleven_flash_v2_5</code></td>
+<td>32</td>
+<td>~75ms (recommended)</td>
+</tr>
+<tr>
+<td><code>eleven_flash_v2</code></td>
+<td>English</td>
+<td>~75ms</td>
+</tr>
+<tr>
+<td><code>eleven_turbo_v2_5</code></td>
+<td>32</td>
+<td>~250-300ms</td>
+</tr>
+<tr>
+<td><code>eleven_turbo_v2</code></td>
+<td>English</td>
+<td>~250-300ms</td>
+</tr>
+<tr>
+<td><code>eleven_multilingual_v2</code></td>
+<td>29</td>
+<td>Standard</td>
+</tr>
+<tr>
+<td><code>eleven_v3_conversational</code></td>
+<td>70+</td>
+<td>Standard</td>
+</tr>
+</tbody>
+</table>
+<h3>asr (Automatic Speech Recognition)</h3>
+<pre><code class="language-python">conversation_config={
+    &quot;asr&quot;: {
+        &quot;quality&quot;: &quot;high&quot;,
+        &quot;provider&quot;: &quot;scribe_realtime&quot;,
+        &quot;keywords&quot;: [&quot;ElevenLabs&quot;, &quot;TechCorp&quot;],
+        &quot;user_input_audio_format&quot;: &quot;pcm_16000&quot;
+    }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>quality</code></td>
+<td>string</td>
+<td><code>"high"</code></td>
+<td>Transcription quality level</td>
+</tr>
+<tr>
+<td><code>provider</code></td>
+<td>string</td>
+<td><code>"scribe_realtime"</code></td>
+<td>ASR provider for current agents</td>
+</tr>
+<tr>
+<td><code>keywords</code></td>
+<td>array</td>
+<td>-</td>
+<td>Words to boost recognition accuracy</td>
+</tr>
+<tr>
+<td><code>user_input_audio_format</code></td>
+<td>string</td>
+<td>-</td>
+<td>Input audio format (e.g., <code>pcm_16000</code>, <code>ulaw_8000</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3>turn (Turn-Taking)</h3>
+<pre><code class="language-python">conversation_config={
+    &quot;turn&quot;: {
+        &quot;turn_timeout&quot;: 7,
+        &quot;turn_eagerness&quot;: &quot;normal&quot;,
+        &quot;silence_end_call_timeout&quot;: -1,
+        &quot;turn_model&quot;: &quot;turn_v3&quot;
+    }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>turn_timeout</code></td>
+<td>number</td>
+<td><code>7</code></td>
+<td>Seconds to wait before re-engaging the user</td>
+</tr>
+<tr>
+<td><code>turn_eagerness</code></td>
+<td>string</td>
+<td><code>"normal"</code></td>
+<td>How quickly agent responds: <code>patient</code>, <code>normal</code>, or <code>eager</code></td>
+</tr>
+<tr>
+<td><code>silence_end_call_timeout</code></td>
+<td>number</td>
+<td><code>-1</code></td>
+<td>Seconds of silence before ending call (-1 = disabled)</td>
+</tr>
+<tr>
+<td><code>initial_wait_time</code></td>
+<td>number</td>
+<td>-</td>
+<td>Seconds to wait for user to start speaking</td>
+</tr>
+<tr>
+<td><code>spelling_patience</code></td>
+<td>string</td>
+<td><code>"auto"</code></td>
+<td>Entity detection patience: <code>auto</code> or <code>off</code></td>
+</tr>
+<tr>
+<td><code>speculative_turn</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Enable speculative turn detection</td>
+</tr>
+<tr>
+<td><code>turn_model</code></td>
+<td>string</td>
+<td><code>"turn_v3"</code></td>
+<td>Turn detection model version: <code>turn_v2</code> or <code>turn_v3</code></td>
+</tr>
+<tr>
+<td><code>interruption_ignore_terms</code></td>
+<td>array</td>
+<td>-</td>
+<td>Case-insensitive terms that should not trigger an interruption when spoken by the user</td>
+</tr>
+<tr>
+<td><code>interruption_ignore_term_languages</code></td>
+<td>array</td>
+<td>-</td>
+<td>Language codes whose curated ignore-term lists are enabled</td>
+</tr>
+<tr>
+<td><code>merge_with_default_ignore_terms</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Combine curated terms for <code>interruption_ignore_term_languages</code> with <code>interruption_ignore_terms</code></td>
+</tr>
+<tr>
+<td><code>transcribe_on_disabled_interruptions</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>When interruptions are disabled, still transcribe user speech so it can carry into the next turn</td>
+</tr>
+<tr>
+<td><code>soft_timeout_config</code></td>
+<td>object</td>
+<td>-</td>
+<td>Configures a message if user is silent (see below)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>soft_timeout_config:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>timeout_seconds</code></td>
+<td>number</td>
+<td><code>-1</code></td>
+<td>Seconds before soft timeout (-1 = disabled)</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td>string</td>
+<td><code>"Hhmmmm...yeah."</code></td>
+<td>What agent says on timeout; supports dynamic variables</td>
+</tr>
+<tr>
+<td><code>additional_soft_timeout_messages</code></td>
+<td>array</td>
+<td>-</td>
+<td>Extra static filler messages for later timeouts in the same LLM response, up to 7 strings</td>
+</tr>
+<tr>
+<td><code>use_llm_generated_message</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Let LLM generate the timeout message</td>
+</tr>
+<tr>
+<td><code>randomize_fillers</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Shuffle static soft timeout messages once at the start of each turn</td>
+</tr>
+<tr>
+<td><code>max_soft_timeouts_per_generation</code></td>
+<td>int</td>
+<td><code>1</code></td>
+<td>Maximum filler messages while waiting for one LLM response (1-8)</td>
+</tr>
+<tr>
+<td><code>llm_generated_message_prompt_override</code></td>
+<td>string</td>
+<td>-</td>
+<td>Custom prompt for LLM-generated filler messages; supports dynamic variables</td>
+</tr>
+<tr>
+<td><code>disable_until_first_user_message</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Suppress soft timeout fillers until the conversation receives its first user message</td>
+</tr>
+</tbody>
+</table>
+<h2>prompt (nested in conversation_config.agent)</h2>
+<p>Configures the LLM behavior. This object lives at <code>conversation_config.agent.prompt</code>:</p>
+<pre><code class="language-python">conversation_config={
+    &quot;agent&quot;: {
+        &quot;prompt&quot;: {
+            &quot;prompt&quot;: &quot;You are a helpful customer service agent...&quot;,
+            &quot;llm&quot;: &quot;gemini-2.0-flash&quot;,
+            &quot;temperature&quot;: 0.7,
+            &quot;max_tokens&quot;: 500,
+            &quot;tools&quot;: [...],
+            &quot;built_in_tools&quot;: {...},
+            &quot;knowledge_base&quot;: [...]
+        }
+    }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>prompt</code></td>
+<td>string</td>
+<td><code>""</code></td>
+<td>System prompt defining agent behavior</td>
+</tr>
+<tr>
+<td><code>llm</code></td>
+<td>string</td>
+<td>-</td>
+<td>Model ID (see LLM providers below)</td>
+</tr>
+<tr>
+<td><code>temperature</code></td>
+<td>float</td>
+<td><code>0</code></td>
+<td>0-1, higher = more creative</td>
+</tr>
+<tr>
+<td><code>max_tokens</code></td>
+<td>int</td>
+<td><code>-1</code></td>
+<td>Max tokens for LLM response (-1 = unlimited)</td>
+</tr>
+<tr>
+<td><code>reasoning_effort</code></td>
+<td>string</td>
+<td>-</td>
+<td>Reasoning depth: <code>none</code>, <code>minimal</code>, <code>low</code>, <code>medium</code>, <code>high</code>, <code>xhigh</code>, or <code>max</code> (model-dependent)</td>
+</tr>
+<tr>
+<td><code>thinking_budget</code></td>
+<td>int</td>
+<td>-</td>
+<td>Max thinking tokens for reasoning models</td>
+</tr>
+<tr>
+<td><code>enable_reasoning_summary</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Request provider reasoning summaries when supported; keep disabled for lower time-to-first-byte</td>
+</tr>
+<tr>
+<td><code>tools</code></td>
+<td>array</td>
+<td>-</td>
+<td>Webhook and client tool definitions</td>
+</tr>
+<tr>
+<td><code>built_in_tools</code></td>
+<td>object</td>
+<td>-</td>
+<td>System tools (end_call, transfer, etc.)</td>
+</tr>
+<tr>
+<td><code>tool_ids</code></td>
+<td>array</td>
+<td>-</td>
+<td>References to pre-configured tools</td>
+</tr>
+<tr>
+<td><code>knowledge_base</code></td>
+<td>array</td>
+<td>-</td>
+<td>Documents for RAG</td>
+</tr>
+<tr>
+<td><code>custom_llm</code></td>
+<td>object</td>
+<td>-</td>
+<td>Custom LLM endpoint config</td>
+</tr>
+<tr>
+<td><code>timezone</code></td>
+<td>string</td>
+<td>-</td>
+<td>IANA timezone (e.g., <code>America/New_York</code>)</td>
+</tr>
+<tr>
+<td><code>backup_llm_config</code></td>
+<td>object</td>
+<td>-</td>
+<td>Fallback LLM configuration</td>
+</tr>
+<tr>
+<td><code>cascade_timeout_seconds</code></td>
+<td>number</td>
+<td><code>4</code></td>
+<td>Seconds before cascading to backup LLM (2-15)</td>
+</tr>
+<tr>
+<td><code>mcp_server_ids</code></td>
+<td>array</td>
+<td>-</td>
+<td>MCP server IDs to connect</td>
+</tr>
+<tr>
+<td><code>native_mcp_server_ids</code></td>
+<td>array</td>
+<td>-</td>
+<td>Native MCP server IDs</td>
+</tr>
+<tr>
+<td><code>ignore_default_personality</code></td>
+<td>bool</td>
+<td>-</td>
+<td>Skip default personality instructions</td>
+</tr>
+</tbody>
+</table>
+<p>Workspace environment variables let one agent configuration span multiple deployments. Use
+<code>{{system_env__label}}</code> in server tool and MCP server URLs, <code>{ "env_var_label": "orders_api_key" }</code>
+for secret-backed tool headers, and <code>{ "env_var_label": "orders_oauth" }</code> in <code>auth_connection</code>
+to resolve per-environment auth connections at runtime.</p>
+<h3>LLM Providers</h3>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Model IDs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OpenAI</td>
+<td><code>gpt-5.6-sol</code>, <code>gpt-5.6-terra</code>, <code>gpt-5.6-luna</code>, <code>gpt-5.5</code>, <code>gpt-5.5-2026-04-23</code>, <code>gpt-5.4</code>, <code>gpt-5.4-mini</code>, <code>gpt-5.4-nano</code>, <code>gpt-5.4-2026-03-05</code>, <code>gpt-5.4-mini-2026-03-17</code>, <code>gpt-5.4-nano-2026-03-17</code>, <code>gpt-5</code>, <code>gpt-5-mini</code>, <code>gpt-5-nano</code>, <code>gpt-4.1</code>, <code>gpt-4.1-mini</code>, <code>gpt-4.1-nano</code>, <code>gpt-4o</code>, <code>gpt-4o-mini</code>, <code>gpt-4-turbo</code></td>
+</tr>
+<tr>
+<td>Anthropic</td>
+<td><code>claude-opus-4-7</code>, <code>claude-sonnet-4-6</code>, <code>claude-sonnet-4-5</code>, <code>claude-sonnet-4</code>, <code>claude-haiku-4-5</code>, <code>claude-3-7-sonnet</code>, <code>claude-3-5-sonnet</code>, <code>claude-3-haiku</code></td>
+</tr>
+<tr>
+<td>Google</td>
+<td><code>gemini-3.7-flash</code>, <code>gemini-3.6-flash</code>, <code>gemini-3.1-flash-lite-preview</code>, <code>gemini-3.1-pro-preview</code>, <code>gemini-3-pro-preview</code>, <code>gemini-3-flash-preview</code>, <code>gemini-2.5-flash</code>, <code>gemini-2.5-flash-lite</code>, <code>gemini-2.0-flash</code>, <code>gemini-2.0-flash-lite</code></td>
+</tr>
+<tr>
+<td>ElevenLabs</td>
+<td><code>glm-45-air-fp8</code>, <code>qwen3-30b-a3b</code>, <code>qwen36-35b-a3b</code>, <code>qwen35-35b-a3b</code>, <code>qwen35-397b-a17b</code>, <code>gpt-oss-120b</code> (hosted, ultra-low latency)</td>
+</tr>
+<tr>
+<td>Custom</td>
+<td><code>custom-llm</code> (requires custom_llm config)</td>
+</tr>
+</tbody>
+</table>
+<p>Use <code>GET /v1/convai/llm/list</code> to inspect the current model catalog, including deprecation state, token/context limits, and capability flags such as image-input support.</p>
+<h3>Custom LLM</h3>
+<p>The <code>custom_llm</code> field is nested inside <code>conversation_config.agent.prompt</code>:</p>
+<pre><code class="language-python">conversation_config={
+    &quot;agent&quot;: {
+        &quot;prompt&quot;: {
+            &quot;prompt&quot;: &quot;You are helpful.&quot;,
+            &quot;llm&quot;: &quot;custom-llm&quot;,
+            &quot;custom_llm&quot;: {
+                &quot;url&quot;: &quot;https://your-llm-endpoint.com/v1/chat/completions&quot;,
+                &quot;model_id&quot;: &quot;your-model-id&quot;,
+                &quot;api_key&quot;: {&quot;secret_id&quot;: &quot;your-secret-id&quot;},
+                &quot;api_type&quot;: &quot;chat_completions&quot;  # &quot;chat_completions&quot;, &quot;responses&quot;, or &quot;websocket&quot;
+            }
+        }
+    }
+}
+</code></pre>
+<h2>platform_settings</h2>
+<p>Platform-level configuration for security, limits, summaries, and widget behavior.</p>
+<pre><code class="language-python">platform_settings={
+    &quot;summary_language&quot;: &quot;en&quot;,
+    &quot;widget&quot;: {
+        &quot;show_agent_status&quot;: True,
+        &quot;show_conversation_id&quot;: True
+    },
+    &quot;auth&quot;: {
+        &quot;enable_auth&quot;: True,
+        &quot;allowlist&quot;: [{&quot;hostname&quot;: &quot;example.com&quot;}]
+    },
+    &quot;call_limits&quot;: {
+        &quot;agent_concurrency_limit&quot;: 10,
+        &quot;daily_limit&quot;: 100
+    },
+    &quot;trust_context&quot;: &quot;low&quot;
+}
+</code></pre>
+<h3>Top-Level Fields</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>summary_language</code></td>
+<td>string</td>
+<td>Language for conversation analysis outputs such as summaries, titles, evaluation rationales, and data collection rationales. If omitted, ElevenLabs infers it from the conversation.</td>
+</tr>
+<tr>
+<td><code>auto_translate_transcript_to_app_language</code></td>
+<td>bool</td>
+<td>Automatically translate a transcript to the viewer's application language when they open it</td>
+</tr>
+<tr>
+<td><code>analysis_items</code></td>
+<td>object or null</td>
+<td>Evaluation criteria and data-collection items attached to the agent by reference</td>
+</tr>
+<tr>
+<td><code>widget</code></td>
+<td>object</td>
+<td>Hosted widget and shareable page configuration. See the widget table below for selected options.</td>
+</tr>
+<tr>
+<td><code>auth</code></td>
+<td>object</td>
+<td>Authentication and origin restrictions for agent access</td>
+</tr>
+<tr>
+<td><code>call_limits</code></td>
+<td>object</td>
+<td>Concurrency and daily usage limits</td>
+</tr>
+<tr>
+<td><code>guardrails</code></td>
+<td>object</td>
+<td>Built-in safety and policy controls for agent interactions</td>
+</tr>
+<tr>
+<td><code>privacy</code></td>
+<td>object</td>
+<td>Recording, retention, and conversation history redaction settings</td>
+</tr>
+<tr>
+<td><code>trust_context</code></td>
+<td>string</td>
+<td>Trust classification for the agent: <code>unknown</code>, <code>low</code>, or <code>high</code></td>
+</tr>
+<tr>
+<td><code>topic_discovery</code></td>
+<td>object</td>
+<td>Per-agent topic discovery configuration</td>
+</tr>
+<tr>
+<td><code>sentiment_analysis</code></td>
+<td>object</td>
+<td>Per-agent post-call sentiment analysis configuration</td>
+</tr>
+<tr>
+<td><code>alerting</code></td>
+<td>object or null</td>
+<td>Per-agent monitor thresholds, auto-resolution timing, and webhook notification settings</td>
+</tr>
+</tbody>
+</table>
+<h3>auth</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>enable_auth</code></td>
+<td>bool</td>
+<td>Require signed URLs/tokens for connections</td>
+</tr>
+<tr>
+<td><code>allowlist</code></td>
+<td>array</td>
+<td>Allowed origins for CORS</td>
+</tr>
+<tr>
+<td><code>shareable_token</code></td>
+<td>string</td>
+<td>Public conversation token</td>
+</tr>
+</tbody>
+</table>
+<h3>call_limits</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agent_concurrency_limit</code></td>
+<td>int</td>
+<td>Max simultaneous conversations (default: -1, unlimited)</td>
+</tr>
+<tr>
+<td><code>daily_limit</code></td>
+<td>int</td>
+<td>Max conversations per day (default: 100000)</td>
+</tr>
+<tr>
+<td><code>bursting_enabled</code></td>
+<td>bool</td>
+<td>Allow exceeding limits at 2x cost (default: true)</td>
+</tr>
+</tbody>
+</table>
+<h3>guardrails</h3>
+<p>Use <code>platform_settings.guardrails</code> to configure built-in safety controls for user input and agent behavior. The fields below cover the current schema additions that are most relevant in agent configs.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>version</code></td>
+<td>string</td>
+<td>Guardrail config version. Use <code>"1"</code> for the current schema.</td>
+</tr>
+<tr>
+<td><code>focus</code></td>
+<td>object</td>
+<td>Keeps the agent on-topic and aligned with the configured task.</td>
+</tr>
+<tr>
+<td><code>prompt_injection</code></td>
+<td>object</td>
+<td>Detects prompt injection and instruction override attempts.</td>
+</tr>
+<tr>
+<td><code>custom</code></td>
+<td>object</td>
+<td>Configures user-defined response validation guardrails.</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td>object</td>
+<td>Configures category-specific content moderation guardrails.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>custom.config.configs[]:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>is_enabled</code></td>
+<td>bool</td>
+<td>Enables the custom guardrail.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>string</td>
+<td>User-facing guardrail name.</td>
+</tr>
+<tr>
+<td><code>prompt</code></td>
+<td>string</td>
+<td>Instruction describing what to block.</td>
+</tr>
+<tr>
+<td><code>execution_mode</code></td>
+<td>string</td>
+<td>Guardrail execution mode: <code>streaming</code> or <code>blocking</code>.</td>
+</tr>
+<tr>
+<td><code>model</code></td>
+<td>string</td>
+<td>LLM model used for custom guardrail evaluation, such as <code>gemini-2.5-flash-lite</code>, <code>claude-sonnet-4-6</code>, or <code>gpt-5.4-mini</code>.</td>
+</tr>
+<tr>
+<td><code>history_message_count</code></td>
+<td>integer</td>
+<td>Number of recent customer messages to include in guardrail history; <code>0</code> includes none.</td>
+</tr>
+<tr>
+<td><code>trigger_action</code></td>
+<td>object</td>
+<td>Action when triggered, such as retrying with feedback or ending the call.</td>
+</tr>
+<tr>
+<td><code>evaluate_full_response_only</code></td>
+<td>bool</td>
+<td>Evaluate the complete non-TTS response once. Requires <code>execution_mode</code> set to <code>blocking</code>; defaults to <code>false</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>focus / prompt_injection:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>is_enabled</code></td>
+<td>bool</td>
+<td>Enables the guardrail.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>content:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>execution_mode</code></td>
+<td>string</td>
+<td>Guardrail execution mode: <code>streaming</code> or <code>blocking</code>.</td>
+</tr>
+<tr>
+<td><code>config</code></td>
+<td>object</td>
+<td>Category threshold settings for content moderation.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>content.config:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sexual</code></td>
+<td>object</td>
+<td>Threshold settings for sexual content.</td>
+</tr>
+<tr>
+<td><code>violence</code></td>
+<td>object</td>
+<td>Threshold settings for violent content.</td>
+</tr>
+<tr>
+<td><code>harassment</code></td>
+<td>object</td>
+<td>Threshold settings for harassment.</td>
+</tr>
+<tr>
+<td><code>self_harm</code></td>
+<td>object</td>
+<td>Threshold settings for self-harm content.</td>
+</tr>
+<tr>
+<td><code>profanity</code></td>
+<td>object</td>
+<td>Threshold settings for profanity.</td>
+</tr>
+<tr>
+<td><code>religion_or_politics</code></td>
+<td>object</td>
+<td>Threshold settings for religion or politics content.</td>
+</tr>
+<tr>
+<td><code>medical_and_legal_information</code></td>
+<td>object</td>
+<td>Threshold settings for medical or legal information.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>content.config.\&lt;category&gt;:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>is_enabled</code></td>
+<td>bool</td>
+<td>Enables moderation for the category.</td>
+</tr>
+<tr>
+<td><code>threshold</code></td>
+<td>number or string</td>
+<td>Category threshold as a numeric score or one of <code>low</code>, <code>medium</code>, or <code>high</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Blocking content guardrails and custom guardrails support a <code>trigger_action</code> that either ends
+the session immediately or retries the response. Retry removes the blocked reply, injects your
+feedback as a system message, and re-generates up to 3 times before the platform falls back to
+ending the session. Feedback templates can use <code>{{trigger_reason}}</code> and <code>{{agent_message}}</code>.</p>
+<h3>privacy</h3>
+<p>Use <code>platform_settings.privacy</code> to control recording, retention, and redaction behavior. The redaction-specific field is:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>conversation_history_redaction</code></td>
+<td>object</td>
+<td>Redacts configured entity types from stored transcripts, audio, and analysis.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>conversation_history_redaction:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>enabled</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Whether conversation history redaction is enabled</td>
+</tr>
+<tr>
+<td><code>entities</code></td>
+<td>array</td>
+<td>-</td>
+<td>Entity types to redact. Use parent types such as <code>name</code> or specific values such as <code>name.name_given</code>, <code>email_address</code>, <code>contact_number</code>, <code>dob</code>, and <code>age</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3>widget</h3>
+<p>Use <code>platform_settings.widget</code> to configure the hosted widget and shareable page defaults. For client-side embed attributes, see the widget embedding reference.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dismissible</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Whether the widget can be dismissed by the user</td>
+</tr>
+<tr>
+<td><code>show_agent_status</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Whether to show working, done, or error status while tools are running</td>
+</tr>
+<tr>
+<td><code>show_conversation_id</code></td>
+<td>bool</td>
+<td><code>true</code></td>
+<td>Whether to show the conversation ID after disconnection</td>
+</tr>
+<tr>
+<td><code>strip_audio_tags</code></td>
+<td>bool</td>
+<td><code>true</code></td>
+<td>Whether to strip audio markup from messages</td>
+</tr>
+<tr>
+<td><code>syntax_highlight_theme</code></td>
+<td>string</td>
+<td>auto</td>
+<td>Code block syntax highlighting theme (<code>light</code> or <code>dark</code>); omit it to let the widget auto-detect</td>
+</tr>
+<tr>
+<td><code>show_resize_button</code></td>
+<td>bool</td>
+<td><code>true</code></td>
+<td>Whether to show the expand and collapse control in the widget header</td>
+</tr>
+</tbody>
+</table>
+<h3>conversation (inside conversation_config)</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>max_duration_seconds</code></td>
+<td>int</td>
+<td><code>600</code></td>
+<td>Max conversation duration</td>
+</tr>
+<tr>
+<td><code>text_only</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Text-only mode (avoids audio pricing)</td>
+</tr>
+<tr>
+<td><code>file_input</code></td>
+<td>object</td>
+<td>-</td>
+<td>Enables image and PDF uploads in chat for multimodal LLMs</td>
+</tr>
+<tr>
+<td><code>monitoring_enabled</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Enable real-time WebSocket monitoring</td>
+</tr>
+<tr>
+<td><code>client_events</code></td>
+<td>array</td>
+<td>-</td>
+<td>Client events forwarded to the connected application</td>
+</tr>
+<tr>
+<td><code>monitoring_events</code></td>
+<td>array</td>
+<td>-</td>
+<td>Events forwarded to monitoring WebSocket connections</td>
+</tr>
+<tr>
+<td><code>background_sound</code></td>
+<td>object</td>
+<td>-</td>
+<td>Background sound played during conversations</td>
+</tr>
+<tr>
+<td><code>source_attribution</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Instructs the LLM to report sources used when knowledge base content is present</td>
+</tr>
+</tbody>
+</table>
+<p>Common client events include <code>agent_response_correction</code>, <code>agent_tool_response_full_payload</code>,
+and <code>agent_response_complete</code>. <code>agent_response_complete</code> fires when the agent is done responding
+and must be enabled in <code>client_events</code>.</p>
+<p><strong>file_input:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>enabled</code></td>
+<td>bool</td>
+<td><code>true</code></td>
+<td>Allows end users to attach images or PDFs in chat when the selected LLM supports multimodal input</td>
+</tr>
+<tr>
+<td><code>max_files_in_memory</code></td>
+<td>int</td>
+<td><code>10</code></td>
+<td>Number of most-recent files kept in memory (1-30); older files are summarized and released</td>
+</tr>
+<tr>
+<td><code>max_files_per_conversation</code></td>
+<td>int</td>
+<td><code>10</code></td>
+<td>Total upload limit; use <code>-1</code> for no limit or a value at least as large as <code>max_files_in_memory</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>background_sound:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source_type</code></td>
+<td>string</td>
+<td>-</td>
+<td>Background sound source type; use <code>preset</code> for built-in sounds</td>
+</tr>
+<tr>
+<td><code>source_id</code></td>
+<td>string</td>
+<td>-</td>
+<td>Preset sound ID, such as <code>office1</code>, <code>office2</code>, <code>restaurant</code>, <code>city</code>, <code>typing</code>, or <code>elevator1</code>-<code>elevator4</code></td>
+</tr>
+<tr>
+<td><code>volume</code></td>
+<td>number</td>
+<td><code>0.15</code></td>
+<td>Playback volume from <code>0.01</code> to <code>1.0</code></td>
+</tr>
+<tr>
+<td><code>crossfade_loop</code></td>
+<td>bool</td>
+<td><code>true</code></td>
+<td>Crossfade loop boundaries to avoid audible pops</td>
+</tr>
+</tbody>
+</table>
+<h2>Additional Top-Level Fields</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tags</code></td>
+<td>array</td>
+<td>Classification labels for filtering (e.g., <code>["production"]</code>, <code>["test"]</code>)</td>
+</tr>
+<tr>
+<td><code>workflow</code></td>
+<td>object</td>
+<td>Conversation flow definition and tool interaction sequences</td>
+</tr>
+</tbody>
+</table>
+<h2>Knowledge Base / RAG</h2>
+<p>Knowledge base is configured inside <code>conversation_config.agent.prompt</code>:</p>
+<pre><code class="language-python">agent = client.conversational_ai.agents.create(
+    name=&quot;Support Agent&quot;,
+    conversation_config={
+        &quot;agent&quot;: {
+            &quot;prompt&quot;: {
+                &quot;prompt&quot;: &quot;You are a support agent. Use the knowledge base to answer questions.&quot;,
+                &quot;llm&quot;: &quot;gemini-2.0-flash&quot;,
+                &quot;knowledge_base&quot;: [
+                    {&quot;type&quot;: &quot;file&quot;, &quot;id&quot;: &quot;doc-id&quot;, &quot;name&quot;: &quot;Product Guide&quot;, &quot;usage_mode&quot;: &quot;auto&quot;}
+                ],
+                &quot;rag&quot;: {
+                    &quot;enabled&quot;: True,
+                    &quot;embedding_model&quot;: &quot;qwen3_embedding_4b&quot;,
+                    &quot;max_documents_length&quot;: 50000,
+                    &quot;max_retrieved_rag_chunks_count&quot;: 20
+                }
+            }
+        },
+        &quot;tts&quot;: {&quot;voice_id&quot;: &quot;JBFqnCBsd6RMkjVDRZzb&quot;}
+    }
+)
+</code></pre>
+<p><code>rag.embedding_model</code> supports <code>e5_mistral_7b_instruct</code>, <code>multilingual_e5_large_instruct</code>, and <code>qwen3_embedding_4b</code>.</p>
+<p>Set <code>conversation_config.conversation.source_attribution</code> to <code>true</code> when you want the agent to
+report which knowledge base sources it used in responses.</p>
+<h3>Knowledge Base Management</h3>
+<p>Use a <a href="https://elevenlabs.io/docs/api-reference/knowledge-base/create-crawl-job">crawl job</a> to
+ingest a website into the knowledge base. A crawl requires a <code>url</code> and can control crawl depth,
+page count, URL matching, sitemaps, folder placement, and automatic synchronization. List,
+inspect, or cancel crawl jobs while ingestion is running.</p>
+<p>Before deleting several documents or folders, use the
+<a href="https://elevenlabs.io/docs/api-reference/knowledge-base/dependent-agents-multiple">bulk dependency check</a>
+to find affected agents. The
+<a href="https://elevenlabs.io/docs/api-reference/knowledge-base/bulk-delete">bulk delete endpoint</a>
+returns an independent result for each document ID. Use <code>force</code> only when you intend to remove
+agent dependencies and recursively delete the contents of non-empty folders.</p>
+<h2>CRUD Operations</h2>
+<h3>Using CLI (Recommended)</h3>
+<pre><code class="language-bash"># Initialize project
+elevenlabs agents init
+
+# Create agent from template
+elevenlabs agents add &quot;My Agent&quot; --template complete
+elevenlabs agents add &quot;Support Bot&quot; --template customer-service
+
+# List agents
+elevenlabs agents list
+
+# Check status
+elevenlabs agents status
+
+# Push local changes to platform
+elevenlabs agents push
+elevenlabs agents push --dry-run    # Preview changes first
+
+# Import agents from platform
+elevenlabs agents pull                      # Import all
+elevenlabs agents pull --agent &lt;agent-id&gt;   # Import specific agent
+elevenlabs agents pull --update             # Override local configs
+
+# View available templates
+elevenlabs agents templates list
+elevenlabs agents templates show &lt;template-name&gt;
+
+# Add tools
+elevenlabs tools add-webhook &quot;API Tool&quot;
+elevenlabs tools add-client &quot;UI Tool&quot;
+
+# Generate widget code
+elevenlabs agents widget &lt;agent-id&gt;
+</code></pre>
+<h3>SDK: List Agents</h3>
+<pre><code class="language-python">agents = client.conversational_ai.agents.list()
+for agent in agents.agents:
+    print(f&quot;{agent.name}: {agent.agent_id}&quot;)
+</code></pre>
+<pre><code class="language-javascript">const agents = await client.conversationalAi.agents.list();
+</code></pre>
+<pre><code class="language-bash">elevenlabs agents list
+</code></pre>
+<h3>SDK: Manage Conversation Tags</h3>
+<p>Use tags to categorize conversation history and filter list views:</p>
+<pre><code class="language-python">tag = client.conversational_ai.conversations.tags.create(
+    title=&quot;Urgent Support&quot;,
+    description=&quot;Conversations that need same-day follow-up&quot;,
+)
+
+client.conversational_ai.conversations.tags.assign(
+    conversation_id=&quot;conversation_id&quot;,
+    tag_ids=[tag.tag_id],
+)
+
+conversations = client.conversational_ai.conversations.list(
+    tag_ids=[tag.tag_id],
+    exclude_statuses=[&quot;initiated&quot;, &quot;in-progress&quot;, &quot;processing&quot;],
+)
+</code></pre>
+<pre><code class="language-javascript">const tag = await client.conversationalAi.conversations.tags.create({
+  title: &quot;Urgent Support&quot;,
+  description: &quot;Conversations that need same-day follow-up&quot;,
+});
+
+await client.conversationalAi.conversations.tags.assign(&quot;conversation_id&quot;, {
+  tagIds: [tag.tagId],
+});
+
+const conversations = await client.conversationalAi.conversations.list({
+  tagIds: [tag.tagId],
+  excludeStatuses: [&quot;initiated&quot;, &quot;in-progress&quot;, &quot;processing&quot;],
+});
+</code></pre>
+<p>Conversation listing and message search can filter by <code>visited_agent_ids</code> and
+<code>visited_agent_branch_ids</code>. List conversations also accepts <code>parent_conversation_id</code>,
+<code>guardrail_types</code>, and <code>custom_guardrail_names</code> to narrow results by hierarchy or triggered
+guardrails. For a listing that includes selected analysis results, pass <code>data_collection_ids</code> or
+<code>evaluation_criteria_ids</code>; matching summaries include <code>data_collection_results</code> or
+<code>evaluation_criteria_results</code>.</p>
+<h3>SDK: Get Agent</h3>
+<pre><code class="language-python">agent = client.conversational_ai.agents.get(agent_id=&quot;your-agent-id&quot;)
+</code></pre>
+<pre><code class="language-javascript">const agent = await client.conversationalAi.agents.get(&quot;your-agent-id&quot;);
+</code></pre>
+<pre><code class="language-bash">elevenlabs agents get --agent-id &quot;your-agent-id&quot;
+</code></pre>
+<h3>SDK: Update Agent</h3>
+<p>Only include fields you want to change. All other settings remain unchanged.</p>
+<p><strong>Python:</strong></p>
+<pre><code class="language-python"># Update name
+client.conversational_ai.agents.update(agent_id=&quot;id&quot;, name=&quot;New Name&quot;)
+
+# Update TTS voice
+client.conversational_ai.agents.update(agent_id=&quot;id&quot;, conversation_config={
+    &quot;tts&quot;: {&quot;voice_id&quot;: &quot;EXAVITQu4vr4xnSDxMaL&quot;, &quot;model_id&quot;: &quot;eleven_flash_v2_5&quot;}
+})
+
+# Update prompt/LLM (nested in agent)
+client.conversational_ai.agents.update(agent_id=&quot;id&quot;, conversation_config={
+    &quot;agent&quot;: {&quot;prompt&quot;: {&quot;prompt&quot;: &quot;New instructions.&quot;, &quot;llm&quot;: &quot;claude-sonnet-4&quot;, &quot;temperature&quot;: 0.8}}
+})
+
+# Update first message
+client.conversational_ai.agents.update(agent_id=&quot;id&quot;, conversation_config={
+    &quot;agent&quot;: {&quot;first_message&quot;: &quot;Welcome back!&quot;}
+})
+
+# Update platform settings
+client.conversational_ai.agents.update(agent_id=&quot;id&quot;, platform_settings={
+    &quot;auth&quot;: {&quot;enable_auth&quot;: True, &quot;allowlist&quot;: [{&quot;hostname&quot;: &quot;myapp.com&quot;}]}
+})
+</code></pre>
+<p><strong>JavaScript:</strong></p>
+<pre><code class="language-javascript">await client.conversationalAi.agents.update(&quot;id&quot;, { name: &quot;New Name&quot; });
+await client.conversationalAi.agents.update(&quot;id&quot;, {
+  conversationConfig: { tts: { voiceId: &quot;EXAVITQu4vr4xnSDxMaL&quot; } }
+});
+await client.conversationalAi.agents.update(&quot;id&quot;, {
+  conversationConfig: { agent: { prompt: { prompt: &quot;New instructions.&quot;, llm: &quot;claude-sonnet-4&quot; } } }
+});
+</code></pre>
+<p><strong>CLI:</strong></p>
+<pre><code class="language-bash">elevenlabs agents update --agent-id &quot;your-agent-id&quot; --json '{&quot;name&quot;: &quot;New Name&quot;}'
+</code></pre>
+<h4>Updatable Fields</h4>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Root</td>
+<td><code>name</code>, <code>tags</code></td>
+</tr>
+<tr>
+<td><code>conversation_config.agent</code></td>
+<td><code>first_message</code>, <code>language</code>, <code>disable_first_message_interruptions</code>, <code>dynamic_variables</code>, <code>text_behavior_overrides</code></td>
+</tr>
+<tr>
+<td><code>conversation_config.agent.prompt</code></td>
+<td><code>prompt</code>, <code>llm</code>, <code>temperature</code>, <code>max_tokens</code>, <code>reasoning_effort</code>, <code>tools</code>, <code>built_in_tools</code>, <code>knowledge_base</code>, <code>custom_llm</code>, <code>timezone</code></td>
+</tr>
+<tr>
+<td><code>conversation_config.tts</code></td>
+<td><code>voice_id</code>, <code>model_id</code>, <code>stability</code>, <code>similarity_boost</code>, <code>speed</code>, <code>expressive_mode</code>, <code>enable_phoneme_tags</code></td>
+</tr>
+<tr>
+<td><code>conversation_config.asr</code></td>
+<td><code>quality</code>, <code>provider</code>, <code>keywords</code>, <code>user_input_audio_format</code></td>
+</tr>
+<tr>
+<td><code>conversation_config.turn</code></td>
+<td><code>turn_timeout</code>, <code>turn_eagerness</code>, <code>silence_end_call_timeout</code>, <code>turn_model</code>, <code>interruption_ignore_terms</code>, <code>interruption_ignore_term_languages</code>, <code>merge_with_default_ignore_terms</code>, <code>transcribe_on_disabled_interruptions</code>, <code>soft_timeout_config</code></td>
+</tr>
+<tr>
+<td><code>conversation_config.conversation</code></td>
+<td><code>max_duration_seconds</code>, <code>text_only</code>, <code>monitoring_enabled</code>, <code>background_sound</code></td>
+</tr>
+<tr>
+<td><code>platform_settings</code></td>
+<td><code>summary_language</code>, <code>auto_translate_transcript_to_app_language</code>, <code>analysis_items</code>, <code>guardrails</code>, <code>privacy</code>, <code>topic_discovery</code>, <code>sentiment_analysis</code>, <code>alerting</code></td>
+</tr>
+<tr>
+<td><code>platform_settings.widget</code></td>
+<td><code>dismissible</code>, <code>show_agent_status</code>, <code>show_conversation_id</code>, <code>strip_audio_tags</code>, <code>syntax_highlight_theme</code></td>
+</tr>
+<tr>
+<td><code>platform_settings.auth</code></td>
+<td><code>enable_auth</code>, <code>allowlist</code></td>
+</tr>
+<tr>
+<td><code>platform_settings.call_limits</code></td>
+<td><code>agent_concurrency_limit</code>, <code>daily_limit</code>, <code>bursting_enabled</code></td>
+</tr>
+</tbody>
+</table>
+<h3>SDK: Delete Agent</h3>
+<pre><code class="language-python">client.conversational_ai.agents.delete(agent_id=&quot;your-agent-id&quot;)
+</code></pre>
+<pre><code class="language-javascript">await client.conversationalAi.agents.delete(&quot;your-agent-id&quot;);
+</code></pre>
+<pre><code class="language-bash">elevenlabs agents delete --agent-id &quot;your-agent-id&quot;
+</code></pre>
+<h2>CI/CD Integration</h2>
+<p>Use the CLI in your deployment pipeline:</p>
+<pre><code class="language-bash"># Set API key as environment variable
+export ELEVENLABS_API_KEY=&quot;your-api-key&quot;
+
+# Push changes (non-interactive)
+elevenlabs agents push
+</code></pre>
+<h2>Example Configurations</h2>
+<h3>Customer Support Agent</h3>
+<pre><code class="language-python">agent = client.conversational_ai.agents.create(
+    name=&quot;Support Agent&quot;,
+    conversation_config={
+        &quot;agent&quot;: {
+            &quot;first_message&quot;: &quot;Hi! Thanks for calling TechCorp support.&quot;,
+            &quot;language&quot;: &quot;en&quot;,
+            &quot;prompt&quot;: {
+                &quot;prompt&quot;: &quot;You are a customer support agent. Be helpful, professional, concise.&quot;,
+                &quot;llm&quot;: &quot;gemini-2.0-flash&quot;,
+                &quot;temperature&quot;: 0.5,
+                &quot;built_in_tools&quot;: {
+                    &quot;end_call&quot;: {},
+                    &quot;transfer_to_number&quot;: {
+                        &quot;transfers&quot;: [{&quot;transfer_destination&quot;: {&quot;type&quot;: &quot;phone&quot;, &quot;phone_number&quot;: &quot;+1234567890&quot;}, &quot;condition&quot;: &quot;User asks for human support&quot;}]
+                    }
+                }
+            }
+        },
+        &quot;tts&quot;: {&quot;voice_id&quot;: &quot;XB0fDUnXU5powFXDhCwa&quot;, &quot;model_id&quot;: &quot;eleven_flash_v2_5&quot;},
+        &quot;turn&quot;: {&quot;turn_eagerness&quot;: &quot;normal&quot;, &quot;turn_timeout&quot;: 7},
+        &quot;conversation&quot;: {&quot;max_duration_seconds&quot;: 900}
+    }
+)
+</code></pre>
+<h3>Low-Latency Assistant</h3>
+<pre><code class="language-python">agent = client.conversational_ai.agents.create(
+    name=&quot;Quick Assistant&quot;,
+    conversation_config={
+        &quot;agent&quot;: {
+            &quot;first_message&quot;: &quot;Hey! What do you need?&quot;,
+            &quot;prompt&quot;: {
+                &quot;prompt&quot;: &quot;Fast, efficient assistant. Brief answers.&quot;,
+                &quot;llm&quot;: &quot;gemini-2.0-flash&quot;,
+                &quot;temperature&quot;: 0.3,
+                &quot;max_tokens&quot;: 100
+            }
+        },
+        &quot;tts&quot;: {&quot;voice_id&quot;: &quot;JBFqnCBsd6RMkjVDRZzb&quot;, &quot;model_id&quot;: &quot;eleven_flash_v2_5&quot;},
+        &quot;turn&quot;: {&quot;turn_eagerness&quot;: &quot;eager&quot;, &quot;turn_timeout&quot;: 3}
+    }
+)
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

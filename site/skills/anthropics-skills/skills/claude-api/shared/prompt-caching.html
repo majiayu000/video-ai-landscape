@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>prompt-caching · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/prompt-caching.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Prompt Caching - Design &amp; Optimization</h1>
+<p>This file covers how to design prompt-building code for effective caching. For language-specific syntax, see the <code>## Prompt Caching</code> section in each language's README or single-file doc.</p>
+<h2>The one invariant everything follows from</h2>
+<p><strong>Prompt caching is a prefix match. Any change anywhere in the prefix invalidates everything after it.</strong></p>
+<p>The cache key is derived from the exact bytes of the rendered prompt up to each <code>cache_control</code> breakpoint. A single byte difference at position N - a timestamp, a reordered JSON key, a different tool in the list - invalidates the cache for all breakpoints at positions &gt;= N.</p>
+<p>Render order is: <code>tools</code> -&gt; <code>system</code> -&gt; <code>messages</code>. A breakpoint on the last system block caches both tools and system together.</p>
+<p>Design the prompt-building path around this constraint. Get the ordering right and most caching works for free. Get it wrong and no amount of <code>cache_control</code> markers will help.</p>
+<hr />
+<h2>Workflow for optimizing existing code</h2>
+<p>When asked to add or optimize caching:</p>
+<ol>
+<li><strong>Trace the prompt assembly path.</strong> Find where <code>system</code>, <code>tools</code>, and <code>messages</code> are constructed. Identify every input that flows into them.</li>
+<li><strong>Classify each input by stability:</strong>
+   - Never changes -&gt; belongs early in the prompt, before any breakpoint
+   - Changes per-session -&gt; belongs after the global prefix, cache per-session
+   - Changes per-turn -&gt; belongs at the end, after the last breakpoint
+   - Changes per-request (timestamps, UUIDs, random IDs) -&gt; <strong>eliminate or move to the very end</strong></li>
+<li><strong>Check rendered order matches stability order.</strong> Stable content must physically precede volatile content. If a timestamp is interpolated into the system prompt header, everything after it is uncacheable regardless of markers.</li>
+<li><strong>Place breakpoints at stability boundaries.</strong> See placement patterns below.</li>
+<li><strong>Audit for silent invalidators.</strong> See anti-patterns table.</li>
+</ol>
+<hr />
+<h2>Placement patterns</h2>
+<h3>Large system prompt shared across many requests</h3>
+<p>Put a breakpoint on the last system text block. If there are tools, they render before system - the marker on the last system block caches tools + system together.</p>
+<pre><code class="language-json">&quot;system&quot;: [
+  {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;&lt;large shared prompt&gt;&quot;, &quot;cache_control&quot;: {&quot;type&quot;: &quot;ephemeral&quot;}}
+]
+</code></pre>
+<h3>Multi-turn conversations</h3>
+<p>Put a breakpoint on the last content block of the most-recently-appended turn. Each subsequent request reuses the entire prior conversation prefix. Earlier breakpoints remain valid read points, so hits accrue incrementally as the conversation grows.</p>
+<pre><code class="language-json">// Last content block of the last user turn
+messages[-1].content[-1].cache_control = {&quot;type&quot;: &quot;ephemeral&quot;}
+</code></pre>
+<h3>Shared prefix, varying suffix</h3>
+<p>Many requests share a large fixed preamble (few-shot examples, retrieved docs, instructions) but differ in the final question. Put the breakpoint at the end of the <strong>shared</strong> portion, not at the end of the whole prompt - otherwise every request writes a distinct cache entry and nothing is ever read.</p>
+<pre><code class="language-json">&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: [
+  {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;&lt;shared context&gt;&quot;, &quot;cache_control&quot;: {&quot;type&quot;: &quot;ephemeral&quot;}},
+  {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;&lt;varying question&gt;&quot;}  // no marker - differs every time
+]}]
+</code></pre>
+<h3>Mid-conversation system messages</h3>
+<p><strong>Claude Opus 5, Claude Opus 4.8, Claude Fable 5, Claude Fable 5.1, Claude Mythos 5, and Claude Mythos 5.1; no beta header. Not available on Claude Sonnet 5</strong> - use top-level <code>system</code> there. (Sources conflict on Claude Sonnet 5: the model config marks it supported, but every canonical docs page omits it. Treat it as unsupported and catch the 400.) When an operator instruction arrives mid-conversation - a mode switch, updated context, dynamically injected state - send it as <code>{"role": "system", "content": "..."}</code> appended to <code>messages[]</code>, rather than editing top-level <code>system</code>. Editing top-level <code>system</code> changes the prefix ahead of the entire conversation history, so every cached turn is re-processed uncached; a <code>role: "system"</code> message sits after the history and leaves the cached prefix intact.</p>
+<pre><code class="language-json">// Top-level system stays byte-identical; new instruction goes after the cached history
+&quot;system&quot;: [{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;&lt;stable core&gt;&quot;, &quot;cache_control&quot;: {&quot;type&quot;: &quot;ephemeral&quot;}}],
+&quot;messages&quot;: [
+  ...history,
+  {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;...&quot;},
+  {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;Terse mode enabled - keep responses under 40 words.&quot;}
+]
+</code></pre>
+<p>This is also the prompt-injection-safe replacement for embedding operator instructions as text inside a user turn (the <code>&lt;system-reminder&gt;</code> pattern): both have the same caching profile, but <code>role: "system"</code> is the non-spoofable operator channel, whereas text inside user/tool content can be forged by anything that writes to user-visible input.</p>
+<p>Must follow a <code>role: "user"</code> message (or an <code>assistant</code> message ending in server-tool use), and must be either the last entry in <code>messages</code> or be followed by an <code>assistant</code> turn; cannot be <code>messages[0]</code> - use top-level <code>system</code> for the initial prompt. Content is text-only. Unsupported models return a 400 (<code>BadRequestError</code>: <code>role 'system' is not supported on this model</code>); catch that error and fall back to putting the instruction in a user-turn <code>&lt;system-reminder&gt;</code> block.</p>
+<p><strong>Per-turn reminders in a tool loop: turn-scoped messages, never deleted.</strong> A reminder injected into history and removed on the next request is a history edit - the cache misses from that point and, on Claude Fable 5.1 / Claude Mythos 5.1, every later thinking block is invalidated. Instead give the <code>role: "system"</code> message <code>clear_at: "next_user_message"</code> (beta <code>mid-conversation-system-clear-at-2026-08-21</code>; same models and platforms as mid-conversation system messages): it renders for one turn, then stays in the transcript cleared - costing no input tokens, not cache-eligible (<code>cache_control</code> on it is a 400; put the breakpoint on the preceding user turn), and still part of the prefix. Append a fresh copy after each <code>tool_result</code> message and leave earlier copies in place; without the beta, a <code>text</code> block after the <code>tool_result</code> blocks in the same user message, earlier copies kept. Separately, per-message effort (beta <code>mid-conversation-output-config-2026-07-01</code>; Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5; Claude API): a <code>role: "system"</code> message with <code>content: []</code> and <code>output_config: {effort: ...}</code> changes effort from the next user turn on <strong>without</strong> the messages-cache invalidation that a top-level <code>effort</code> change causes, and is exempt from the placement rules (it can sit anywhere) - see the Invalidation hierarchy below and <code>shared/model-migration.md</code> -&gt; Migrating to Claude Fable 5.1 from Claude Fable 5 -&gt; New API features.</p>
+<h3>Prompts that change from the beginning every time</h3>
+<p>Don't cache. If the first 1K tokens differ per request, there is no reusable prefix. Adding <code>cache_control</code> only pays the cache-write premium with zero reads. Leave it off.</p>
+<hr />
+<h2>Architectural guidance</h2>
+<p>These are the decisions that matter more than marker placement. Fix these first.</p>
+<p><strong>Keep the system prompt frozen.</strong> Don't interpolate "current date: X", "mode: Y", "user name: Z" into the system prompt - those sit at the front of the prefix and invalidate everything downstream. Inject dynamic context later in <code>messages</code> instead - as a <code>{"role": "system", ...}</code> message where supported (see § Mid-conversation system messages above), or as text in a user message otherwise. A message at turn 5 invalidates nothing before turn 5.</p>
+<p><strong>Don't change tools or model mid-conversation.</strong> Tools render at position 0; adding, removing, or reordering a tool invalidates the entire cache. Same for switching models (caches are model-scoped). If you need "modes", don't swap the tool set - give Claude a tool that records the mode transition, or pass the mode as message content. Serialize tools deterministically (sort by name).</p>
+<p><strong>Fork operations must reuse the parent's exact prefix.</strong> Side computations (summarization, compaction, sub-agents) often spin up a separate API call. If the fork rebuilds <code>system</code> / <code>tools</code> / <code>model</code> with any difference, it misses the parent's cache entirely. Copy the parent's <code>system</code>, <code>tools</code>, and <code>model</code> verbatim, then append fork-specific content at the end.</p>
+<hr />
+<h2>Silent invalidators</h2>
+<p>When reviewing code, grep for these inside anything that feeds the prompt prefix:</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Why it breaks caching</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>datetime.now()</code> / <code>Date.now()</code> / <code>time.time()</code> in system prompt</td>
+<td>Prefix changes every request</td>
+</tr>
+<tr>
+<td><code>uuid4()</code> / <code>crypto.randomUUID()</code> / request IDs early in content</td>
+<td>Same - every request is unique</td>
+</tr>
+<tr>
+<td><code>json.dumps(d)</code> without <code>sort_keys=True</code> / iterating a <code>set</code></td>
+<td>Non-deterministic serialization -&gt; prefix bytes differ</td>
+</tr>
+<tr>
+<td>f-string interpolating session/user ID into system prompt</td>
+<td>Per-user prefix; no cross-user sharing</td>
+</tr>
+<tr>
+<td>Conditional system sections (<code>if flag: system += ...</code>)</td>
+<td>Every flag combination is a distinct prefix</td>
+</tr>
+<tr>
+<td><code>tools=build_tools(user)</code> where set varies per user</td>
+<td>Tools render at position 0; nothing caches across users</td>
+</tr>
+</tbody>
+</table>
+<p>Fix by moving the dynamic piece after the last breakpoint, making it deterministic, or deleting it if it's not load-bearing.</p>
+<hr />
+<h2>API reference</h2>
+<pre><code class="language-json">&quot;cache_control&quot;: {&quot;type&quot;: &quot;ephemeral&quot;}              // 5-minute TTL (default)
+&quot;cache_control&quot;: {&quot;type&quot;: &quot;ephemeral&quot;, &quot;ttl&quot;: &quot;1h&quot;} // 1-hour TTL
+</code></pre>
+<ul>
+<li>Max <strong>4</strong> <code>cache_control</code> breakpoints per request.</li>
+<li>Goes on any content block: system text blocks, tool definitions, message content blocks (<code>text</code>, <code>image</code>, <code>tool_use</code>, <code>tool_result</code>, <code>document</code>).</li>
+<li>Top-level <code>cache_control</code> on <code>messages.create()</code> auto-places on the last cacheable block - simplest option when you don't need fine-grained placement (§ Automatic vs explicit breakpoints).</li>
+<li>Caches are isolated per workspace on the Claude API, Claude Platform on AWS, and Microsoft Foundry (per organization on Amazon Bedrock and Google Cloud), and never shared across organizations. Traffic for the same prompt split across workspaces writes and reads separate entries - check this before blaming a low hit rate on the prompt.</li>
+<li>Minimum cacheable prefix is model-dependent. Shorter prefixes silently won't cache even with a marker - no error, just <code>cache_creation_input_tokens: 0</code>:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th style="text-align: right;">Minimum</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claude Opus 5, Claude Fable 5, Claude Mythos 5, Claude Fable 5.1, Claude Mythos 5.1</td>
+<td style="text-align: right;">512 tokens</td>
+</tr>
+<tr>
+<td>Opus 4.8, Claude Sonnet 5, Sonnet 4.6, Sonnet 4.5, Opus 4.1, Opus 4, Sonnet 4</td>
+<td style="text-align: right;">1024 tokens</td>
+</tr>
+<tr>
+<td>Opus 4.7, Mythos Preview, Haiku 3.5</td>
+<td style="text-align: right;">2048 tokens</td>
+</tr>
+<tr>
+<td>Opus 4.6, Opus 4.5, Haiku 4.5</td>
+<td style="text-align: right;">4096 tokens</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The minimum is not monotonic across generations</strong> - 512 on the newest models, but 4096 on Opus 4.6/4.5 and Haiku 4.5. A 3K-token prompt caches on Claude Opus 5, Opus 4.8, and Sonnet 4.5, and silently won't on Opus 4.6 or Haiku 4.5. Claude Opus 5 halves the Opus 4.8 minimum (1024 -&gt; 512), so prompts previously too short to cache now create entries with no code change.</p>
+<p>These minimums apply on <strong>every</strong> platform where the model is available - the old Amazon Bedrock override for Claude Fable 5.1 was removed, and no per-platform exception remains.</p>
+<p><strong>Economics:</strong> Cache reads cost ~0.1× base input price - <strong>0.025× on Claude Fable 5.1</strong> ($0.25/MTok; whether Claude Mythos 5.1 shares that rate is open at launch), which moves every break-even below proportionally. Cache writes cost <strong>1.25× for 5-minute TTL, 2× for 1-hour TTL</strong>. Break-even depends on TTL: with 5-minute TTL, two requests break even (1.25× + 0.1× = 1.35× vs 2× uncached); with 1-hour TTL, you need at least three requests (2× + 0.2× = 2.2× vs 3× uncached). The 1-hour TTL keeps entries alive across gaps in bursty traffic, but the doubled write cost means it needs more reads to pay off.</p>
+<h3>Choosing the TTL</h3>
+<p>A cache read refreshes the entry's timer at no additional cost, on either TTL. The lifetime is measured from the <strong>start</strong> of the request that writes or reads the entry - generation time counts against it, so a 4-minute generation leaves about 1 minute for the next request to start before a 5-minute entry expires. Requests that share a prefix and start less than 5 minutes apart keep the 5-minute cache warm indefinitely - the 1-hour TTL buys nothing there except the doubled write price. Choose by the start-to-start gap between requests that share the prefix:</p>
+<table>
+<thead>
+<tr>
+<th>Start-to-start gap between requests sharing the prefix</th>
+<th>TTL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Under 5 minutes (continuous traffic; agent loops whose turns generate well under 5 minutes)</td>
+<td>5-minute - every request refreshes it; strictly cheaper</td>
+</tr>
+<tr>
+<td>5-60 minutes (a user who replies after 20 minutes; an agentic side-task or a generation that runs past 5 minutes between reads)</td>
+<td>1-hour - the only window where the 2× write pays off</td>
+</tr>
+<tr>
+<td>Over an hour</td>
+<td>Neither helps directly - re-warm on a schedule (§ Pre-warming the cache) or accept the cold miss</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Claude Fable 5.1 / Claude Mythos 5.1: a keep-alive is usually cheaper than the 1-hour TTL.</strong> With cache reads at 0.025x on Claude Fable 5.1 (versus 0.1x elsewhere; whether Claude Mythos 5.1 shares that rate is open at launch - see Economics above) a miss is much more expensive <em>relative to a hit</em>, and a read is nearly free - so for the 5-60 minute gap, instead of paying the 2x write for the 1-hour TTL, stay on the default 5-minute TTL and, while idle, re-send the previous request with <code>max_tokens: 0</code> shortly before the entry would expire. That request refreshes the entry's timer and bills only a cheap cache read (no output tokens). At Claude Fable 5.1 prices this beats the 1-hour TTL unless pauses regularly approach an hour. <code>max_tokens: 0</code> follows § Pre-warming's rejected combinations; on these models the ones that can arise are <code>stream: true</code>, structured outputs, and Batches (forced <code>tool_choice</code> and <code>thinking.type: "enabled"</code> are already 400s here). Send the keep-alive with <code>stream</code> off - streaming is a transport option, not part of the cached prefix, so dropping it for this one request costs nothing - and where the request can't be reshaped that way, with structured outputs (<code>output_config.format</code>) or inside a Message Batches request, use the 1-hour TTL instead. The prompt-caching page (<code>shared/live-sources.md</code>) has a cost comparison on a sample workload and an example keep-alive request.</p>
+<p>On the Claude API, cache reads also do not count toward input-token rate limits on most models (Haiku 3.5 is the documented exception - see the rate-limits doc), so keeping entries alive across gaps can raise effective throughput as well as cut cost.</p>
+<hr />
+<h2>Automatic vs explicit breakpoints</h2>
+<p>Automatic caching is a top-level <code>cache_control</code> field on the request, not on any content block. The system places the breakpoint on the last cacheable block and moves it forward as the conversation grows; if the last block isn't an eligible target it silently walks backward to the nearest eligible one, and skips caching if none is found. The automatic breakpoint defaults to the 5-minute TTL (the top-level field accepts <code>ttl: "1h"</code>) and consumes one of the 4 breakpoint slots. It composes with explicit markers in the same request, with two documented 400s: all 4 slots already taken by explicit markers, and an explicit marker on the last block whose TTL differs from the top-level field's (an explicit marker there with the same TTL makes automatic caching a no-op).</p>
+<p>Automatic is the right default for multi-turn conversations - the multi-turn placement pattern above with no marker bookkeeping. Use explicit breakpoints when:</p>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Why automatic is the wrong tool</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The prompt ends in unique per-request content (retrieved rows, per-request context, the one-off question)</td>
+<td>The automatic breakpoint lands after the unique tail, so every request pays the write premium on bytes that are never read back - a pure surcharge. The signature: <code>cache_creation_input_tokens</code> on every request while <code>cache_read_input_tokens</code> never covers the full shared prefix. Put an explicit marker at the end of the shared portion instead (§ Shared prefix, varying suffix).</td>
+</tr>
+<tr>
+<td>Sections change at different frequencies (tools never, context daily, conversation per-turn)</td>
+<td>Automatic places exactly one breakpoint; multiple stability boundaries need explicit markers.</td>
+</tr>
+<tr>
+<td>One block should be 1-hour TTL and another 5-minute</td>
+<td>Per-block TTL requires explicit markers - and entries with the longer TTL must appear before shorter ones (a 1-hour entry must appear before any 5-minute entries).</td>
+</tr>
+<tr>
+<td>A single turn appends more than 20 positions (consecutive tool_use runs, and tool_result runs, each collapse to one position)</td>
+<td>The lookback can miss the previous entry - § 20-block lookback window.</td>
+</tr>
+<tr>
+<td>A platform or integration without automatic caching (check <code>shared/platform-availability.md</code>)</td>
+<td>The top-level field is rejected there - use explicit markers only.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The robust combination for agent loops:</strong> one explicit breakpoint on the last block of the static system prefix - the expensive shared part gets a guaranteed read point that survives whatever happens later in <code>messages</code> - plus top-level automatic caching for the growing conversation tail (where automatic caching is available - <code>shared/platform-availability.md</code>).</p>
+<hr />
+<h2>Verifying cache hits</h2>
+<p>The response <code>usage</code> object reports cache activity:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cache_creation_input_tokens</code></td>
+<td>Tokens written to cache this request (you paid the ~1.25× write premium)</td>
+</tr>
+<tr>
+<td><code>cache_read_input_tokens</code></td>
+<td>Tokens served from cache this request (you paid ~0.1×)</td>
+</tr>
+<tr>
+<td><code>input_tokens</code></td>
+<td>Tokens processed at full price (not cached)</td>
+</tr>
+</tbody>
+</table>
+<p>If <code>cache_read_input_tokens</code> is zero across repeated requests with identical prefixes, a silent invalidator is at work - diff the rendered prompt bytes between two requests to find it.</p>
+<p><strong><code>input_tokens</code> is the uncached remainder only.</strong> Total prompt size = <code>input_tokens + cache_creation_input_tokens + cache_read_input_tokens</code>. If your agent ran for hours but <code>input_tokens</code> shows 4K, the rest was served from cache - check the sum, not the single field.</p>
+<p>Language-specific access: <code>response.usage.cache_read_input_tokens</code> (Python/TS/Ruby), <code>$message-&gt;usage-&gt;cacheReadInputTokens</code> (PHP), <code>resp.Usage.CacheReadInputTokens</code> (Go/C#), <code>.usage().cacheReadInputTokens()</code> (Java).</p>
+<p><strong>Verify after every change, not just at setup.</strong> The costliest caching failure in production is silent: requests keep succeeding, the bill is just higher - no error, nothing announces it. The typical shape is a regression, not a bad first implementation: caching works when written, then a later change to prompt assembly (a new dynamic field in the system prompt, a history-rewriting feature, a tool list that stopped being deterministic) misses on every request and goes unnoticed for months. The <code>usage</code> fields are the only ground truth that caching is working. Re-check them whenever prompt-assembly code changes, and prefer a standing check - an integration-test assertion that a second identical request shows <code>cache_read_input_tokens &gt; 0</code>, or monitoring on the usage fields - over a one-time look.</p>
+<p><strong>The healthy-loop signature.</strong> Writes bill only the delta past the highest cache hit, so in a steady multi-turn loop each request should read everything accumulated so far and write only what the last turn added:</p>
+<ul>
+<li><code>cache_read_input_tokens</code> - the whole prior prefix; grows turn over turn</li>
+<li><code>cache_creation_input_tokens</code> - roughly the previous assistant output plus the newly appended input; small relative to the conversation</li>
+<li><code>input_tokens</code> - just the tail after the last breakpoint</li>
+</ul>
+<p>If <code>cache_creation_input_tokens</code> is instead near the full conversation size on every request, either the prefix is being rewritten upstream of the breakpoint, or the write is happening for a reason payload diffing and cache diagnostics can't localize - with thinking enabled on a model that strips prior-turn thinking blocks the invalidation is server-side (§ Invalidation hierarchy), and a single turn that appends more than 20 positions (parallel tool-call runs collapse to one position - § 20-block lookback window) pushes the previous entry out of the lookback so every request rewrites the whole conversation with byte-identical payloads (§ 20-block lookback window). Rule both show-nothing cases out first from the model and the turn shape. Reads can only land on positions where a previous request wrote a breakpoint, so the usage fields say <em>that</em> the prefix broke (reads collapse, often to zero) but not where - the payload diff or cache diagnostics below localizes the exact point.</p>
+<p><strong>Finding the invalidator.</strong> Log several consecutive request payloads (the full JSON body) and diff adjacent pairs. In a growing conversation, adjacent payloads legitimately differ at the end (the newly appended turn); what must be byte-identical is the overlap - the previous request's prompt should reappear unchanged as a prefix of the next. Strip <code>cache_control</code> markers before diffing: the moving marker always differs between adjacent requests and is not an invalidator (previously-marked blocks are still cache hits). The first remaining divergence inside the overlapping region is the invalidation point. This catches the class of bug code review misses - nondeterministic serialization, a library reordering keys or fields, a value that changes between requests but not within one. On the Claude API, cache diagnostics (beta header <code>cache-diagnosis-2026-04-07</code>) does this comparison server-side once you opt in: send the header on <strong>every</strong> request - fingerprints are stored only for requests that carried it, so a one-shot retrofit fails with <code>previous_message_not_found</code> - then pass the previous response's <code>id</code> as <code>diagnostics.previous_message_id</code> and the response's <code>diagnostics</code> object names where the two requests diverged (model, system, tools, or message history). No payload logging needed. Availability: <code>shared/platform-availability.md</code>.</p>
+<p><strong>Unexplained writes:</strong> <code>usage.cache_creation</code> breaks <code>cache_creation_input_tokens</code> down by TTL (<code>ephemeral_5m_input_tokens</code> / <code>ephemeral_1h_input_tokens</code>). Server tools such as web search automatically insert a 5-minute cache write after tool results when the request already uses caching - writes at a position you didn't mark; expected behavior, not an invalidator.</p>
+<hr />
+<h2>Invalidation hierarchy</h2>
+<p>Not every parameter change invalidates everything. The API has three cache tiers, and changes only invalidate their own tier and below:</p>
+<table>
+<thead>
+<tr>
+<th>Change</th>
+<th style="text-align: center;">Tools cache</th>
+<th style="text-align: center;">System cache</th>
+<th style="text-align: center;">Messages cache</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tool definitions (add/remove/reorder)</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td>Model switch</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td><code>speed</code>, web-search, citations toggle</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td>System prompt content</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td><code>tool_choice</code>, images</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td><code>thinking</code> or <code>effort</code> change</td>
+<td style="text-align: center;">model-specific</td>
+<td style="text-align: center;">model-specific</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td>Message content</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">No</td>
+</tr>
+</tbody>
+</table>
+<p>Implication: you can change <code>tool_choice</code> per-request without losing the tools+system cache, and message-content changes never touch it. Thinking and <code>effort</code> changes always invalidate the messages cache, and on models that render the thinking configuration ahead of tools and system they invalidate those caches too - pin thinking and effort settings per route rather than varying them per request. Only tool-definition and model changes force a full rebuild on every model.</p>
+<p><strong>Three of these rows have a cache-preserving escape hatch</strong> - the tools row, the system-prompt row, and (on Claude Fable 5.1 / Claude Mythos 5.1 / Claude Opus 5) the <code>effort</code> row - each by moving the change out of the top-level request and into a system message inside <code>messages[]</code>, after the cached prefix. The inject-then-delete reminder pattern has its own hatch: a text block appended after the <code>tool_result</code> blocks in the user message, never deleted. <strong>Availability differs per row</strong> - they are not gated together:</p>
+<table>
+<thead>
+<tr>
+<th>Top-level change that invalidates</th>
+<th>Cache-preserving form</th>
+<th>Available on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tool definitions (add/remove)</td>
+<td><code>tool_addition</code> / <code>tool_removal</code> blocks - see <code>shared/tool-use-concepts.md</code> § Mid-conversation tool changes</td>
+<td>Claude Opus 5 onward, behind <code>mid-conversation-tool-changes-2026-07-01</code></td>
+</tr>
+<tr>
+<td>System prompt content</td>
+<td>A <code>{"role": "system", "content": "..."}</code> message - see § Mid-conversation system messages above</td>
+<td>Claude Opus 5, Claude Opus 4.8, Claude Fable 5, Claude Fable 5.1, Claude Mythos 5, Claude Mythos 5.1 - <strong>already available today</strong>, no beta header</td>
+</tr>
+<tr>
+<td>Per-turn reminder (inject, then delete next request)</td>
+<td>A turn-scoped <code>clear_at: "next_user_message"</code> system message, left in the transcript - see § Mid-conversation system messages above (without the beta: a text block after the <code>tool_result</code> blocks, earlier copies kept)</td>
+<td>Same models as mid-conversation system messages, behind <code>mid-conversation-system-clear-at-2026-08-21</code></td>
+</tr>
+<tr>
+<td><code>effort</code> change</td>
+<td>A <code>{"role": "system", "content": [], "output_config": {"effort": ...}}</code> message - see <code>shared/model-migration.md</code> -&gt; Migrating to Claude Fable 5.1 from Claude Fable 5</td>
+<td>Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5, behind <code>mid-conversation-output-config-2026-07-01</code></td>
+</tr>
+<tr>
+<td>Dropped thinking blocks (a Claude Fable 5.1 / Claude Mythos 5.1 block replayed to a model that can't read it, or a history-editing-check <code>drop_block</code>)</td>
+<td>None - the API drops the block on that request and the messages cache changes from its position onward; tools and system caches are intact. Blocks the receiving model can read, passed back unchanged, keep the cache intact</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<p>Model switch has no escape hatch: caches are model-scoped. Keep the main loop on one model and spawn a subagent for cheaper sub-tasks (see <code>agent-design.md</code> § Caching for Agents).</p>
+<p><strong>Thinking blocks and the messages cache (model-specific).</strong> On Claude Fable 5, Claude Fable 5.1, Claude Mythos 5, Claude Mythos 5.1, Mythos Preview, Opus 4.5 and later, and Sonnet 4.6 and later, previous-turn thinking blocks are preserved by default, so passing a regular (non-tool-result) user message with thinking enabled leaves the messages cache valid. On earlier Opus and Sonnet models and all Haiku models through Haiku 4.5, that same request strips previously-cached thinking blocks from context, and every message after the first stripped block falls out of cache - in an agent loop this shows up as a <code>cache_creation_input_tokens</code> spike on turns where a plain user message follows tool use. (Toggling thinking on/off between requests is a separate, all-models invalidator of the messages cache - see the hierarchy table above. Changing <code>output_config.effort</code> behaves the same as changing thinking parameters; setting the model's default effort explicitly is equivalent to omitting it, so pinning the default costs nothing.)</p>
+<hr />
+<h2>20-block lookback window</h2>
+<p>Each breakpoint walks backward <strong>at most 20 positions</strong> to find a prior cache entry. On the Claude API a run of consecutive <code>tool_use</code> blocks counts as one position, and so does a run of consecutive <code>tool_result</code> blocks, so a turn with many <em>parallel</em> tool calls doesn't push the previous request's entry out of the window; a turn that adds more than 20 positions of other content (long sequential tool loops, many text/image blocks) still can - the next request's breakpoint won't find the previous cache and silently misses.</p>
+<p>Fix: place an intermediate breakpoint every ~15 positions in long turns, or put the marker on a block that's within 20 positions of the previous turn's last cached block.</p>
+<hr />
+<h2>Concurrent-request timing</h2>
+<p>A cache entry becomes readable only after the first response <strong>begins streaming</strong>. N parallel requests with identical prefixes all pay full price - none can read what the others are still writing.</p>
+<p>For fan-out patterns: send 1 request, await the first streamed token (not the full response), then fire the remaining N-1. They'll read the cache the first one just wrote.</p>
+<p>The same arithmetic shapes multi-agent designs: N parallel workers each assembling a slightly different prompt over the same context write N separate cache entries and read none of each other's. When input cost dominates, fewer lanes over a byte-identical shared prefix - or one worker making N sequential passes - turn those writes into reads.</p>
+<h2>Pre-warming the cache</h2>
+<p>To eliminate the cache-miss latency on the <em>first</em> real request, send a <strong><code>max_tokens: 0</code></strong> request at startup (or on an interval). The API runs prefill - writing the cache at your <code>cache_control</code> breakpoint - and returns immediately with <code>content: []</code>, <code>stop_reason: "max_tokens"</code>, and a populated <code>usage</code> block (zero output tokens billed; normal cache-write charge on <code>cache_creation_input_tokens</code>).</p>
+<p><strong>When to pre-warm</strong> - pre-warming trades a cache-write charge <em>now</em> for lower TTFT on the <em>next</em> real request. It's worth it when all three hold: (a) first-request latency is user-visible (chat/voice/interactive - not background jobs), (b) the shared prefix is large enough that a cold write is noticeably slow, and (c) there's a moment <em>before</em> traffic to fire it - app startup, worker boot, post-deploy, start of a scheduled window.</p>
+<table>
+<thead>
+<tr>
+<th>Skip pre-warming when...</th>
+<th>Because</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Traffic is continuous (requests &lt;= TTL apart)</td>
+<td>The first real request warms the cache and every subsequent one hits it; a separate warm call is a pure extra write</td>
+</tr>
+<tr>
+<td>The prefix is small or below the cacheable minimum</td>
+<td>The cold-write penalty is negligible</td>
+</tr>
+<tr>
+<td>The prefix varies per request/user</td>
+<td>Nothing shared to pre-warm</td>
+</tr>
+<tr>
+<td>You'd pre-warm many distinct prefixes speculatively</td>
+<td>Each is a ~1.25× write; cost can exceed the latency you save</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Scheduled re-warms:</strong> only needed when traffic has gaps longer than the TTL. If real requests arrive more often than every 5 minutes, they keep the cache warm on their own - don't add an interval re-warm. For bursty traffic with long idle gaps, either re-warm just under the TTL or switch to <code>ttl: "1h"</code> and re-warm less often.</p>
+<pre><code class="language-python">client.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=0,
+    system=[{
+        &quot;type&quot;: &quot;text&quot;,
+        &quot;text&quot;: SYSTEM_PROMPT,
+        &quot;cache_control&quot;: {&quot;type&quot;: &quot;ephemeral&quot;},
+    }],
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;warmup&quot;}],
+)
+</code></pre>
+<p><strong>Breakpoint placement:</strong> put <code>cache_control</code> on the <strong>last block shared with the real request</strong> (the system prompt or tool definitions) - <strong>not</strong> on the placeholder user message, and <strong>not</strong> via top-level automatic caching (which would key the cache to the placeholder). The placeholder can be any non-whitespace string; it's read during prefill but never answered.</p>
+<p><strong>Rejected combinations:</strong> <code>max_tokens: 0</code> is an <code>invalid_request_error</code> with <code>stream: true</code>, <code>thinking.type: "enabled"</code>, <code>output_config.format</code>, <code>tool_choice</code> of <code>{"type":"tool"}</code> or <code>{"type":"any"}</code>, or inside a Message Batches request.</p>
+<p><strong>TTL still applies</strong> - re-warm at least every 5 minutes for the default cache, or use the 1-hour TTL. This replaces the older <code>max_tokens: 1</code> workaround (no single-token reply to discard, no output tokens billed, intent is unambiguous).</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

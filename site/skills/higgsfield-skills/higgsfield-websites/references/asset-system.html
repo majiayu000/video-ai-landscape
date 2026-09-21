@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>asset-system · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/asset-system.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>asset-system — the Higgsfield-generated visual system (Phase 2)</h1>
+<p>The whole point of this skill: sites built here look expensive because <strong>as
+much of the visual layer as possible is bespoke-generated on Higgsfield</strong> — not
+stock, not icon fonts, not CSS approximations. One brief → one coherent
+generated visual system. Treat this phase as designing a brand asset kit, not
+"getting a hero image".</p>
+<p>Commands (all async — submit everything up front with
+<code>higgsfield generate create &lt;job_type&gt; …</code> WITHOUT <code>--wait</code> so each returns a
+job id, build while rendering, poll <code>higgsfield generate wait &lt;id&gt;</code> /
+<code>higgsfield generate get &lt;id&gt;</code>). Job types: <code>gpt_image_2</code> (art-directed
+images) / <code>nano_banana_pro</code> (photoreal + reference-driven images),
+<code>seedance_2_0</code> (seamless video loops), <code>image_background_remover</code>
+(transparent cutouts), <code>multi_image_to_3d</code> (image(s) → GLB; 1-4 repeated
+<code>--image</code> flags, <code>--should_texture true</code>), <code>bytedance_image_upscale</code>
+(upscale), <code>outpaint</code> (extend an image). Media flags (<code>--image</code>,
+<code>--start-image</code>, …) accept a local file path or a UUID of a prior job/upload —
+the CLI auto-uploads paths. If a param/model is rejected, run
+<code>higgsfield model list</code> + <code>higgsfield model get &lt;job_type&gt;</code> and use what they
+report.</p>
+<h2>The asset kit (generate per tier; palette-locked to the boards)</h2>
+<p><strong>Precedence rule: the user's own assets always win.</strong> Anything the user
+provides (logo, brand marks, product photos, team photos, fonts, existing
+icon set) is used as-is — never regenerate a replacement for something they
+gave you. Generation fills the GAPS only. The one soft exception: if their
+photos clash with the chosen direction, offer a re-grade of THEIR photos
+(image-edit, boards as grade reference) — don't substitute generated
+strangers for their real product/team.</p>
+<p>Every prompt carries the locked palette (name the hexes/mood words), the
+narrative spine motif, and "no text, no logos, no watermark" (you set type in
+HTML). Download everything into <code>app/public/assets/</code> and reference
+same-origin. Downscale: hero ≤2k, cutouts ~800px, icons ~256px.</p>
+<p><strong>Always (every build):</strong></p>
+<ol>
+<li><strong>Hero visual</strong> — the centerpiece. Generate 2 candidates, pick one, and
+   consider an interaction pair (e.g. a dark/desaturated grade + a lit/color
+   grade of the SAME composition for reveal effects — generate the base, then
+   a re-grade via image-edit with the base as reference so they align).</li>
+<li><strong>Section plates</strong> — 2-3 background textures / atmospheric plates matching
+   the boards' background modes (paper grain, graded gradients, material
+   macro shots) so sections aren't flat CSS fills.</li>
+<li><strong>Content imagery</strong> — portraits, product shots, project screenshots,
+   testimonial faces: everything the sections need, style-matched. Fictional
+   project/product UIs are generated as images (never div-built fakes).</li>
+<li><strong>Custom icon set</strong> — do NOT default to an icon font. Generate the site's
+   icons as ONE consistent set: a single image containing a grid of 6-12
+   glyphs in the brand's stroke style + palette ("icon set, consistent
+   2px-stroke line glyphs, [motifs], flat on solid background, no text"),
+   then slice, or generate individually and run <code>image_background_remover</code>
+   for transparent PNGs. Same visual weight, same corner language, sized on a
+   shared grid. (Library icons — Phosphor/Radix — remain the fallback for
+   dense functional UI like form chrome, where 20+ tiny consistent glyphs
+   beat generated ones.)</li>
+<li><strong>Logo / monogram</strong> — ONLY when the user has no logo: a simple generated
+   brand mark or monogram cutout for the nav and the head kit below. If they
+   have one, use theirs everywhere and skip this item.</li>
+<li><strong>OG image</strong> — a proper 1200×630 social card composed in the brand
+   language (generate wide, not a crop of the hero), wired into <code>&lt;head&gt;</code>.
+   Multi-page sites: distinct OG per major route (same template, swapped
+   subject/title), not one card everywhere.</li>
+<li><strong>Head kit (the full favicon/meta set — the FILES exist on every build).</strong>
+   Derived from the user's own logo when provided, from the generated
+   monogram only as the fallback. Work from a high-res source (≥512px,
+   downscale — never upscale a small render), background-removed or set on a
+   solid brand ground:
+   - <code>favicon.ico</code> (32) + <code>favicon.svg</code> if the mark is simple enough to
+     vectorize, else <code>favicon-32.png</code> / <code>favicon-16.png</code>
+   - <code>apple-touch-icon.png</code> (180, opaque background, comfortable padding)
+   - <code>icon-192.png</code> / <code>icon-512.png</code> + a <strong>maskable</strong> 512 variant (mark within
+     the 80% safe zone) referenced from a minimal <code>site.webmanifest</code>
+     (name, colors, icons)
+   - <code>&lt;meta name="theme-color"&gt;</code> set to the brand ground (light + dark values
+     when the page has both)
+   - Full social block: <code>og:title/description/image/url/type</code> +
+     <code>twitter:card=summary_large_image</code>, absolute image URLs
+   Sanity-check the favicon at 16px: if the mark turns to noise, use a
+   simplified glyph (initial letter on brand ground) for the small sizes
+   rather than shrinking the full logo.</li>
+</ol>
+<p><strong>Cinema tier adds:</strong></p>
+<ol start="7">
+<li><strong>Hero video — cinema tier REQUIRES the scroll-scrub, not the loop.</strong>
+   (The DEFAULT website is the <strong>animated website</strong> — the full-site seam-locked
+   chain in <code>references/scroll-scrub.md</code> — whose MP4 chain replaces this single
+   hero scrub; see the note after this list. This §7 single-hero recipe is the
+   hero mechanic only when the user explicitly asked for a non-animated-website
+   treatment.) A
+   static image + CSS effect is the floor; an autoplay ambient loop is barely
+   above it (it moves, but the user's scroll does nothing — passive motion
+   doesn't register as craft). The cinema-tier Tier-1 carrier is the
+   <strong>interactive scrub</strong>: the user's scroll literally plays a film. Recipe
+   (proven end-to-end):
+   - Generate the approved hero image first, then image-to-video
+     (<code>seedance_2_0</code>, the hero image via <code>--start-image</code>) with a slow, cut-free
+     ~5s motion whose progression maps to scroll: push-in + rack focus
+     soft→sharp, subject turn/eyes to camera, light sweep, object assembling.
+     START state ≠ END state, or the scrub has no payoff. Prompt "no cuts, no
+     camera shake, slow steady motion only" and name the grade/hexes.
+   - ffmpeg: <code>fps=20,scale=1280:-2</code> → ~100 jpg/webp frames (a 5s clip lands
+     ~4MB at q4 — well under the 15MB cap) → <code>public/frames/hero/</code>.
+   - Canvas image-sequence renderer bound to the pinned hero's ScrollTrigger
+     progress: preload+paint frame 1 IMMEDIATELY (screenshot-safe at scroll
+     0), stream remaining frames, cover-fit draw, fall back to nearest loaded
+     frame while streaming. Reduced-motion: static final (sharp) frame, no
+     pin.
+   - <strong>Feed the hero image by job id or path:</strong> pass the approved hero
+     generation's job UUID (or the downloaded file path) straight to
+     <code>--start-image</code> — the CLI resolves UUIDs to prior jobs/uploads and
+     auto-uploads local paths.
+   - <strong>Ambient loop</strong> (muted autoplay + poster) is the documented FALLBACK —
+     acceptable only when the composition genuinely can't carry a scrub
+     (dense collage heroes) or video generation failed per the failure rules;
+     say so in the report. A mid-page band may still use a loop freely.</li>
+</ol>
+<p>For the <strong>animated website (A4 — Seam-locked scroll scrub, the default)</strong>, read
+<code>references/scroll-scrub.md</code> and let its entry still, exact deployed-segment
+posters, and chained MP4s replace the ordinary single hero scrub above. Those
+posters also satisfy hero/content imagery for their chapters. Continue the
+logo/icon, section-UI, head-kit, and OG work, but do not generate a redundant
+second hero film. Batch independent B stills/dives; keep A's exact-frame leg
+handoffs sequential even though the default Phase 2 rule prefers submitting
+early.</p>
+<p><strong>Spectacle tier adds:</strong></p>
+<ol start="8">
+<li><strong>3D subject</strong> — approved hero image → <code>multi_image_to_3d</code> → <code>.glb</code>
+   for an R3F scene (verify the source image BEFORE the expensive 3D step).</li>
+</ol>
+<h2>The personalization ladder — generate what the user doesn't have</h2>
+<p>When the user arrives with nothing but an idea, you are also the brand studio.
+Read what they DO have from intake (logo? photos? brand colors?) and generate
+everything missing. Beyond the core kit, reach for these whenever the site has
+a natural slot for them — each one compounds the "this was made for me" effect:</p>
+<ul>
+<li><strong>Brand identity kit</strong> — logo + wordmark + monogram as a consistent family
+  (not three unrelated marks): generate the primary mark, then derive the
+  others via image-edit with the primary as reference. Favicon renders,
+  ink/inverse variants for dark and light grounds.</li>
+<li><strong>Animated logo sting</strong> — 1-2s image-to-video of the mark assembling or a
+  light sweep; use as nav-load flourish or footer sign-off (frames or muted
+  video, reduced-motion static).</li>
+<li><strong>Seamless brand pattern / texture</strong> — a tileable motif in the palette for
+  section dividers, card backs, packaging-style bands. Prompt "seamless
+  repeating pattern" and verify the tile edge.</li>
+<li><strong>Spot illustration set</strong> — 3-6 scene illustrations in ONE named style
+  (same line weight, same palette, same perspective logic) for features,
+  process steps, and about sections. Generate as a batch with the style
+  spelled identically in every prompt.</li>
+<li><strong>State artwork</strong> — 404 page art, empty states, success/confirmation
+  moments, loading poster. These forgotten corners are where bespoke sites
+  most obviously beat templates.</li>
+<li><strong>People</strong> — founder/team portraits (stylized consistently if no real
+  photos), testimonial faces, community shots — same grade as the rest of
+  the kit, locale-appropriate.</li>
+<li><strong>Product universe</strong> — multiple angles + lifestyle context shots derived
+  from one approved product image via reference-driven generation
+  (<code>nano_banana_pro</code>), so every view is recognizably the SAME product.</li>
+<li><strong>Restyle what they bring</strong> — if the user has real photos that don't match
+  the direction, re-grade them via image-edit with the boards as the grade
+  reference instead of discarding them.</li>
+<li><strong>Diagrams as images</strong> — process flows, architecture "how it works" panels
+  composed as art-directed images in the brand language, not box-and-arrow
+  divs.</li>
+<li><strong>Brand sound (sparingly)</strong> — generate a short brand sting or ambient loop
+  with an audio model (<code>seed_audio</code>) behind an explicit user-triggered toggle
+  (never autoplay); fits music/game/creative-studio briefs.</li>
+<li><strong>Micro-animation sequences</strong> — short generated clips → frame strips for
+  hover/scroll micro-moments on signature components (the same pipeline as
+  the hero scrub, smaller).</li>
+</ul>
+<p>Pick by fit, not by count: 3 ladder items executed coherently beat 8 scattered
+ones. Everything joins the same coherence check as the core kit, and every
+generated deliverable gets listed in the final report so the user knows what
+brand property they now own.</p>
+<h2>Rules</h2>
+<ul>
+<li><strong>Submit early, never idle.</strong> All kit jobs go in right after the boards are
+  chosen; poll between build steps. A build that waits on renders is
+  mis-sequenced.</li>
+<li><strong>Coherence check — ONE batched vision pass, maximum.</strong> When the kit lands,
+  view the assets TOGETHER in one pass — never one look per asset, never
+  re-inspecting something already viewed. The storyboard and the scroll-scrub
+  film are EXEMPT: you authored their prompts and the user reviews the
+  storyboard. Any piece whose grade/palette fights the boards gets re-generated
+  with the hexes named harder. A mixed-grade asset kit reads cheaper than no
+  assets. <strong>Off-grade video budget: ONE re-roll.</strong> If the re-roll drifts
+  scene/composition (video models often do), keep the better take and
+  color-grade it toward the palette in post with ffmpeg — a graded first
+  take beats a re-roll lottery; regenerate the poster from the graded
+  frame 1 so first paint matches playback.</li>
+<li><strong>Multi-image results:</strong> batch/<code>count</code> parameters may return grid sheets
+  (e.g. four images as one 2×2) instead of singles. Check what actually came
+  back before wiring slots; a consistent grid can be sliced like the icon
+  sheet, but don't assume N requests = N standalone files.</li>
+<li><strong>Failures:</strong> if a generation fails twice, change model or restructure the
+  prompt — never silently fall back to stock/picsum/CSS-only. If an asset is
+  genuinely unavailable, say so in the final report. Known failure mode:
+  <strong>false-positive <code>nsfw</code> flags on innocuous product prompts</strong> — the fix is
+  removing mood/atmosphere words ("seamless loop feel", "ambient",
+  "intimate") and re-describing the shot as a plain product film/photo.</li>
+<li><strong>Rejects live in <code>refs/</code>, not <code>public/</code>.</strong> Multi-candidate generations
+  (e.g. the 2 hero candidates) leave exactly one winner in <code>app/public/</code>;
+  move unpicked candidates and intermediates to <code>refs/</code> so the
+  "everything in public/ is referenced" gate stays clean.</li>
+<li><strong>Icon sheet slices need background removal.</strong> Slicing a one-image icon
+  sheet leaves each cell carrying the sheet's background, which fights page
+  backgrounds. Run slices through <code>image_background_remover</code> (or generate the
+  sheet on a solid chroma ground and key it out) so icons composite cleanly.</li>
+<li><strong>Everything referenced.</strong> Every downloaded file must be used by a
+  route/component (gate-checked). Unused generations are wasted credits;
+  missing references are broken slots.</li>
+<li>Monochrome direction → force grayscale in the prompt AND on export.</li>
+<li>People imagery: locale-appropriate, believable, never watermarked stock
+  faces; testimonial faces are generated.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>higgsfield-soul-id · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-soul-id/SKILL.md</span><button onclick="t()">🌓</button></nav>
+<main><div class="meta"><div class="m-name">higgsfield-soul-id<span class="m-tag">v0.12.0</span></div><div class="m-desc">| Train a Soul Character — a personalized model on a person&#x27;s face that Higgsfield uses for identity-faithful image and video generation. Use when: &quot;create my Soul&quot;, &quot;train my face&quot;, &quot;make my digital twin&quot;, &quot;build me an avatar&quot;, &quot;learn my appearance&quot;, &quot;create a character of me&quot;, &quot;set up identity for video&quot;, &quot;I want my face in generated images&quot;. Chain: train Soul (one-time, returns reference_id) → use in higgsfield-generate via `--soul-id &lt;id&gt;` with models like `text2image_soul_v2` or `soul_cinema_studio`. NOT for: one-shot face swaps (use higgsfield-generate with --image), named-character / non-photo avatars (use higgsfield-generate with prompt).</div><div class="m-src">源文件：<a href="https://github.com/higgsfield-ai/skills/blob/main/higgsfield-soul-id/SKILL.md" target="_blank" rel="noopener">higgsfield-ai/skills/higgsfield-soul-id/SKILL.md</a></div></div><h1>Higgsfield Soul Character</h1>
+<p>Train a face-faithful identity model. Reusable across all Soul-powered generations.</p>
+<h2>Step 0 — Bootstrap</h2>
+<p>Before any other command:</p>
+<ol>
+<li>If <code>higgsfield</code> is not on <code>$PATH</code>, install it:
+   <code>bash
+   curl -fsSL https://raw.githubusercontent.com/higgsfield-ai/cli/main/install.sh | sh</code></li>
+<li>If <code>higgsfield account status</code> fails with <code>Session expired</code> / <code>Not authenticated</code>, ask the user to run <code>higgsfield auth login</code> (interactive) and wait for confirmation.</li>
+<li>Soul training requires a paid plan (Basic+). If <code>higgsfield account status</code> shows free plan, tell the user before submitting.</li>
+</ol>
+<h2>UX Rules</h2>
+<ol>
+<li>Be concise. No raw IDs in chat. Just say "Soul ready" with a name reference.</li>
+<li>Detect language and respond in it. CLI flags stay English.</li>
+<li>Ask for the smallest set of inputs: name + photos. Pick a sensible model variant.</li>
+<li>Polling is silent — training takes minutes. Don't repeat status updates.</li>
+</ol>
+<h2>Workflow</h2>
+<ol>
+<li><strong>Get name.</strong> One word, used for later reference. Ask if missing.</li>
+<li><strong>Get photos.</strong> 5–20 face photos, varied angles and lighting. Local paths or already-uploaded IDs both work — <code>--image</code> accepts either.</li>
+<li><strong>Pick variant.</strong>
+   - <code>--soul-2</code> — for image generation (default)
+   - <code>--soul-cinematic</code> — for cinematic / video work
+   Choose based on user's stated downstream use. Default to <code>--soul-2</code>.</li>
+<li><strong>Submit.</strong>
+   <code>bash
+   higgsfield soul-id create --name "&lt;name&gt;" --soul-2 --image ./photo1.png --image ./photo2.png ...
+   higgsfield soul-id create --name "&lt;name&gt;" --soul-2 --image &lt;upload_id&gt; --image &lt;upload_id&gt; ...</code>
+   CLI auto-uploads paths. Captures returned reference id.</li>
+<li><strong>Wait.</strong> <code>higgsfield soul-id wait &lt;id&gt;</code>. Silent. Default timeout 30m.</li>
+<li><strong>Deliver.</strong> "Soul <code>&lt;name&gt;</code> ready. Use in generate with <code>--soul-id &lt;id&gt;</code>."</li>
+</ol>
+<h2>Use the Soul</h2>
+<p>Once trained, pass to <code>higgsfield-generate</code>:</p>
+<pre><code class="language-bash">higgsfield generate create text2image_soul_v2 --prompt &quot;...&quot; --soul-id &lt;ref_id&gt; --quality 2k --wait
+higgsfield generate create soul_cinematic --prompt &quot;...&quot; --soul-id &lt;ref_id&gt; --quality 2k --wait
+</code></pre>
+<h2>Listing existing Souls</h2>
+<pre><code class="language-bash">higgsfield soul-id list                   # all references
+higgsfield soul-id get &lt;id&gt;               # one by id
+</code></pre>
+<h2>Errors</h2>
+<ul>
+<li><code>Minimum Basic plan required</code> — user is on free plan; tell them.</li>
+<li><code>Training failed</code> — check photos quality (5+ unique faces, well-lit).</li>
+<li><code>Session expired</code> → <code>higgsfield auth login</code>.</li>
+</ul>
+<h2>Reference docs</h2>
+<ul>
+<li><code>references/photo-guide.md</code> — what photos work best</li>
+<li><code>references/troubleshooting.md</code> — common training failures</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

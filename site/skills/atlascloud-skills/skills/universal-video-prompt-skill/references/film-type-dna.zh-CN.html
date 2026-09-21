@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>film-type-dna.zh-CN · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/universal-video-prompt-skill/references/film-type-dna.zh-CN.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>片型 DNA</h1>
+<p>一个片型的 DNA 是<strong>去掉哪几条这个概念就不再是它自己的 3–5 条最小条件</strong>。它介于导演命题（一句话，每片一个）和完整 spec（全部内容，每片一份）之间：比命题具体，比提示词抽象。</p>
+<p>DNA 存在的意义是让一条已跑通的片子可以<strong>换皮</strong>而不必重憋。两条入口，混着走等于白费功夫：</p>
+<table>
+<thead>
+<tr>
+<th>入口</th>
+<th>路线</th>
+<th>做什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>新概念</td>
+<td>从零写 spec</td>
+<td>自己憋导演命题</td>
+</tr>
+<tr>
+<td>已跑通的片型、换新题材</td>
+<td>换皮</td>
+<td>载入 DNA，换皮，逐条打勾</td>
+</tr>
+</tbody>
+</table>
+<h2>抽 DNA</h2>
+<p>对每个候选条件问：<strong>去掉这条，这个概念还存在吗？</strong></p>
+<ul>
+<li>还存在 → 它是皮，不是 DNA，别写进去</li>
+<li>不存在了 → 是 DNA</li>
+</ul>
+<h3>removal test 需要问第二个问题</h3>
+<p>「概念还存在吗」单靠自己太弱。一次换皮可以满足所有写下来的条件、内部自洽，却把当初让人想看的东西丢掉。所以两个都要问：</p>
+<ol>
+<li>去掉这条，这个概念还<strong>成立</strong>吗？</li>
+<li>去掉这条，<strong>当初让人想看它的那个理由</strong>还在吗？</li>
+</ol>
+<p>通过第 1 问但没通过第 2 问的条件，就是被误判成皮的 DNA。这是整套方法里代价最高的错误，因为做出来的片子在纸面上无可指摘、在屏幕上一片平淡——复盘时找不到可指的地方。</p>
+<p><strong>判断信号：你开始补偿。</strong> 如果换皮之后你需要新增手法去救原版本免费就有的效果，那你删掉的是 DNA。</p>
+<h2>换皮</h2>
+<ol>
+<li>载入 DNA</li>
+<li>换皮：主体、场景、配色、第二媒介、年代</li>
+<li><strong>逐条明确打勾。</strong> 对每一条说明新皮怎么满足它。打不上勾意味着要么这张皮不适合这个片型，要么你发现了真正的第六条</li>
+<li>不要重憋导演命题。把 DNA 自己的逻辑适配到新皮上</li>
+<li>粒度字段照抄——它属于 DNA，不是每片一选</li>
+</ol>
+<p>不打勾是「看着都对但感觉不对」的常见成因：所有表面都换了，某个不变量悄悄破了。</p>
+<h2>粒度属于 DNA</h2>
+<p>时序粒度是片型的属性，不是每片一决定：</p>
+<ul>
+<li>表演类／音乐驱动天生是秒级——它锁在一条外部音轨上</li>
+<li>氛围片天生是「不写」——时间戳会把它切碎</li>
+<li>大多数叙事片型是分段</li>
+</ul>
+<p>把它记在 DNA 里，换皮时才能跳过这个问题。从零写 spec 时问，换皮时继承。</p>
+<h2>片型</h2>
+<p>每个条目：DNA 条件、粒度、什么是皮。</p>
+<hr />
+<h3>实拍 × 自发光手绘 VFX</h3>
+<p>一个真实场景，被一种自发光、非写实的第二媒介蔓延进来。</p>
+<p><strong>DNA</strong></p>
+<ol>
+<li><strong>第二媒介自发光，环境是暗的或背光的。</strong> 超现实感来自这一对——不是来自「画」，而是来自「画本身就是光源」。它不能被一个同样自洽的反面替换掉。</li>
+<li><strong>实拍的手触碰手绘物，手绘物从这个接触点诞生。</strong> 这是确立「两种媒介同处一个物理空间」的东西。跳过它，手绘层就读成叠在上面的投影或全息。在 POV 下这只手就是拍摄者自己的手，顺带也消掉了「谁在画」这个问题。</li>
+<li><strong>手绘媒介要看得见工具。</strong> 蜡笔、粉笔、彩铅、粗笔刷：看得见排线方向、涂色不均、毛边、线宽逐帧微抖。<strong>辉光要弱</strong>——足以读成发光，绝不足以照亮实拍空间，实拍侧保持自己真实的颜色与质感。光滑的矢量描边和霓虹灯管感会破这条。</li>
+<li><strong>手绘物寄生在真实空间已有的结构上，而且宿主不断更换。</strong> 桌、墙、门、冰箱；展台、展柜、展牌、化石墙。每次变形换一个宿主，镜头因此一直在走。变形要写成<strong>一边崩解一边变成下一个</strong>，绝不写成一个消失、另一个出现。</li>
+<li><strong>最后几拍从一个小生物升格为整个空间。</strong> 房间本身变成那幅画——横跨天顶的一张嘴、每个画框都变成一只眼睛。没有这一步，片子只是停下来，不是收束。</li>
+</ol>
+<p><strong>粒度</strong>：分段——变形链天然给出段落边界，且无外部音轨。注意这里的段落是<strong>密的</strong>：15 秒装十几次变形，每段两三次。</p>
+<p><strong>皮</strong>：空间（有生活感的房间、闭馆后的博物馆、夜间公园）、画什么、配色、哪些结构当宿主、最后升格成什么。</p>
+<p><strong>注意</strong>：条件 3 要按<strong>工具</strong>命名媒介，不要按抽象属性命名——见下面第二个失败案例。条件 5 是 15 秒版要压缩、30 秒版才真正放得开的那一条。</p>
+<blockquote>
+<p><strong>失败案例 1 —— 把条件 3 换掉了。</strong>
+一次早期换皮把自发光媒介换成了吸光媒介（水墨），于是被迫反转布光：明亮的白天书房，好让黑读得出来。内部逻辑无懈可击。但弱辉光在亮底上没有东西可读，镜头同时也变成了固定机位（破了条件 1），成片出来是雅致而不是超现实。复盘时没人能说出缺了什么——概念还成立（第 1 问过了），想看它的理由没了（第 2 问没过）。</p>
+<p>吸光媒介那一版是个合法的片型，只是<strong>另一个</strong>片型，需要它自己的 DNA。</p>
+<p><strong>失败案例 2 —— 一条可验证、但测错了维度的锁。</strong>
+后来一次尝试把手绘层锁成「保持平面图形，绝不渲染成写实生物」。这是一条完全可检查的指令，而且<strong>两个不同的模型都严格满足了它</strong>——给出的是光滑的霓虹管矢量描边加均匀填充。平面？是的。手绘？完全不是，而霓虹管恰恰是这个片型明确排除的东西。</p>
+<p>修法是停止命名抽象属性、改成命名工具：蜡笔、粉笔、彩铅、粗笔刷，看得见排线方向、涂色不均、毛边。<strong>可验证不是充分条件——锁必须测那条真正让概念成立的属性。</strong> 见 <a href="verifiability.zh-CN.html">verifiability.zh-CN.md</a>。</p>
+</blockquote>
+<hr />
+<h3>表演 / 音乐驱动</h3>
+<p>一个主体对着一条已有或隐含的音轨表演。</p>
+<p><strong>DNA</strong></p>
+<ol>
+<li><strong>音轨是主时钟。</strong> 每个视觉拍点都对着它放，绝不反过来</li>
+<li><strong>口型与身体同步是两件独立的义务。</strong> 唇形对齐和身体律动会各自失败，要分别锁</li>
+<li><strong>表演空间跨切点保持一致。</strong> 同一个房间、同一套光逻辑，否则切点读成两次拍摄</li>
+<li><strong>表演者身份绝对不漂。</strong> 任何漂移都读成换了个人，靠造型救不回来</li>
+</ol>
+<p><strong>粒度</strong>：秒级——不可协商，外部音轨<strong>就是</strong>那条硬约束。</p>
+<p><strong>皮</strong>：曲风、编舞、服装、置景、配色、镜头能量。</p>
+<hr />
+<h3>动作 / VFX 大场面</h3>
+<p>一个物理事件承载整条片子。</p>
+<p><strong>DNA</strong></p>
+<ol>
+<li><strong>物理因果看得见。</strong> 冲击、质量、反作用要演出来而不是暗示。没有可见成因的特效读成装饰</li>
+<li><strong>动作全程空间连续。</strong> 屏幕方向与相对位置保持住；动作中途越轴会摧毁可读性</li>
+<li><strong>特效服从单一材料逻辑。</strong> 金属保持刚性、布保持布性。通常需要在负向里点明材料行为</li>
+<li><strong>一次升级、一次释放。</strong> 全程顶格的强度会变平</li>
+</ol>
+<p><strong>粒度</strong>：分段——除非某个具体的击中必须落在音乐拍点上。</p>
+<p><strong>皮</strong>：主体、特效类型、场景、配色、尺度。</p>
+<p><strong>注意</strong>：重特效与大场面段落通常<strong>更适合文字驱动的 staging，而不是喂故事板网格</strong>——过度指定会压掉让这类镜头成立的运镜先验。逐模型验证，结论记进档案。</p>
+<hr />
+<h3>动画 / 风格化 2D</h3>
+<p><strong>DNA</strong></p>
+<ol>
+<li><strong>渲染风格绝对不漂</strong>——不许滑向 3D 或写实。通常需要一条显式负向</li>
+<li><strong>运动遵循动画节奏，不是实拍节奏。</strong> 有停顿、有速度突变、有拖影；不是均匀插值</li>
+<li><strong>线条与上色逻辑跨每个切点保持一致</strong></li>
+<li><strong>静才换来动。</strong> 持续运动读成廉价动画</li>
+</ol>
+<p><strong>粒度</strong>：分段。</p>
+<p><strong>皮</strong>：主体、类型、配色、年代、场景。</p>
+<hr />
+<h2>添加新片型</h2>
+<p>只在一条片子<strong>已验证跑通之后</strong>——从未验证的概念里抽出来的 DNA，是一个穿着契约外衣的猜测。然后：</p>
+<ol>
+<li>用 removal test（两问）抽出 3–5 条</li>
+<li>写明每条保护的是什么</li>
+<li>记录粒度</li>
+<li>点明什么是皮</li>
+<li>逐模型的发现另记——那属于 <a href="model-profile-schema.zh-CN.html">model-profile-schema.zh-CN.md</a>，不属于这里。DNA 与模型无关；一条只在某个模型上成立的条件，是档案发现，不是 DNA</li>
+</ol>
+<h2>关联</h2>
+<ul>
+<li><a href="spec-format.zh-CN.html">spec-format.zh-CN.md</a> — DNA 换皮之后落进的那份 spec</li>
+<li><a href="portability.zh-CN.html">portability.zh-CN.md</a> — 模型相关的发现放进档案</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

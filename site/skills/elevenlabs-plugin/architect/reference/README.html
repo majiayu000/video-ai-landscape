@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>README · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">architect/reference/README.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Shared reference: what a complete config actually looks like</h1>
+<p>Two example payloads and one lookup recipe, shared by every skill in this plugin.</p>
+<p>They exist because of a measured behaviour: asked to build or convert an agent, a run that has no
+canonical example goes and finds one. It reads a sample config out of whatever repo happens to be on
+disk, or a scratch file from an earlier session. That is non-deterministic, the sample may be stale,
+and <strong>in a public install there is nothing to find at all</strong> — so the same skill quietly performs worse
+for an outside user than it does for us, in a way no internal test would reveal.</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>example-agent.json</code></td>
+<td>A complete agent create payload — ASR, turn, TTS, prompt, workflow, platform settings</td>
+</tr>
+<tr>
+<td><code>example-webhook-tool.json</code></td>
+<td>A complete webhook tool, including the whole <code>api_schema</code></td>
+</tr>
+<tr>
+<td><code>../scripts/check-examples.mjs</code></td>
+<td>Checks both against the live OpenAPI spec; also emits fresh skeletons</td>
+</tr>
+</tbody>
+</table>
+<h2>Read these as a field catalogue, not a template</h2>
+<p>Every field carries a realistic value so you can see where it lives and what shape it takes. That is
+the whole purpose. <strong>Do not start from one.</strong> An agent with every knob set is not a good agent, and a
+tool with every option populated is not a good tool — copy one wholesale and you ship a maximalist
+config whose settings nobody chose.</p>
+<p>Three specific things they are here to settle, because each gets guessed wrong repeatedly:</p>
+<ul>
+<li><strong><code>path_params_schema</code> is an object keyed by parameter name. <code>query_params_schema</code> is
+  <code>{properties, required}</code>.</strong> Different shapes, same neighbourhood. Passing an array for the first is
+  the <code>Input should be a valid dictionary</code> rejection.</li>
+<li><strong>A property carries exactly one value source, and <code>description</code> is one of them.</strong> That is the
+  counterintuitive half. The exclusive set is <code>description</code>, <code>dynamic_variable</code>,
+  <code>is_system_provided</code>, <code>constant_value</code>, <code>is_omitted</code> — so a property with a <code>constant_value</code> must
+  carry <strong>no description at all</strong>, however much you want to explain it. The tool example has four
+  properties precisely because each demonstrates a different one. Adding a description to a property
+  that already has a value source is the <code>Can only set one of: ...</code> rejection, and it is the mistake
+  a migration makes by default, because the source platform usually has both.</li>
+<li><strong>Response paths are dot notation, not JSONPath.</strong> <code>reservation.status</code>, never
+  <code>$.reservation.status</code>. This applies to a webhook tool's <code>assignments[].value_path</code> and to
+  <code>response_filter.filters</code>. A leading <code>$.</code> carried over from another platform is rejected.</li>
+</ul>
+<p>The values are invented. No real credential, host, or customer identifier appears in either file, and
+none ever should — this plugin is published.</p>
+<h2>For any field not shown: ask the spec</h2>
+<p>The examples are curated for readability, so they show the fields that matter for building an agent
+and skip the ~50-field widget tree entirely. When you need a field they do not cover, or you want to
+confirm one has not moved, the authority is the live spec:</p>
+<pre><code>https://api.elevenlabs.io/openapi.json
+</code></pre>
+<p>Public, unauthenticated, always current, about 2MB across ~1,470 schemas. It is deliberately <strong>not</strong>
+vendored here: its whole value is being current, and a committed copy would be a second source of
+truth that drifts. A stale spec is worse than none, because a field missing from an old snapshot reads
+as a field that does not exist.</p>
+<pre><code class="language-bash">SPEC=/tmp/el-openapi.json
+curl -s https://api.elevenlabs.io/openapi.json -o &quot;$SPEC&quot;
+
+# What fields does the prompt object take?
+jq -r '.components.schemas[&quot;PromptAgentAPIModel-Input&quot;].properties | keys[]' &quot;$SPEC&quot;
+
+# What are the legal values of an enum field?
+jq -r '.components.schemas.TTSConversationalModel.enum[]' &quot;$SPEC&quot;
+
+# What is the default the platform applies when you omit a field?
+jq -r '.components.schemas.TurnConfig.properties | to_entries[] | &quot;\(.key) = \(.value.default)&quot;' &quot;$SPEC&quot;
+</code></pre>
+<p><strong>Expect <code>$ref</code> indirection.</strong> Most interesting fields resolve to a reference rather than a shape, so
+one lookup usually is not enough:</p>
+<pre><code class="language-bash"># This gives you a $ref, not the answer
+jq -c '.components.schemas[&quot;WebhookToolConfig-Input&quot;].properties.api_schema' &quot;$SPEC&quot;
+#   =&gt; {&quot;$ref&quot;:&quot;#/components/schemas/WebhookToolApiSchemaConfig-Input&quot;, ...}
+
+# Follow it
+jq -r '.components.schemas[&quot;WebhookToolApiSchemaConfig-Input&quot;].properties | keys[]' &quot;$SPEC&quot;
+</code></pre>
+<p>Note the <code>-Input</code> / <code>-Output</code> suffixes: request models and response models are separate schemas, and
+they differ. When you are building a payload you want <code>-Input</code>.</p>
+<h2>Keeping the examples honest</h2>
+<p>Because they are curated, they can rot — and a trusted stale example is worse than no example. So:</p>
+<pre><code class="language-bash">node scripts/check-examples.mjs --check          # both files against the live spec
+node scripts/check-examples.mjs --emit agent     # a fresh exhaustive skeleton
+</code></pre>
+<p><code>--check</code> reports any field the schema no longer declares, any required field missing, and any value
+whose type or enum contradicts it, and exits non-zero, so CI catches drift rather than a user catching
+it. It is read-only and needs no API key; the one network call is a GET of the public spec.</p>
+<p><strong><code>--check</code> is a drift detector, not an acceptance test, and the gap is wide.</strong> It walks a JSON
+schema, and the rules that reject most real payloads are not in one — they are validators on the
+models behind it. Measured: when these two files were first validated against the actual request
+models they were rejected with <strong>seven</strong> errors, and a corrected <code>--check</code> catches exactly <strong>one</strong> of
+the seven. The other six were a numeric range, a field-pair rule between <code>llm</code> and <code>reasoning_effort</code>,
+a string-format rule, and three instances of one mutual-exclusion rule. A green <code>--check</code> means the
+fields exist and have the right types. It does not mean the API will take the payload.</p>
+<p><code>--emit</code> is the escape hatch when you need the exhaustive version: it walks the live schema and prints
+every field with its real default. That is how these files were built, and it is how to rebuild them
+when the API moves. <strong>The generated skeleton is not directly usable as a payload</strong> — it sets every
+value source on every property at once, which the API rejects. Curation is what makes it valid.</p>
+<p>When <code>--check</code> fails, the fix is one of two things: the API moved and the example needs updating, or
+someone edited the example into a shape the API will not accept. Deleting the offending field to make
+the check pass is neither.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

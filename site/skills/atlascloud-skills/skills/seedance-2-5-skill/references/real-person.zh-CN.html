@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>real-person.zh-CN · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/seedance-2-5-skill/references/real-person.zh-CN.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>可信的人物</h1>
+<p>生成人物反复出现两类失败：一眼能看出的合成感，以及多个角色长得越来越像。两者都靠<strong>沿固定维度描述</strong>来解决，而不是靠堆形容词。</p>
+<p><strong>先读省略规则。</strong> 这套细节是给纯文字驱动的主体写的。一旦有身份参考图，其中大部分反而有害。</p>
+<h2>各维度</h2>
+<pre><code class="language-text">[年龄／人种]     具体年龄 + 具体出身 + 风格形容词 + 脸型名词
+[肤色／肤质]     冷暖调 + 具体色调名词 + 质感形容词 + 真实度后缀
+[面部细节]       眼型 + 眉骨 + 鼻梁 + 唇形 + 下颌  （3–4 项就够）
+[眼神／内在]     眼神的质地 + 它传达什么 + 底下压着的情绪
+[发型发色]       颜色 + 状态／质感 + 具体发型 + 与环境的互动
+[服装／面料]     版型 + 颜色 + 服装名词 + 材质与新旧 + 穿法细节
+[体型／气质]     骨架与肩线 + 构图 + 动作或视线 + 整体气场
+</code></pre>
+<p>各维度示例，刻意写短：</p>
+<pre><code class="language-text">[年龄／人种]  22 岁东亚女性，古典温婉的电影感面孔
+[肤质]        冷调白皙肤色，带细腻润泽感，保留真实的微毛孔与皮肤纹理
+[面部细节]    细长的眼型（眼眶微润）、眉形舒展、鼻梁小而直、下颌线柔和
+[眼神]        眼神温柔专注，含着深深的依恋与一丝不舍
+[发型]        黑发盘成随意而雅致的古典低髻，只用一支素玉簪固定，
+              几缕碎发落在脸颊边随风轻动
+[服装]        极简纯白交领古装，柔软有光泽的丝或轻纱，领口略松
+[体型／气质]  身形纤细、肩线窄；胸以上半身特写，直视镜头；
+              整体是温婉深情的古典气质
+</code></pre>
+<h2>去合成感真正来自哪两维</h2>
+<p><strong>肤质。</strong> 那个真实度后缀——保留真实的微毛孔与皮肤纹理，必要时加雀斑或瑕疵——反的是磨皮默认值。</p>
+<p><strong>内在。</strong> 一个传达了具体内容的眼神，才是「一张人的照片」与「一张脸的渲染」之间的区别。</p>
+<p>其余维度主要干的是另一件事：<strong>让角色之间彼此区分</strong>。沿同样七个维度、填不同值描述的两个角色不会趋同；描述成「一个帅气男人」和「一个漂亮女人」的两个角色一定趋同。</p>
+<h3>真实度后缀是模型相关的</h3>
+<p>它的存在是为了反掉<strong>某个特定模型的</strong>默认值，不能盲目移植：</p>
+<ul>
+<li>在本来就渲染粗糙皮肤的模型上会<strong>过冲</strong>——脸会脏、会显老</li>
+<li>测试很便宜：同一份提示词，带这句跑一次、不带跑一次。不带的那版已经达标，就在这个模型上删掉它</li>
+<li><strong>两个结果都记进</strong> <a href="model-profile.zh-CN.html">model-profile.zh-CN.md</a>，包括过冲。过冲的写法比毫无作用的写法更糟</li>
+</ul>
+<h2>什么时候省略——逐维度，不是一刀切</h2>
+<p>有身份参考图时，写出来的细节会跟图<strong>竞争</strong>，而且图通常会赢。但整块关掉，等于把参考图给不了的那两维一起丢掉。</p>
+<table>
+<thead>
+<tr>
+<th>情况</th>
+<th>该写哪些维度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>纯文字驱动，无身份参考</td>
+<td>全写</td>
+</tr>
+<tr>
+<td>参考图只锁风格或场景</td>
+<td>全写</td>
+</tr>
+<tr>
+<td><strong>参考图锁脸／锁身份</strong></td>
+<td><strong>删掉</strong>面部细节、肤质、发型、服装。<strong>保留</strong>体型气质与内在</td>
+</tr>
+</tbody>
+</table>
+<p>体型、气场、内在要保留，因为一张静态参考图表达不了它们——它没有眼神的<strong>行为</strong>，也没有随时间展开的<strong>体态</strong>。那恰恰是文字该干的活。</p>
+<p>有参考图时把脸再描述一遍，不是冗余，是一条<strong>竞争性指令</strong>，会引起漂移。</p>
+<h2>表演，不是外貌</h2>
+<p>外貌是静态的，视频需要行为。加一条表演行，保持可观察——一次情绪转折 2–4 个线索：</p>
+<pre><code class="language-text">[表演核心] 内敛克制：视线的游移、呼吸的起伏、唇线的轻颤，
+           一滴眼泪滑落而不去擦
+</code></pre>
+<p>不要写「她看起来很难过」。可选：视线方向与移动、眉的张力、嘴部动作、呼吸、喉部、手、体态。把每个面部细节都列出来不会增加控制力——线索之间会开始互相打架。</p>
+<p>多次情绪转折时，用<strong>事件</strong>触发而不是时间点：<code>当她听到掌声，手指停在节目单上</code>。事件触发不依赖时序遵循度，所以能跨模型存活。</p>
+<h2>值得写的负向</h2>
+<p>只在这条片子真的有这个风险时才写：</p>
+<pre><code class="language-text">不许夸张哭泣 · 不许快速切镜 · 不许大幅肢体动作 ·
+不许多余台词或背景音乐 · 不许五官变形或多手指
+</code></pre>
+<p>保持简短、针对本片。抄来的黑名单只会让提示词变长而不变好，而且会稀释真正重要的那几条负向。</p>
+<h2>关联</h2>
+<ul>
+<li><a href="multi-reference.zh-CN.html">multi-reference.zh-CN.md</a> — 身份参考图的正确绑定方式</li>
+<li><a href="model-profile.zh-CN.html">model-profile.zh-CN.md</a> — 真实度后缀的实测结论存放处</li>
+<li><a href="troubleshooting.zh-CN.html">troubleshooting.zh-CN.md</a> — 人物重复、脸部漂移</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

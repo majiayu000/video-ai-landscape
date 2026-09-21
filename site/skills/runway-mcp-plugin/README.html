@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>README · Runway MCP 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/runway-mcp-plugin/">runway-mcp-plugin</a><span class="crumb">/</span><span class="crumb">README.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Runway plugin</h1>
+<p>Generate images, videos, music, speech, and sound effects with <a href="https://runway.com">Runway</a> from Cursor, Grok Bot, and Grok Build.</p>
+<p>The plugin is a thin wrapper around Runway's hosted MCP server at <code>https://mcp.runwayml.com/mcp</code>. It adds a <code>/runway</code> command and two skills that teach the agent which Runway tool to use and how to handle uploads, async tasks, and credits. Sign in with your Runway account when prompted — no API key is needed; generations use your existing Runway plan.</p>
+<h2>Installation</h2>
+<h3>Cursor</h3>
+<p>In Cursor, type <code>/add-plugin</code> in chat, search for <strong>Runway</strong>, and install it. Or install from the <a href="https://cursor.com/marketplace">Cursor Marketplace</a>.</p>
+<h3>Grok Bot</h3>
+<p>Open <strong>Plugins</strong> in the sidebar, search for <strong>Runway</strong>, click <strong>Add</strong>, and finish the Runway sign-in in your browser. Grok Bot installs plugins from the Cursor Marketplace; the same listing serves both.</p>
+<h3>Grok Build</h3>
+<pre><code class="language-bash">grok plugin install runway --trust
+</code></pre>
+<p>Or add the server directly without the bundled skills:</p>
+<pre><code class="language-bash">grok mcp add --transport http runway https://mcp.runwayml.com/mcp
+</code></pre>
+<h3>Any other MCP client</h3>
+<p>Add <code>https://mcp.runwayml.com/mcp</code> as a remote MCP server and sign in with Runway. See <a href="https://runway.com/mcp">runway.com/mcp</a>.</p>
+<h2>What's included</h2>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mcp.json</code> / <code>.mcp.json</code></td>
+<td>Points at the hosted Runway MCP server (Cursor and Grok Build formats)</td>
+</tr>
+<tr>
+<td><code>commands/runway.md</code></td>
+<td><code>/runway &lt;request&gt;</code> — routes a natural-language request to the right tool</td>
+</tr>
+<tr>
+<td><code>skills/runway-media/SKILL.md</code></td>
+<td>Single-shot image, video, and audio generation and editing</td>
+</tr>
+<tr>
+<td><code>skills/runway-workflows/SKILL.md</code></td>
+<td>Authoring and running multi-step Runway workflow graphs</td>
+</tr>
+<tr>
+<td><code>.cursor-plugin/plugin.json</code></td>
+<td>Cursor Plugin manifest</td>
+</tr>
+<tr>
+<td><code>.grok-plugin/plugin.json</code></td>
+<td>Grok Build plugin manifest</td>
+</tr>
+</tbody>
+</table>
+<h2>Network endpoints and credentials</h2>
+<p>For reviewers:</p>
+<ul>
+<li>The plugin makes no network calls itself. It configures the agent to talk to <code>https://mcp.runwayml.com/mcp</code> (Streamable HTTP).</li>
+<li>Authentication is OAuth 2.1 with PKCE and dynamic client registration, delegated to <code>auth.runwayml.com</code>. The user signs in with their Runway account in the browser. No API keys or secrets are stored in this repository or requested from the user.</li>
+<li>Tools that create media consume credits on the user's Runway plan and announce this in their descriptions. Purchases happen on runway.com, never in chat.</li>
+<li>No hooks, no shell commands, no bundled binaries.</li>
+</ul>
+<h2>Local development</h2>
+<p>Cursor scans <code>~/.cursor/plugins/local/&lt;plugin-name&gt;/</code> for local plugins:</p>
+<pre><code class="language-bash">git clone https://github.com/runwayml/runway-mcp-plugin.git
+ln -s &quot;$(pwd)/runway-mcp-plugin&quot; ~/.cursor/plugins/local/runway
+</code></pre>
+<p>Reload Cursor (<code>Cmd-Shift-P</code> → <strong>Developer: Reload Window</strong>). Verify <strong>Customize → Plugins</strong> lists Runway and <strong>Customize → MCPs</strong> shows <code>runway</code>; the first connection prompts you to sign in.</p>
+<p>For Grok Build, test the checkout as a local marketplace:</p>
+<pre><code class="language-bash">grok plugin marketplace add /absolute/path/to/runway-mcp-plugin
+grok plugin install runway --trust
+</code></pre>
+<h3>Uninstall</h3>
+<pre><code class="language-bash">rm ~/.cursor/plugins/local/runway
+</code></pre>
+<p>then reload Cursor.</p>
+<h2>Support</h2>
+<ul>
+<li>Help center: <a href="https://help.runwayml.com/hc/en-us/articles/51931843164691-Connecting-to-Runway-MCP">help.runwayml.com</a></li>
+<li>Issues: <a href="https://github.com/runwayml/runway-mcp-plugin/issues">github.com/runwayml/runway-mcp-plugin/issues</a></li>
+</ul>
+<h2>License</h2>
+<p>MIT — see <a href="LICENSE">LICENSE</a>. The plugin files are open source; the Runway MCP server and Runway models are governed by <a href="https://runway.com/terms-of-use">Runway's terms</a>.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

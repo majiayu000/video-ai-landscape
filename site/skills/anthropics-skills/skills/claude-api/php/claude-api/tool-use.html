@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>tool-use · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/php/claude-api/tool-use.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Tool Use - PHP</h1>
+<p>For conceptual overview (tool definitions, tool choice, tips), see <a href="../../shared/tool-use-concepts.html">shared/tool-use-concepts.md</a>.</p>
+<h2>Tool Use</h2>
+<h3>Tool Runner (Beta)</h3>
+<p><strong>Beta:</strong> The PHP SDK provides a tool runner via <code>$client-&gt;beta-&gt;messages-&gt;toolRunner()</code>. Define tools with <code>BetaRunnableTool</code> - a definition array plus a <code>run</code> closure:</p>
+<pre><code class="language-php">use Anthropic\Lib\Tools\BetaRunnableTool;
+
+$weatherTool = new BetaRunnableTool(
+    definition: [
+        'name' =&gt; 'get_weather',
+        'description' =&gt; 'Get the current weather for a location.',
+        'inputSchema' =&gt; [
+            'type' =&gt; 'object',
+            'properties' =&gt; [
+                'location' =&gt; ['type' =&gt; 'string', 'description' =&gt; 'City and state'],
+            ],
+            'required' =&gt; ['location'],
+        ],
+    ],
+    run: function (array $input): string {
+        return &quot;The weather in {$input['location']} is sunny and 72°F.&quot;;
+    },
+);
+
+$runner = $client-&gt;beta-&gt;messages-&gt;toolRunner(
+    maxTokens: 16000,
+    messages: [['role' =&gt; 'user', 'content' =&gt; 'What is the weather in Paris?']],
+    model: 'claude-opus-5',
+    tools: [$weatherTool],
+);
+
+foreach ($runner as $message) {
+    foreach ($message-&gt;content as $block) {
+        if ($block-&gt;type === 'text') {
+            echo $block-&gt;text;
+        }
+    }
+}
+</code></pre>
+<h3>Manual Loop</h3>
+<p>Tools are passed as arrays. <strong>The SDK uses camelCase keys</strong> (<code>inputSchema</code>, <code>toolUseID</code>, <code>stopReason</code>) and auto-maps to the API's snake_case on the wire - since v0.5.0. See <a href="../../shared/tool-use-concepts.html">shared tool use concepts</a> for the loop pattern.</p>
+<pre><code class="language-php">use Anthropic\Messages\ToolUseBlock;
+
+$tools = [
+    [
+        'name' =&gt; 'get_weather',
+        'description' =&gt; 'Get the current weather in a given location',
+        'inputSchema' =&gt; [  // camelCase, not input_schema
+            'type' =&gt; 'object',
+            'properties' =&gt; [
+                'location' =&gt; ['type' =&gt; 'string', 'description' =&gt; 'City and state'],
+            ],
+            'required' =&gt; ['location'],
+        ],
+    ],
+];
+
+$messages = [['role' =&gt; 'user', 'content' =&gt; 'What is the weather in SF?']];
+
+$response = $client-&gt;messages-&gt;create(
+    model: 'claude-opus-5',
+    maxTokens: 16000,
+    tools: $tools,
+    messages: $messages,
+);
+
+while ($response-&gt;stopReason === 'tool_use') {  // camelCase property
+    $toolResults = [];
+    foreach ($response-&gt;content as $block) {
+        if ($block instanceof ToolUseBlock) {
+            // $block-&gt;name  : string               - tool name to dispatch on
+            // $block-&gt;input : array&lt;string,mixed&gt;  - parsed JSON input
+            // $block-&gt;id    : string               - pass back as toolUseID
+            $result = executeYourTool($block-&gt;name, $block-&gt;input);
+            $toolResults[] = [
+                'type' =&gt; 'tool_result',
+                'toolUseID' =&gt; $block-&gt;id,  // camelCase, not tool_use_id
+                'content' =&gt; $result,
+            ];
+        }
+    }
+
+    // Append assistant turn + user turn with tool results
+    $messages[] = ['role' =&gt; 'assistant', 'content' =&gt; $response-&gt;content];
+    $messages[] = ['role' =&gt; 'user', 'content' =&gt; $toolResults];
+
+    $response = $client-&gt;messages-&gt;create(
+        model: 'claude-opus-5',
+        maxTokens: 16000,
+        tools: $tools,
+        messages: $messages,
+    );
+}
+
+// Final text response
+foreach ($response-&gt;content as $block) {
+    if ($block-&gt;type === 'text') {
+        echo $block-&gt;text;
+    }
+}
+</code></pre>
+<p><code>$block-&gt;type === 'tool_use'</code> also works; <code>instanceof ToolUseBlock</code> narrows for PHPStan.</p>
+<hr />
+<h2>Structured Outputs</h2>
+<h3>Using StructuredOutputModel (Recommended)</h3>
+<p>Define a PHP class implementing <code>StructuredOutputModel</code> and pass it as <code>outputConfig</code>:</p>
+<pre><code class="language-php">use Anthropic\Lib\Contracts\StructuredOutputModel;
+use Anthropic\Lib\Concerns\StructuredOutputModelTrait;
+use Anthropic\Lib\Attributes\Constrained;
+
+class Person implements StructuredOutputModel
+{
+    use StructuredOutputModelTrait;
+
+    #[Constrained(description: 'Full name')]
+    public string $name;
+
+    public int $age;
+
+    public ?string $email = null;  // nullable = optional field
+}
+
+$message = $client-&gt;messages-&gt;create(
+    model: 'claude-opus-5',
+    maxTokens: 16000,
+    messages: [['role' =&gt; 'user', 'content' =&gt; 'Generate a profile for Alice, age 30']],
+    outputConfig: ['format' =&gt; Person::class],
+);
+
+$person = $message-&gt;parsedOutput();  // Person instance
+echo $person-&gt;name;
+</code></pre>
+<p>Types are inferred from PHP type hints. Use <code>#[Constrained(description: '...')]</code> to add descriptions. Nullable properties (<code>?string</code>) become optional fields.</p>
+<h3>Raw Schema</h3>
+<pre><code class="language-php">$message = $client-&gt;messages-&gt;create(
+    model: 'claude-opus-5',
+    maxTokens: 16000,
+    messages: [['role' =&gt; 'user', 'content' =&gt; 'Extract: John (john@co.com), Enterprise plan']],
+    outputConfig: [
+        'format' =&gt; [
+            'type' =&gt; 'json_schema',
+            'schema' =&gt; [
+                'type' =&gt; 'object',
+                'properties' =&gt; [
+                    'name' =&gt; ['type' =&gt; 'string'],
+                    'email' =&gt; ['type' =&gt; 'string'],
+                    'plan' =&gt; ['type' =&gt; 'string'],
+                ],
+                'required' =&gt; ['name', 'email', 'plan'],
+                'additionalProperties' =&gt; false,
+            ],
+        ],
+    ],
+);
+
+// First text block contains valid JSON
+foreach ($message-&gt;content as $block) {
+    if ($block-&gt;type === 'text') {
+        $data = json_decode($block-&gt;text, true);
+        break;
+    }
+}
+</code></pre>
+<hr />
+<h2>Beta Features &amp; Anthropic-Defined Tools</h2>
+<p><strong><code>betas:</code> is NOT a param on <code>$client-&gt;messages-&gt;create()</code></strong> - it only exists on the beta namespace. Use it for features that need an explicit opt-in header:</p>
+<pre><code class="language-php">use Anthropic\Beta\Messages\BetaRequestMCPServerURLDefinition;
+
+$response = $client-&gt;beta-&gt;messages-&gt;create(
+    model: 'claude-opus-5',
+    maxTokens: 16000,
+    mcpServers: [
+        BetaRequestMCPServerURLDefinition::with(
+            name: 'my-server',
+            url: 'https://example.com/mcp',
+        ),
+    ],
+    betas: ['mcp-client-2025-11-20'],  // only valid on -&gt;beta-&gt;messages
+    messages: [['role' =&gt; 'user', 'content' =&gt; 'Use the MCP tools']],
+);
+</code></pre>
+<h3>Task budgets</h3>
+<pre><code class="language-php">$response = $client-&gt;beta-&gt;messages-&gt;create(
+    model: 'claude-opus-5',
+    maxTokens: 16000,
+    outputConfig: ['taskBudget' =&gt; ['type' =&gt; 'tokens', 'total' =&gt; 64000]],
+    tools: [...],
+    messages: [...],
+    betas: ['task-budgets-2026-03-13'],
+);
+</code></pre>
+<h3>Cache diagnostics</h3>
+<p>Pass the previous response's <code>id</code> on the next request; print the <code>diagnostics</code> object on the response:</p>
+<pre><code class="language-php">$r2 = $client-&gt;beta-&gt;messages-&gt;create(
+    model: 'claude-opus-5', maxTokens: 1024,
+    diagnostics: ['previousMessageId' =&gt; $r1-&gt;id],
+    betas: ['cache-diagnosis-2026-04-07'],
+    messages: [...],
+);
+</code></pre>
+<p><strong>Anthropic-defined tools</strong> (bash, web_search, text_editor, code_execution) are GA and work on both paths. Of these, web_search and code_execution are server-executed; bash and text_editor are client-executed (you handle the <code>tool_use</code> locally) - <code>Anthropic\Messages\ToolBash20250124</code> / <code>WebSearchTool20260209</code> / <code>ToolTextEditor20250728</code> / <code>CodeExecutionTool20260120</code> for non-beta, <code>Anthropic\Beta\Messages\BetaToolBash20250124</code> / <code>BetaWebSearchTool20260209</code> / <code>BetaToolTextEditor20250728</code> / <code>BetaCodeExecutionTool20260120</code> for beta. No <code>betas:</code> header needed for these.</p>
+<h3>Tool search (non-beta, server-side)</h3>
+<pre><code class="language-php">tools: [
+    ['type' =&gt; 'tool_search_tool_regex_20251119', 'name' =&gt; 'tool_search_tool_regex'],
+    ['name' =&gt; 'get_weather', 'description' =&gt; '...', 'inputSchema' =&gt; [...], 'deferLoading' =&gt; true],
+    // ... other user tools with 'deferLoading' =&gt; true
+],
+</code></pre>
+<h3>Memory tool (non-beta, client-executed)</h3>
+<p>Declare <code>['type' =&gt; 'memory_20250818', 'name' =&gt; 'memory']</code>. Handle the <code>tool_use</code> by reading/writing files under a fixed <code>/memories</code> directory. <strong>Validate every model-supplied path</strong>: resolve to its canonical form and verify it remains within the memory directory; reject traversal (<code>..</code>, symlinks) - see <code>shared/tool-use-concepts.md</code> § Client-Side Tools.</p>
+<hr /></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

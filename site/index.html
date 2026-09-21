@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 视频生成厂商 · CLI / Skill / MCP 全景对比（2026-09）</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page: #f9f9f7;
+    --surface-1: #fcfcfb;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --muted: #898781;
+    --grid: #e1e0d9;
+    --baseline: #c3c2b7;
+    --border: rgba(11,11,11,0.10);
+    --series-1: #2a78d6;
+    --series-1-dark-step: #1c5cab;
+    --accent: #2a78d6;
+    --good: #0ca30c;
+    --success-text: #006300;
+    --warning: #fab219;
+    --serious: #ec835a;
+    --critical: #d03b3b;
+    --code-bg: rgba(11,11,11,0.05);
+  }
+  :root:where(:not([data-theme="light"])) {
+    @media (prefers-color-scheme: dark) {
+      color-scheme: dark;
+      --page: #0d0d0d;
+      --surface-1: #1a1a19;
+      --text-primary: #ffffff;
+      --text-secondary: #c3c2b7;
+      --muted: #898781;
+      --grid: #2c2c2a;
+      --baseline: #383835;
+      --border: rgba(255,255,255,0.10);
+      --series-1: #3987e5;
+      --series-1-dark-step: #5598e7;
+      --accent: #3987e5;
+      --success-text: #0ca30c;
+      --code-bg: rgba(255,255,255,0.07);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface-1: #1a1a19;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --grid: #2c2c2a;
+    --baseline: #383835;
+    --border: rgba(255,255,255,0.10);
+    --series-1: #3987e5;
+    --series-1-dark-step: #5598e7;
+    --accent: #3987e5;
+    --success-text: #0ca30c;
+    --code-bg: rgba(255,255,255,0.07);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--page);
+    color: var(--text-primary);
+    line-height: 1.65;
+    font-size: 15px;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px 96px; }
+
+  /* ── header ── */
+  header.hero {
+    padding: 56px 0 8px;
+    border-bottom: 1px solid var(--grid);
+    margin-bottom: 32px;
+  }
+  .hero-kicker {
+    font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 10px;
+  }
+  h1 { font-size: 32px; line-height: 1.25; margin: 0 0 12px; font-weight: 700; }
+  .hero-sub { color: var(--text-secondary); max-width: 780px; margin: 0 0 20px; }
+  .hero-meta { font-size: 13px; color: var(--muted); display: flex; gap: 18px; flex-wrap: wrap; }
+  .theme-toggle {
+    position: fixed; top: 16px; right: 16px; z-index: 50;
+    border: 1px solid var(--border); background: var(--surface-1); color: var(--text-secondary);
+    border-radius: 8px; padding: 6px 12px; font-size: 13px; cursor: pointer;
+  }
+  .theme-toggle:hover { color: var(--text-primary); }
+
+  /* ── nav ── */
+  nav.toc {
+    position: sticky; top: 0; z-index: 40;
+    background: color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--grid);
+    margin: 0 -24px 40px; padding: 10px 24px;
+    display: flex; gap: 4px 18px; flex-wrap: wrap; font-size: 13px;
+  }
+  nav.toc a { color: var(--text-secondary); text-decoration: none; white-space: nowrap; }
+  nav.toc a:hover { color: var(--accent); }
+
+  /* ── sections ── */
+  section { margin-bottom: 64px; }
+  h2 {
+    font-size: 22px; margin: 0 0 6px; font-weight: 700;
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  h2 .no { color: var(--accent); font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .section-sub { color: var(--text-secondary); margin: 0 0 22px; max-width: 820px; }
+  h3 { font-size: 16px; margin: 28px 0 10px; }
+
+  /* ── KPI row ── */
+  .kpi-row {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px; margin: 28px 0 8px;
+  }
+  .kpi {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .kpi .label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .kpi .value { font-size: 30px; font-weight: 700; line-height: 1.1; }
+  .kpi .value small { font-size: 14px; font-weight: 500; color: var(--text-secondary); }
+  .kpi .note { font-size: 12px; color: var(--text-secondary); margin-top: 6px; }
+
+  /* ── tables ── */
+  .tbl-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-1); }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td { padding: 10px 14px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--grid); }
+  thead th {
+    font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: 0.04em;
+    white-space: nowrap; position: sticky; top: 0; background: var(--surface-1);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: color-mix(in srgb, var(--accent) 4%, transparent); }
+  td .sub { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .num { font-variant-numeric: tabular-nums; }
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px; background: var(--code-bg); padding: 1.5px 6px; border-radius: 5px;
+    white-space: nowrap;
+  }
+
+  /* ── status marks (icon + label, never color alone) ── */
+  .ok   { color: var(--success-text); font-weight: 600; white-space: nowrap; }
+  .ok::before  { content: "✓ "; }
+  .warn { color: var(--serious); font-weight: 600; white-space: nowrap; }
+  .warn::before { content: "△ "; }
+  .no   { color: var(--muted); font-weight: 500; white-space: nowrap; }
+  .no::before   { content: "✗ "; }
+
+  /* ── group badges ── */
+  .badge {
+    display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+    padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-secondary);
+  }
+  .badge.blue { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 35%, transparent); }
+
+  /* ── layer diagram (three-tier landscape) ── */
+  .tiers { display: flex; flex-direction: column; gap: 10px; margin: 8px 0 4px; }
+  .tier {
+    border: 1px solid var(--border); border-radius: 12px; background: var(--surface-1);
+    padding: 16px 20px; position: relative;
+  }
+  .tier .tier-title { font-weight: 700; font-size: 14px; display: flex; gap: 10px; align-items: center; margin-bottom: 6px; }
+  .tier .tier-title .chip { font-size: 11px; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); border-radius: 999px; padding: 1px 9px; }
+  .tier p { margin: 0; font-size: 13.5px; color: var(--text-secondary); }
+  .tier .who { margin-top: 8px; font-size: 13px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .tier .who span { border: 1px solid var(--grid); border-radius: 7px; padding: 2px 9px; color: var(--text-primary); background: var(--page); }
+  .tier-arrow { text-align: center; color: var(--muted); font-size: 15px; line-height: 1; margin: -2px 0; }
+
+  /* ── deep-dive cards ── */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+  .card {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px;
+    padding: 20px 22px;
+  }
+  .card h4 { margin: 0 0 4px; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+  .card .tagline { font-size: 12.5px; color: var(--accent); font-weight: 600; margin-bottom: 10px; }
+  .card ul { margin: 0; padding-left: 18px; font-size: 13.5px; color: var(--text-secondary); }
+  .card ul li { margin-bottom: 6px; }
+  .card ul li strong { color: var(--text-primary); }
+  .dot { width: 9px; height: 9px; border-radius: 3px; display: inline-block; flex: none; }
+
+  /* ── bar chart (pricing, sequential single-hue) ── */
+  .chart {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px;
+    padding: 24px 26px 18px;
+  }
+  .chart-title { font-weight: 700; font-size: 15px; margin-bottom: 2px; }
+  .chart-sub { font-size: 12.5px; color: var(--muted); margin-bottom: 20px; }
+  .bar-row { display: grid; grid-template-columns: 220px 1fr 64px; align-items: center; gap: 12px; margin-bottom: 9px; }
+  .bar-row .bar-label { font-size: 12.5px; text-align: right; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bar-track { display: block; position: relative; height: 18px; background: color-mix(in srgb, var(--grid) 45%, transparent); border-radius: 0 4px 4px 0; }
+  .bar-fill {
+    display: block; height: 100%; border-radius: 0 4px 4px 0; background: var(--series-1);
+    min-width: 2px; transition: filter .15s;
+  }
+  .bar-fill:hover { filter: brightness(1.12); }
+  .bar-row .bar-value { font-size: 12.5px; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+  .chart-foot { font-size: 12px; color: var(--muted); margin-top: 16px; border-top: 1px solid var(--grid); padding-top: 12px; }
+  .axis-note { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin: 2px 0 14px 232px; font-variant-numeric: tabular-nums; }
+
+  /* ── timeline ── */
+  .timeline { border-left: 2px solid var(--grid); margin-left: 8px; padding-left: 24px; display: flex; flex-direction: column; gap: 18px; }
+  .t-item { position: relative; }
+  .t-item::before {
+    content: ""; position: absolute; left: -31px; top: 5px; width: 10px; height: 10px;
+    border-radius: 50%; background: var(--series-1); border: 2px solid var(--page);
+  }
+  .t-item .t-date { font-size: 12px; color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .t-item .t-body { font-size: 13.5px; color: var(--text-secondary); }
+  .t-item .t-body strong { color: var(--text-primary); }
+
+  /* ── callout boxes ── */
+  .callout {
+    border: 1px solid var(--border); border-left: 3px solid var(--accent);
+    background: var(--surface-1); border-radius: 10px; padding: 14px 18px;
+    font-size: 13.5px; color: var(--text-secondary); margin: 18px 0;
+  }
+  .callout.warnbox { border-left-color: var(--serious); }
+  .callout.goodbox { border-left-color: var(--good); }
+  .callout strong { color: var(--text-primary); }
+
+  .phil-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .phil {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px;
+  }
+  .phil .p-no { font-size: 12px; color: var(--accent); font-weight: 700; letter-spacing: 0.1em; }
+  .phil h4 { margin: 4px 0 2px; font-size: 15px; }
+  .phil .p-sub { font-size: 12.5px; color: var(--muted); margin-bottom: 10px; }
+  .phil p { font-size: 13px; color: var(--text-secondary); margin: 0 0 8px; }
+  .phil .p-kicker { font-size: 12px; color: var(--text-primary); background: var(--code-bg); border-radius: 7px; padding: 6px 10px; }
+
+  footer { border-top: 1px solid var(--grid); margin-top: 24px; padding-top: 24px; font-size: 12.5px; color: var(--muted); }
+  .btn {
+    display: inline-block; background: var(--accent); color: #fff; text-decoration: none;
+    font-weight: 600; font-size: 13.5px; border-radius: 9px; padding: 9px 18px; margin: 4px 0 16px;
+  }
+  .btn:hover { filter: brightness(1.08); }
+  code a.code-link, a.code-link { color: var(--accent); text-decoration: none; }
+  a.open-src { display: inline-block; margin-top: 10px; font-size: 12.5px; color: var(--accent); text-decoration: none; font-weight: 600; }
+  a.open-src:hover { text-decoration: underline; }
+  footer a { color: var(--text-secondary); }
+  .src-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 4px 24px; margin-top: 10px; }
+  @media (max-width: 720px) {
+    .bar-row { grid-template-columns: 120px 1fr 56px; }
+    .axis-note { margin-left: 132px; }
+    h1 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()">🌓 明暗切换</button>
+<div class="wrap">
+
+<header class="hero">
+  <div class="hero-kicker">Competitive Landscape · Research Report</div>
+  <h1>AI 视频生成厂商<br>CLI / Skill / MCP 全景对比</h1>
+  <p class="hero-sub">覆盖 16 家厂商（11 家模型原生厂商 + 5 家聚合推理云）的 API、CLI、MCP Server、Agent Skills 四层开发者接入面，并对 7 个官方技能仓库（103 个 SKILL.md）做了本地源码级剖析。</p>
+  <div class="hero-meta">
+    <span>📅 调研时点：2026-09-21</span>
+    <span>🔍 方法：6 路并行网络调研 + 本地仓库深读</span>
+    <span>📦 产出：本报告 + 本地技能库</span>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi"><div class="label">调研厂商</div><div class="value">16</div><div class="note">11 模型厂商 + 5 聚合云</div></div>
+    <div class="kpi"><div class="label">提供官方 MCP</div><div class="value">11<small> / 16</small></div><div class="note">含 Google 平台级 preview</div></div>
+    <div class="kpi"><div class="label">提供官方 CLI</div><div class="value">8<small> / 16</small></div><div class="note">模型厂商仅 3 家有</div></div>
+    <div class="kpi"><div class="label">本地剖析 SKILL.md</div><div class="value">103</div><div class="note">7 个仓库 · 共 23M 源码</div></div>
+    <div class="kpi"><div class="label">视频单价带宽</div><div class="value">15×</div><div class="note">$0.04 → $0.60 / 秒</div></div>
+  </div>
+</header>
+
+<nav class="toc">
+  <a href="#s1">① 核心结论</a>
+  <a href="#s2">② 总览矩阵</a>
+  <a href="#s3">③ 三层格局</a>
+  <a href="#s4">④ 重点深评</a>
+  <a href="#s5">⑤ Skills 四哲学</a>
+  <a href="#s6">⑥ 本地技能库</a>
+  <a href="#s7">⑦ 打包分发</a>
+  <a href="#s8">⑧ 价格对比</a>
+  <a href="#s9">⑨ 时间线</a>
+  <a href="#s10">⑩ 坑与警示</a>
+  <a href="#s11">⑪ 借鉴清单</a>
+</nav>
+
+<!-- ══════════════ 1. 核心结论 ══════════════ -->
+<section id="s1">
+  <h2><span class="no">01</span>核心结论</h2>
+  <p class="section-sub">五句话讲完整个格局。</p>
+  <div class="cards">
+    <div class="card"><h4>🏛️ 格局是三层的</h4><ul>
+      <li><strong>模型厂商</strong>卖自家模型（Higgsfield、Runway、Sora、Veo、Kling…）</li>
+      <li><strong>聚合推理云</strong>卖统一接入（fal、AtlasCloud、Replicate）</li>
+      <li><strong>生态层</strong>（MCP / Skills）是新战场，agent 触达多厂商视频的主路径是聚合云，不是模型厂商</li>
+    </ul></div>
+    <div class="card"><h4>🥇 agent 工效学天花板：fal</h4><ul>
+      <li>MCP 发现层/执行层分离（<code>recommend_model</code> / <code>get_pricing</code> 先行）</li>
+      <li>每个模型页都有机器可读 <code>llms.txt</code>，与平台元数据同源不漂移</li>
+      <li>甚至写了"别重复提交查进度——会重复计费"的 agent 防呆守则</li>
+    </ul></div>
+    <div class="card"><h4>🚀 最激进的挑战者：AtlasCloud</h4><ul>
+      <li>2026-05 一个月内同步上线 CLI / MCP / Skills 三件套</li>
+      <li>MCP 内置成本感知（<code>atlas_get_balance</code> / <code>atlas_get_model_costs</code>）</li>
+      <li>短板：无官方 SDK、完整价格表要登录、无 status page</li>
+    </ul></div>
+    <div class="card"><h4>🎭 意外的全能选手：Higgsfield</h4><ul>
+      <li>消费者基因，但 API / CLI / MCP / Skills / SDK 五项全齐</li>
+      <li>独创"Unlimited MCP"订阅制：在 Claude/ChatGPT 里无限生成</li>
+      <li>唯一的<strong>双轨计费</strong>：CLI/MCP 走网页积分，REST API 走独立美元余额</li>
+    </ul></div>
+    <div class="card"><h4>📐 事实标准已收敛</h4><ul>
+      <li>异步模式全线统一：<strong>submit → job_id → 轮询</strong>，webhook 只是优化层</li>
+      <li>MCP 规范的长任务/可恢复语义仍是 open proposal，各家靠工具对自圆其说</li>
+      <li>Anthropic / OpenAI 官方技能目录都<strong>没有视频 skill</strong>，生态由厂商与社区自下而上填充</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ══════════════ 2. 总览矩阵 ══════════════ -->
+<section id="s2">
+  <h2><span class="no">02</span>总览矩阵</h2>
+  <p class="section-sub">✓ = 官方提供 · △ = 仅社区/部分提供 · ✗ = 没有。点击表头可横向滚动查看。</p>
+
+  <h3>A 组 · 模型原生厂商</h3>
+  <div class="tbl-scroll"><table>
+    <thead><tr>
+      <th>厂商</th><th>REST API</th><th>官方 CLI</th><th>官方 MCP</th><th>官方 Skills</th><th>官方 SDK</th><th>异步模式</th><th>视频单价（约）</th>
+    </tr></thead>
+    <tbody>
+      <tr><td><strong>Higgsfield</strong><span class="sub">higgsfield.ai</span></td>
+        <td><span class="ok">官方</span><span class="sub">api.higgsfield.ai · 预付费</span></td>
+        <td><span class="ok">npm CLI</span><span class="sub">OAuth 登录</span></td>
+        <td><span class="ok">托管</span><span class="sub">mcp.higgsfield.ai/mcp</span></td>
+        <td><span class="ok">9 个</span><span class="sub">1.1k★ · 带 evals</span></td>
+        <td><span class="ok">Py + TS</span></td>
+        <td>request_id + webhook</td>
+        <td class="num">$0.04–0.21/s<span class="sub">⚠ 双轨计费</span></td></tr>
+      <tr><td><strong>Runway</strong><span class="sub">runwayml.com</span></td>
+        <td><span class="ok">官方</span><span class="sub">credits 计价</span></td>
+        <td><span class="no">无</span></td>
+        <td><span class="ok">×2</span><span class="sub">托管 OAuth + API-key 版</span></td>
+        <td><span class="ok">11 个</span><span class="sub">脚本驱动</span></td>
+        <td><span class="ok">Py + Node</span></td>
+        <td>task + 签名 webhook</td>
+        <td class="num">$0.05–0.28/s</td></tr>
+      <tr><td><strong>Luma</strong><span class="sub">lumalabs.ai</span></td>
+        <td><span class="ok">官方</span><span class="sub">Dream Machine / Luma API</span></td>
+        <td><span class="ok">Go CLI</span><span class="sub">luma-agents-cli</span></td>
+        <td><span class="ok">官方</span><span class="sub">luma-api-mcp</span></td>
+        <td><span class="no">无</span><span class="sub">有 llm-info 页</span></td>
+        <td><span class="ok">Py + JS</span></td>
+        <td>poll + callback</td>
+        <td class="num">~$0.10–0.30/s</td></tr>
+      <tr><td><strong>OpenAI Sora 2</strong><span class="sub">platform.openai.com</span></td>
+        <td><span class="ok">官方</span><span class="sub">/v1/videos</span></td>
+        <td><span class="ok">Go CLI</span><span class="sub">openai/openai-cli</span></td>
+        <td><span class="no">无</span><span class="sub">仅 MCPKit 蓝图</span></td>
+        <td><span class="warn">目录无视频</span></td>
+        <td><span class="ok">全家桶</span></td>
+        <td>poll / video.completed webhook</td>
+        <td class="num">$0.10–0.50/s</td></tr>
+      <tr><td><strong>Google Veo 3.1</strong><span class="sub">Gemini API / Vertex</span></td>
+        <td><span class="ok">双通道</span><span class="sub">predictLongRunning</span></td>
+        <td><span class="no">无专用</span><span class="sub">gcloud 泛用</span></td>
+        <td><span class="warn">平台级 preview</span><span class="sub">aiplatform /mcp/*</span></td>
+        <td><span class="no">无</span></td>
+        <td><span class="ok">全家桶</span></td>
+        <td>LRO 轮询</td>
+        <td class="num">$0.05–0.60/s</td></tr>
+      <tr><td><strong>Pika</strong><span class="sub">pika.art</span></td>
+        <td><span class="warn">走 fal 分发</span><span class="sub">2025-12 起</span></td>
+        <td><span class="no">无</span></td>
+        <td><span class="no">无</span></td>
+        <td><span class="no">无</span></td>
+        <td><span class="no">无</span></td>
+        <td>fal 的</td>
+        <td class="num">~$0.04–0.09/s</td></tr>
+      <tr><td><strong>Kling 快手</strong><span class="sub">kling.ai</span></td>
+        <td><span class="ok">官方</span><span class="sub">JWT 短令牌</span></td>
+        <td><span class="no">无</span></td>
+        <td><span class="warn">仅社区</span><span class="sub">⚠ 走转售商 API</span></td>
+        <td><span class="warn">仅社区</span></td>
+        <td><span class="warn">仅社区</span></td>
+        <td>task_id 轮询</td>
+        <td class="num">$0.04–0.11/s</td></tr>
+      <tr><td><strong>MiniMax 海螺</strong><span class="sub">minimax.io</span></td>
+        <td><span class="ok">官方</span><span class="sub">video_generation</span></td>
+        <td><span class="no">无</span></td>
+        <td><span class="ok">官方</span><span class="sub">Py + JS 双实现</span></td>
+        <td><span class="no">无</span></td>
+        <td><span class="ok">官方</span></td>
+        <td>task_id 轮询</td>
+        <td class="num">~$0.08–0.28/条</td></tr>
+      <tr><td><strong>字节 Seedance</strong><span class="sub">火山 Ark / BytePlus</span></td>
+        <td><span class="ok">官方</span><span class="sub">英文文档最全</span></td>
+        <td><span class="no">无</span></td>
+        <td><span class="warn">官方无视频</span><span class="sub">社区补位</span></td>
+        <td><span class="warn">仅社区</span></td>
+        <td><span class="ok">官方</span></td>
+        <td>task_id 轮询</td>
+        <td class="num">~$0.02–0.04/s</td></tr>
+      <tr><td><strong>Vidu 生数</strong><span class="sub">platform.vidu.com</span></td>
+        <td><span class="ok">官方</span><span class="sub">r2v 是差异化</span></td>
+        <td><span class="no">无</span></td>
+        <td><span class="ok">官方</span><span class="sub">vidu-mcp · 很年轻</span></td>
+        <td><span class="no">无</span></td>
+        <td><span class="ok">官方</span></td>
+        <td>task_id 轮询</td>
+        <td class="num">~$0.04–0.12/s</td></tr>
+      <tr><td><strong>阿里 Wan</strong><span class="sub">DashScope 百炼</span></td>
+        <td><span class="ok">官方</span><span class="sub">header 异步</span></td>
+        <td><span class="no">无</span></td>
+        <td><span class="no">无</span></td>
+        <td><span class="no">无</span></td>
+        <td><span class="ok">官方</span></td>
+        <td>header 异步 + 轮询</td>
+        <td class="num">¥0.14–0.70/s<span class="sub">✦ 开源权重</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>B 组 · 聚合推理云</h3>
+  <div class="tbl-scroll"><table>
+    <thead><tr>
+      <th>平台</th><th>API 特性</th><th>官方 CLI</th><th>官方 MCP</th><th>官方 Skills</th><th>官方 SDK</th><th>差异化定位</th>
+    </tr></thead>
+    <tbody>
+      <tr><td><strong>fal.ai</strong><span class="sub">fal.ai</span></td>
+        <td>queue + SSE 状态流 + webhook + Realtime WS</td>
+        <td><span class="ok">×2</span><span class="sub">fal(Py 全生命周期) + genmedia</span></td>
+        <td><span class="ok">11 工具</span><span class="sub">mcp.fal.ai/mcp</span></td>
+        <td><span class="ok">17 个</span><span class="sub">官方社区 org · 243★</span></td>
+        <td><span class="ok">6 语言</span><span class="sub">Py/JS/Swift/Java/Dart/Terraform</span></td>
+        <td>llms.txt 全覆盖 · fal Agent 产品</td></tr>
+      <tr><td><strong>AtlasCloud</strong><span class="sub">atlascloud.ai</span></td>
+        <td>prediction 轮询 + webhook + OpenAI 兼容 LLM</td>
+        <td><span class="ok">atlas (Go)</span><span class="sub">brew/npm · cost/wait 子命令</span></td>
+        <td><span class="ok">14 工具</span><span class="sub">动态 schema 校验</span></td>
+        <td><span class="ok">3+25 recipes</span><span class="sub">双语 · 含方法论 skill</span></td>
+        <td><span class="no">明示不做</span></td>
+        <td>成本感知工具 · 宣称低于官方价 68%</td></tr>
+      <tr><td><strong>Replicate</strong><span class="sub">replicate.com</span></td>
+        <td>prediction 轮询 + webhook</td>
+        <td><span class="ok">Go CLI</span><span class="sub">brew</span></td>
+        <td><span class="ok">托管 + npm</span><span class="sub">含 code-mode 沙箱</span></td>
+        <td><span class="no">无</span></td>
+        <td><span class="ok">官方</span></td>
+        <td>托管几乎全部主流视频模型</td></tr>
+      <tr><td><strong>Runware / WaveSpeed</strong></td>
+        <td>统一 REST</td>
+        <td><span class="ok">有</span></td>
+        <td><span class="ok">有</span></td>
+        <td><span class="ok">有</span></td>
+        <td><span class="ok">有</span></td>
+        <td>单一 <code>run</code> 工具统一图/视/音/3D</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ══════════════ 3. 三层格局 ══════════════ -->
+<section id="s3">
+  <h2><span class="no">03</span>三层格局</h2>
+  <p class="section-sub">Agent 要生成一段视频，实际会穿过三层。价值分配正在向上层（生态）和中层（聚合）迁移。</p>
+  <div class="tiers">
+    <div class="tier">
+      <div class="tier-title"><span class="chip">生态层</span>Agent 接入面 — MCP Server · Agent Skills · llms.txt</div>
+      <p>Coding agent（Claude Code / Codex / Cursor）不直接读 API 文档，而是通过 MCP 工具和 SKILL.md 行动。官方技能目录里没有视频 skill，这一层完全由厂商三件套 + 社区注册表（skills.sh、glama）填充。</p>
+      <div class="who"><span>fal genmedia skills</span><span>higgsfield-ai/skills</span><span>runwayml/skills</span><span>atlas-cloud-skills</span><span>AceDataCloud 系 MCP</span><span>skills.sh 注册表</span></div>
+    </div>
+    <div class="tier-arrow">▲ 依附于 ▲</div>
+    <div class="tier">
+      <div class="tier-title"><span class="chip">聚合层</span>统一推理网关 — 一个 Key 触达全部模型</div>
+      <p>统一 queue/prediction 抽象 + 模型目录 + 计费。价值点：智能路由、成本工具、动态 schema 校验、跨模型对比。AtlasCloud MCP 是 glama 注册表视频类周下载第一（289 npm/wk）。</p>
+      <div class="who"><span>fal.ai</span><span>AtlasCloud</span><span>Replicate</span><span>Runware</span><span>WaveSpeed</span><span>Kie.ai / AIHubMix / 302.ai</span></div>
+    </div>
+    <div class="tier-arrow">▲ 供货给 ▲</div>
+    <div class="tier">
+      <div class="tier-title"><span class="chip">模型层</span>视频模型原厂 — 卖模型与独家能力</div>
+      <p>独占能力是护城河（Sora 的物理仿真、Veo 的原生音频、Vidu 的参考生视频、Kling 的运动质量），但 agent 时代的"默认路由权"正在流失给聚合层——Higgsfield 和 Runway 自家技能的默认视频模型都是字节的 Seedance。</p>
+      <div class="who"><span>OpenAI Sora 2</span><span>Google Veo 3.1</span><span>Runway Gen-4.5</span><span>Kling 3.0</span><span>Seedance 2.5</span><span>Wan 3.0（开源）</span><span>Hailuo / Vidu / Luma</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ 4. 重点深评 ══════════════ -->
+<section id="s4">
+  <h2><span class="no">04</span>重点深评 · 四家标杆</h2>
+  <p class="section-sub">每家的 agent 接入策略是一个完整的世界观。</p>
+  <div class="cards">
+    <div class="card">
+      <h4><span class="dot" style="background:var(--series-1)"></span>Higgsfield</h4>
+      <div class="tagline">消费者基因最重，开发者栈意外齐全</div>
+      <ul>
+        <li><strong>API</strong>：api.higgsfield.ai，预付费美元余额（$5 起充），失败不计费；Kling 3.0 $0.042/s、Cinema Studio 4.0 $0.206/s</li>
+        <li><strong>MCP 玩法独一份</strong>："Unlimited MCP" 订阅在 Claude/ChatGPT 内无限生成 23 个模型（2026-07 上线）</li>
+        <li><strong>Skills 全场最重</strong>：9 个面向营销场景（品牌套件/产品摄影/YouTube 封面/游戏生成），唯一带 evals 测试场景</li>
+        <li><strong style="color:var(--serious)">大坑</strong>：CLI/MCP 消费网页积分、REST API 用独立美元余额——agent 预算管理割裂</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4><span class="dot" style="background:var(--good)"></span>fal.ai</h4>
+      <div class="tagline">agent 工效学的天花板</div>
+      <ul>
+        <li><strong>MCP 11 工具</strong>：发现层（search_models / get_pricing / recommend_model）与执行层（submit_job / check_job / cancel_job）分离</li>
+        <li><strong>llms.txt 全覆盖</strong>：每模型页机器可读 schema+定价，官方声明与平台元数据同源</li>
+        <li><strong>双 CLI</strong>：<code>fal</code>（Py，部署 serverless）+ <code>genmedia</code>（agent-first，<code>init</code> 直接装 .claude/skills/）</li>
+        <li><strong>注意</strong>：npm 的 <code>fal</code> 包是无关项目；官方 skills 在 fal-ai-community org</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4><span class="dot" style="background:var(--warning)"></span>AtlasCloud</h4>
+      <div class="tagline">复刻 fal 打法的激进挑战者</div>
+      <ul>
+        <li><strong>定位</strong>：Replicate 式 prediction + OpenRouter 式 OpenAI 兼容网关，300~400+ 模型</li>
+        <li><strong>三件套同月齐发</strong>（2026-05）：<code>atlas</code> CLI（Go）+ <code>atlascloud-mcp</code>（14 工具）+ 3 skills / 25 recipes</li>
+        <li><strong>差异化</strong>：MCP 动态 schema 提交前校验防浪费 + <code>atlas_get_balance</code>/<code>atlas_get_model_costs</code> 成本感知</li>
+        <li><strong>短板</strong>：无官方 SDK（文档明示）、价格表要登录、无 status page、融资叙事矛盾</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4><span class="dot" style="background:var(--serious)"></span>Runway</h4>
+      <div class="tagline">安全工程最严谨的官方 MCP + Skills</div>
+      <ul>
+        <li><strong>双 MCP</strong>：托管版（mcp.runwayml.com/mcp，OAuth 2.1 + PKCE）+ API-key 版（OpenAPI 校验）</li>
+        <li><strong>Skills 脚本驱动</strong>：自带 <code>uv run scripts/generate_video.py</code>，frontmatter 白名单 <code>Bash(uv run *)</code></li>
+        <li><strong>安全细节全场最佳</strong>：key 禁止走 CLI 参数（防 shell history 泄露）、生成产物视为不可信输入</li>
+        <li><strong>计价</strong>：credits（$0.01/cr），gen4.5 $0.60/5s、gen4_turbo $0.25/5s、Aleph 2 V2V $1.40/5s；还转售 Veo/Seedance/Wan/Hailuo</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ 5. Skills 四哲学 ══════════════ -->
+<section id="s5">
+  <h2><span class="no">05</span>官方 Skills 的四种架构哲学</h2>
+  <p class="section-sub">对 7 个本地仓库源码级深读后的核心发现：每家把 SKILL.md 做成了完全不同的东西。</p>
+  <div class="phil-grid">
+    <div class="phil">
+      <div class="p-no">PHILOSOPHY 01 · FAL</div>
+      <h4>CLI 即运行时</h4>
+      <div class="p-sub">skills 只是 CLI 的说明书</div>
+      <p>「所有其他 skill 都通过 genmedia 命令执行，不直接调 HTTP API」。6 条 Critical Rules：agent 读输出必带 <code>--json</code>、永不编造 endpoint ID、自定义参数前必查 schema、下载用 <code>--download</code> 不用 curl。</p>
+      <div class="p-kicker">✦ 独有：智能路由 <code>run "&lt;prompt&gt;"</code> 自动分类模态；index.json 带 SHA256 防篡改</div><a class="open-src" href="skills/fal-community-skills/skills/genmedia.html">打开源文件 →</a>
+    </div>
+    <div class="phil">
+      <div class="p-no">PHILOSOPHY 02 · HIGGSFIELD</div>
+      <h4>UX 剧本</h4>
+      <div class="p-sub">管到 agent 怎么说话</div>
+      <p>325 行的行为规范：用用户语言回复、不暴露原始 ID/JSON、不预先估价、一次只问一个问题。核心是巨大的模型路由决策树（默认视频 = Seedance 2.5，广告 = Marketing Studio）。</p>
+      <div class="p-kicker">✦ 独有：evals/ 测试场景；INSTALL_FOR_AGENTS.md 是写给 agent 看的自装剧本</div><a class="open-src" href="skills/higgsfield-skills/higgsfield-generate.html">打开源文件 →</a>
+    </div>
+    <div class="phil">
+      <div class="p-no">PHILOSOPHY 03 · RUNWAY</div>
+      <h4>脚本即技能</h4>
+      <div class="p-sub">不依赖任何 CLI，自带可执行脚本</div>
+      <p>技能内嵌 <code>scripts/generate_video.py</code>，<code>uv run</code> 执行；frontmatter 白名单收窄执行面。key 只从环境变量读（禁止 CLI 参数防 history 泄露）、产物视为不可信输入、固定文件名时间戳约定。</p>
+      <div class="p-kicker">✦ 独有：技能分两族——rw-generate-*（执行）与 runway-dev-*（教 agent 做集成开发）</div><a class="open-src" href="skills/runwayml-skills/skills/rw-generate-video.html">打开源文件 →</a>
+    </div>
+    <div class="phil">
+      <div class="p-no">PHILOSOPHY 04 · ATLASCLOUD</div>
+      <h4>技能即文档</h4>
+      <div class="p-sub">574 行嵌入式 API 参考 + 一个方法论瑰宝</div>
+      <p>无 SDK/CLI 依赖，agent 照抄 curl/Python 模板即可运行；14 个 MCP 工具逐一说明。真正有价值的是 <strong>universal-video-prompt-skill</strong>：写一次模型无关 spec，再编译到任意模型——三桶模型（Global/Locks/Time）× 可验证性改写 × 能力降级规则，完整中英双语。</p>
+      <div class="p-kicker">✦ 独有：跨模型 prompt 工程范式；seedance skill 带双后端 providers 适配层</div><a class="open-src" href="skills/atlascloud-skills/atlas-cloud.html">打开源文件 →</a>
+    </div>
+  </div>
+
+  <div class="callout goodbox">
+    <strong>有趣的事实 —— 模型厂商集体给竞品打工：</strong>Higgsfield 和 Runway 自家官方技能的<strong>默认视频模型都是 Seedance 2.5（字节的）</strong>。在 agent 时代，"默认路由权"比拥有模型本身更值钱，而这一权力正在流向路由决策的制定者（聚合层与技能层），而非模型层。
+  </div>
+</section>
+
+<!-- ══════════════ 6. 本地技能库 ══════════════ -->
+<section id="s6">
+  <h2><span class="no">06</span>本地技能库清单</h2>
+  <p class="section-sub">全部克隆至 <code>/Users/lifcc/Desktop/code/AI/tools/video-vendor-skills/</code>。所有技能文档已渲染为在线版本，点开即可阅读。</p>
+  <a class="btn" href="skills/">📚 在线阅读全部 466 篇技能文档 →</a>
+  <div class="tbl-scroll"><table>
+    <thead><tr><th>本地目录</th><th>来源仓库</th><th>SKILL.md</th><th>大小</th><th>执行模型</th><th>亮点</th></tr></thead>
+    <tbody>
+      <tr><td><code><a class="code-link" href="skills/higgsfield-skills/">higgsfield-skills/</a></code></td><td>higgsfield-ai/skills <span class="sub">MIT · 1.1k★ · v0.12.0</span></td><td class="num">8</td><td class="num">2.1M</td><td>自家 CLI（<code>higgsfield</code>）</td><td>evals 场景 · 营销垂直 skill · agent 自装剧本</td></tr>
+      <tr><td><code><a class="code-link" href="skills/runwayml-skills/">runwayml-skills/</a></code></td><td>runwayml/skills <span class="sub">2026-02 起</span></td><td class="num">11</td><td class="num">336K</td><td>Python 脚本（uv run）</td><td>allowed-tools 白名单 · 安全工程 · 双族技能</td></tr>
+      <tr><td><code><a class="code-link" href="skills/runway-mcp-plugin/">runway-mcp-plugin/</a></code></td><td>runwayml/runway-mcp-plugin</td><td class="num">2</td><td class="num">196K</td><td>官方托管 MCP</td><td>mcp.json 一键接入 · 技能薄封装</td></tr>
+      <tr><td><code><a class="code-link" href="skills/atlascloud-skills/">atlascloud-skills/</a></code></td><td>AtlasCloudAI/atlas-cloud-skills <span class="sub">32★ · 66 commits</span></td><td class="num">3</td><td class="num">1.1M</td><td>裸 REST（无 SDK/CLI 依赖）</td><td>方法论 skill · 中英双语 · providers 适配层</td></tr>
+      <tr><td><code><a class="code-link" href="skills/fal-community-skills/">fal-community-skills/</a></code></td><td>fal-ai-community/skills <span class="sub">MIT · 243★</span></td><td class="num">17</td><td class="num">1.1M</td><td>genmedia CLI</td><td>SHA256 索引 · 16 垂直域 · 智能路由</td></tr>
+      <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/">elevenlabs-plugin/</a></code></td><td>elevenlabs/plugin</td><td class="num">42</td><td class="num">1.8M</td><td>远程 MCP + OAuth</td><td>语音域最全 · architect 子族 30+ 技能</td></tr>
+      <tr><td><code><a class="code-link" href="skills/anthropics-skills/">anthropics-skills/</a></code></td><td>anthropics/skills <span class="sub">格式参照基准</span></td><td class="num">20</td><td class="num">16M</td><td>—</td><td>官方 spec + template · 无任何视频 skill</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ══════════════ 7. 打包分发 ══════════════ -->
+<section id="s7">
+  <h2><span class="no">07</span>打包与分发机制对比</h2>
+  <p class="section-sub">技能怎么装、装到哪、如何保证不被篡改——四家给出了四种答案。</p>
+  <div class="tbl-scroll"><table>
+    <thead><tr><th>机制</th><th>Higgsfield</th><th>Runway</th><th>AtlasCloud</th><th>fal</th></tr></thead>
+    <tbody>
+      <tr><td><strong>安装方式</strong></td>
+        <td><code>npx skills add</code> + marketplace + agent 自装剧本</td>
+        <td>skills.sh / marketplace 插件</td>
+        <td><code>install.sh</code>（git clone + 拷贝）/ <code>npx skills add</code></td>
+        <td><code>genmedia init</code> / <code>genmedia skills install</code></td></tr>
+      <tr><td><strong>安装目标</strong></td>
+        <td>按平台分路径：<code>~/.claude/skills</code> · <code>~/.cursor/plugins</code> · <code>~/.codex/plugins</code></td>
+        <td>仓库 + 插件双形态</td>
+        <td><code>~/.claude/skills/</code></td>
+        <td><code>.claude/skills/</code> 或 <code>.agents/skills/</code></td></tr>
+      <tr><td><strong>完整性保障</strong></td><td class="no">无</td><td class="no">无</td><td class="no">无</td><td><span class="ok">index.json SHA256</span></td></tr>
+      <tr><td><strong>质量保障</strong></td><td><span class="ok">evals/ 场景集</span></td><td>Common Failures 表</td><td>troubleshooting.md</td><td>16 垂直领域分层</td></tr>
+      <tr><td><strong>版本标识</strong></td><td>frontmatter <code>version</code></td><td>CHANGELOG.md</td><td class="no">无</td><td>index version</td></tr>
+      <tr><td><strong>更新方式</strong></td><td>重新安装</td><td>git pull / 插件更新</td><td>重新运行 install.sh</td><td><code>genmedia skills update</code></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ══════════════ 8. 价格对比 ══════════════ -->
+<section id="s8">
+  <h2><span class="no">08</span>视频单价横向对比</h2>
+  <p class="section-sub">同一个量纲（美元 / 秒视频）下，最贵与最便宜相差 15 倍。悬停条形可查看精确值。</p>
+  <div class="chart">
+    <div class="chart-title">视频生成单价（USD / 秒，典型 1080p 档，2026-09 核实）</div>
+    <div class="chart-sub">单一量纲 · 数值越大越贵 · 数据来自各官方定价页与模型页 llms.txt</div>
+
+    <div class="bar-row" title="Veo 3.1 4K · Google 直连 Gemini API：$0.60/s"><span class="bar-label">Veo 3.1 4K · Google</span><span class="bar-track"><span class="bar-fill" style="width:100%"></span></span><span class="bar-value num">$0.60</span></div>
+    <div class="bar-row" title="Sora-2 Pro 1080p · OpenAI 官方：$0.50/s"><span class="bar-label">Sora-2 Pro 1080p · OpenAI</span><span class="bar-track"><span class="bar-fill" style="width:83.3%"></span></span><span class="bar-value num">$0.50</span></div>
+    <div class="bar-row" title="Veo 3.1 带音频 · Google / fal / Runway：$0.40/s"><span class="bar-label">Veo 3.1 带音频 · Google</span><span class="bar-track"><span class="bar-fill" style="width:66.7%"></span></span><span class="bar-value num">$0.40</span></div>
+    <div class="bar-row" title="Sora-2 Pro 720p · OpenAI 官方：$0.30/s"><span class="bar-label">Sora-2 Pro 720p · OpenAI</span><span class="bar-track"><span class="bar-fill" style="width:50%"></span></span><span class="bar-value num">$0.30</span></div>
+    <div class="bar-row" title="Aleph 2 视频编辑 V2V · Runway：28 credits/s = $0.28/s"><span class="bar-label">Aleph 2 V2V · Runway</span><span class="bar-track"><span class="bar-fill" style="width:46.7%"></span></span><span class="bar-value num">$0.28</span></div>
+    <div class="bar-row" title="Gen-4.5 · Runway：12 credits/s = $0.12/s"><span class="bar-label">Gen-4.5 · Runway</span><span class="bar-track"><span class="bar-fill" style="width:20%"></span></span><span class="bar-value num">$0.12</span></div>
+    <div class="bar-row" title="Kling 2.6 高品质带音频 · 快手官方：~$0.112/s"><span class="bar-label">Kling 2.6 HQ · 快手</span><span class="bar-track"><span class="bar-fill" style="width:18.7%"></span></span><span class="bar-value num">$0.112</span></div>
+    <div class="bar-row" title="Sora-2 720p · OpenAI 官方：$0.10/s"><span class="bar-label">Sora-2 720p · OpenAI</span><span class="bar-track"><span class="bar-fill" style="width:16.7%"></span></span><span class="bar-value num">$0.10</span></div>
+    <div class="bar-row" title="Veo 3.1 Fast · Google 官方：$0.10/s"><span class="bar-label">Veo 3.1 Fast · Google</span><span class="bar-track"><span class="bar-fill" style="width:16.7%"></span></span><span class="bar-value num">$0.10</span></div>
+    <div class="bar-row" title="Seedance 2.0 文生视频 · AtlasCloud 渠道：$0.09/s"><span class="bar-label">Seedance 2.0 · AtlasCloud</span><span class="bar-track"><span class="bar-fill" style="width:15%"></span></span><span class="bar-value num">$0.09</span></div>
+    <div class="bar-row" title="Wan 2.2 A14B 720p · fal：$0.08/s"><span class="bar-label">Wan 2.2 720p · fal</span><span class="bar-track"><span class="bar-fill" style="width:13.3%"></span></span><span class="bar-value num">$0.08</span></div>
+    <div class="bar-row" title="Veo 3.1 Lite · Google 官方：$0.05/s"><span class="bar-label">Veo 3.1 Lite · Google</span><span class="bar-track"><span class="bar-fill" style="width:8.3%"></span></span><span class="bar-value num">$0.05</span></div>
+    <div class="bar-row" title="Kling 3.0 · Higgsfield 渠道：$0.042/s"><span class="bar-label">Kling 3.0 · Higgsfield</span><span class="bar-track"><span class="bar-fill" style="width:7%"></span></span><span class="bar-value num">$0.042</span></div>
+    <div class="bar-row" title="Wan 2.2 480p · fal：$0.04/s"><span class="bar-label">Wan 2.2 480p · fal</span><span class="bar-track"><span class="bar-fill" style="width:6.7%"></span></span><span class="bar-value num">$0.04</span></div>
+
+    <div class="chart-foot">
+      悬停任意条形查看渠道与档位说明。注：① 同一模型在不同渠道价差显著（如 Kling 3.0 在 Higgsfield 渠道 $0.042/s，明显低于快手官方同档）；② Veo 3.1 标准/Fast/Lite 为 Google 官方三档；③ fal 的 Wan 与 AtlasCloud 的 Seedance 均按秒计费且随分辨率分档；④ Runway credits 按 $0.01/credit 折算。
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ 9. 时间线 ══════════════ -->
+<section id="s9">
+  <h2><span class="no">09</span>关键事件时间线</h2>
+  <p class="section-sub">从"语音厂商先行"到"三件套标配"，只用了 16 个月。</p>
+  <div class="timeline">
+    <div class="t-item"><div class="t-date">2025-04</div><div class="t-body"><strong>ElevenLabs 上线官方 MCP</strong> —— 媒体厂商 MCP 化的先声（语音域）。</div></div>
+    <div class="t-item"><div class="t-date">2025-06</div><div class="t-body"><strong>Runway 发布 API-key 版 MCP server</strong> —— 视频厂商第一个官方 MCP。</div></div>
+    <div class="t-item"><div class="t-date">2025-08</div><div class="t-body"><strong>Replicate 托管 MCP（mcp.replicate.com）</strong> —— 聚合层入场，OAuth 一键接入。</div></div>
+    <div class="t-item"><div class="t-date">2025-10</div><div class="t-body"><strong>OpenAI Sora 2 API（DevDay）</strong> —— $0.10/s 定价锚定市场；同场发布 AgentKit，但 Sora 无官方 MCP。</div></div>
+    <div class="t-item"><div class="t-date">2025-12</div><div class="t-body"><strong>Pika 官方 API 交给 fal 分发</strong> —— 模型厂商放弃自建开发者通道的标志性事件。</div></div>
+    <div class="t-item"><div class="t-date">2026-02</div><div class="t-body"><strong>Runway 发布官方 skills 仓库</strong> —— 首个视频厂商 agent skills。</div></div>
+    <div class="t-item"><div class="t-date">2026-04</div><div class="t-body"><strong>Higgsfield MCP 上线（mcp.higgsfield.ai）</strong>，30+ 模型接入 Claude/ChatGPT。</div></div>
+    <div class="t-item"><div class="t-date">2026-05</div><div class="t-body"><strong>AtlasCloud CLI / MCP / Skills 三件套同月齐发</strong> —— "三件套标配"打法成型。</div></div>
+    <div class="t-item"><div class="t-date">2026-07</div><div class="t-body"><strong>Higgsfield "Unlimited MCP"</strong> —— 订阅制无限生成进 agent，商业模式创新。</div></div>
+    <div class="t-item"><div class="t-date">2026-09</div><div class="t-body"><strong>本次调研时点</strong>：16 家厂商中 11 家有官方 MCP、8 家有官方 CLI；异步模式收敛为 submit→poll 事实标准。</div></div>
+  </div>
+</section>
+
+<!-- ══════════════ 10. 坑与警示 ══════════════ -->
+<section id="s10">
+  <h2><span class="no">10</span>坑与警示</h2>
+  <p class="section-sub">接入前必须知道的七件事。</p>
+  <div class="callout warnbox"><strong>① 双轨计费陷阱（Higgsfield）</strong> — CLI/MCP 消费网页版积分，REST API 用独立美元余额。同一账号两条预算线，agent 自动化场景极易在不知情时烧光一边。</div>
+  <div class="callout warnbox"><strong>② 社区 MCP 的信任链风险（Kling）</strong> — 最流行的 KlingMCP 走的是转售商（AceDataCloud）的 API 而非快手官方——你的 prompt 和媒体要过第三方之手。字节的情况类似：官方 MCP 仓库只管云基础设施，视频生成全靠社区补位。</div>
+  <div class="callout warnbox"><strong>③ 命名混淆重灾区</strong> — <code>atlas-cloud.ai</code> ≠ AtlasCloud（正确域名 atlascloud.ai）；<code>mcp.luma.com</code> 是日历公司 Luma 不是 Luma AI；<code>docs.runway.team</code> 的 MCP 是另一家 VFX 管理公司；npm 的 <code>fal</code> 包是无关项目。</div>
+  <div class="callout warnbox"><strong>④ 内容政策口径差异</strong> — AtlasCloud 官方 skill 中明示：标准端点拒绝的 prompt 可绕到宽管制的 "Atlas Cloud Workflow" 通道。不同渠道对同一模型的内容政策执行并不一致，生产环境要有合规预期。</div>
+  <div class="callout warnbox"><strong>⑤ Skill 描述 SEO 化</strong> — AtlasCloud 的 frontmatter description 塞入 300+ 字符触发词（"即使用户没提 Atlas Cloud 也应考虑本 skill"）。选装第三方 skill 时留意 description 里的触发词扩张倾向。</div>
+  <div class="callout warnbox"><strong>⑥ MCP 长任务语义缺位</strong> — MCP 规范的长任务/可恢复语义仍是 open proposal。各家靠 check_job/poll 工具对自圆其说，轮询参数（如 fal 的 poll_after_seconds）才是稳定体验的关键，webhook 只是优化层不是投递保证。</div>
+  <div class="callout warnbox"><strong>⑦ 价格不透明角落</strong> — AtlasCloud 完整价格表要登录才能看；MiniMax 无简单官方单价表（套餐制）；Higgsfield 消费者定价频繁变动且无机器可读形式。预算敏感型集成优先选 llms.txt 公开定价的渠道（fal / Google / OpenAI）。</div>
+</section>
+
+<!-- ══════════════ 11. 借鉴清单 ══════════════ -->
+<section id="s11">
+  <h2><span class="no">11</span>借鉴清单 · 做自己的 CLI / Skills 前读这页</h2>
+  <p class="section-sub">如果要做面向 Claude Code / Codex 的 CLI + skills 产品，这十项是从 103 个 SKILL.md 里筛出的可直接复用模式。</p>
+  <div class="tbl-scroll"><table>
+    <thead><tr><th>#</th><th>模式</th><th>来源</th><th>要点</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td><strong>per-model llms.txt</strong></td><td>fal.ai</td><td>每个模型一份机器可读 schema+定价，与平台元数据同源生成，杜绝文档漂移</td></tr>
+      <tr><td class="num">2</td><td><strong>成本感知工具</strong></td><td>AtlasCloud / fal</td><td>MCP/CLI 内置 balance / costs / 预估命令，agent 提交前可自检预算</td></tr>
+      <tr><td class="num">3</td><td><strong>动态 schema 校验</strong></td><td>AtlasCloud</td><td>提交前校验参数合法性，避免无效调用浪费 credit</td></tr>
+      <tr><td class="num">4</td><td><strong>细粒度工具白名单</strong></td><td>Runway</td><td>frontmatter <code>allowed-tools: Bash(uv run *)</code> 把 skill 执行面收窄到具体脚本</td></tr>
+      <tr><td class="num">5</td><td><strong>Key 卫生规范</strong></td><td>Runway</td><td>密钥只走环境变量，禁止 CLI 参数（防 shell history 与进程列表泄露）</td></tr>
+      <tr><td class="num">6</td><td><strong>SHA256 技能索引</strong></td><td>fal</td><td>index.json 记录每个文件哈希，skill 分发的供应链完整性</td></tr>
+      <tr><td class="num">7</td><td><strong>skill 质量回归</strong></td><td>Higgsfield</td><td>evals/ 场景集让 skill 行为可测试、可回归</td></tr>
+      <tr><td class="num">8</td><td><strong>一键安装进技能目录</strong></td><td>fal genmedia</td><td><code>init</code> 直接写 .claude/skills/ 或 .agents/skills/，CLI 即分发渠道</td></tr>
+      <tr><td class="num">9</td><td><strong>spec→compile prompt 范式</strong></td><td>AtlasCloud</td><td>模型无关 spec + 每模型编译 profile，跨模型迁移零重写；配套可验证性改写规则</td></tr>
+      <tr><td class="num">10</td><td><strong>反面教材：双轨计费</strong></td><td>Higgsfield（警示）</td><td>CLI/MCP 与 API 预算割裂——自己的产品务必统一计费口径</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="callout">
+    <strong>一句话总结：</strong>模型层比拼独家能力，聚合层比拼接入效率与价格，生态层比拼 agent 工效学。2026 年的胜负手不在"你有没有 API"，而在"<strong>agent 用你时顺不顺手、烧不烧冤枉钱</strong>"。
+  </div>
+</section>
+
+<section id="appendix">
+  <h2><span class="no">A</span>附录 · 技能全清单</h2>
+  <p class="section-sub">7 个仓库里全部 <b>103 个 SKILL.md</b>，按厂商分组，点名称直达在线渲染页。</p>
+  <h3>Higgsfield 官方 <span style="color:var(--muted);font-weight:400;font-size:13px">· 8 个</span></h3>
+  <div class="tbl-scroll"><table>
+  <tr><th>技能</th><th>描述</th></tr>
+  <tr><td><code><a class="code-link" href="skills/higgsfield-skills/higgsfield-brandkit/SKILL.html">higgsfield-brandkit</a></code><span class="sub">higgsfield-brandkit/SKILL.md</span></td><td>| Create and extend complete visual brand systems through the Higgsfield CLI and bundled determinist…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/higgsfield-skills/higgsfield-generate/SKILL.html">higgsfield-generate</a></code><span class="sub">higgsfield-generate/SKILL.md</span></td><td>| Generate images/videos/3D assets/audio via Higgsfield AI. Defaults: GPT Image 2.5 for image/design…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/higgsfield-skills/higgsfield-marketplace-cards/SKILL.html">higgsfield-marketplace-cards</a></code><span class="sub">higgsfield-marketplace-cards/SKILL.md</span></td><td>| Generate marketplace product image cards through Higgsfield: compliant main image, secondary produ…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/higgsfield-skills/higgsfield-product-photoshoot/SKILL.html">higgsfield-product-photoshoot</a></code><span class="sub">higgsfield-product-photoshoot/SKILL.md</span></td><td>| Generate brand-quality product images through Higgsfield product-photoshoot prompt enhancement on …</td></tr>
+  <tr><td><code><a class="code-link" href="skills/higgsfield-skills/higgsfield-soul-id/SKILL.html">higgsfield-soul-id</a></code><span class="sub">higgsfield-soul-id/SKILL.md</span></td><td>| Train a Soul Character — a personalized model on a person&#x27;s face that Higgsfield uses for identity…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/higgsfield-skills/higgsfield-video-explainer/SKILL.html">higgsfield-video-explainer</a></code><span class="sub">higgsfield-video-explainer/SKILL.md</span></td><td>| Build a complete non-photoreal narrated explainer or story video from ordered 10-second blocks: on…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/higgsfield-skills/higgsfield-websites/SKILL.html">higgsfield-websites</a></code><span class="sub">higgsfield-websites/SKILL.md</span></td><td>| Build, edit, and deploy full-stack websites, apps and games via the Higgsfield CLI (`higgsfield we…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/higgsfield-skills/higgsfield-youtube-thumbnail/SKILL.html">higgsfield-youtube-thumbnail</a></code><span class="sub">higgsfield-youtube-thumbnail/SKILL.md</span></td><td>| Create high-click-through YouTube thumbnails and vertical video covers through the Higgsfield CLI.…</td></tr>
+  </table></div>
+  <h3>Runway 官方 <span style="color:var(--muted);font-weight:400;font-size:13px">· 11 个</span></h3>
+  <div class="tbl-scroll"><table>
+  <tr><th>技能</th><th>描述</th></tr>
+  <tr><td><code><a class="code-link" href="skills/runwayml-skills/skills/runway-dev/SKILL.html">runway-dev</a></code><span class="sub">skills/runway-dev/SKILL.md</span></td><td>Foundation for building, modifying, debugging, or verifying Runway Dev Platform integrations in an a…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/runwayml-skills/skills/runway-dev-characters/SKILL.html">runway-dev-characters</a></code><span class="sub">skills/runway-dev-characters/SKILL.md</span></td><td>Build, modify, debug, or verify Runway Characters integrations: inspect preset or custom avatars wit…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/runwayml-skills/skills/runway-dev-model-routers/SKILL.html">runway-dev-model-routers</a></code><span class="sub">skills/runway-dev-model-routers/SKILL.md</span></td><td>Build, modify, debug, or verify Runway Model Routers: inspect live config and eligible models via MC…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/runwayml-skills/skills/runway-dev-models/SKILL.html">runway-dev-models</a></code><span class="sub">skills/runway-dev-models/SKILL.md</span></td><td>Build, modify, debug, or verify Runway model generation in an application: discover accessible model…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/runwayml-skills/skills/runway-dev-recipes/SKILL.html">runway-dev-recipes</a></code><span class="sub">skills/runway-dev-recipes/SKILL.md</span></td><td>Choose, build, modify, debug, or verify Runway recipe integrations: match a recipe to the user&#x27;s use…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/runwayml-skills/skills/runway-dev-workflows/SKILL.html">runway-dev-workflows</a></code><span class="sub">skills/runway-dev-workflows/SKILL.md</span></td><td>Build, modify, debug, or verify integrations that expose Runway app workflows as API endpoints. Use …</td></tr>
+  <tr><td><code><a class="code-link" href="skills/runwayml-skills/skills/rw-check-org-details/SKILL.html">rw-check-org-details</a></code><span class="sub">skills/rw-check-org-details/SKILL.md</span></td><td>Query the Runway API for organization details: rate limits, credit balance, usage tier, and daily ge…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/runwayml-skills/skills/rw-generate-audio/SKILL.html">rw-generate-audio</a></code><span class="sub">skills/rw-generate-audio/SKILL.md</span></td><td>Generate audio using the Runway API via runnable scripts. Supports TTS, sound effects, voice isolati…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/runwayml-skills/skills/rw-generate-image/SKILL.html">rw-generate-image</a></code><span class="sub">skills/rw-generate-image/SKILL.md</span></td><td>Generate images directly using the Runway API via runnable scripts. Supports text-to-image with opti…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/runwayml-skills/skills/rw-generate-video/SKILL.html">rw-generate-video</a></code><span class="sub">skills/rw-generate-video/SKILL.md</span></td><td>Generate videos directly using the Runway API via runnable scripts. Supports text-to-video, image-to…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/runwayml-skills/skills/use-runway-api/SKILL.html">use-runway-api</a></code><span class="sub">skills/use-runway-api/SKILL.md</span></td><td>Directly use the Runway API from the agent to generate media, manage resources, and inspect account …</td></tr>
+  </table></div>
+  <h3>Runway MCP 插件 <span style="color:var(--muted);font-weight:400;font-size:13px">· 2 个</span></h3>
+  <div class="tbl-scroll"><table>
+  <tr><th>技能</th><th>描述</th></tr>
+  <tr><td><code><a class="code-link" href="skills/runway-mcp-plugin/skills/runway-media/SKILL.html">runway-media</a></code><span class="sub">skills/runway-media/SKILL.md</span></td><td>Generate and edit images, video, music, speech, and sound effects with Runway MCP. Use when the user…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/runway-mcp-plugin/skills/runway-workflows/SKILL.html">runway-workflows</a></code><span class="sub">skills/runway-workflows/SKILL.md</span></td><td>Build, inspect, validate, and run Runway editor workflow graphs via MCP. Use when the user asks to c…</td></tr>
+  </table></div>
+  <h3>AtlasCloud 官方 <span style="color:var(--muted);font-weight:400;font-size:13px">· 3 个</span></h3>
+  <div class="tbl-scroll"><table>
+  <tr><th>技能</th><th>描述</th></tr>
+  <tr><td><code><a class="code-link" href="skills/atlascloud-skills/atlas-cloud/SKILL.html">atlas-cloud</a></code><span class="sub">atlas-cloud/SKILL.md</span></td><td>Atlas Cloud API integration skill — quickly call 300+ AI image generation, video generation, audio (…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/atlascloud-skills/skills/seedance-2-5-skill/SKILL.html">seedance-2-5-skill</a></code><span class="sub">skills/seedance-2-5-skill/SKILL.md</span></td><td>&gt;- Plan and generate controllable Seedance video using Seedream 5.0 Pro storyboards and Seedance 2.0…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/atlascloud-skills/skills/universal-video-prompt-skill/SKILL.html">universal-video-prompt-skill</a></code><span class="sub">skills/universal-video-prompt-skill/SKILL.md</span></td><td>&gt;- Write one model-agnostic video prompt spec, then compile it to whichever video model you can actu…</td></tr>
+  </table></div>
+  <h3>fal 社区 <span style="color:var(--muted);font-weight:400;font-size:13px">· 17 个</span></h3>
+  <div class="tbl-scroll"><table>
+  <tr><th>技能</th><th>描述</th></tr>
+  <tr><td><code><a class="code-link" href="skills/fal-community-skills/skills/character-design/SKILL.html">character-design</a></code><span class="sub">skills/character-design/SKILL.md</span></td><td>&gt; Build consistent character designs and character media with genmedia. Use this for original charac…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/fal-community-skills/skills/cinematography/SKILL.html">cinematography</a></code><span class="sub">skills/cinematography/SKILL.md</span></td><td>&gt; Design cinematic image and video prompts for genmedia. Use this for shot language, camera movement…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/fal-community-skills/skills/commercial/SKILL.html">commercial</a></code><span class="sub">skills/commercial/SKILL.md</span></td><td>&gt; Plan and run commercial image or video production with genmedia. Use this for product photography,…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/fal-community-skills/skills/fal-gamedev/SKILL.html">fal-gamedev</a></code><span class="sub">skills/fal-gamedev/SKILL.md</span></td><td>&gt; Generate 2D pixel art game assets, characters, sprite sheets, background removal, and game backgro…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/fal-community-skills/skills/fal-models-catalog/SKILL.html">fal-models-catalog</a></code><span class="sub">skills/fal-models-catalog/SKILL.md</span></td><td>&gt; Choose the right fal.ai endpoint for a given task. Modality-organized catalog of production endpoi…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/fal-community-skills/skills/fal-prompting/SKILL.html">fal-prompting</a></code><span class="sub">skills/fal-prompting/SKILL.md</span></td><td>&gt; Model-family-specific prompt craft for fal.ai endpoints. Trigger when the user mentions a specific…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/fal-community-skills/skills/fal-recipes/SKILL.html">fal-recipes</a></code><span class="sub">skills/fal-recipes/SKILL.md</span></td><td>&gt; Use-case-driven multi-step pipelines on fal.ai. Trigger when the user asks for a specific kind of …</td></tr>
+  <tr><td><code><a class="code-link" href="skills/fal-community-skills/skills/fal-redesign/SKILL.html">fal-redesign</a></code><span class="sub">skills/fal-redesign/SKILL.md</span></td><td>Upgrade a coded website to award-tier, editorially-crafted design using fal.ai. Takes a local HTML f…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/fal-community-skills/skills/fal-regenerate-3d/SKILL.html">fal-regenerate-3d</a></code><span class="sub">skills/fal-regenerate-3d/SKILL.md</span></td><td>Build a fully-interactive 3D character-selector experience powered entirely by fal.ai. Generates sty…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/fal-community-skills/skills/fal-workflow/SKILL.html">fal-workflow</a></code><span class="sub">skills/fal-workflow/SKILL.md</span></td><td>Author and execute multi-step media pipelines on fal.ai. Two modes: (A) declarative workflow JSON fi…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/fal-community-skills/skills/fan-cam/SKILL.html">fan-cam</a></code><span class="sub">skills/fan-cam/SKILL.md</span></td><td>&gt; Create personalized live sports broadcast fan-cam videos with genmedia. Use this for realistic spe…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/fal-community-skills/skills/genmedia/SKILL.html">genmedia</a></code><span class="sub">skills/genmedia/SKILL.md</span></td><td>&gt; Use the genmedia CLI to search, inspect, run, and manage 1200+ fal.ai model endpoints. Trigger whe…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/fal-community-skills/skills/genmedia-workflow/SKILL.html">genmedia-workflow</a></code><span class="sub">skills/genmedia-workflow/SKILL.md</span></td><td>&gt; Design and execute multi-step media workflows with genmedia. Use this for pipelines that combine p…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/fal-community-skills/skills/marketing/SKILL.html">marketing</a></code><span class="sub">skills/marketing/SKILL.md</span></td><td>&gt; Plan and run campaign-level marketing asset production with genmedia. Use this for launch kits, ca…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/fal-community-skills/skills/model-routing/SKILL.html">model-routing</a></code><span class="sub">skills/model-routing/SKILL.md</span></td><td>&gt; Choose default fal.ai endpoint IDs for genmedia production skills. Use this with commercial, marke…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/fal-community-skills/skills/storytelling/SKILL.html">storytelling</a></code><span class="sub">skills/storytelling/SKILL.md</span></td><td>&gt; Build multi-shot narrative image, video, and audio workflows with genmedia. Use this for storyboar…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/fal-community-skills/skills/ugc/SKILL.html">ugc</a></code><span class="sub">skills/ugc/SKILL.md</span></td><td>&gt; Plan and run UGC-style creator ads and social proof videos with genmedia. Use this for direct-to-c…</td></tr>
+  </table></div>
+  <h3>ElevenLabs 插件 <span style="color:var(--muted);font-weight:400;font-size:13px">· 42 个</span></h3>
+  <div class="tbl-scroll"><table>
+  <tr><th>技能</th><th>描述</th></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/agent-simplification/SKILL.html">agent-simplification</a></code><span class="sub">architect/skills/agent-simplification/SKILL.md</span></td><td>Simplify a complex ElevenLabs voice agent (typically a large workflow agent) into a leaner architect…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-agent-memory/SKILL.html">architect-agent-memory</a></code><span class="sub">architect/skills/architect-agent-memory/SKILL.md</span></td><td>Use when the user wants the agent to remember, learn, save, or memorize a fact, or reports a one-off…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-branches-versions-merge/SKILL.html">architect-branches-versions-merge</a></code><span class="sub">architect/skills/architect-branches-versions-merge/SKILL.md</span></td><td>Use when working with agent branches, versions, drafts, traffic splits, or merges. Fires on &quot;make a …</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-create-client-tool/SKILL.html">architect-create-client-tool</a></code><span class="sub">architect/skills/architect-create-client-tool/SKILL.md</span></td><td>Use when the user wants the agent to trigger something in their own browser, app, or SDK during a ca…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-create-llm-test/SKILL.html">architect-create-llm-test</a></code><span class="sub">architect/skills/architect-create-llm-test/SKILL.md</span></td><td>Use when the user wants a single-turn test that checks WHAT the agent says for a given turn. Fires o…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-create-simulation-test/SKILL.html">architect-create-simulation-test</a></code><span class="sub">architect/skills/architect-create-simulation-test/SKILL.md</span></td><td>Use when the user wants a full multi-turn conversation test where a simulated user talks to the agen…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-create-tool-test/SKILL.html">architect-create-tool-test</a></code><span class="sub">architect/skills/architect-create-tool-test/SKILL.md</span></td><td>Use when the user wants a test asserting the agent CALLS a specific tool (with specific parameters, …</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-create-webhook-tool/SKILL.html">architect-create-webhook-tool</a></code><span class="sub">architect/skills/architect-create-webhook-tool/SKILL.md</span></td><td>Use when the user wants to give an agent a NEW webhook / server / HTTP tool so it can call an extern…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-edit-existing-tool/SKILL.html">architect-edit-existing-tool</a></code><span class="sub">architect/skills/architect-edit-existing-tool/SKILL.md</span></td><td>Use when the user wants to change an existing tool on their agent (rename it, fix its description, c…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-edit-string-fields/SKILL.html">architect-edit-string-fields</a></code><span class="sub">architect/skills/architect-edit-string-fields/SKILL.md</span></td><td>Use when changing wording inside a long text field on an agent (system prompt, first message / greet…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-edit-workflows/SKILL.html">architect-edit-workflows</a></code><span class="sub">architect/skills/architect-edit-workflows/SKILL.md</span></td><td>Use when the user wants to build or change an agent&#x27;s workflow or a specific node (&quot;add a node&quot;, &quot;co…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-explain-test-runs/SKILL.html">architect-explain-test-runs</a></code><span class="sub">architect/skills/architect-explain-test-runs/SKILL.md</span></td><td>Use when the user asks why a test or test run passed or failed, why one run in a repeat set differs,…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-explore-agent/SKILL.html">architect-explore-agent</a></code><span class="sub">architect/skills/architect-explore-agent/SKILL.md</span></td><td>Use when starting a task that needs an agent&#x27;s current setup, or when another skill tells you to exp…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-generate-agent/SKILL.html">architect-generate-agent</a></code><span class="sub">architect/skills/architect-generate-agent/SKILL.md</span></td><td>Use when the user asks to generate, build, or create a new agent from a description (&quot;create an agen…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-get-agent-ci-green/SKILL.html">architect-get-agent-ci-green</a></code><span class="sub">architect/skills/architect-get-agent-ci-green/SKILL.md</span></td><td>Use when an agent&#x27;s test suite is red and needs to be driven to green. Fires on &quot;get CI green&quot;, &quot;the…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-llm-selection/SKILL.html">architect-llm-selection</a></code><span class="sub">architect/skills/architect-llm-selection/SKILL.md</span></td><td>Use when choosing or recommending an LLM for an ElevenLabs agent, or answering &quot;which model should t…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-manage-procedures/SKILL.html">architect-manage-procedures</a></code><span class="sub">architect/skills/architect-manage-procedures/SKILL.md</span></td><td>Use when you want to add, edit, rename, inspect, or list an agent&#x27;s procedures, or when a procedure …</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-migrate-from-competitor/SKILL.html">architect-migrate-from-competitor</a></code><span class="sub">architect/skills/architect-migrate-from-competitor/SKILL.md</span></td><td>Use when the user wants to move a voice agent onto ElevenLabs Conversational AI from another platfor…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-migrate-to-procedures/SKILL.html">architect-migrate-to-procedures</a></code><span class="sub">architect/skills/architect-migrate-to-procedures/SKILL.md</span></td><td>Use when the user wants to migrate a system-prompt-driven agent to a procedure-driven setup, pull st…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-mock-all-tools/SKILL.html">architect-mock-all-tools</a></code><span class="sub">architect/skills/architect-mock-all-tools/SKILL.md</span></td><td>Use when a simulation test needs every tool call mocked so runs are deterministic and never hit live…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-post-call-data/SKILL.html">architect-post-call-data</a></code><span class="sub">architect/skills/architect-post-call-data/SKILL.md</span></td><td>Use when the user wants to extract structured fields from finished calls (data collection) or define…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-review-live-calls/SKILL.html">architect-review-live-calls</a></code><span class="sub">architect/skills/architect-review-live-calls/SKILL.md</span></td><td>Review an agent&#x27;s recent finished conversations to find what is actually going wrong in production, …</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-schedule-launch/SKILL.html">architect-schedule-launch</a></code><span class="sub">architect/skills/architect-schedule-launch/SKILL.md</span></td><td>Use when preparing an agent change now but applying it later at a specific moment (product launch, m…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-secure-for-production/SKILL.html">architect-secure-for-production</a></code><span class="sub">architect/skills/architect-secure-for-production/SKILL.md</span></td><td>Use when a customer asks how to make their agent safe, secure, or production-ready, or how to roll i…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-structured-procedures/SKILL.html">architect-structured-procedures</a></code><span class="sub">architect/skills/architect-structured-procedures/SKILL.md</span></td><td>Use when you want to create, rewrite, inspect, or fix a structured / deterministic / flow-style proc…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-troubleshoot-tool-errors/SKILL.html">architect-troubleshoot-tool-errors</a></code><span class="sub">architect/skills/architect-troubleshoot-tool-errors/SKILL.md</span></td><td>Use when an agent tool (webhook/server, client, system, or MCP) errors, fails validation, won&#x27;t save…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-turn-taking-latency/SKILL.html">architect-turn-taking-latency</a></code><span class="sub">architect/skills/architect-turn-taking-latency/SKILL.md</span></td><td>Use when the user asks about turn taking, speculative turns, agent response latency, preparing respo…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/architect-update-config-safely/SKILL.html">architect-update-config-safely</a></code><span class="sub">architect/skills/architect-update-config-safely/SKILL.md</span></td><td>Use when changing an agent setting (LLM, voice, TTS model, language, first message, ASR, guardrails,…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/code-tools/SKILL.html">code-tools</a></code><span class="sub">architect/skills/code-tools/SKILL.md</span></td><td>Generate JavaScript/TypeScript modules for ElevenLabs code tools — sandbox tools that export a defau…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/architect/skills/fix-agent-qa-ticket/SKILL.html">fix-agent-qa-ticket</a></code><span class="sub">architect/skills/fix-agent-qa-ticket/SKILL.md</span></td><td>&gt; Fix an Architect QA triage ticket (agtqa_*) end-to-end via the raw agents API: fetch the ticket + …</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/skills/general/agents/SKILL.html">agents</a></code><span class="sub">skills/general/agents/SKILL.md</span></td><td>Build voice AI agents with ElevenLabs. Use when creating voice assistants, customer service bots, in…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/skills/general/dubbing/SKILL.html">dubbing</a></code><span class="sub">skills/general/dubbing/SKILL.md</span></td><td>Dub audio and video into other languages using the ElevenLabs Dubbing API (dubbing_v2), preserving t…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/skills/general/music/SKILL.html">music</a></code><span class="sub">skills/general/music/SKILL.md</span></td><td>Generate music using ElevenLabs Music API. Use when creating instrumental tracks, songs with lyrics,…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/skills/general/setup-api-key/SKILL.html">setup-api-key</a></code><span class="sub">skills/general/setup-api-key/SKILL.md</span></td><td>Guides users through setting up an ElevenLabs API key for ElevenLabs MCP tools. Use when the user ne…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/skills/general/sound-effects/SKILL.html">sound-effects</a></code><span class="sub">skills/general/sound-effects/SKILL.md</span></td><td>Generate sound effects from text descriptions using ElevenLabs. Use when creating sound effects, gen…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/skills/general/speech-engine/SKILL.html">speech-engine</a></code><span class="sub">skills/general/speech-engine/SKILL.md</span></td><td>Add real-time voice conversations to a custom agent runtime with ElevenLabs Speech Engine. Use when …</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/skills/general/speech-to-text/SKILL.html">speech-to-text</a></code><span class="sub">skills/general/speech-to-text/SKILL.md</span></td><td>Transcribe audio to text using ElevenLabs Scribe v2. Use when converting audio/video to text, genera…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/skills/general/text-to-speech/SKILL.html">text-to-speech</a></code><span class="sub">skills/general/text-to-speech/SKILL.md</span></td><td>Convert text to speech using ElevenLabs voice AI. Use when generating audio from text, creating voic…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/skills/general/voice-changer/SKILL.html">voice-changer</a></code><span class="sub">skills/general/voice-changer/SKILL.md</span></td><td>Transform the voice in an audio recording into a different target voice while preserving emotion, ti…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/skills/general/voice-isolator/SKILL.html">voice-isolator</a></code><span class="sub">skills/general/voice-isolator/SKILL.md</span></td><td>Remove background noise and isolate vocals/speech from audio using ElevenLabs Voice Isolator (audio …</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/skills/mcp/agents-platform/SKILL.html">agents-platform</a></code><span class="sub">skills/mcp/agents-platform/SKILL.md</span></td><td>Manage ElevenLabs voice agents through the connected ElevenLabs MCP server. Use when the user asks t…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/elevenlabs-plugin/skills/mcp/creative-studio/SKILL.html">creative-studio</a></code><span class="sub">skills/mcp/creative-studio/SKILL.md</span></td><td>Generate and edit media through the connected ElevenLabs MCP server — speech, images, video, music, …</td></tr>
+  </table></div>
+  <h3>Anthropic 官方参照 <span style="color:var(--muted);font-weight:400;font-size:13px">· 20 个</span></h3>
+  <div class="tbl-scroll"><table>
+  <tr><th>技能</th><th>描述</th></tr>
+  <tr><td><code><a class="code-link" href="skills/anthropics-skills/skills/academy-guide/SKILL.html">academy-guide</a></code><span class="sub">skills/academy-guide/SKILL.md</span></td><td>&gt; Stop and check this skill before finishing any reply to a question about how to use Claude or a Cl…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/anthropics-skills/skills/algorithmic-art/SKILL.html">algorithmic-art</a></code><span class="sub">skills/algorithmic-art/SKILL.md</span></td><td>Creating algorithmic art using p5.js with seeded randomness and interactive parameter exploration. U…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/anthropics-skills/skills/brand-guidelines/SKILL.html">brand-guidelines</a></code><span class="sub">skills/brand-guidelines/SKILL.md</span></td><td>Applies Anthropic&#x27;s official brand colors and typography to any sort of artifact that may benefit fr…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/anthropics-skills/skills/canvas-design/SKILL.html">canvas-design</a></code><span class="sub">skills/canvas-design/SKILL.md</span></td><td>Create beautiful visual art in .png and .pdf documents using design philosophy. You should use this …</td></tr>
+  <tr><td><code><a class="code-link" href="skills/anthropics-skills/skills/claude-api/SKILL.html">claude-api</a></code><span class="sub">skills/claude-api/SKILL.md</span></td><td>|- Reference for the Claude API / Anthropic SDK — model ids, pricing, params, streaming, tool use, M…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/anthropics-skills/skills/discernment-nudge/SKILL.html">discernment-nudge</a></code><span class="sub">skills/discernment-nudge/SKILL.md</span></td><td>&gt; After you give a substantive answer or draft that the user may act on — advice or recommendations,…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/anthropics-skills/skills/doc-coauthoring/SKILL.html">doc-coauthoring</a></code><span class="sub">skills/doc-coauthoring/SKILL.md</span></td><td>Guide users through a structured workflow for co-authoring documentation. Use when user wants to wri…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/anthropics-skills/skills/docx/SKILL.html">docx</a></code><span class="sub">skills/docx/SKILL.md</span></td><td>Use this skill whenever the user wants to create, read, edit, or manipulate Word documents (.docx fi…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/anthropics-skills/skills/frontend-design/SKILL.html">frontend-design</a></code><span class="sub">skills/frontend-design/SKILL.md</span></td><td>Guidance for distinctive, intentional visual design when building new UI or reshaping an existing on…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/anthropics-skills/skills/internal-comms/SKILL.html">internal-comms</a></code><span class="sub">skills/internal-comms/SKILL.md</span></td><td>A set of resources to help me write all kinds of internal communications, using the formats that my …</td></tr>
+  <tr><td><code><a class="code-link" href="skills/anthropics-skills/skills/mcp-builder/SKILL.html">mcp-builder</a></code><span class="sub">skills/mcp-builder/SKILL.md</span></td><td>Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact wi…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/anthropics-skills/skills/pdf/SKILL.html">pdf</a></code><span class="sub">skills/pdf/SKILL.md</span></td><td>Use this skill whenever the user wants to do anything with PDF files. This includes reading or extra…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/anthropics-skills/skills/pptx/SKILL.html">pptx</a></code><span class="sub">skills/pptx/SKILL.md</span></td><td>Use this skill any time a .pptx or .potx file is involved in any way — as input, output, or both. Th…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/anthropics-skills/skills/skill-creator/SKILL.html">skill-creator</a></code><span class="sub">skills/skill-creator/SKILL.md</span></td><td>Create new skills, modify and improve existing skills, and measure skill performance. Use when users…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/anthropics-skills/skills/slack-gif-creator/SKILL.html">slack-gif-creator</a></code><span class="sub">skills/slack-gif-creator/SKILL.md</span></td><td>Knowledge and utilities for creating animated GIFs optimized for Slack. Provides constraints, valida…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/anthropics-skills/skills/theme-factory/SKILL.html">theme-factory</a></code><span class="sub">skills/theme-factory/SKILL.md</span></td><td>Toolkit for styling artifacts with a theme. These artifacts can be slides, docs, reportings, HTML la…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/anthropics-skills/skills/web-artifacts-builder/SKILL.html">web-artifacts-builder</a></code><span class="sub">skills/web-artifacts-builder/SKILL.md</span></td><td>Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern fronten…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/anthropics-skills/skills/webapp-testing/SKILL.html">webapp-testing</a></code><span class="sub">skills/webapp-testing/SKILL.md</span></td><td>Toolkit for interacting with and testing local web applications using Playwright. Supports verifying…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/anthropics-skills/skills/xlsx/SKILL.html">xlsx</a></code><span class="sub">skills/xlsx/SKILL.md</span></td><td>Use this skill any time a spreadsheet file is the primary input or output. This means any task where…</td></tr>
+  <tr><td><code><a class="code-link" href="skills/anthropics-skills/template/SKILL.html">template-skill</a></code><span class="sub">template/SKILL.md</span></td><td>Replace with description of the skill and when Claude should use it.  </td></tr>
+  </table></div>
+</section>
+
+<footer>
+  <div><strong>主要来源</strong>（2026-09-21 核实）：</div>
+  <div class="src-list">
+    <div>docs.higgsfield.ai · higgsfield.ai/cli · github.com/higgsfield-ai</div>
+    <div>fal.ai/docs · fal.ai/mcp · github.com/fal-ai · fal-ai-community</div>
+    <div>atlascloud.ai/docs · github.com/AtlasCloudAI</div>
+    <div>docs.dev.runwayml.com · runway.com/mcp · github.com/runwayml</div>
+    <div>docs.lumalabs.ai · github.com/lumalabs</div>
+    <div>developers.openai.com · github.com/openai</div>
+    <div>ai.google.dev/gemini-api/docs · docs.cloud.google.com/mcp</div>
+    <div>platform.minimax.io · docs.byteplus.com/ModelArk</div>
+    <div>platform.vidu.com · kling.ai · help.aliyun.com/zh/model-studio</div>
+    <div>replicate.com/docs · glama.ai/mcp/servers · skills.sh</div>
+  </div>
+  <div style="margin-top:14px">本地技能库：<code>/Users/lifcc/Desktop/code/AI/tools/video-vendor-skills/</code> · 报告生成：2026-09-21 · 调研方式：6 路并行 agent 调研 + 本地仓库源码深读</div>
+</footer>
+
+</div>
+<script>
+  function toggleTheme() {
+    const root = document.documentElement;
+    const isDark = root.dataset.theme === 'dark' ||
+      (!root.dataset.theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    root.dataset.theme = isDark ? 'light' : 'dark';
+  }
+</script>
+</body>
+</html>

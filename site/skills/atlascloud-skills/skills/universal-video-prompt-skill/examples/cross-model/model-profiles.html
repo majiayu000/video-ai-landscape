@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>model-profiles · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/universal-video-prompt-skill/examples/cross-model/model-profiles.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Cross-model profiles</h1>
+<p>Measured behaviour for non-Seedance models, filled by running one spec across
+several models. Field definitions live in
+<a href="../../references/model-profile-schema.html">model-profile-schema</a>.</p>
+<p>These were produced by a <strong>controlled comparison</strong>: identical prompt text,
+duration held at the capability intersection, no bias-layer wording for any
+model, only submit parameters differing. Anything not measured is marked as such
+rather than guessed.</p>
+<hr />
+<h2><code>minimax/h3/text-to-video</code></h2>
+<p>Last verified: 2026-08-03 · Provider: Atlas Cloud</p>
+<h3>Capability layer</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+<th>How verified</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reference addressing</td>
+<td>n/a for text-to-video; the r2v variant documents <code>Reference Image N</code> phrasing</td>
+<td>Not exercised here</td>
+</tr>
+<tr>
+<td>Duration range</td>
+<td><strong>up to 15s</strong></td>
+<td>Submitted <code>duration=15</code>, accepted and delivered 15.08s</td>
+</tr>
+<tr>
+<td>Resolution</td>
+<td><code>2K</code> (2560×1440 delivered)</td>
+<td>Generation</td>
+</tr>
+<tr>
+<td>Aspect ratio</td>
+<td>16:9 accepted</td>
+<td>Generation</td>
+</tr>
+<tr>
+<td>Native audio</td>
+<td>yes — AAC stereo, 32 kHz</td>
+<td>Generation</td>
+</tr>
+<tr>
+<td>Frame rate</td>
+<td>24 fps</td>
+<td>Generation</td>
+</tr>
+<tr>
+<td>Multi-shot in one generation</td>
+<td>yes, and it walks through a space continuously</td>
+<td>Generation</td>
+</tr>
+<tr>
+<td>Timing adherence</td>
+<td><strong>Runs early, and the lead accumulates.</strong> Requested 4/8/12s stage boundaries landed at 4/6/8s; the final stage stretched to fill 8–15s</td>
+<td>Frame-by-frame against a staged prompt</td>
+</tr>
+<tr>
+<td>Recommended granularity</td>
+<td><code>stages</code>, written slightly <strong>late</strong> if precision matters</td>
+<td>Derived from the row above</td>
+</tr>
+</tbody>
+</table>
+<p>⚠️ <strong>The model page contradicts itself on duration.</strong> Header text says <code>5-15s</code>,
+the "Why Choose" section says <code>5s or 10s</code>, the parameter table says
+<code>8 (default), 5-10</code>. The parameter table also omits <code>16:9</code> from <code>ratio</code> while the
+playground offers it. <strong>Submission is the only authority</strong> — 15s and 16:9 both
+work. Do not trust a parameter table over a live test.</p>
+<h3>Bias layer</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+<th>How verified</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Default aesthetic bias</td>
+<td>Toward clean, smooth, high-contrast rendering</td>
+<td>Two versions of one spec</td>
+</tr>
+<tr>
+<td>Effective anti-default phrasing</td>
+<td>Tool-naming (<code>crayon, coloured pencil, ragged edges</code>) shifts it, and works <strong>best on large forms</strong></td>
+<td>v2 of the spec</td>
+</tr>
+<tr>
+<td>Partially effective</td>
+<td>On <strong>small, thin strokes</strong> the marks stay smooth even with tool-naming — plausibly a resolution floor rather than a comprehension failure. Large shapes in the same frame do show grain</td>
+<td>Same generation, different elements</td>
+</tr>
+<tr>
+<td>Glow control</td>
+<td>Follows <code>weak glow, do not light the live-action space</code> correctly</td>
+<td>v2</td>
+</tr>
+<tr>
+<td>Handheld / POV</td>
+<td>Executes it well, including motion blur on fast follows</td>
+<td>v2</td>
+</tr>
+</tbody>
+</table>
+<h3>Known failure modes</h3>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Detail</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Spatial containment misread</td>
+<td>"A skeleton <strong>on an open plinth</strong>" was rendered as a specimen <strong>inside a glass case</strong>, putting the live-action hand implausibly through the glass. Adding <code>open plinth, no glass case, low enough to touch</code> did <strong>not</strong> fix it on the next attempt</td>
+<td>Persistent. Consider a reference image for the plinth, or accept and reframe</td>
+</tr>
+<tr>
+<td><strong>Exclusion instructions under-honoured</strong></td>
+<td><code>only a mouth, not a complete head</code> → still rendered a full skull with eye sockets and nostrils. A comparison model on the identical line obeyed it exactly. Same class as the plinth-versus-vitrine miss: both are <em>don't include X</em> instructions</td>
+<td>State the target <strong>positively</strong> instead of excluding: describe what the shape <em>is</em> (an arc of jaws spanning the ceiling) rather than what it is not</td>
+</tr>
+<tr>
+<td><strong>Long prompts cost the opening</strong></td>
+<td>Same spec at two lengths: the longer version dropped the hand entirely, skipped the opening transformation, and <strong>regressed the drawn texture back to neon</strong> — while its later beats improved. Nothing about the texture lock had changed</td>
+<td>Keep the prompt short, or restate the highest-priority lock <strong>inside every beat</strong> rather than once at the end</td>
+</tr>
+</tbody>
+</table>
+<h3>Prompt-length tolerance</h3>
+<p><strong>Low.</strong> This model spends its budget on the later beats when a prompt grows, and
+the opening is what gets cut. A comparison model on the same two prompts held both
+opening and texture, so this is a per-model trait, not a property of the prompt.</p>
+<p>Practical consequence: the two failure modes above are the <em>same</em> failure. Don't
+patch them separately — shorten, or repeat the critical lock per beat.</p>
+<h3>Compile notes</h3>
+<ul>
+<li><code>duration=15</code> is available despite the parameter table; verify per provider.</li>
+<li>Default to <code>stages</code>; the model finishes early, so front-loaded content gets room
+  and the last stage absorbs the slack.</li>
+<li>For hand-drawn looks, put the important marks on <strong>large</strong> forms.</li>
+</ul>
+<hr />
+<h2><code>alibaba/happyhorse-1.1/text-to-video</code></h2>
+<p>Last verified: 2026-08-03 · Provider: Atlas Cloud</p>
+<h3>Capability layer</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+<th>How verified</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Duration range</td>
+<td>3–15s</td>
+<td>Provider page; 15s submitted and delivered 15.16s</td>
+</tr>
+<tr>
+<td>Resolution</td>
+<td><code>720p</code>, <code>1080p</code></td>
+<td>Provider page; 1080p delivered 1920×1080</td>
+</tr>
+<tr>
+<td>Aspect ratio</td>
+<td>16:9 accepted</td>
+<td>Generation</td>
+</tr>
+<tr>
+<td>Native audio</td>
+<td>yes — AAC present</td>
+<td>Generation</td>
+</tr>
+<tr>
+<td>Frame rate</td>
+<td>24 fps</td>
+<td>Generation</td>
+</tr>
+<tr>
+<td>Seed</td>
+<td>exposed</td>
+<td>Provider page</td>
+</tr>
+<tr>
+<td>Multi-shot / storyboard switch</td>
+<td><strong>none exposed</strong></td>
+<td>Form fields enumerated</td>
+</tr>
+</tbody>
+</table>
+<h3>Bias layer</h3>
+<p><strong>Not measured.</strong> Output not reviewed frame by frame in this run.</p>
+<h3>Compile notes</h3>
+<ul>
+<li>No smart-storyboard or multi-shot parameter to disable.</li>
+<li>Seed is exposed, so this model can hold a variable fixed across a comparison —
+  useful when isolating prompt changes rather than models.</li>
+</ul>
+<hr />
+<h2><code>kwaivgi/kling-v3.0-pro/text-to-video</code></h2>
+<p>Last verified: 2026-08-03 · Provider: Atlas Cloud</p>
+<h3>Capability layer</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+<th>How verified</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Duration range</td>
+<td><strong>15s works.</strong> The parameter table says <code>5 or 10</code> and is wrong here too</td>
+<td><code>duration=15</code> submitted and accepted</td>
+</tr>
+<tr>
+<td>Audio</td>
+<td><strong>opt-in via <code>sound</code></strong> — off by default</td>
+<td><code>sound: true</code> accepted; an earlier run without it produced no track</td>
+</tr>
+<tr>
+<td>Resolution</td>
+<td>1920×1080 delivered</td>
+<td>Generation</td>
+</tr>
+<tr>
+<td>Aspect ratio</td>
+<td>16:9 accepted</td>
+<td>Generation</td>
+</tr>
+<tr>
+<td>Native audio</td>
+<td><strong>off by default — no audio track produced</strong></td>
+<td>Generation; sound generation is a separate opt-in</td>
+</tr>
+<tr>
+<td>Frame rate</td>
+<td>24 fps</td>
+<td>Generation</td>
+</tr>
+<tr>
+<td>Negative prompt</td>
+<td>supported as a separate field</td>
+<td>Provider page</td>
+</tr>
+<tr>
+<td>CFG scale</td>
+<td>exposed, default <code>0.5</code></td>
+<td>Page form state</td>
+</tr>
+<tr>
+<td><strong><code>multi_shot</code></strong></td>
+<td><strong>boolean, default <code>false</code></strong></td>
+<td>Page JSON: <code>"multi_shot": false</code></td>
+</tr>
+<tr>
+<td>Voice list</td>
+<td>up to 2 custom voice entries</td>
+<td>Provider page</td>
+</tr>
+</tbody>
+</table>
+<h3>Bias layer</h3>
+<p><strong>Not measured.</strong> Output not reviewed frame by frame in this run.</p>
+<h3>Compile notes</h3>
+<ul>
+<li><strong>15s is available.</strong> An earlier run was needlessly capped at 10s because the
+  parameter table was believed without testing — see the platform-wide warning
+  below.</li>
+<li><code>multi_shot</code> is the auto-storyboard switch. It already defaults to <code>false</code>, but
+  pass it explicitly when a single continuous shot is required — a default is not
+  a guarantee across provider versions.</li>
+<li>Audio must be opted into via <code>sound</code>. A silent output without it is expected
+  behaviour, not a failure.</li>
+<li><code>negative_prompt</code> exists, but for a <strong>controlled</strong> comparison keep exclusions
+  inside the shared prompt body so every model receives identical text.</li>
+</ul>
+<hr />
+<h2>⚠️ Platform-wide: parameter tables are unreliable</h2>
+<p>Three separate confirmed cases on this platform, all in the same direction — the
+documented enumeration was <strong>narrower</strong> than what submission accepts:</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Table said</th>
+<th>Reality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>minimax/h3/text-to-video</code></td>
+<td><code>duration: 8 (default), 5-10</code>; <code>ratio</code> omitted 16:9</td>
+<td>15s works; 16:9 works</td>
+</tr>
+<tr>
+<td><code>kwaivgi/kling-v3.0-turbo/text-to-video</code></td>
+<td><code>duration: 5 or 10</code></td>
+<td>15s works</td>
+</tr>
+<tr>
+<td><code>kwaivgi/kling-v3.0-pro/text-to-video</code></td>
+<td><code>duration: 5 or 10</code></td>
+<td>15s works</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Treat this as a hard rule, not a caution:</strong> a documented enumeration is a
+hypothesis. The only authority is a submission. Cheap to test — a rejected
+submission creates no task and costs nothing, so testing the value you actually
+want is strictly better than designing around the table.</p>
+<p>The failure this prevents is asymmetric and invisible: believing a too-narrow
+table silently degrades the spec, the run succeeds, and nothing in the output
+indicates that a better configuration was available.</p>
+<hr />
+<h2><code>kwaivgi/kling-v3.0-turbo/text-to-video</code></h2>
+<p>Last verified: 2026-08-03 · Provider: Atlas Cloud</p>
+<h3>Capability layer</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+<th>How verified</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Duration range</td>
+<td><strong>15s works</strong> despite the parameter table saying <code>5 or 10</code></td>
+<td>Submitted <code>duration=15</code>, delivered 15.04s</td>
+</tr>
+<tr>
+<td>Resolution</td>
+<td><strong>1280×720 by default</strong>; no <code>resolution</code> parameter documented</td>
+<td>Generation with no resolution passed</td>
+</tr>
+<tr>
+<td>Aspect ratio</td>
+<td>16:9, 9:16, 1:1</td>
+<td>Provider page</td>
+</tr>
+<tr>
+<td>Native audio</td>
+<td><strong>opt-in via <code>sound</code></strong> — passing <code>sound: true</code> produced an AAC track</td>
+<td>Generation</td>
+</tr>
+<tr>
+<td>Frame rate</td>
+<td>24 fps</td>
+<td>Generation</td>
+</tr>
+<tr>
+<td>CFG scale</td>
+<td>exposed, default <code>0.5</code></td>
+<td>Provider page</td>
+</tr>
+<tr>
+<td>First/last frame</td>
+<td>supported</td>
+<td>Provider page</td>
+</tr>
+<tr>
+<td><code>multi_shot</code></td>
+<td><strong>not exposed on Turbo</strong> — that switch is Pro-only</td>
+<td>Page HTML search found no match</td>
+</tr>
+</tbody>
+</table>
+<h3>Bias layer</h3>
+<p><strong>Not measured.</strong></p>
+<h3>Compile notes</h3>
+<ul>
+<li><strong>Second confirmed case of a wrong parameter table on this platform.</strong> Both Kling
+  tiers document <code>5 or 10</code>; Turbo accepts 15. Treat every documented enumeration as
+  a hypothesis until submitted.</li>
+<li>⚠️ The Pro tier was <strong>降级 to 10s on the basis of that same table without
+  testing 15s</strong> — an avoidable mistake, and the exact error this file warns
+  against. Pro's real ceiling is still unverified.</li>
+<li>Resolution appears fixed at 720p, which makes this the lowest-resolution option
+  in a mixed comparison. Note it rather than trying to match the others.</li>
+<li>No auto-storyboard switch to disable here.</li>
+</ul>
+<hr />
+<h2>What this comparison established about the method</h2>
+<ol>
+<li><strong>Text-only specs compile almost identically across models.</strong> With no
+   reference material, dialect translation had nothing to do — the four prompts
+   were byte-identical and only submit parameters differed. Portability cost is
+   concentrated in <strong>reference addressing</strong>, not in language.</li>
+<li><strong>Timing failure has a direction and a kind.</strong> One model ran early and
+   compressed; another ran late and <strong>dropped whole stages</strong>. Both are "poor
+   timing adherence" and they need opposite fixes, so the profile field has to
+   record kind and direction, not just magnitude.</li>
+<li><strong>Naming the wrong property fails identically on every model.</strong> An abstract
+   lock (<code>graphically flat</code>) was satisfied by two different models in the same
+   wrong way. Tool-naming fixed both. When several models fail the same way, the
+   spec is wrong — not the models.</li>
+</ol></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

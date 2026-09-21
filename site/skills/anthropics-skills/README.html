@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>README · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">README.md</span><button onclick="t()">🌓</button></nav>
+<main><blockquote>
+<p><strong>Note:</strong> This repository contains Anthropic's implementation of skills for Claude. For information about the Agent Skills standard, see <a href="http://agentskills.io">agentskills.io</a>.</p>
+</blockquote>
+<p><a href="https://skills.sh/anthropics/skills"><img alt="skills.sh" src="https://skills.sh/b/anthropics/skills" /></a></p>
+<h1>Skills</h1>
+<p>Skills are folders of instructions, scripts, and resources that Claude loads dynamically to improve performance on specialized tasks. Skills teach Claude how to complete specific tasks in a repeatable way, whether that's creating documents with your company's brand guidelines, analyzing data using your organization's specific workflows, or automating personal tasks.</p>
+<p>For more information, check out:
+- <a href="https://support.claude.com/en/articles/12512176-what-are-skills">What are skills?</a>
+- <a href="https://support.claude.com/en/articles/12512180-using-skills-in-claude">Using skills in Claude</a>
+- <a href="https://support.claude.com/en/articles/12512198-creating-custom-skills">How to create custom skills</a>
+- <a href="https://anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills">Equipping agents for the real world with Agent Skills</a></p>
+<h1>About This Repository</h1>
+<p>This repository contains skills that demonstrate what's possible with Claude's skills system. These skills range from creative applications (art, music, design) to technical tasks (testing web apps, MCP server generation) to enterprise workflows (communications, branding, etc.).</p>
+<p>Each skill is self-contained in its own folder with a <code>SKILL.md</code> file containing the instructions and metadata that Claude uses. Browse through these skills to get inspiration for your own skills or to understand different patterns and approaches.</p>
+<p>Many skills in this repo are open source (Apache 2.0). We've also included the document creation &amp; editing skills that power <a href="https://www.anthropic.com/news/create-files">Claude's document capabilities</a> under the hood in the <a href="./skills/docx"><code>skills/docx</code></a>, <a href="./skills/pdf"><code>skills/pdf</code></a>, <a href="./skills/pptx"><code>skills/pptx</code></a>, and <a href="./skills/xlsx"><code>skills/xlsx</code></a> subfolders. These are source-available, not open source, but we wanted to share these with developers as a reference for more complex skills that are actively used in a production AI application.</p>
+<h2>Disclaimer</h2>
+<p><strong>These skills are provided for demonstration and educational purposes only.</strong> While some of these capabilities may be available in Claude, the implementations and behaviors you receive from Claude may differ from what is shown in these skills. These skills are meant to illustrate patterns and possibilities. Always test skills thoroughly in your own environment before relying on them for critical tasks.</p>
+<h1>Skill Sets</h1>
+<ul>
+<li><a href="./skills">./skills</a>: Skill examples for Creative &amp; Design, Development &amp; Technical, Enterprise &amp; Communication, and Document Skills</li>
+<li><a href="./spec">./spec</a>: The Agent Skills specification</li>
+<li><a href="./template">./template</a>: Skill template</li>
+</ul>
+<h1>Try in Claude Code, Claude.ai, and the API</h1>
+<h2>Claude Code</h2>
+<p>You can register this repository as a Claude Code Plugin marketplace by running the following command in Claude Code:</p>
+<pre><code>/plugin marketplace add anthropics/skills
+</code></pre>
+<p>Then, to install a specific set of skills:
+1. Select <code>Browse and install plugins</code>
+2. Select <code>anthropic-agent-skills</code>
+3. Select <code>document-skills</code> or <code>example-skills</code>
+4. Select <code>Install now</code></p>
+<p>Alternatively, directly install either Plugin via:</p>
+<pre><code>/plugin install document-skills@anthropic-agent-skills
+/plugin install example-skills@anthropic-agent-skills
+</code></pre>
+<p>After installing the plugin, you can use the skill by just mentioning it. For instance, if you install the <code>document-skills</code> plugin from the marketplace, you can ask Claude Code to do something like: "Use the PDF skill to extract the form fields from <code>path/to/some-file.pdf</code>"</p>
+<h2>Claude.ai</h2>
+<p>These example skills are all already available to paid plans in Claude.ai. </p>
+<p>To use any skill from this repository or upload custom skills, follow the instructions in <a href="https://support.claude.com/en/articles/12512180-using-skills-in-claude#h_a4222fa77b">Using skills in Claude</a>.</p>
+<h2>Claude API</h2>
+<p>You can use Anthropic's pre-built skills, and upload custom skills, via the Claude API. See the <a href="https://docs.claude.com/en/api/skills-guide#creating-a-skill">Skills API Quickstart</a> for more.</p>
+<h1>Creating a Basic Skill</h1>
+<p>Skills are simple to create - just a folder with a <code>SKILL.md</code> file containing YAML frontmatter and instructions. You can use the <strong>template-skill</strong> in this repository as a starting point:</p>
+<pre><code class="language-markdown">---
+name: my-skill-name
+description: A clear description of what this skill does and when to use it
+---
+
+# My Skill Name
+
+[Add your instructions here that Claude will follow when this skill is active]
+
+## Examples
+- Example usage 1
+- Example usage 2
+
+## Guidelines
+- Guideline 1
+- Guideline 2
+</code></pre>
+<p>The frontmatter requires only two fields:
+- <code>name</code> - A unique identifier for your skill (lowercase, hyphens for spaces)
+- <code>description</code> - A complete description of what the skill does and when to use it</p>
+<p>The markdown content below contains the instructions, examples, and guidelines that Claude will follow. For more details, see <a href="https://support.claude.com/en/articles/12512198-creating-custom-skills">How to create custom skills</a>.</p>
+<h1>Partner Skills</h1>
+<p>Skills are a great way to teach Claude how to get better at using specific pieces of software. As we see awesome example skills from partners, we may highlight some of them here:</p>
+<ul>
+<li><strong>Notion</strong> - <a href="https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0">Notion Skills for Claude</a></li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

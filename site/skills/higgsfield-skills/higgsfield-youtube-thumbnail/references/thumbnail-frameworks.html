@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>thumbnail-frameworks · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-youtube-thumbnail/references/thumbnail-frameworks.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Thumbnail frameworks — the concept layer</h1>
+<p>This is the "what to depict" layer; the SKILL.md house prompt structure is "how to render it".
+Load this in EXECUTE step 1, pick the framework(s), then assemble the house prompt.</p>
+<p>Every thumbnail must open an <strong>information gap</strong> — the image raises a question the title /
+video answers. Before writing any prompt, brainstorm <strong>≥5 concept options</strong> across the
+frameworks below and carry the strongest into the blocks; a concept often <strong>combines 2+
+frameworks</strong> (e.g. Posed Portrait + Map + Landscape) when it deepens the gap without clutter.</p>
+<p><strong>Truthfulness law:</strong> the image may exaggerate but must honestly represent the video. A
+Social-UI / News-Clip / amplification that misrepresents the video breaks viewer trust —
+keep any baked text short and true.</p>
+<p>Most frameworks map straight onto the house-structure blocks; the ones needing readable
+in-image text use the <strong>BAKED UI</strong> clause in the Text contract (block 3) and stay
+brand-generic (no real logos / networks).</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Framework</th>
+<th>Realize it with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Before/After Transformation</td>
+<td>Split frames <code>before/after</code> mode — max contrast between the two states of one subject</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Social UI (tweet / DM / review)</td>
+<td>KEY ELEMENTS = a <strong>generic</strong> chat bubble / DM row / star-review card beside the subject; short message via BAKED UI; NO real platform brand</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Three-Step Progression</td>
+<td>Split frames plain/custom, 3 vertical panels: start → mid story-beat → end; optional per-panel number/Day badge</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Compelling Screenshot</td>
+<td>NOT a generation — use a real frame from the source video, or a Posed Action Shot that matches the video's first frame. Flag when the user has a source clip</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Posed Portrait</td>
+<td>The default: SUBJECT rendered LARGE (fills much of the frame) + Identity Lock + YouTube rig + Emotion; very little or nothing in the background — the subject IS the focus</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Posed Action Shot</td>
+<td>Scene brief = one intriguing action mid-moment; COMPOSITION uncrowded, single hero action</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Highlighting a Specific Day</td>
+<td>Any framework + a big <code>DAY N</code> badge (BAKED UI); pick a day in the last ~20% of the arc</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Graphical Representation</td>
+<td>Non-photoreal: REPLACE the Frame contract with a clean diagram/graphic brief (bell curve, simple familiar chart); drop the photoreal + lighting-rig blocks</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Landscape</td>
+<td>Environment is the hero; keep ONE small subject on a power third; lighting rig optional</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Map/Aerial</td>
+<td>Frame = a map or aerial photo; KEY ELEMENTS = a highlighted route / point (circle, arrow, label via BAKED UI)</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Product</td>
+<td>Product is the SUBJECT (hero, sharp, its own label exempt per Angle Lock); open the gap by making the product the answer to the title's question</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Adding Text</td>
+<td>Text policy overlay (default) or baked TEXT; use it as a callout (arrow + word) or as the continuation / answer to the title's question</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Repetition of Objects</td>
+<td>KEY ELEMENTS = a large quantity of ONE object filling the frame, still legible; add one context element + a subject for scale</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Size Difference</td>
+<td>COMPOSITION = extreme scale contrast between two elements central to the story (giant vs tiny)</td>
+</tr>
+<tr>
+<td>15</td>
+<td>News Clip</td>
+<td>Generic "breaking news" lower-third / chyron over the image (BAKED UI, short truthful line); generic broadcaster styling, NO real network</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Amplified Reality</td>
+<td>Posed Action Shot + exaggerate ONE real element from the story (KEY ELEMENTS oversized); keep it plausible — over-amplification kills trust</td>
+</tr>
+</tbody>
+</table>
+<p>Frameworks 1, 5, 12 are already the skill's defaults; the rest are selected here and realized
+through the existing house-structure blocks — do not invent a parallel renderer.</p>
+<h2>The 10 rules cheat-sheet (why these work)</h2>
+<p>The frameworks are vehicles for the underlying rules — apply them regardless of framework:
+one clear focal subject, a strong information gap, high contrast and readability at ~120px,
+emotion or intrigue on any face, no clutter, truthful to the video, and a concept that reads
+in under a second in a crowded feed.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

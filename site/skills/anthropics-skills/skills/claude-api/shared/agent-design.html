@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>agent-design · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/agent-design.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Agent Design Patterns</h1>
+<p>This file covers decision heuristics for building agents on the Claude API: which primitives to reach for, how to design your tool surface, and how to manage context and cost over long runs. For per-tool mechanics and code examples, see <code>tool-use-concepts.md</code> and the language-specific folders.</p>
+<hr />
+<h2>Model Parameters</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>When to use it</th>
+<th>What to expect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Adaptive thinking</strong> (<code>thinking: {type: "adaptive"}</code>)</td>
+<td>When you want Claude to control when and how much to think.</td>
+<td>Claude determines thinking depth per request and automatically interleaves thinking between tool calls. No token budget to tune.</td>
+</tr>
+<tr>
+<td><strong>Effort</strong> (<code>output_config: {effort: ...}</code>)</td>
+<td>When adjusting the tradeoff between thoroughness and token efficiency.</td>
+<td>Lower effort -&gt; fewer and more-consolidated tool calls, less preamble, terser confirmations. <code>medium</code> is often a favorable balance. Use <code>max</code> when correctness matters more than cost.</td>
+</tr>
+</tbody>
+</table>
+<p>See <code>SKILL.md</code> §Thinking &amp; Effort for model support and parameter details.</p>
+<hr />
+<h2>Designing Your Tool Surface</h2>
+<h3>Bash vs. dedicated tools</h3>
+<p>Claude doesn't know your application's security boundary, approval policy, or UX surface. Claude emits tool calls; your harness handles them. The shape of those tool calls determines what the harness can do.</p>
+<p>A <strong>bash tool</strong> gives Claude broad programmatic leverage - it can perform almost any action. But it gives the harness only an opaque command string, the same shape for every action. Promoting an action to a <strong>dedicated tool</strong> gives the harness an action-specific hook with typed arguments it can intercept, gate, render, or audit.</p>
+<p><strong>When to promote an action to a dedicated tool:</strong></p>
+<ul>
+<li><strong>Security boundary.</strong> Actions that require gating are natural candidates. Reversibility is a useful criterion: hard-to-reverse actions (external API calls, sending messages, deleting data) can be gated behind user confirmation. A <code>send_email</code> tool is easy to gate; <code>bash -c "curl -X POST ..."</code> is not.</li>
+<li><strong>Staleness checks.</strong> A dedicated <code>edit</code> tool can reject writes if the file changed since Claude last read it. Bash can't enforce that invariant.</li>
+<li><strong>Rendering.</strong> Some actions benefit from custom UI. Claude Code promotes question-asking to a tool so it can render as a modal, present options, and block the agent loop until answered.</li>
+<li><strong>Scheduling.</strong> Read-only tools like <code>glob</code> and <code>grep</code> can be marked parallel-safe. When the same actions run through bash, the harness can't tell a parallel-safe <code>grep</code> from a parallel-unsafe <code>git push</code>, so it must serialize.</li>
+</ul>
+<p><strong>Rule of thumb:</strong> Start with bash for breadth. Promote to dedicated tools when you need to gate, render, audit, or parallelize the action.</p>
+<hr />
+<h2>Anthropic-Provided Tools</h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Side</th>
+<th>When to use it</th>
+<th>What to expect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Bash</strong></td>
+<td>Client</td>
+<td>Claude needs to execute shell commands.</td>
+<td>Claude emits commands; your harness executes them. Reference implementation provided.</td>
+</tr>
+<tr>
+<td><strong>Text editor</strong></td>
+<td>Client</td>
+<td>Claude needs to read or edit files.</td>
+<td>Claude views, creates, and edits files via your implementation. Reference implementation provided.</td>
+</tr>
+<tr>
+<td><strong>Computer use</strong></td>
+<td>Client or Server</td>
+<td>Claude needs to interact with GUIs, web apps, or visual interfaces.</td>
+<td>Claude takes screenshots and issues mouse/keyboard commands. Can be self-hosted (you run the environment) or Anthropic-hosted.</td>
+</tr>
+<tr>
+<td><strong>Code execution</strong></td>
+<td>Server</td>
+<td>Claude needs to run code in a sandbox you don't want to manage.</td>
+<td>Anthropic-hosted container with built-in file and bash sub-tools. No client-side execution.</td>
+</tr>
+<tr>
+<td><strong>Web search / fetch</strong></td>
+<td>Server</td>
+<td>Claude needs information past its training cutoff (news, current events, recent docs) or the content of a specific URL.</td>
+<td>Claude issues a query or URL; Anthropic executes it and returns results with citations.</td>
+</tr>
+<tr>
+<td><strong>Memory</strong></td>
+<td>Client</td>
+<td>Claude needs to save context across sessions.</td>
+<td>Claude reads/writes a <code>/memories</code> directory. You implement the storage backend.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Client-side</strong> tools are defined by Anthropic (name, schema, Claude's usage pattern) but executed by your harness. Anthropic provides reference implementations. <strong>Server-side</strong> tools run entirely on Anthropic infrastructure - declare them in <code>tools</code> and Claude handles the rest.</p>
+<hr />
+<h2>Composing Tool Calls: Programmatic Tool Calling</h2>
+<p>With standard tool use, each tool call is a round trip: Claude calls the tool, the result lands in Claude's context, Claude reasons about it, then calls the next tool. Three sequential actions (read profile -&gt; look up orders -&gt; check inventory) means three round trips. Each adds latency and tokens, and most of the intermediate data is never needed again.</p>
+<p><strong>Programmatic tool calling (PTC)</strong> lets Claude compose those calls into a script instead. The script runs in the code execution container. When the script calls a tool, the container pauses, the call is executed (client-side or server-side), and the result returns to the running code - not to Claude's context. The script processes it with normal control flow (loops, filters, branches). Only the script's final output returns to Claude.</p>
+<table>
+<thead>
+<tr>
+<th>When to use it</th>
+<th>What to expect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Many sequential tool calls, or large intermediate results you want filtered before they hit the context window.</td>
+<td>Claude writes code that invokes tools as functions. Runs in the code execution container. Token cost scales with final output, not intermediate results.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Scaling the Tool and Instruction Set</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>When to use it</th>
+<th>What to expect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tool search</strong></td>
+<td>Many tools available, but only a few relevant per request. Don't want all schemas in context upfront.</td>
+<td>Claude searches the tool set and loads only relevant schemas. Tool definitions are appended, not swapped - preserves cache (see Caching below).</td>
+</tr>
+<tr>
+<td><strong>Skills</strong></td>
+<td>Task-specific instructions Claude should load only when relevant.</td>
+<td>Each skill is a folder with a <code>SKILL.md</code>. The skill's description sits in context by default; Claude reads the full file when the task calls for it.</td>
+</tr>
+</tbody>
+</table>
+<p>Both patterns keep the fixed context small and load detail on demand.</p>
+<hr />
+<h2>Long-Running Agents: Managing Context</h2>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>When to use it</th>
+<th>What to expect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Context editing</strong></td>
+<td>Context grows stale over many turns (old tool results, completed thinking).</td>
+<td>Tool results and thinking blocks are cleared based on configurable thresholds. Keeps the transcript lean without summarizing.</td>
+</tr>
+<tr>
+<td><strong>Compaction</strong></td>
+<td>Conversation likely to reach or exceed the context window limit.</td>
+<td>Earlier context is summarized into a compaction block server-side. See <code>SKILL.md</code> §Compaction for the critical <code>response.content</code> handling.</td>
+</tr>
+<tr>
+<td><strong>Memory</strong></td>
+<td>State must persist across sessions (not just within one conversation).</td>
+<td>Claude reads/writes files in a memory directory. Survives process restarts.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Choosing between them:</strong> Context editing and compaction operate within a session - editing prunes stale turns, compaction summarizes when you're near the limit. Memory is for cross-session persistence. Many long-running agents use all three.</p>
+<hr />
+<h2>Caching for Agents</h2>
+<p><strong>Read <code>prompt-caching.md</code> first.</strong> It covers the prefix-match invariant, breakpoint placement, the silent-invalidator audit, and why changing tools or models mid-session breaks the cache. This section covers only the agent-specific workarounds for those constraints.</p>
+<table>
+<thead>
+<tr>
+<th>Constraint (from <code>prompt-caching.md</code>)</th>
+<th>Agent-specific workaround</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Editing the system prompt mid-session invalidates the cache.</td>
+<td>Append a <code>{"role": "system", ...}</code> message to <code>messages[]</code> instead (no beta header; on supporting models - see <code>prompt-caching.md</code> § Mid-conversation system messages). The cached prefix stays intact, and the model treats it as an operator-authority instruction rather than user text. On models that don't support it, fall back to a <code>&lt;system-reminder&gt;</code> text block in the user turn.</td>
+</tr>
+<tr>
+<td>Switching models mid-session invalidates the cache.</td>
+<td>Spawn a <strong>subagent</strong> with the cheaper model for the sub-task; keep the main loop on one model. On Managed Agents that is a <code>multiagent</code> roster entry - see <code>managed-agents-multiagent.md</code>.</td>
+</tr>
+<tr>
+<td>Adding/removing tools mid-session invalidates the cache.</td>
+<td>Use <strong>tool search</strong> for dynamic discovery - it appends tool schemas rather than swapping them, so the existing prefix is preserved.</td>
+</tr>
+</tbody>
+</table>
+<p>For multi-turn breakpoint placement, use the combination in <code>prompt-caching.md</code> § Automatic vs explicit breakpoints: one explicit breakpoint on the static system prefix plus top-level automatic caching for the conversation tail (where automatic caching is available).</p>
+<hr />
+<p>For live documentation on any of these features, see <code>live-sources.md</code>.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

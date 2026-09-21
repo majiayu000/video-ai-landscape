@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>execution-adapters · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/seedance-2-5-skill/references/execution-adapters.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Atlas execution adapters</h1>
+<p>Creative planning and the model profile are independent from the execution
+channel. Default profile: Seedream 5.0 Pro for stills and Seedance 2.0 for
+video. Verify that a chosen model supports the required route before a billable
+generation.</p>
+<h2>Default agent route</h2>
+<p>In an agent conversation, the <strong>Atlas Cloud Skill</strong> is the default direct
+generation route. Use it to discover models, inspect parameters, upload local
+assets, submit image or video generation, poll, and retrieve results. Report
+<code>Execution: atlas-skill</code> only when the Skill actually submitted the job.
+After submission, repeat the Skill's prediction-result step with the same ID
+every 2 seconds until a terminal state is returned.</p>
+<p>If it is unavailable, help install it before choosing another route:</p>
+<pre><code class="language-bash">npx skills add AtlasCloudAI/atlas-cloud-skills
+</code></pre>
+<p>Then refresh the agent's Skill registry if the host requires it.</p>
+<h2>Explicit alternatives</h2>
+<table>
+<thead>
+<tr>
+<th>Choice</th>
+<th>Use it when</th>
+<th>Availability check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>atlas-skill</code></td>
+<td>Default for an interactive agent generation</td>
+<td>The Atlas Cloud Skill can submit media in this client</td>
+</tr>
+<tr>
+<td><code>atlas-mcp</code></td>
+<td>The user explicitly selects MCP</td>
+<td>Atlas MCP generation tools are exposed in the current client</td>
+</tr>
+<tr>
+<td><code>atlas-cli</code></td>
+<td>The user explicitly selects terminal, script, CI, or batch execution</td>
+<td><code>atlas auth status</code>, then <code>atlas models get</code></td>
+</tr>
+<tr>
+<td><code>atlas-rest</code></td>
+<td>The bundled Node runner or a controlled compatibility run</td>
+<td><code>ATLASCLOUD_API_KEY</code> and live model verification</td>
+</tr>
+<tr>
+<td><code>manual</code></td>
+<td>No authenticated executor is available</td>
+<td>Return prompts, model IDs, and asset list only</td>
+</tr>
+</tbody>
+</table>
+<p>The MCP server does not own a background polling loop. On the <code>atlas-mcp</code>
+route, the agent must call <code>atlas_get_prediction</code> with the same prediction ID
+every 2 seconds until a terminal state is returned.</p>
+<p>Do not say that a Node runner invoked MCP or an agent Skill. They are
+agent-level routes. Do not let a terminal runner silently choose the CLI merely
+because it is installed.</p>
+<h2>API key discovery and setup</h2>
+<p>Check credentials in the process that will actually submit the task. For the
+REST runner, use this order:</p>
+<ol>
+<li><code>process.env.ATLASCLOUD_API_KEY</code></li>
+<li><code>process.env.ATLAS_CLOUD_API_KEY</code> as a compatibility alias</li>
+</ol>
+<p>Do not infer Atlas credentials from a different provider, plugin, or process.
+Each execution channel can have an independent credential scope.</p>
+<p>If no key is visible, direct the user to
+<code>https://www.atlascloud.ai/console/api-keys?utm_source=github&amp;utm_campaign=awesome-seedance-2.5-prompts-skills</code>.
+Do not request or print the key in
+chat. Offer either a current-shell setup:</p>
+<pre><code class="language-bash">export ATLASCLOUD_API_KEY=&quot;&lt;your-key&gt;&quot;
+</code></pre>
+<p>or the host application's secure environment or secret settings. Refresh or
+restart the execution session after changing persistent configuration when
+required. If the key exists in a parent or host configuration but the submitting
+process cannot see it, report an environment-scope mismatch and use a process
+that receives the configured environment. Do not claim that the user has no key.</p>
+<h2>Bundled runner contract</h2>
+<p><code>scripts/generate.mjs</code> implements only <code>atlas-rest</code> and explicit <code>atlas-cli</code>.
+It defaults to <code>atlas-rest</code> when <code>execution.adapter</code> is absent. The legacy value
+<code>"auto"</code> remains accepted but resolves to <code>atlas-rest</code>; it no longer probes or
+selects the CLI. This prevents a local installation from changing a user's
+execution path or billing destination.</p>
+<pre><code class="language-json">{
+  &quot;execution&quot;: {
+    &quot;adapter&quot;: &quot;atlas-rest&quot;,
+    &quot;apiKeyEnv&quot;: &quot;ATLASCLOUD_API_KEY&quot;,
+    &quot;verifyModels&quot;: true
+  },
+  &quot;modelProfile&quot;: &quot;seedance-default&quot;
+}
+</code></pre>
+<p>Set <code>adapter</code> to <code>atlas-cli</code> only when the CLI route was explicitly selected.
+<code>atlas-skill</code> and <code>atlas-mcp</code> are intentionally rejected by the Node runner so
+the agent can execute them directly rather than misreporting the channel.</p>
+<p>For an R2V job, keep the submitted storyboard image within the live provider's
+accepted reference-image constraints. If a board exceeds a provider constraint,
+re-layout the same ordered panels; do not change the intended output frame
+ratio as a workaround.</p>
+<p>If a submitted runner task loses its local polling process, set a segment's
+prediction ID under <code>execution.resumePredictionIds</code> using its stage key, for
+example:</p>
+<pre><code class="language-json">{
+  &quot;execution&quot;: {
+    &quot;resumePredictionIds&quot;: {
+      &quot;grid&quot;: &quot;existing-image-prediction-id&quot;,
+      &quot;seg1&quot;: &quot;existing-video-prediction-id&quot;
+    }
+  }
+}
+</code></pre>
+<p>The runner resumes polling and download rather than submitting a second
+billable task. Active states are <code>starting</code>, <code>queued</code>, <code>pending</code>, and
+<code>processing</code>; successful states are <code>completed</code> and <code>succeeded</code>; terminal
+failure states are <code>failed</code>, <code>timeout</code>, and <code>canceled</code>. Missing inference time,
+an expired local polling window, an interrupted turn, or a temporary query
+failure never authorizes a replacement task. Only an explicit retry decision
+after a terminal failure may create a new prediction.</p>
+<p>All four Atlas execution routes use a 2-second status-query interval in this
+workflow. The agent owns the loop for <code>atlas-skill</code> and <code>atlas-mcp</code>; the MCP
+operation is <code>atlas_get_prediction</code>. The bundled REST and CLI adapters enforce
+the interval in code. Their progress logs are still emitted every 32 seconds,
+and the default local polling window remains 900 seconds. This workflow-level
+rule takes precedence over a generic lower-level example with a different
+cadence.</p>
+<h2>CLI route</h2>
+<p>When the user explicitly selects the CLI and it is not installed, use the
+official installer and then authenticate:</p>
+<pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/AtlasCloudAI/cli/main/install.sh | sh
+atlas auth login
+</code></pre>
+<p>Run <code>atlas auth login</code> interactively. The adapter will not log in for you by
+passing an API key on the command line, because command-line arguments are
+readable by other processes on the host. If you must automate it on a
+single-user machine, set <code>ATLAS_CLI_ALLOW_ARGV_TOKEN=1</code> and accept that
+exposure; otherwise prefer <code>execution.adapter: "atlas-rest"</code>, which sends the
+key only in an HTTPS request header.</p>
+<p>Verify the selected model before generation:</p>
+<pre><code class="language-bash">atlas models search seedance --type video --json
+atlas models get &lt;model-id&gt; --json
+atlas generate cost video &lt;model-id&gt; -p &quot;&lt;prompt&gt;&quot; --json
+</code></pre>
+<p>The CLI adapter uses <code>atlas generate image|video &lt;model&gt; -p &lt;prompt&gt;</code> with
+non-blocking submission and polling. Local media is passed as <code>@/absolute/path</code>;
+data URLs and remote URLs are passed directly. It maps images, references,
+start/end frames, duration, resolution, ratio, audio, and additional model
+parameters.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

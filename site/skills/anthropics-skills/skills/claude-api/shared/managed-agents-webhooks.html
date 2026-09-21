@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>managed-agents-webhooks · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/managed-agents-webhooks.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Managed Agents - Webhooks</h1>
+<p>Anthropic can POST to your HTTPS endpoint when a Managed Agents resource changes state - an alternative to holding an SSE stream or polling. Payloads are <strong>thin</strong> (event type + resource IDs only); on receipt, fetch the resource for current state. Every delivery is HMAC-signed.</p>
+<blockquote>
+<p><strong>Direction matters.</strong> This page covers <em>Anthropic -&gt; you</em> notifications about session/vault state. It does <strong>not</strong> cover <em>third-party -&gt; you</em> webhooks that <em>trigger</em> a session (e.g. a GitHub push handler that calls <code>sessions.create()</code>) - that's ordinary application code on your side with no Anthropic-specific wire format.</p>
+</blockquote>
+<hr />
+<h2>Register an endpoint (Console only)</h2>
+<p>Console -&gt; <strong>Manage -&gt; Webhooks</strong>. There is no programmatic endpoint-management API yet. Secret rotation is supported from the same page.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Constraint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>URL</td>
+<td>HTTPS on port 443, publicly resolvable hostname</td>
+</tr>
+<tr>
+<td>Event types</td>
+<td>Subscribe per <code>data.type</code> - an endpoint receives only the types it is subscribed to</td>
+</tr>
+<tr>
+<td>Signing secret</td>
+<td><code>whsec_</code>-prefixed, 32 bytes, <strong>shown once at creation</strong> - store it</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Verify the signature</h2>
+<p>Every delivery carries the <code>webhook-id</code>, <code>webhook-timestamp</code>, and <code>webhook-signature</code> headers. <strong>Use the SDK's <code>client.beta.webhooks.unwrap()</code></strong> - it verifies the signature, rejects payloads more than ~5 minutes old, and returns the parsed event. It reads the <code>whsec_</code> secret from <code>ANTHROPIC_WEBHOOK_SIGNING_KEY</code>. Pass the headers through untouched; don't hand-roll verification against a single <code>X-Webhook-Signature</code> header, which is not the wire format.</p>
+<pre><code class="language-python">import anthropic
+from flask import Flask, request
+
+client = anthropic.Anthropic()  # reads ANTHROPIC_WEBHOOK_SIGNING_KEY from env
+app = Flask(__name__)
+
+
+@app.route(&quot;/webhook&quot;, methods=[&quot;POST&quot;])
+def webhook():
+    try:
+        event = client.beta.webhooks.unwrap(
+            request.get_data(as_text=True),
+            headers=dict(request.headers),
+        )
+    except Exception:
+        return &quot;invalid signature&quot;, 400
+
+    if event.id in seen_event_ids:  # dedupe retries - id is per-event, not per-delivery
+        return &quot;&quot;, 204
+    seen_event_ids.add(event.id)
+
+    match event.data.type:
+        case &quot;session.status_idled&quot;:
+            session = client.beta.sessions.retrieve(event.data.id)
+            notify_user(session)
+        case &quot;vault_credential.refresh_failed&quot;:
+            alert_oncall(event.data.id)
+
+    return &quot;&quot;, 204
+</code></pre>
+<p>Pass the <strong>raw request body</strong> to <code>unwrap()</code> - frameworks that re-serialize JSON (Express <code>.json()</code>, Flask <code>.get_json()</code>) change the bytes and break the MAC. For other languages, look up the <code>beta.webhooks.unwrap</code> binding in the SDK repo (<code>shared/live-sources.md</code>); don't hand-roll verification.</p>
+<hr />
+<h2>Payload envelope</h2>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;event&quot;,
+  &quot;id&quot;: &quot;whe_9d5c1f7e...&quot;,
+  &quot;created_at&quot;: &quot;2026-03-18T14:05:22Z&quot;,
+  &quot;data&quot;: {
+    &quot;type&quot;: &quot;session.status_idled&quot;,
+    &quot;id&quot;: &quot;session_01XYZ...&quot;,
+    &quot;organization_id&quot;: &quot;8a3d2f1e-...&quot;,
+    &quot;workspace_id&quot;: &quot;c7b0e4d9-...&quot;
+  }
+}
+</code></pre>
+<p>Switch on <code>data.type</code>, fetch the resource by <code>data.id</code>, return any <strong>2xx</strong> to acknowledge. <code>created_at</code> is when the <em>event occurred</em>, not when the delivery was attempted - the <code>webhook-timestamp</code> header is the clock for the attempt (see Delivery behavior).</p>
+<p>The top-level <code>id</code> is the same value as the <code>webhook-id</code> header, and it is per <em>event</em>, not per delivery - every retry carries it unchanged. Dedupe on it.</p>
+<hr />
+<h2>Supported <code>data.type</code> values</h2>
+<table>
+<thead>
+<tr>
+<th><code>data.type</code></th>
+<th>Fires when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>session.status_scheduled</code></td>
+<td>Session created and ready to accept events</td>
+</tr>
+<tr>
+<td><code>session.status_run_started</code></td>
+<td>Agent execution kicked off (every transition to <code>running</code>)</td>
+</tr>
+<tr>
+<td><code>session.status_idled</code></td>
+<td>Agent awaiting input (tool approval, custom tool result, or next message) - or paused at its session budget. The webhook payload is thin - list the session's events and check the latest <code>session.status_idle</code> event's <code>stop_reason</code> (the session object itself has no <code>stop_reason</code> field): if it is <code>budget_reached</code>, further <code>user.message</code> events return a 400 and only a budget change/removal resumes the session (<code>shared/managed-agents-core.md</code> § Session budgets)</td>
+</tr>
+<tr>
+<td><code>session.status_rescheduled</code></td>
+<td>A transient error occurred; the session is retrying automatically</td>
+</tr>
+<tr>
+<td><code>session.status_terminated</code></td>
+<td>Session ended - <strong>on completion or on error</strong>, not error-only</td>
+</tr>
+<tr>
+<td><code>session.thread_created</code></td>
+<td>Multiagent: coordinator opened a new subagent thread, or the session's advisor is being consulted (<code>shared/managed-agents-multiagent.md</code> -&gt; Advisor)</td>
+</tr>
+<tr>
+<td><code>session.thread_idled</code></td>
+<td>Child threads only: a subagent thread is waiting for input - or paused because the session reached its budget cap. When the whole session pauses at the cap, a <code>session.status_idled</code> webhook also fires and the stream's <code>session.status_idle</code> event carries <code>stop_reason: budget_reached</code> - unless another thread is waiting on a tool ask, which outranks the cap at the session level (<code>shared/managed-agents-core.md</code> § Session budgets).</td>
+</tr>
+<tr>
+<td><code>session.thread_terminated</code></td>
+<td>A thread ended - child completed its work, or the thread was archived. <strong>Child threads only</strong>; the primary thread's end surfaces as <code>session.status_terminated</code></td>
+</tr>
+<tr>
+<td><code>session.outcome_evaluation_ended</code></td>
+<td>Outcome grader finished one iteration</td>
+</tr>
+<tr>
+<td><code>session.updated</code></td>
+<td>Session properties changed (name, configuration)</td>
+</tr>
+<tr>
+<td><code>session.deleted</code></td>
+<td>Session permanently deleted - no object left to fetch; treat the event itself as final</td>
+</tr>
+<tr>
+<td><code>vault.archived</code></td>
+<td>Vault was archived</td>
+</tr>
+<tr>
+<td><code>vault.created</code></td>
+<td>Vault was created</td>
+</tr>
+<tr>
+<td><code>vault.deleted</code></td>
+<td>Vault was deleted - a <code>vault_credential.deleted</code> also fires per underlying credential. No object left to fetch; treat the event itself as final</td>
+</tr>
+<tr>
+<td><code>vault_credential.archived</code></td>
+<td>Credential archived, directly or via vault archival</td>
+</tr>
+<tr>
+<td><code>vault_credential.created</code></td>
+<td>Vault credential was created</td>
+</tr>
+<tr>
+<td><code>vault_credential.deleted</code></td>
+<td>Credential deleted, directly or via vault deletion. No object left to fetch; treat the event itself as final</td>
+</tr>
+<tr>
+<td><code>vault_credential.refresh_failed</code></td>
+<td>MCP OAuth vault credential failed to refresh</td>
+</tr>
+<tr>
+<td><code>agent.created</code></td>
+<td>Agent created</td>
+</tr>
+<tr>
+<td><code>agent.updated</code></td>
+<td>A new agent version was published. Updates that do not create a new version do <strong>not</strong> fire this.</td>
+</tr>
+<tr>
+<td><code>agent.archived</code></td>
+<td>Agent archived</td>
+</tr>
+<tr>
+<td><code>agent.deleted</code></td>
+<td>Agent permanently deleted - no object left to fetch; treat the event itself as final</td>
+</tr>
+<tr>
+<td><code>deployment.created</code></td>
+<td>Scheduled deployment created</td>
+</tr>
+<tr>
+<td><code>deployment.updated</code></td>
+<td>Deployment properties changed (e.g. schedule edited)</td>
+</tr>
+<tr>
+<td><code>deployment.paused</code></td>
+<td>Deployment paused - by request, or automatically when a scheduled run fails with a <strong>non-recoverable</strong> error (archived agent, missing environment). Recoverable failures, including rate limits, do <strong>not</strong> auto-pause.</td>
+</tr>
+<tr>
+<td><code>deployment.unpaused</code></td>
+<td>Deployment unpaused; schedule resumes</td>
+</tr>
+<tr>
+<td><code>deployment.archived</code></td>
+<td>Deployment archived - directly, or as a result of agent archival/deletion</td>
+</tr>
+<tr>
+<td><code>deployment.deleted</code></td>
+<td>Deployment permanently deleted - no object left to fetch; treat the event itself as final</td>
+</tr>
+<tr>
+<td><code>deployment_run.started</code></td>
+<td>A <strong>scheduled</strong> run started. Manual runs do <strong>not</strong> emit <code>deployment_run.*</code> events.</td>
+</tr>
+<tr>
+<td><code>deployment_run.succeeded</code></td>
+<td>Scheduled run created its session. Same <code>data.id</code> (the run ID) as the run's <code>.started</code> event - fetch the deployment run for its <code>session_id</code>, then subscribe to the session events to follow the work.</td>
+</tr>
+<tr>
+<td><code>deployment_run.failed</code></td>
+<td>Scheduled run did not create a session. Same <code>data.id</code> as the run's <code>.started</code> event - fetch the deployment run for <code>error.type</code> / <code>error.message</code>.</td>
+</tr>
+<tr>
+<td><code>environment.created</code></td>
+<td>Environment created</td>
+</tr>
+<tr>
+<td><code>environment.updated</code></td>
+<td>Environment updated with at least one changed field. A no-op update emits nothing.</td>
+</tr>
+<tr>
+<td><code>environment.archived</code></td>
+<td>Environment archived. Re-archiving an already-archived environment emits nothing.</td>
+</tr>
+<tr>
+<td><code>environment.deleted</code></td>
+<td>Environment deleted, including delete of an already-archived one. No object left to fetch; treat the event itself as final</td>
+</tr>
+<tr>
+<td><code>memory_store.created</code></td>
+<td>Memory store created - by you, or by an Anthropic-operated process that clones one of your stores</td>
+</tr>
+<tr>
+<td><code>memory_store.archived</code></td>
+<td>Memory store archived. Re-archiving an already-archived store emits nothing.</td>
+</tr>
+<tr>
+<td><code>memory_store.deleted</code></td>
+<td>Memory store deleted, including delete of an already-archived one. Cascades to its memories and versions <strong>without</strong> per-memory events - this single event is the signal. No object left to fetch; treat it as final</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>There is deliberately no <code>memory_store.updated</code>.</strong> Individual memories and memory versions emit no webhook events at all, and neither do an environment's self-hosted work items. If you need per-memory change tracking, poll the memory-versions endpoints (<code>shared/managed-agents-memory.md</code>).</p>
+<p>These are <strong>webhook</strong> <code>data.type</code> values - a separate namespace from SSE event types (<code>session.status_idle</code>, <code>span.outcome_evaluation_end</code>, etc. in <code>shared/managed-agents-events.md</code>). Don't reuse SSE constants in webhook handlers.</p>
+</blockquote>
+<hr />
+<h2>Delivery behavior &amp; pitfalls</h2>
+<ul>
+<li><strong>Duplicates.</strong> An endpoint can receive the same event more than once; every attempt carries the same top-level <code>event.id</code> (= the <code>webhook-id</code> header). Dedupe on it.</li>
+<li><strong>Subscription scope.</strong> An event reaches only endpoints subscribed to its type <strong>at the moment it is emitted</strong>. An event emitted while nothing was subscribed is never delivered, and subscribing later does not backfill - subscribe before you need the type.</li>
+<li><strong>No ordering guarantee.</strong> Events are not delivered in occurrence order: <code>session.status_idled</code> may arrive before <code>session.outcome_evaluation_ended</code>, and a <code>.deleted</code> can arrive before the <code>.archived</code> for the same resource. <strong>Drive state from the resource you fetch, not from arrival order.</strong></li>
+<li><strong>Retries: up to three attempts</strong> per endpoint per event, with jittered exponential backoff between 5 and 120 seconds. A response that triggers auto-disable is never retried. <strong>After the last attempt fails the event is dropped</strong> - not queued, and with no signal that it was lost. Webhooks are not a durable log: if you must observe every transition, reconcile by listing or fetching the resource.</li>
+<li><strong><code>webhook-timestamp</code> is re-stamped on every attempt</strong>, so retries don't fail the SDK's five-minute freshness check. It times the <em>delivery attempt</em>; use the payload's <code>created_at</code> for when the event occurred.</li>
+<li><strong>Auto-disable - three triggers</strong>, each setting <code>disabled_reason</code>, all reversible from Console (events emitted while disabled are <strong>not</strong> replayed):</li>
+<li>A <code>3xx</code> response. Redirects are never followed; disables immediately, on the first attempt. Reason: <code>auto-disabled: endpoint URL returned a redirect (3xx)</code>.</li>
+<li>The URL resolves to a non-public IP at connect time. Disables immediately. Reason: <code>auto-disabled: endpoint URL resolved to an invalid address</code>.</li>
+<li>Continuous failure for a sustained period. Reason: <code>auto-disabled after sustained delivery failures</code>. <strong>The trigger is duration, not a delivery count</strong> - a single <code>2xx</code> resets the window, so one flaky event can't disable the endpoint.</li>
+<li><strong>Thin payload is intentional.</strong> Don't expect <code>stop_reason</code> (list the session's events for that - the session object has no <code>stop_reason</code> field), <code>outcome_evaluations</code>, credential secrets, etc. on the webhook body - fetch the resource.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

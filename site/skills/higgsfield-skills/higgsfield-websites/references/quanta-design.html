@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>quanta-design · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/quanta-design.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Skill: Quanta Design</h1>
+<p><strong>Higgsfield-SDK apps only.</strong> Use Quanta ONLY for app surfaces that integrate the
+Higgsfield fnf SDK — generation consoles and fnf-backed tools (image/video
+generation, media upload, profile, workspace, credits, generation feed/history) —
+for layout, styling, fonts, buttons, components, responsive composition,
+empty/loading/error states, and premium polish.</p>
+<p><strong>Do not use for anything that does not call the Higgsfield SDK</strong> — marketing/
+landing pages, portfolios, brochure/creative sites, and general SaaS/dashboards/
+tools build from their template recipe with custom Tailwind/CSS, not
+<code>@higgsfield/quanta/*</code> components or q-prefixed semantic utilities.</p>
+<p>This skill has two layers. <strong>Layer 1 (UX Craft)</strong> decides what to build and how it
+must behave — surface choice, interaction, keyboard, forms, motion, states.
+<strong>Layer 2 (Quanta Implementation)</strong> decides what everything is made of — tokens,
+components, typography, spacing. Never invent colors, fonts, or component styles:
+those decisions are already made by Quanta. UX rules below are expressed in Quanta
+vocabulary on purpose.</p>
+<p>Before coding, read <code>app/packages/quanta/ai/AGENTS.md</code>. That package guide is the
+canonical Quanta API/token reference — RELY ON IT for component props, variants,
+and tokens; do NOT open or grep the component <code>.tsx</code> source to re-derive prop
+names (it's already documented there, and re-deriving it wastes time). This
+skill explains how this template must compose Quanta into generated fnf-SDK app
+UIs.</p>
+<p><strong>One exception to "don't read the source": compound-component parts.</strong> For a
+prop on a compound part (<code>Modal.Header</code>, <code>Modal.Footer</code>, <code>Card.*</code>, <code>Vault.*</code>,
+<code>Grid</code>) whose mistake is a HARD compile error — or worse, a SILENT one — a
+10-second look at that one component file is worth it. Known traps:</p>
+<ul>
+<li><strong><code>Modal.Header</code> has NO <code>title</code> prop; <code>Modal.Footer</code> has NO <code>actions</code> prop.</strong>
+  Compose them: <code>&lt;Modal.Header&gt;&lt;Modal.Title&gt;…&lt;/Modal.Title&gt;&lt;Modal.CloseButton/&gt;&lt;/Modal.Header&gt;</code>
+  and <code>&lt;Modal.Footer&gt;&lt;Modal.FooterActions&gt;…buttons…&lt;/Modal.FooterActions&gt;&lt;/Modal.Footer&gt;</code>.
+  <code>Modal.Footer actions={…}</code> is a hard error; <code>Modal.Header title="…"</code> is the
+  dangerous one — <code>title</code> type-checks as a native HTML attribute (it renders as
+  a hover tooltip) so the build passes but no heading shows. (<code>Vault.Footer</code> and
+  <code>Card.Footer</code> DO take <code>actions</code> — the parts are not uniform, which is exactly
+  why you check.)</li>
+<li><strong><code>Grid</code>/<code>VirtualGrid</code> <code>minColWidth</code> is a CSS length STRING</strong> (<code>"13rem"</code>), not
+  a number — <code>minColWidth={200}</code> fails to type-check.</li>
+</ul>
+<hr />
+<h1>LAYER 1 — UX CRAFT</h1>
+<p>These rules fix the "almost right but feels off" class of bugs: dead hover states,
+unlabeled icons, forms that yell on every keystroke, spinners that never end,
+modals you can't escape. They are ranked: CRITICAL rules are never skipped;
+HIGH/MEDIUM rules are skipped only with a concrete reason.</p>
+<h2>Surface Selection (what to build first)</h2>
+<p>Match the first screen to the product type. The product surface itself is screen
+one — never a splash, never a marketing hero.</p>
+<table>
+<thead>
+<tr>
+<th>Product type</th>
+<th>Surface shape</th>
+<th>Base recipe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Generator / console (image, video, audio)</td>
+<td>Prompt box on center in main page + settings pane in prompt box, results screen after first generation with gallery</td>
+<td>Studio layout — <code>app/src/layouts/studio.tsx</code> (<code>references/app-layouts.md</code>)</td>
+</tr>
+<tr>
+<td>Feed / gallery / history</td>
+<td>Filterable grid or list, item overlay/inspector</td>
+<td>App shell + grid section</td>
+</tr>
+<tr>
+<td>Editor / notes / project tool</td>
+<td>List sidebar, work canvas, optional inspector</td>
+<td>Split editor/tool</td>
+</tr>
+<tr>
+<td>Board / pipeline</td>
+<td>Horizontal scroll columns inside fixed shell</td>
+<td>App shell, <code>overflow-x-auto</code> region</td>
+</tr>
+<tr>
+<td>Settings / profile / billing</td>
+<td>Single constrained column of grouped sections</td>
+<td>Form panel</td>
+</tr>
+<tr>
+<td>Dashboard / stats</td>
+<td>Bands of metric groups, one chart per question</td>
+<td>App shell + sections</td>
+</tr>
+</tbody>
+</table>
+<p>Density: consoles and tables run tight (<code>gap-3</code>, <code>p-4</code>); content-first surfaces
+(feed, gallery, forms) run spacious (<code>gap-4 md:gap-6</code>, <code>p-4 md:p-6 xl:p-8</code>). Pick one density per region, not per element.</p>
+<h2>Interaction (CRITICAL)</h2>
+<ul>
+<li>Touch targets ≥ 44×44px, ≥ 8px apart. Small visual icons get padding or
+<code>iconOnly</code> Button sizing, not a bigger glyph.</li>
+<li>Every clickable element: <code>cursor-pointer</code>, visible hover AND pressed feedback
+within ~100ms. Hover is an enhancement, never the only signal — mobile has no
+hover.</li>
+<li>Async actions: disable the trigger + show progress (<code>Progress</code>, or a
+<code>Loader size="xs" color="neutral"</code> child inside the busy Button — there is NO
+Button <code>loading</code> prop). Never leave a button clickable while its request is in
+flight; never swap UI with no feedback for &gt;300ms — show skeleton surfaces, not
+a lone spinner, for longer loads.</li>
+<li>Disabled = semantic <code>disabled</code> attribute + Quanta disabled styling +
+<code>text-q-text-disabled</code>, not just faded opacity that still accepts clicks.</li>
+<li>Destructive actions: <code>danger</code>/<code>dangerSoft</code> Button, spatially separated from the
+primary action, confirmed via <code>Modal</code> — and prefer an "Undo" <code>toast</code> over a
+confirm dialog for reversible bulk actions.</li>
+<li>Drag interactions need a movement threshold (~6px) so clicks don't become
+accidental drags, and real-time visual tracking while dragging.</li>
+</ul>
+<h2>Keyboard &amp; Focus (CRITICAL)</h2>
+<ul>
+<li><code>:focus-visible</code> ring on every interactive element; never remove outlines.
+Tab order must match visual order.</li>
+<li><code>Esc</code> closes the topmost overlay (Modal, Vault, Dropdown, Command) — one layer
+at a time. Every overlay also has a visible close affordance.</li>
+<li>Modals trap focus while open and restore focus to the trigger on close.</li>
+<li>Icon-only controls carry an accessible label (<code>aria-label</code> / Quanta <code>iconOnly</code>
+labeling). Meaningful images get alt text; decorative ones get <code>alt=""</code>.</li>
+<li>Toasts must not steal focus — <code>Toaster</code> announces politely; keep toasts
+3–5s with an action button when there is something to act on.</li>
+<li>Don't convey state by color alone: pair color with an icon, label, or <code>Badge</code>.</li>
+</ul>
+<h2>Overlay Layering (CRITICAL)</h2>
+<ul>
+<li>Use Quanta <code>Select</code>, <code>Dropdown</code>, <code>Popover</code>, <code>Modal</code>, and <code>Vault</code> with the
+  portal/layer behavior documented in <code>app/packages/quanta/ai/AGENTS.md</code>.
+  Popup content must escape a scrolling or <code>overflow-*</code> clipping ancestor; do
+  not render a selector menu as an inline absolutely-positioned child of a
+  creation rail, sticky footer, Modal, or Vault.</li>
+<li>Preserve the semantic layer stack. Use only documented Quanta z-layer
+  utilities for app-local surfaces; never patch one collision with arbitrary
+  <code>z-[9999]</code>, and never assign every popup <code>z-q-modal</code>. Avoid accidental local
+  stacking contexts (<code>transform</code>, <code>filter</code>, <code>opacity</code>, <code>isolation</code>, or a
+  positioned element with <code>z-index</code>) on wrappers around selector triggers.</li>
+<li>In nested overlays, <code>Esc</code> closes the selector/popover first, then the parent
+  Modal/Vault. Test pointer, keyboard, focus trap/restore, and click-outside
+  behavior with the selector open near every viewport edge.</li>
+</ul>
+<h2>Forms &amp; Feedback (HIGH)</h2>
+<ul>
+<li>Every input has a visible label (Quanta <code>Input</code>/<code>Textarea</code> <code>label</code> prop), not a
+placeholder-only label. Helper text under complex fields, persistent.</li>
+<li>Validate on blur or submit — not on every keystroke. Error appears under the
+offending field, states cause + fix ("Prompt is empty — describe what to
+generate"), and the first invalid field gets focus after a failed submit.</li>
+<li>Use semantic input types (<code>email</code>, <code>number</code>, <code>url</code>) and autocomplete attributes.</li>
+<li>Submit flows end in a visible outcome: success <code>toast</code>/state change, or error
+with a retry path. A timeout is an error with retry, not silence.</li>
+<li>Multi-step flows show progress and allow going back; confirm before dismissing
+a Modal/Vault with unsaved input.</li>
+</ul>
+<h2>Layout &amp; Responsive (HIGH)</h2>
+<ul>
+<li>Mobile-first; <code>min-h-dvh</code> (never <code>100vh</code>); no page-level horizontal scroll —
+wide content (boards, tables) scrolls inside its own <code>overflow-x-auto</code> region.</li>
+<li>Constrain everything: <code>min-w-0</code> + <code>truncate</code> on flexible text (with <code>title</code> for
+the full value), <code>minmax(0,1fr)</code> grid columns, <code>max-w-*</code> on long-form text.</li>
+<li>Fixed bars (sticky submit rows, floating composers) reserve space for
+content (<code>pb-*</code> on scroll regions);
+respect safe areas on mobile.</li>
+<li>One primary CTA per screen; secondary actions are visually subordinate
+(<code>tertiary</code>/<code>ghost</code>). When actions overflow a toolbar, collapse into
+<code>Dropdown</code>, don't shrink buttons.</li>
+<li>Current location is always visible: active nav item highlighted independent of
+hover; back navigation preserves scroll and filter state.</li>
+<li>Breakpoint behavior: sidebars collapse behind <code>Tabs</code>/<code>Vault</code> below desktop;
+verify at 375px, tablet, and desktop before delivery.</li>
+<li>Generated-media grids use responsive <code>auto-fit</code> columns and each card's real
+  result/submitted aspect ratio. Keep the full image/video visible; one shared
+  16:9 or square cover crop is only for curated marketing/preset thumbnails,
+  never Results, History, or a Simple app's generated output.</li>
+</ul>
+<h2>Motion (MEDIUM)</h2>
+<ul>
+<li>Micro-interactions 150–300ms; complex transitions ≤ 400ms; exits ~60–70% of
+enter duration. Ease-out on enter, ease-in on exit.</li>
+<li>Animate <code>transform</code>/<code>opacity</code> only — never <code>width</code>/<code>height</code>/<code>top</code>/<code>left</code>, and
+animations must not cause layout shift.</li>
+<li>Animate 1–2 key elements per view; stagger list entrances 30–50ms per item.
+Motion expresses cause and effect (panel slides from its trigger side, modal
+scales from center) — no decorative-only movement.</li>
+<li>Respect <code>prefers-reduced-motion</code> globally; never block input while something
+animates.</li>
+</ul>
+<h2>Data &amp; Charts (LOW — dashboards only)</h2>
+<ul>
+<li>Trend → line, comparison → bar, proportion → donut (≤5 slices, else bar).</li>
+<li>Legends visible, tooltips on hover/tap, gridlines low-contrast
+(<code>border-q-border-subtle</code> weight), numbers <code>tabular-nums</code> and locale-formatted.</li>
+<li>Loading chart = skeleton, empty chart = designed empty state, failed chart =
+error with retry. Never render a bare axis frame.</li>
+</ul>
+<hr />
+<h1>LAYER 2 — QUANTA IMPLEMENTATION</h1>
+<h2>Higgsfield Integration Rules</h2>
+<p>Apps render INSIDE Higgsfield — they must be indistinguishable from Higgsfield's
+own products.</p>
+<ol>
+<li><strong>NEVER customize Quanta styles, and NEVER modify Quanta itself.</strong> No
+   className overrides that change a component's look, no color/size/font
+   overrides on quanta components, no re-theming, and never edit the vendored
+   <code>@higgsfield/quanta</code> package. Compose, don't restyle. If a Quanta component
+   doesn't fit without customization (a variant/behavior it doesn't offer), do
+   NOT bend it — build a small custom component from Quanta primitives instead
+   (rule 5).</li>
+<li><strong>NO app header.</strong> Apps render inside Higgsfield, whose chrome already
+   provides the global header, credits/balance, and account controls — never
+   add a top header/app bar, brand/logo row, or nav bar inside the app, and
+   never render credits/balance or sign-out controls. In-app navigation lives
+   in a Quanta <code>Sidebar</code> (see the Studio layout, <code>app/src/layouts/studio.tsx</code>) or inline controls
+   (tabs, steppers); a page title is just a heading inside the work area.</li>
+<li><strong>When a piece of UI you want doesn't exist in Quanta, build it inside the
+   app from Quanta primitives with zero customization</strong> — never import a
+   third-party UI library or hand-roll a different visual language (see rule 5).</li>
+<li><strong>Always dark.</strong> The template pins <code>data-theme="default-dark"</code> (+
+   <code>color-scheme: dark</code>) on <code>&lt;html&gt;</code> — apps are permanently dark like every
+   Higgsfield product. Never add a theme toggle or a light mode, never use
+   <code>dark:</code>-conditional styling (there is no light state), and never wire
+   quanta's bootstrapScript/ThemeController theme switching.</li>
+<li><strong>Fill gaps with your OWN components, built from Quanta primitives + <code>q-</code>
+   tokens, in the app's own <code>app/src/components/</code></strong> (date picker, calendar,
+   sortable data table, multiselect autocomplete, color picker, …). Compose
+   Quanta primitives (<code>Button</code>, <code>Input</code>, <code>Dropdown</code>, <code>Popover</code>, <code>Modal</code>, …) and
+   <code>q-</code> utility classes into the piece you need, matching Quanta's tokens and
+   spacing so it's indistinguishable from a built-in. There is NO fallback
+   design system: never add a third-party UI dependency (no shadcn, no MUI, no
+   Radix, etc.), and never restyle a Quanta component to force a fit.</li>
+</ol>
+<h2>Template Wiring</h2>
+<p>Quanta is already wired through <code>app/src/styles.css</code>.</p>
+<p>Keep these pieces:</p>
+<ul>
+<li><code>@import "@higgsfield/quanta/tailwind.css";</code></li>
+<li>This single Tailwind entry imports Quanta primitives, theme variables,
+  typography, z-index, border-width, and q-* component utilities.</li>
+<li><code>@source "../packages/quanta/src";</code></li>
+<li>Required because Quanta is vendored in <code>app/packages/</code>; Tailwind must scan
+  component source so literal class strings are generated.</li>
+<li><code>@theme { --spacing: 0.25rem; }</code></li>
+<li>Restores native Tailwind spacing for generated app layout.</li>
+<li><code>@theme inline { ... }</code></li>
+<li>Maps shadcn-style semantic aliases to Quanta variables so legacy scaffold
+  pieces still render while new UI uses Quanta.</li>
+<li><code>bootstrapScript()</code> in <code>app/src/routes/__root.tsx</code></li>
+<li>Keeps persisted theme/brand from flashing on first paint.</li>
+</ul>
+<p>Do not remove or duplicate these imports. Do not import Quanta CSS again inside
+individual components.</p>
+<p>Responsive variants: Tailwind defaults (<code>sm: md: lg: xl:</code>) plus quanta's
+<code>q-tablet:</code> (768px), <code>q-desktop:</code> (1280px), <code>q-wide:</code> (1920px). <code>tablet:</code>/<code>desktop:</code>
+do NOT exist — they compile to nothing.</p>
+<h2>Current Spacing And Token Rules</h2>
+<p>This is the rule agents must remember:</p>
+<ul>
+<li><strong>App layout spacing is native Tailwind:</strong> <code>p-4</code>, <code>px-6</code>, <code>gap-3</code>, <code>mt-6</code>,
+<code>h-10</code>, <code>w-80</code>, <code>min-h-dvh</code>.</li>
+<li><strong>Quanta semantic styling is q-prefixed:</strong> <code>bg-q-background-primary</code>,
+<code>text-q-body-md-regular</code>, <code>border-q-border-subtle</code>, <code>z-q-modal</code>.</li>
+<li><strong>Old numeric spacing classes are wrong for app layout:</strong> do not write
+<code>p-400</code>, <code>px-400</code>, <code>gap-200</code>, <code>mt-300</code>.</li>
+<li><strong>Do not use raw q-spacing vars in app code:</strong> avoid <code>p-q-400</code> unless you are
+intentionally maintaining Quanta internals. Generated app screens should use
+native spacing.</li>
+</ul>
+<p>Good:</p>
+<pre><code class="language-tsx">&lt;main className=&quot;min-h-dvh bg-q-background-primary p-4 text-q-text-primary md:p-6&quot;&gt;
+  &lt;section className=&quot;grid gap-4 xl:grid-cols-[280px_1fr]&quot;&gt;
+    ...
+  &lt;/section&gt;
+&lt;/main&gt;
+</code></pre>
+<p>Bad:</p>
+<pre><code class="language-tsx">&lt;main className=&quot;bg-background-primary px-400 py-300 text-sm font-medium&quot;&gt;
+  ...
+&lt;/main&gt;
+</code></pre>
+<h2>Component Priority</h2>
+<p>Use Quanta components before legacy <code>app/src/components/ui/*</code>, before direct Radix,
+and before third-party equivalents.</p>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Actions and links</td>
+<td><code>Button</code> from <code>@higgsfield/quanta/button</code></td>
+</tr>
+<tr>
+<td>Top navigation</td>
+<td><code>NavigationMenu</code> from <code>@higgsfield/quanta/navigation-menu</code></td>
+</tr>
+<tr>
+<td>App navigation rail</td>
+<td><code>Sidebar</code> from <code>@higgsfield/quanta/sidebar</code></td>
+</tr>
+<tr>
+<td>Text fields</td>
+<td><code>Input</code> from <code>@higgsfield/quanta/input</code></td>
+</tr>
+<tr>
+<td>Generation prompt surface</td>
+<td>BUILD it from Quanta primitives per the composer anatomy in <code>references/app-layouts.md</code> (glass card, attachments strip, chips row, tall marketingPrimary GENERATE) — there is no prompt-box component</td>
+</tr>
+<tr>
+<td>Multi-line text (non-prompt)</td>
+<td><code>Textarea</code> from <code>@higgsfield/quanta/textarea</code></td>
+</tr>
+<tr>
+<td>Binary settings</td>
+<td><code>Switch</code>, <code>Checkbox</code>, <code>Toggle</code></td>
+</tr>
+<tr>
+<td>Exclusive choices</td>
+<td><code>RadioGroup</code>, <code>RadioLabel</code> from <code>@higgsfield/quanta/radio</code></td>
+</tr>
+<tr>
+<td>Option pickers (settings)</td>
+<td><code>Select</code> from <code>@higgsfield/quanta/select</code></td>
+</tr>
+<tr>
+<td>Segmented modes/views</td>
+<td><code>Tabs</code></td>
+</tr>
+<tr>
+<td>Menus/model pickers</td>
+<td><code>Dropdown</code></td>
+</tr>
+<tr>
+<td>Command palette/search actions</td>
+<td><code>Command</code> from <code>@higgsfield/quanta/cmdk</code></td>
+</tr>
+<tr>
+<td>Dialog/editor/confirm</td>
+<td><code>Modal</code></td>
+</tr>
+<tr>
+<td>Edge sheet/mobile panel</td>
+<td><code>Vault</code></td>
+</tr>
+<tr>
+<td>Toasts</td>
+<td><code>Toaster</code>, <code>toast</code> from <code>@higgsfield/quanta/sonner</code></td>
+</tr>
+<tr>
+<td>Progress/loading</td>
+<td><code>Progress</code></td>
+</tr>
+<tr>
+<td>In-button/inline busy spinner</td>
+<td><code>Loader</code> from <code>@higgsfield/quanta/loader</code></td>
+</tr>
+<tr>
+<td>Generation feeds / result grids</td>
+<td><code>Grid</code> from <code>@higgsfield/quanta/grid</code> (<code>cols="auto-fit"</code> + <code>minColWidth</code> for generation feeds — never breakpoint column ladders)</td>
+</tr>
+<tr>
+<td>Metadata/status</td>
+<td><code>Badge</code>, <code>Tag</code>, <code>Dot</code>, <code>Kbd</code>, <code>Avatar</code>, <code>Divider</code></td>
+</tr>
+</tbody>
+</table>
+<p>Legacy shadcn-style components may remain for scaffold compatibility, but new
+client UI should not start there. Also do not import <code>cmdk</code>, <code>sonner</code>, or
+<code>vaul</code> directly for new UI; Quanta already wraps those interaction patterns with
+the correct visual system.</p>
+<h2>Core Imports</h2>
+<pre><code class="language-tsx">import { Button } from '@higgsfield/quanta/button'
+import { Input } from '@higgsfield/quanta/input'
+import { Textarea } from '@higgsfield/quanta/textarea'
+import { NavigationMenu } from '@higgsfield/quanta/navigation-menu'
+import { Sidebar } from '@higgsfield/quanta/sidebar'
+import { Tabs } from '@higgsfield/quanta/tabs'
+import { Dropdown } from '@higgsfield/quanta/dropdown'
+import { Select } from '@higgsfield/quanta/select'
+import { Grid } from '@higgsfield/quanta/grid'
+import { Loader } from '@higgsfield/quanta/loader'
+import { Modal } from '@higgsfield/quanta/modal'
+import { Vault } from '@higgsfield/quanta/vault'
+import { Toaster, toast } from '@higgsfield/quanta/sonner'
+</code></pre>
+<p>Mount one <code>&lt;Toaster /&gt;</code> near the root shell before calling <code>toast.*</code>.</p>
+<h2>Premium App Layout Rules</h2>
+<p>Generated app UIs must look designed, not like raw low-level layouts.</p>
+<ol>
+<li><strong>Start with the product surface.</strong> If the task is a notes app, editor,
+  dashboard, generator, gallery, CRM, or workspace, make that actual interface
+   the first screen. Use the Surface Selection table in Layer 1 to pick the shape.</li>
+<li><strong>Use a stable shell.</strong> Prefer <code>min-h-dvh bg-q-background-primary
+  text-q-text-primary</code> and scroll regions with <code>min-h-0 overflow-auto</code>. No
+  header/top bar — apps render inside Higgsfield; actions live in the work
+  area's own toolbar row or the sidebar.</li>
+<li><strong>Use meaningful regions.</strong> Most product tools need a sidebar/list, a main
+  work area, and optionally an inspector/action rail.</li>
+<li><strong>Give regions enough space.</strong> Start with <code>p-4 md:p-6 xl:p-8</code>,
+  <code>gap-4 md:gap-6</code>, and tighten only for dense tables/toolbars.</li>
+<li><strong>Constrain text and panels.</strong> Use <code>min-w-0</code>, <code>truncate</code>, <code>max-w-*</code>,
+  <code>grid-cols-*</code>, and <code>minmax(0,1fr)</code> patterns so content never overlaps.</li>
+<li><strong>Make state visible.</strong> Selected rows, hover states, focus states, empty
+  states, loading states, and errors should be designed surfaces, not bare text.</li>
+<li><strong>Avoid card soup.</strong> Do not put cards inside cards inside cards. Use shells,
+  sidebars, bands, lists, workspaces, and repeated item cards only where they
+   are semantically useful.</li>
+<li><strong>Use icons for tools.</strong> Icon-only buttons need <code>iconOnly</code> and an accessible
+  label. Do not write text labels into tiny square controls. Never use emojis
+   as icons — vector icons only, ONE icon family: Google Material Symbols
+   outlined 400, imported per icon
+   (<code>import Star from "@material-symbols/svg-400/outlined/star_shine.svg?react"</code>,
+   sized via width/height props); <code>-fill</code> variants only for very small glyphs.</li>
+<li><strong>Keep palettes balanced.</strong> Quanta already provides dark surfaces and brand
+  accents. Avoid one-note purple/blue gradients, random blur blobs, and raw
+   decorative shapes.</li>
+</ol>
+<h2>Layout Recipes</h2>
+<h3>Code layouts (preferred starting points)</h3>
+<p>The template ships <strong>six</strong> layout screens as REAL CODE in
+<code>app/src/layouts/</code> — start from the closest one, copy it into your route, and
+adapt it from the code (and the reusable pieces in <code>app/src/components</code>), never
+from a screenshot. See <code>references/app-layouts.md</code> + <code>app/src/layouts/AGENTS.md</code>
+for each one's full anatomy.</p>
+<table>
+<thead>
+<tr>
+<th>Product shape</th>
+<th>Code layout (copy + adapt)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Full workspace — projects sidebar + prompt composer + generations feed</td>
+<td><code>app/src/layouts/studio.tsx</code></td>
+</tr>
+<tr>
+<td>Pick-a-style-then-generate — preset/template gallery + a creation rail</td>
+<td><code>app/src/layouts/preset.tsx</code></td>
+</tr>
+<tr>
+<td>Single tool's landing/detail page — two-column generator hero + how-it-works</td>
+<td><code>app/src/layouts/app-detail.tsx</code></td>
+</tr>
+<tr>
+<td>Upload-configure-iterate workspace (try-on / restyle / character)</td>
+<td><code>app/src/layouts/ai-stylist.tsx</code></td>
+</tr>
+<tr>
+<td>Before/after enhance tool (retouch / restore / upscale)</td>
+<td><code>app/src/layouts/skin-enhancer.tsx</code></td>
+</tr>
+<tr>
+<td>Step-by-step generate → select → refine wizard</td>
+<td><code>app/src/layouts/shots.tsx</code></td>
+</tr>
+</tbody>
+</table>
+<p>When none fits and the user asks for a custom shell, compose one of the generic
+shapes below.</p>
+<h3>App shell</h3>
+<p>No app header — the title/actions are a row inside the work area; Higgsfield's
+host chrome provides the global header.</p>
+<pre><code class="language-tsx">&lt;div className=&quot;min-h-dvh bg-q-background-primary text-q-text-primary&quot;&gt;
+  &lt;main className=&quot;grid min-h-dvh grid-cols-1 xl:grid-cols-[280px_minmax(0,1fr)]&quot;&gt;
+    &lt;aside className=&quot;min-h-0 border-r border-q-border-subtle p-4&quot;&gt;...&lt;/aside&gt;
+    &lt;section className=&quot;min-h-0 overflow-auto p-4 md:p-6&quot;&gt;
+      &lt;div className=&quot;mb-4 flex flex-wrap items-center justify-between gap-3&quot;&gt;
+        &lt;h1 className=&quot;text-q-title-md-semi-bold&quot;&gt;Workspace&lt;/h1&gt;
+        &lt;Button size=&quot;sm&quot;&gt;Create&lt;/Button&gt;
+      &lt;/div&gt;
+      ...
+    &lt;/section&gt;
+  &lt;/main&gt;
+&lt;/div&gt;
+</code></pre>
+<h3>Split editor/tool</h3>
+<p>Use this for notes, editors, project feeds, and dashboards.</p>
+<pre><code class="language-tsx">&lt;main className=&quot;grid min-h-dvh grid-cols-1 bg-q-background-primary text-q-text-primary xl:grid-cols-[320px_minmax(0,1fr)_360px]&quot;&gt;
+  &lt;aside className=&quot;min-h-0 overflow-auto border-r border-q-border-subtle p-4&quot;&gt;...&lt;/aside&gt;
+  &lt;section className=&quot;min-h-0 overflow-auto p-6&quot;&gt;...&lt;/section&gt;
+  &lt;aside className=&quot;min-h-0 overflow-auto border-l border-q-border-subtle p-4&quot;&gt;...&lt;/aside&gt;
+&lt;/main&gt;
+</code></pre>
+<p>Collapse sidebars behind <code>Tabs</code>, <code>Dropdown</code>, or <code>Vault</code> on smaller screens when
+space is tight.</p>
+<h3>Form panel</h3>
+<pre><code class="language-tsx">&lt;section className=&quot;mx-auto grid w-full max-w-3xl gap-5 p-4 md:p-6&quot;&gt;
+  &lt;div className=&quot;grid gap-2&quot;&gt;
+    &lt;h1 className=&quot;text-q-title-lg-semi-bold&quot;&gt;Generate image&lt;/h1&gt;
+    &lt;p className=&quot;text-q-body-md-regular text-q-text-secondary&quot;&gt;Tune the prompt and settings.&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div className=&quot;grid gap-4 rounded-lg border border-q-border-subtle bg-q-background-secondary p-4&quot;&gt;
+    &lt;Textarea label=&quot;Prompt&quot; rows={5} /&gt;
+    &lt;Button variant=&quot;marketingPrimary&quot;&gt;Generate&lt;/Button&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+</code></pre>
+<p>Use cards for real grouped content, not as a wrapper around every section.</p>
+<h2>Typography Rules</h2>
+<p>Use Quanta composite typography utilities. Do not make the whole app
+<code>text-sm font-medium</code>.</p>
+<p>The composite utilities carry the brand fonts: title/headline/display utilities
+render Space Grotesk (the brand headline face) and body renders Inter — use the
+composite utility and the right font comes with it. Never import fonts.</p>
+<table>
+<thead>
+<tr>
+<th>Use</th>
+<th>Utility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>App page title / hero in a tool surface</td>
+<td><code>text-q-headline-sm-semi-bold</code> or <code>text-q-headline-md-semi-bold</code></td>
+</tr>
+<tr>
+<td>Large in-app display (generator headline)</td>
+<td><code>text-q-display-lg-bold</code> or <code>text-q-display-md-bold</code></td>
+</tr>
+<tr>
+<td>Section title</td>
+<td><code>text-q-title-md-semi-bold</code></td>
+</tr>
+<tr>
+<td>Item title</td>
+<td><code>text-q-title-sm-semi-bold</code> or <code>text-q-label-lg-semi-bold</code></td>
+</tr>
+<tr>
+<td>Body</td>
+<td><code>text-q-body-md-regular</code></td>
+</tr>
+<tr>
+<td>Meta/help</td>
+<td><code>text-q-body-sm-regular</code> or <code>text-q-caption-sm-medium</code></td>
+</tr>
+<tr>
+<td>Code/ids</td>
+<td><code>text-q-mono-sm-regular</code></td>
+</tr>
+</tbody>
+</table>
+<p>Color text with semantic utilities:</p>
+<ul>
+<li>Primary: <code>text-q-text-primary</code></li>
+<li>Supporting: <code>text-q-text-secondary</code></li>
+<li>Low emphasis: <code>text-q-text-tertiary</code></li>
+<li>Disabled: <code>text-q-text-disabled</code></li>
+<li>On brand/inverse surfaces: <code>text-q-text-inverse</code></li>
+</ul>
+<p>Readability details: prefer wrapping over truncation; when truncating, add
+<code>truncate</code> + <code>title</code>. Use <code>tabular-nums</code> for counters, prices, timers, and table
+number columns so digits don't jitter.</p>
+<h2>Button Rules</h2>
+<p>Use <code>@higgsfield/quanta/button</code>.</p>
+<pre><code class="language-tsx">import { Button } from '@higgsfield/quanta/button'
+import { Loader } from '@higgsfield/quanta/loader'
+</code></pre>
+<ul>
+<li><strong>Default size is <code>md</code>.</strong> Set <code>size="md"</code> on Buttons by default — Quanta's own
+default is <code>sm</code>, which reads too small on app surfaces, so pass <code>md</code> explicitly
+(drop to <code>sm</code>/<code>xs</code> only in genuinely dense toolbars/pills, per below).</li>
+<li>Main/generate action: <code>variant="marketingPrimary" size="md"</code> — the accent CTA
+every Higgsfield product uses for the generate/main action (like the composer's
+GENERATE button).</li>
+<li>Generate buttons ALWAYS show the credit cost INSIDE the button, formatted
+<code>{label} {sparkles icon} {credits}</code> — the sparkle is the branded asset
+(<code>import Sparkles from "@/assets/icon-sparkles-soft.svg?react"</code>, 14px) and
+the credits number inherits the label's font (no smaller/other typography) —
+never a separate cost line outside the button, never a costless generate
+button. See any template scaffold's submit.</li>
+<li>Variant colors do NOT follow the names: <code>primary</code> = flat LIME,
+<code>secondary</code> = solid WHITE, <code>tertiary</code> = dark white/10 glass, <code>ghost</code> =
+transparent. Ordinary actions and navigation use the dark <code>tertiary</code>/<code>ghost</code>;
+<code>secondary</code> (white) only where the real product shows a white button; flat
+lime <code>primary</code> is almost never right — the lime CTA is <code>marketingPrimary</code>
+(3D bevel).</li>
+<li>Destructive action: <code>danger</code> or <code>dangerSoft</code>.</li>
+<li>Soft brand emphasis: <code>brandSoft</code>.</li>
+<li>Marketing accents: <code>marketingPrimary</code>, <code>marketingSecondary</code>,
+<code>marketingTertiary</code>, <code>marketingGhost</code>.</li>
+<li>Busy: render a <code>Loader size="xs" color="neutral"</code> child while the request is
+in flight — there is NO Button <code>loading</code> prop.</li>
+<li>Dense toolbars use <code>size="sm"</code> or <code>size="xs"</code>.</li>
+<li>Icon-only buttons must pass <code>iconOnly</code>, fixed dimensions from the component,
+and an accessible label.</li>
+</ul>
+<h2>State Rules</h2>
+<p>Every generated app UI should have credible states:</p>
+<ul>
+<li>Loading: <code>Progress</code>, skeleton-like surfaces, or disabled controls. Anything
+over ~300ms shows a skeleton; anything async disables its trigger.</li>
+<li>Empty: a centered or region-local empty state with a title, supporting text,
+and a relevant action.</li>
+<li>Error: a styled message with retry/action; do not dump raw stack traces.</li>
+<li>Disabled/unavailable: disabled controls plus short explanation when needed.</li>
+<li>Selected/current: visible selected state independent of hover.</li>
+<li>Mutations feel instant: update the UI optimistically, reconcile on response,
+and offer <code>toast</code> + Undo for destructive/bulk operations.</li>
+</ul>
+<h2>Debugging Missing Styles</h2>
+<p>When styles look missing or spacing collapses:</p>
+<ol>
+<li>Check <code>app/src/styles.css</code> still imports <code>@higgsfield/quanta/tailwind.css</code>.</li>
+<li>Check <code>@source "../packages/quanta/src";</code> is present.</li>
+<li>Check <code>@theme { --spacing: 0.25rem; }</code> is still present after the Quanta
+  import to restore normal Tailwind layout spacing in generated app UIs.</li>
+<li>Check the app uses native spacing (<code>p-4</code>, <code>gap-2</code>) and q-prefixed semantic
+  utilities (<code>bg-q-*</code>, <code>text-q-*</code>).</li>
+<li>Check imports are from Quanta subpaths like <code>@higgsfield/quanta/button</code>.</li>
+<li>Check <code>app/packages/quanta/package.json</code> still depends on <code>@base-ui/react</code>.</li>
+</ol>
+<p>Run a quick stale-spacing scan when layouts look wrong:</p>
+<pre><code class="language-bash">rg 'px-400|p-400|py-300|mt-300|gap-200' app/src app/packages/quanta/ai
+</code></pre>
+<p>Fix any hits in app/source code to native spacing (<code>px-4</code>, <code>py-3</code>, <code>mt-3</code>,
+<code>gap-2</code>). It is fine for docs to mention old classes only inside bad examples.</p>
+<h2>Anti-Patterns</h2>
+<ul>
+<li>Raw palette classes like <code>bg-red-500</code>, <code>text-zinc-400</code>, and raw hex values in
+<code>className</code>/<code>style</code>.</li>
+<li>Invented <code>q-*</code> utilities like <code>bg-q-card-primary</code>.</li>
+<li><code>tablet:</code>/<code>desktop:</code> responsive variants — they do not exist; use <code>md:</code>/<code>xl:</code>
+(or quanta's <code>q-tablet:</code>/<code>q-desktop:</code>/<code>q-wide:</code>).</li>
+<li>Old spacing token classes: <code>p-400</code>, <code>px-400</code>, <code>gap-200</code>, <code>mt-300</code>.</li>
+<li>Raw q-spacing in app code: <code>p-q-400</code>, unless maintaining Quanta internals.</li>
+<li>Arbitrary text sizes such as <code>text-[13px]</code>.</li>
+<li>Splitting Quanta typography into <code>text-xl font-semibold</code>.</li>
+<li>Custom fonts / Google Fonts imports — Quanta typography is the type system.</li>
+<li>Restyling Quanta components: className/color/size/font overrides that change
+how a component looks, or any re-theming.</li>
+<li>Credits/balance displays or sign-out/account controls inside the app — the
+Higgsfield host chrome owns those.</li>
+<li>Floating loose text/actions on the canvas without a shell or region.</li>
+<li>Hover-only selected states; hover-only affordances of any kind.</li>
+<li>Empty/loading/error states as bare text.</li>
+<li>Emojis as icons; mixed icon families or stroke widths.</li>
+<li>Placeholder-only form labels; errors shown only in a toast or page top.</li>
+<li>Removing focus outlines; positive <code>tabindex</code>.</li>
+<li>Direct <code>cmdk</code>, <code>sonner</code>, <code>vaul</code>, Radix, or Base UI usage for new app UI when
+Quanta already provides the pattern.</li>
+</ul>
+<h2>Pre-Delivery Checklist</h2>
+<p>Mechanical scan first:</p>
+<pre><code class="language-bash">rg 'px-400|p-400|py-300|mt-300|gap-200|bg-(red|blue|zinc|gray|slate|neutral)-\d|text-(zinc|gray|slate|neutral)-\d|text-\[\d+px\]|#[0-9a-fA-F]{3,6}' app/src
+</code></pre>
+<p>Any hit in app source is a defect (docs/bad-examples excluded).</p>
+<p>Then verify by hand:</p>
+<ul>
+<li>[ ] First screen is the product surface, inside a stable shell</li>
+<li>[ ] All styling via q-tokens and Quanta components; spacing via native Tailwind</li>
+<li>[ ] Quanta components unstyled (no restyling overrides); no app header/top
+  bar, no credits/balance or sign-out controls anywhere (apps render inside
+  Higgsfield — host chrome owns those)</li>
+<li>[ ] Dark only: no theme toggle, no light mode, no <code>dark:</code> styling; every
+  generate button reads <code>{label} {sparkles} {credits}</code> (the branded
+  <code>@/assets/icon-sparkles-soft.svg</code> icon, credits in the label's font);
+  non-generation buttons use the dark <code>tertiary</code>/<code>ghost</code></li>
+<li>[ ] One icon family: Google Material Symbols outlined 400
+  (<code>@material-symbols/svg-400/outlined/&lt;name&gt;.svg?react</code>), <code>-fill</code> variants
+  only for tiny glyphs — never lucide or a second icon set</li>
+<li>[ ] Every interactive element: cursor-pointer, hover + pressed feedback,
+  visible <code>:focus-visible</code> ring</li>
+<li>[ ] Touch targets ≥ 44px; icon-only controls have accessible labels</li>
+<li>[ ] <code>Esc</code> closes overlays; modals trap and restore focus</li>
+<li>[ ] Select/Dropdown/Popover content portals above its owning Modal/Vault and
+  is neither clipped by a scroll rail nor hidden behind a sticky surface</li>
+<li>[ ] Forms: visible labels, validation on blur/submit, error under field with a
+  fix, focus moves to first invalid field</li>
+<li>[ ] Async: triggers disable while pending; &gt;300ms shows skeleton; success and
+  failure both have designed outcomes (toast / retry)</li>
+<li>[ ] Empty, loading, error, and selected states exist for every list/region</li>
+<li>[ ] Destructive actions: danger variant, separated, confirmed or undoable</li>
+<li>[ ] No page-level horizontal scroll; text truncates with <code>min-w-0</code>/<code>truncate</code>;
+  checked at 375px, tablet, desktop</li>
+<li>[ ] Mixed 1:1, 4:3, 16:9, and 9:16 generation cards reflow with <code>auto-fit</code>
+  columns and preserve complete media instead of inheriting one preset crop</li>
+<li>[ ] Motion 150–300ms, transform/opacity only, <code>prefers-reduced-motion</code>
+  respected</li>
+<li>[ ] State never conveyed by color alone</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

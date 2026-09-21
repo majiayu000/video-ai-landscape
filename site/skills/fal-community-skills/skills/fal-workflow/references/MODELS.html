@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MODELS · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/fal-workflow/references/MODELS.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Model Reference</h1>
+<p>Detailed configuration and usage for all supported models in fal.ai workflows.</p>
+<h2>Image Generation</h2>
+<h3>Nano Banana Pro (DEFAULT)</h3>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/nano-banana-pro&quot;,
+  &quot;input&quot;: {
+    &quot;prompt&quot;: &quot;$node-prompt.output&quot;,
+    &quot;aspect_ratio&quot;: &quot;16:9&quot;,
+    &quot;num_images&quot;: 1
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.images.0.url</code></p>
+<h3>Nano Banana Pro Edit (DEFAULT for editing)</h3>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/nano-banana-pro/edit&quot;,
+  &quot;input&quot;: {
+    &quot;prompt&quot;: &quot;$node-prompt.output&quot;,
+    &quot;image_urls&quot;: [&quot;$input.source_image&quot;],
+    &quot;aspect_ratio&quot;: &quot;16:9&quot;,
+    &quot;resolution&quot;: &quot;4K&quot;
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.images.0.url</code></p>
+<h3>Other Image Models</h3>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>App ID</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FLUX.1 Dev</td>
+<td><code>fal-ai/flux/dev</code></td>
+</tr>
+<tr>
+<td>FLUX.1 Schnell</td>
+<td><code>fal-ai/flux/schnell</code></td>
+</tr>
+<tr>
+<td>FLUX.1 Pro</td>
+<td><code>fal-ai/flux-pro</code></td>
+</tr>
+<tr>
+<td>Ideogram v3</td>
+<td><code>fal-ai/ideogram/v3</code></td>
+</tr>
+<tr>
+<td>Recraft v3</td>
+<td><code>fal-ai/recraft-v3</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Video Generation</h2>
+<h3>Seedance 1.5 Pro (DEFAULT)</h3>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/bytedance/seedance/v1.5/pro/image-to-video&quot;,
+  &quot;input&quot;: {
+    &quot;prompt&quot;: &quot;$node-video-prompt.output&quot;,
+    &quot;image_url&quot;: &quot;$node-image.images.0.url&quot;,
+    &quot;aspect_ratio&quot;: &quot;16:9&quot;,
+    &quot;resolution&quot;: &quot;720p&quot;,
+    &quot;duration&quot;: &quot;5&quot;,
+    &quot;generate_audio&quot;: true
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.video.url</code></p>
+<h3>Kling Video O1 (Image-to-Video with First/Last Frame)</h3>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/kling-video/o1/image-to-video&quot;,
+  &quot;input&quot;: {
+    &quot;prompt&quot;: &quot;$node-prompt.output&quot;,
+    &quot;image_url&quot;: &quot;$node-start-frame.images.0.url&quot;,
+    &quot;tail_image_url&quot;: &quot;$node-end-frame.images.0.url&quot;,
+    &quot;duration&quot;: &quot;5&quot;,
+    &quot;aspect_ratio&quot;: &quot;16:9&quot;
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.video.url</code></p>
+<h3>Kling Video 2.6 Pro (Best I2V)</h3>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/kling-video/v2.6/pro/image-to-video&quot;,
+  &quot;input&quot;: {
+    &quot;prompt&quot;: &quot;$node-prompt.output&quot;,
+    &quot;start_image_url&quot;: &quot;$node-image.images.0.url&quot;,
+    &quot;duration&quot;: &quot;5&quot;,
+    &quot;negative_prompt&quot;: &quot;blur, distort, and low quality&quot;,
+    &quot;generate_audio&quot;: true
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.video.url</code></p>
+<p><strong>Parameters:</strong>
+- <code>prompt</code> - Video description (can include speech for lip-sync)
+- <code>start_image_url</code> - Starting frame image URL
+- <code>duration</code> - Video length: <code>"5"</code> or <code>"10"</code> seconds
+- <code>negative_prompt</code> - What to avoid in generation
+- <code>generate_audio</code> - Enable audio generation from prompt</p>
+<p><strong>Best for:</strong> High quality image-to-video with optional audio generation and lip-sync support.</p>
+<h3>Other Video Models</h3>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>App ID</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Veo 3.1 Fast</td>
+<td><code>fal-ai/veo3.1/fast/image-to-video</code></td>
+<td>High quality</td>
+</tr>
+<tr>
+<td>Kling 2.6 Pro</td>
+<td><code>fal-ai/kling-video/v2.6/pro/image-to-video</code></td>
+<td><strong>Best I2V</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>LLM Models</h2>
+<h3>Text LLM (DEFAULT - No images)</h3>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;openrouter/router&quot;,
+  &quot;input&quot;: {
+    &quot;prompt&quot;: &quot;$input.user_input&quot;,
+    &quot;system_prompt&quot;: &quot;Your instructions here...&quot;,
+    &quot;model&quot;: &quot;google/gemini-2.5-flash&quot;,
+    &quot;temperature&quot;: 0.7
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.output</code></p>
+<h3>Vision LLM (When image analysis needed)</h3>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;openrouter/router/vision&quot;,
+  &quot;input&quot;: {
+    &quot;prompt&quot;: &quot;$input.user_request&quot;,
+    &quot;system_prompt&quot;: &quot;Analyze the image and...&quot;,
+    &quot;image_urls&quot;: [&quot;$node-image.images.0.url&quot;],
+    &quot;model&quot;: &quot;google/gemini-3-pro-preview&quot;,
+    &quot;reasoning&quot;: true
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.output</code></p>
+<p><strong>Available LLM Models:</strong>
+- <code>google/gemini-2.5-flash</code> - Fast, good quality
+- <code>google/gemini-3-pro-preview</code> - Best reasoning
+- <code>anthropic/claude-sonnet-4.5</code> - Best for complex tasks</p>
+<hr />
+<h2>Audio/Music Generation</h2>
+<h3>ElevenLabs Music</h3>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/elevenlabs/music&quot;,
+  &quot;input&quot;: {
+    &quot;prompt&quot;: &quot;Mysterious soundtrack, jungle themes, tribal percussion&quot;,
+    &quot;respect_sections_durations&quot;: true,
+    &quot;output_format&quot;: &quot;mp3_44100_128&quot;
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.audio_file.url</code></p>
+<h3>MMAudio (Video to Audio)</h3>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/mmaudio-v2&quot;,
+  &quot;input&quot;: {
+    &quot;video_url&quot;: &quot;$node-video.video.url&quot;,
+    &quot;prompt&quot;: &quot;Ambient nature sounds&quot;
+  }
+}
+</code></pre>
+<h3>Stable Audio</h3>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/stable-audio&quot;,
+  &quot;input&quot;: {
+    &quot;prompt&quot;: &quot;Cinematic orchestral music&quot;
+  }
+}
+</code></pre>
+<h3>Other Music Models</h3>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>App ID</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MiniMax Music v2</td>
+<td><code>fal-ai/minimax-music/v2</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Text-to-Speech</h2>
+<h3>ElevenLabs TTS v3</h3>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/elevenlabs/tts/eleven-v3&quot;,
+  &quot;input&quot;: {
+    &quot;text&quot;: &quot;$node-llm.output&quot;,
+    &quot;voice&quot;: &quot;Aria&quot;,
+    &quot;stability&quot;: 0.5,
+    &quot;similarity_boost&quot;: 0.75,
+    &quot;speed&quot;: 1
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.audio.url</code></p>
+<p><strong>Parameters:</strong>
+- <code>text</code> - Text to convert to speech
+- <code>voice</code> - Voice name (e.g., "Aria", "Roger", "Sarah")
+- <code>stability</code> - Voice stability (0-1)
+- <code>similarity_boost</code> - Voice clarity (0-1)
+- <code>speed</code> - Speech speed multiplier</p>
+<h3>MiniMax Speech 2.6 HD (Best Quality)</h3>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/minimax/speech-2.6-hd&quot;,
+  &quot;input&quot;: {
+    &quot;prompt&quot;: &quot;$node-llm.output&quot;,
+    &quot;voice_setting&quot;: {
+      &quot;voice_id&quot;: &quot;Wise_Woman&quot;,
+      &quot;speed&quot;: 1,
+      &quot;vol&quot;: 1,
+      &quot;pitch&quot;: 0
+    },
+    &quot;output_format&quot;: &quot;mp3&quot;
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.audio.url</code></p>
+<p><strong>Parameters:</strong>
+- <code>prompt</code> - Text to convert to speech
+- <code>voice_setting.voice_id</code> - Voice ID (e.g., "Wise_Woman", "Young_Man")
+- <code>voice_setting.speed</code> - Speech speed (0.5-2)
+- <code>voice_setting.vol</code> - Volume (0-1)
+- <code>voice_setting.pitch</code> - Pitch adjustment (-12 to 12)
+- <code>output_format</code> - Output format: <code>"mp3"</code>, <code>"wav"</code>, <code>"hex"</code></p>
+<h3>MiniMax Voice Clone</h3>
+<p>Clone a voice from audio sample, then use the cloned voice ID in MiniMax Speech.</p>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/minimax/voice-clone&quot;,
+  &quot;input&quot;: {
+    &quot;audio_url&quot;: &quot;$input.voice_sample&quot;,
+    &quot;text&quot;: &quot;Preview text for the cloned voice&quot;,
+    &quot;model&quot;: &quot;speech-02-hd&quot;
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.audio.url</code>, <code>$node.voice_id</code></p>
+<p><strong>Use cloned voice in Speech 2.6 HD:</strong></p>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/minimax/speech-2.6-hd&quot;,
+  &quot;input&quot;: {
+    &quot;prompt&quot;: &quot;$node-llm.output&quot;,
+    &quot;voice_setting&quot;: {
+      &quot;voice_id&quot;: &quot;$node-voice-clone.voice_id&quot;
+    }
+  }
+}
+</code></pre>
+<h3>Other TTS Models</h3>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>App ID</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MiniMax Speech 2.6 Turbo</td>
+<td><code>fal-ai/minimax/speech-2.6-turbo</code></td>
+<td>Fast</td>
+</tr>
+<tr>
+<td>Chatterbox</td>
+<td><code>fal-ai/chatterbox/text-to-speech/multilingual</code></td>
+<td>Multi-language</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Text Utilities (CRITICAL for combining values)</h2>
+<p><strong>⚠️ These are the ONLY ways to combine text values - string interpolation is NOT supported!</strong></p>
+<h3>Text Concat (2 texts)</h3>
+<p>Concatenates exactly TWO text values. <code>text1</code> can be static text!</p>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/text-concat&quot;,
+  &quot;input&quot;: {
+    &quot;text1&quot;: &quot;Brand expert response:&quot;,
+    &quot;text2&quot;: &quot;$node-llm.output&quot;
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.results</code></p>
+<p><strong>Use Cases:</strong>
+- Add a label/prefix to a variable: <code>"text1": "Scene 1:", "text2": "$node.output"</code>
+- Combine static instruction with dynamic content</p>
+<h3>Merge Text (Multiple texts)</h3>
+<p>Merges an ARRAY of text values with a separator.</p>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/workflow-utilities/merge-text&quot;,
+  &quot;input&quot;: {
+    &quot;texts&quot;: [
+      &quot;$node-a.results&quot;,
+      &quot;$node-b.results&quot;,
+      &quot;$node-c.results&quot;
+    ],
+    &quot;separator&quot;: &quot;------&quot;
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.text</code></p>
+<p><strong>Use Cases:</strong>
+- Combine 3+ LLM outputs before passing to next node
+- Merge multiple expert responses into single context</p>
+<h3>Pattern: Label + Merge</h3>
+<p>Common pattern for combining multiple labeled outputs:</p>
+<pre><code class="language-json">// Step 1: Add labels with text-concat
+&quot;label-brand&quot;: {
+  &quot;app&quot;: &quot;fal-ai/text-concat&quot;,
+  &quot;input&quot;: {
+    &quot;text1&quot;: &quot;Brand expert:&quot;,
+    &quot;text2&quot;: &quot;$brand-llm.output&quot;
+  }
+},
+&quot;label-visual&quot;: {
+  &quot;app&quot;: &quot;fal-ai/text-concat&quot;,
+  &quot;input&quot;: {
+    &quot;text1&quot;: &quot;Visual director:&quot;,
+    &quot;text2&quot;: &quot;$visual-llm.output&quot;
+  }
+},
+
+// Step 2: Merge labeled outputs
+&quot;merged-context&quot;: {
+  &quot;depends&quot;: [&quot;label-brand&quot;, &quot;label-visual&quot;],
+  &quot;app&quot;: &quot;fal-ai/workflow-utilities/merge-text&quot;,
+  &quot;input&quot;: {
+    &quot;texts&quot;: [&quot;$label-brand.results&quot;, &quot;$label-visual.results&quot;],
+    &quot;separator&quot;: &quot;\n\n---\n\n&quot;
+  }
+},
+
+// Step 3: Use merged context
+&quot;final-llm&quot;: {
+  &quot;depends&quot;: [&quot;merged-context&quot;],
+  &quot;input&quot;: {
+    &quot;prompt&quot;: &quot;$merged-context.text&quot;
+  }
+}
+</code></pre>
+<hr />
+<h2>FFmpeg Utilities (CRITICAL)</h2>
+<h3>Extract Frame from Video</h3>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/ffmpeg-api/extract-frame&quot;,
+  &quot;input&quot;: {
+    &quot;video_url&quot;: &quot;$node-video.video.url&quot;,
+    &quot;frame_type&quot;: &quot;first&quot;
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.frame.url</code></p>
+<p><strong>frame_type options:</strong> <code>"first"</code> or <code>"last"</code></p>
+<p><strong>Use Cases:</strong>
+- Get last frame for video extension
+- Get first frame for transitions
+- Extract frame for first/last frame video generation</p>
+<h3>Merge Multiple Videos</h3>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/ffmpeg-api/merge-videos&quot;,
+  &quot;input&quot;: {
+    &quot;video_urls&quot;: [
+      &quot;$node-video-1.video.url&quot;,
+      &quot;$node-video-2.video.url&quot;,
+      &quot;$node-video-3.video.url&quot;
+    ]
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.video.url</code></p>
+<h3>Merge Audio and Video</h3>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/ffmpeg-api/merge-audio-video&quot;,
+  &quot;input&quot;: {
+    &quot;video_url&quot;: &quot;$node-video.video.url&quot;,
+    &quot;audio_url&quot;: &quot;$node-music.audio_file.url&quot;
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.video.url</code></p>
+<hr />
+<h2>Image Utilities</h2>
+<h3>Crop Image</h3>
+<p>Crops a portion of an image using percentage-based coordinates.</p>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/workflow-utilities/crop-image&quot;,
+  &quot;input&quot;: {
+    &quot;image_url&quot;: &quot;$node-image.images.0.url&quot;,
+    &quot;x_percent&quot;: 0,
+    &quot;y_percent&quot;: 0,
+    &quot;width_percent&quot;: 33.333333,
+    &quot;height_percent&quot;: 33.333333
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.image.url</code></p>
+<p><strong>Parameters:</strong>
+- <code>x_percent</code>: Starting X position (0-100)
+- <code>y_percent</code>: Starting Y position (0-100)
+- <code>width_percent</code>: Width of crop area (0-100)
+- <code>height_percent</code>: Height of crop area (0-100)</p>
+<p><strong>Use Cases:</strong>
+- Split image into grid tiles (3x3, 2x2, etc.)
+- Extract specific region from generated image
+- Create multiple crops for parallel processing</p>
+<p><strong>Example: 3x3 Grid Split</strong></p>
+<pre><code class="language-json">// Top-left tile
+&quot;crop-1&quot;: { &quot;input&quot;: { &quot;x_percent&quot;: 0, &quot;y_percent&quot;: 0, &quot;width_percent&quot;: 33.33, &quot;height_percent&quot;: 33.33 } }
+// Top-center tile
+&quot;crop-2&quot;: { &quot;input&quot;: { &quot;x_percent&quot;: 33.33, &quot;y_percent&quot;: 0, &quot;width_percent&quot;: 33.33, &quot;height_percent&quot;: 33.33 } }
+// Top-right tile
+&quot;crop-3&quot;: { &quot;input&quot;: { &quot;x_percent&quot;: 66.67, &quot;y_percent&quot;: 0, &quot;width_percent&quot;: 33.33, &quot;height_percent&quot;: 33.33 } }
+// ... and so on for all 9 tiles
+</code></pre>
+<hr />
+<h2>Image Processing</h2>
+<h3>Upscale Image</h3>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/seedvr/upscale/image&quot;,
+  &quot;input&quot;: {
+    &quot;image_url&quot;: &quot;$node-image.images.0.url&quot;
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.image.url</code></p>
+<h3>Remove Background</h3>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/bria/background/remove&quot;,
+  &quot;input&quot;: {
+    &quot;image_url&quot;: &quot;$node-image.images.0.url&quot;
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.image.url</code></p>
+<hr />
+<h2>3D Generation (Image to 3D)</h2>
+<h3>Hunyuan3D v3 (Recommended)</h3>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/hunyuan3d-v3/image-to-3d&quot;,
+  &quot;input&quot;: {
+    &quot;input_image_url&quot;: &quot;$node-image.images.0.url&quot;,
+    &quot;face_count&quot;: 500000,
+    &quot;generate_type&quot;: &quot;Normal&quot;,
+    &quot;polygon_type&quot;: &quot;triangle&quot;
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.model_mesh.url</code></p>
+<p><strong>Parameters:</strong>
+- <code>input_image_url</code> - Source image URL
+- <code>face_count</code> - Mesh detail level (default: 500000)
+- <code>generate_type</code> - Generation mode: <code>"Normal"</code>, <code>"Fast"</code>
+- <code>polygon_type</code> - Mesh type: <code>"triangle"</code>, <code>"quad"</code></p>
+<h3>Rodin v2 (Multi-view)</h3>
+<pre><code class="language-json">{
+  &quot;app&quot;: &quot;fal-ai/hyper3d/rodin/v2&quot;,
+  &quot;input&quot;: {
+    &quot;input_image_urls&quot;: [
+      &quot;$node-front.images.0.url&quot;,
+      &quot;$node-left.images.0.url&quot;,
+      &quot;$node-right.images.0.url&quot;,
+      &quot;$node-back.images.0.url&quot;
+    ],
+    &quot;quality_mesh_option&quot;: &quot;500K Triangle&quot;,
+    &quot;material&quot;: &quot;All&quot;
+  }
+}
+</code></pre>
+<p><strong>Output:</strong> <code>$node.model_mesh.url</code></p>
+<p><strong>Best for:</strong> Multi-view 3D generation (provide multiple angles for better results)</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

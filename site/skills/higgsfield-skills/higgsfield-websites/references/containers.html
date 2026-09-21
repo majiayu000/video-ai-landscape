@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>containers · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/containers.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Containers — heavy &amp; long-running work</h1>
+<p>Use a <strong>container</strong> when the work can't run in a Worker: ffmpeg/video, a headless
+browser, image processing, a long (minutes-to-hours) job, or any CPU/memory-heavy
+task. A container is a <strong>Docker image</strong> that runs alongside your Worker, fronted
+by a <strong>Durable Object</strong>. It's <strong>off by default</strong> — opt in only when you need it.</p>
+<p>Don't reach for a container for ordinary backend logic — use server functions /
+server routes (see <code>references/runtime-and-infra.md</code>). Containers cost compute while
+running; they sleep when idle.</p>
+<h2>The shape (what the platform fixes vs what you write)</h2>
+<p>The platform <strong>fixes</strong> the names so you can't mis-wire them:
+- Durable Object class <strong><code>AppContainer</code></strong>, binding <strong><code>env.CONTAINER</code></strong>, one
+  instance type, <strong><code>max_instances: 1</code></strong>.</p>
+<blockquote>
+<p><strong><code>max_instances: 1</code> means there is exactly ONE container instance for the
+whole website.</strong> Design for a <strong>single shared container that serves every job</strong>
+(route to it by a STABLE name, track per-job state inside the container) — NOT
+one container per job, and NOT a pool. <code>getByName(jobId)</code> is wrong here: each
+distinct name wants its own instance, and only one is allowed.</p>
+</blockquote>
+<p><strong>You write</strong> these:
+0. add the dep (not in the base template): <code>cd app &amp;&amp; bun add @cloudflare/containers</code>.
+1. <code>app/app.manifest.json</code> → opt in.
+2. <code>app/container/Dockerfile</code> (+ its server) → the image, listening on a port.
+3. <code>export class AppContainer extends Container</code> in <code>app/src/server.ts</code>.</p>
+<h2>1. Opt in — <code>app/app.manifest.json</code></h2>
+<pre><code class="language-jsonc">{
+  &quot;container&quot;: { &quot;instanceType&quot;: &quot;standard-2&quot;, &quot;port&quot;: 8080, &quot;sleepAfter&quot;: &quot;5m&quot; }
+}
+// or just  &quot;container&quot;: true  for the defaults above
+</code></pre>
+<p><code>port</code> must match the port your container server listens on. <code>sleepAfter</code> is the
+<strong>idle</strong> shutdown — active jobs keep themselves alive (see §4).</p>
+<h2>2. The image — <code>app/container/Dockerfile</code></h2>
+<p>Keep it in its own folder (<code>app/container/</code>) so it's clearly the container's
+image, not the website. It must run an HTTP server on the <code>port</code> from the manifest:</p>
+<pre><code class="language-dockerfile"># app/container/Dockerfile  (example: ffmpeg + a tiny Node server)
+FROM node:20-slim
+RUN apt-get update &amp;&amp; apt-get install -y ffmpeg &amp;&amp; rm -rf /var/lib/apt/lists/*
+WORKDIR /srv
+COPY server.mjs .
+EXPOSE 8080
+CMD [&quot;node&quot;, &quot;server.mjs&quot;]
+</code></pre>
+<p><code>app/container/server.mjs</code> accepts a job, does the heavy work in the <strong>background</strong>
+(returns <code>202</code> immediately), and exposes a <strong>per-job</strong> <code>GET /status?jobId=…</code>.
+Because ONE container serves all jobs, state is keyed per job — never a single
+global:</p>
+<pre><code class="language-js">import http from &quot;node:http&quot;;
+
+// ONE shared container serves ALL jobs → state MUST be per-job, not global.
+const jobs = new Map(); // jobId -&gt; { status, progress, outputKey, error }
+
+http.createServer(async (req, res) =&gt; {
+  const url = new URL(req.url, &quot;http://c&quot;);
+
+  if (req.method === &quot;POST&quot; &amp;&amp; url.pathname === &quot;/start&quot;) {
+    const job = await readJson(req);                 // { jobId, containerToken, appBaseUrl, ... }
+    // Idempotent: the DO may re-send /start while the container is booting.
+    if (jobs.get(job.jobId)?.status === &quot;running&quot;) { res.writeHead(202).end(&quot;running&quot;); return; }
+    jobs.set(job.jobId, { status: &quot;running&quot;, progress: 0, outputKey: null, error: null });
+    res.writeHead(202).end(&quot;started&quot;);               // return FAST — work runs detached
+    runJob(job).catch((e) =&gt;
+      jobs.set(job.jobId, { ...jobs.get(job.jobId), status: &quot;error&quot;, error: String(e) }));
+    return;
+  }
+
+  if (url.pathname === &quot;/status&quot;) {
+    const jobId = url.searchParams.get(&quot;jobId&quot;);
+    // Unknown jobId → &quot;unknown&quot; so the DO knows to (re)send /start (it may have
+    // booted fresh, or slept and lost this job from the Map).
+    const state = jobs.get(jobId) ?? { status: &quot;unknown&quot; };
+    res.writeHead(200, { &quot;content-type&quot;: &quot;application/json&quot; }).end(JSON.stringify(state));
+    return;
+  }
+  res.writeHead(404).end();
+}).listen(8080, () =&gt; console.log(&quot;[CTR] listening on 8080&quot;));
+
+async function runJob(job) {
+  // ... run ffmpeg, etc. (can take many minutes) ...
+  // If you need Higgsfield data, call YOUR app (NOT fnf directly) with the token:
+  //   await fetch(`${job.appBaseUrl}/api/whatever`,
+  //     { headers: { Authorization: `Bearer ${job.containerToken}` } });
+  jobs.set(job.jobId, { ...jobs.get(job.jobId), status: &quot;done&quot;, progress: 100,
+                        outputKey: `jobs/${job.jobId}/out.mp4` });
+}
+</code></pre>
+<blockquote>
+<p>The container disk is <strong>ephemeral</strong> (gone on restart). Durable state lives in
+D1/R2 via the Worker — never rely on files in the container.</p>
+</blockquote>
+<h2>3. The Durable Object — <code>app/src/server.ts</code> (the boot is the tricky part)</h2>
+<p>Export a class named <strong>exactly <code>AppContainer</code></strong>. Before the code, the two lessons
+that decide whether a container website works at all:</p>
+<ul>
+<li><strong>The cold boot takes far longer than a few seconds</strong> (image pull + process
+  start — easily 20–60s for a heavy image). <strong>Never abort it.</strong> A short
+  <code>AbortController</code>/timeout on the first <code>containerFetch</code> cancels the cold start
+  → the runtime returns <code>Failed to start container: Container request aborted</code>
+  → the job sticks at <strong>"starting" forever</strong>.</li>
+<li><strong>Never block a DO alarm on the boot either.</strong> An alarm (<code>schedule</code>/<code>tick</code>) has
+  a tight wall-time budget; a <code>containerFetch</code> that blocks on a cold boot gets the
+  invocation killed (<code>exceededWallTime</code>) before it can re-arm.</li>
+</ul>
+<p>So: <strong>boot patiently in the background</strong> (<code>ctx.waitUntil</code>, generous timeout) from
+the kickoff REQUEST, and make <code>tick</code> a pure <strong>monitor</strong> that touches the container
+only once it's actually running.</p>
+<pre><code class="language-ts">import { Container } from &quot;@cloudflare/containers&quot;;
+import { bindings } from &quot;./lib/bindings.server&quot;;
+
+const MAX_JOB_MS = 3 * 60 * 60 * 1000; // 3h hard deadline (crash/hang backstop)
+const BOOT_TIMEOUT_MS = 120_000;       // PATIENT cold-boot budget (background)
+const POLL_TIMEOUT_MS = 6_000;         // fast health-check ONCE the container is up
+
+export class AppContainer extends Container {
+  defaultPort = 8080;  // must match the manifest port + the container server
+  sleepAfter = &quot;5m&quot;;   // idle shutdown; an ACTIVE job renews this (below)
+
+  private booting = false; // one boot in flight at a time (shared across jobs)
+
+  // ctx.waitUntil — the Container base doesn't surface ctx, so cast.
+  private bg(p: Promise&lt;unknown&gt;) { (this as any).ctx.waitUntil(p); }
+
+  // Is the container process up? A PURE read of the raw flag — it never triggers
+  // a start (unlike containerFetch, which auto-starts and, if aborted mid-boot,
+  // yields &quot;Failed to start container: request aborted&quot;).
+  private running(): boolean { return Boolean((this as any).ctx?.container?.running); }
+
+  // Boot PATIENTLY and deliver POST /start. MUST run via this.bg(...) — never
+  // awaited in an alarm — so the long cold boot blocks nothing AND is never
+  // aborted. A SHORT timeout here is the #1 way to get stuck at &quot;starting&quot;.
+  private async bootAndStart(job: any) {
+    try {
+      await this.containerFetch(&quot;http://c/start&quot;, {
+        method: &quot;POST&quot;,
+        headers: { &quot;content-type&quot;: &quot;application/json&quot; },
+        body: JSON.stringify(job),
+        signal: AbortSignal.timeout(BOOT_TIMEOUT_MS), // generous, NOT 6s
+      });
+    } catch (e) { console.log(`[DO] bootAndStart ${job.jobId} THREW ${e}`); }
+  }
+
+  // Kickoff hands the full job here. Boot in the background; start the monitor.
+  override async fetch(req: Request): Promise&lt;Response&gt; {
+    const url = new URL(req.url);
+    if (req.method === &quot;POST&quot; &amp;&amp; url.pathname === &quot;/__keepalive/start&quot;) {
+      const job = await req.json();
+      this.booting = true;
+      this.bg(this.bootAndStart(job).finally(() =&gt; (this.booting = false)));
+      this.schedule(1, &quot;tick&quot;, { job, startedAt: Date.now() }); // monitor loop
+      return Response.json({ ok: true });
+    }
+    return super.fetch(req); // your normal SSR / routes
+  }
+
+  // Monitor + recovery — one loop per job. Talks to the container ONLY when it's
+  // running, so it never aborts the in-flight boot.
+  async tick(p: { job: any; startedAt: number }) {
+    const env = bindings();
+    const { jobId } = p.job;
+
+    if (Date.now() - p.startedAt &gt; MAX_JOB_MS) {       // crash/hang backstop
+      await env.DB?.prepare(&quot;UPDATE jobs SET status='timed_out' WHERE id=? AND status!='done'&quot;).bind(jobId).run();
+      await this.stopIfIdle();                         // do NOT destroy() — siblings share this container
+      return;
+    }
+    // Already finished? stop looping (a stale tick must not pin the container).
+    const row = await env.DB?.prepare(&quot;SELECT status FROM jobs WHERE id=?&quot;).bind(jobId).first&lt;{ status: string }&gt;();
+    if (!row || [&quot;done&quot;, &quot;error&quot;, &quot;timed_out&quot;].includes(row.status)) { await this.stopIfIdle(); return; }
+
+    this.renewActivityTimeout();                       // an active job keeps it alive
+
+    // Not up yet → kick ONE patient background boot + re-arm. NEVER poll a
+    // not-running container: containerFetch would auto-start it and this poll's
+    // timeout would abort the cold boot.
+    if (!this.running()) {
+      if (!this.booting) { this.booting = true; this.bg(this.bootAndStart(p.job).finally(() =&gt; (this.booting = false))); }
+      this.schedule(3, &quot;tick&quot;, p);
+      return;
+    }
+
+    // Up → poll THIS job's status (fast; the port is open).
+    let s: any = null;
+    try {
+      const r = await this.containerFetch(`http://c/status?jobId=${jobId}`, { signal: AbortSignal.timeout(POLL_TIMEOUT_MS) });
+      const body = await r.text();
+      if (r.ok &amp;&amp; body.trimStart().startsWith(&quot;{&quot;)) s = JSON.parse(body);
+      else console.log(`[DO] status non-json http=${r.status} ${body.slice(0, 200)}`); // surfaces runtime errors verbatim
+    } catch (e) { console.log(`[DO] status unreachable ${e}`); }
+
+    if (!s) { this.schedule(3, &quot;tick&quot;, p); return; }   // booting/race → retry soon
+
+    if (s.status === &quot;unknown&quot;) {                      // up but lost this job → re-send /start
+      this.bg(this.bootAndStart(p.job));
+      this.schedule(3, &quot;tick&quot;, p);
+      return;
+    }
+
+    // Mirror progress to D1; finish on done/error.
+    await env.DB?.prepare(&quot;UPDATE jobs SET status=?, output=COALESCE(?, output) WHERE id=? AND status!='done'&quot;)
+      .bind(s.status, s.outputKey ?? null, jobId).run();
+    if (s.status === &quot;done&quot; || s.status === &quot;error&quot;) { await this.stopIfIdle(); return; }
+    this.schedule(5, &quot;tick&quot;, p);                       // re-arm (~5s)
+  }
+
+  // Stop the SHARED container ONLY when no job is still active (stopping it
+  // mid-job would kill siblings). D1 is the source of truth.
+  private async stopIfIdle() {
+    const env = bindings();
+    const row = await env.DB?.prepare(&quot;SELECT COUNT(*) AS n FROM jobs WHERE status IN ('queued','running')&quot;).first&lt;{ n: number }&gt;();
+    if (!row || row.n === 0) await this.stop().catch(() =&gt; {});
+  }
+}
+
+// ... your normal default `export default { fetch }` SSR handler stays below ...
+</code></pre>
+<p>Don't override the Durable Object <code>alarm()</code> — <code>Container</code> uses it internally; use
+<code>schedule()</code> for periodic work.</p>
+<h2>4. Long jobs — never block a request; keep it alive; have a deadline</h2>
+<ul>
+<li><strong>Kickoff returns fast.</strong> The browser hits your website; you write the job row, hand
+  it to the DO, and return a <code>jobId</code> in milliseconds — you do NOT hold the request
+  for the boot or the job.</li>
+<li><strong>One shared container.</strong> Route to the DO by a <strong>stable name</strong> so every job
+  lands on the single allowed instance; the DO boots it once and monitors per job.</li>
+<li><strong>Persist + poll.</strong> Write a <code>jobs</code> row to D1 (<code>status=running</code>); the browser
+  polls a cheap <code>GET /api/jobs/:id</code> every few seconds (not one long connection).</li>
+<li><strong>Keep-alive.</strong> While any job runs, <code>tick</code> calls <code>renewActivityTimeout()</code>.
+  <code>sleepAfter</code> only kills a TRULY idle container.</li>
+<li><strong>Deadline.</strong> The 3h cap stops renewing a hung/crashed container so it can't
+  bill forever.</li>
+</ul>
+<p>Kickoff + status routes (TanStack server routes):</p>
+<pre><code class="language-ts">// POST /api/jobs — start a job (returns immediately)
+const jobId = crypto.randomUUID();
+await env.DB.prepare(&quot;INSERT INTO jobs (id, status) VALUES (?, 'running')&quot;).bind(jobId).run();
+
+// ONE shared container for the whole app → route by a STABLE name, not jobId.
+const stub = env.CONTAINER.getByName(&quot;app&quot;);
+await stub.fetch(new Request(&quot;https://do/__keepalive/start&quot;, {   // the DO route, not the container
+  method: &quot;POST&quot;,
+  body: JSON.stringify({
+    jobId,
+    containerToken,                                  // from x-hf-container-token (see §5)
+    appBaseUrl: new URL(request.url).origin,
+    /* ...your job spec... */
+  }),
+}));
+return Response.json({ jobId });
+
+// GET /api/jobs/:id — cheap status the browser polls
+const row = await env.DB.prepare(&quot;SELECT status, output FROM jobs WHERE id=?&quot;).bind(id).first();
+return Response.json(row);
+</code></pre>
+<h2>5. Calling Higgsfield (fnf) from the container — the container token</h2>
+<p>A background container has no signed-in viewer, so it can't call fnf directly.
+Instead it calls <strong>your website's own API</strong> as the viewer, using a short-lived
+<strong>container token</strong>. The flow:</p>
+<ol>
+<li><strong>Browser, at kickoff</strong> — mint a token (same-origin; the platform handles it):
+   <code>js
+   const { token } = await fetch("/__auth/container-token", { method: "POST" }).then(r =&gt; r.json());
+   await fetch("/api/jobs", { method: "POST", body: form, headers: { "x-hf-container-token": token } });</code></li>
+<li><strong>Your website</strong> reads <code>x-hf-container-token</code> and passes it to the container at
+   <code>/start</code> (as <code>containerToken</code> above).</li>
+<li><strong>The container</strong>, when it needs fnf, calls <strong>your website</strong> (not fnf):
+   <code>js
+   await fetch(`${appBaseUrl}/api/generate`, {
+     method: "POST",
+     headers: { Authorization: `Bearer ${containerToken}` },
+     body: JSON.stringify({ ... }),
+   });</code></li>
+<li><strong>Your <code>/api/generate</code> route</strong> calls fnf the normal way (server-side, via the
+   fnf SDK / <code>https://fnf.internal/*</code>) — the platform injects the viewer's
+   credentials automatically. You write nothing special; it works because the
+   platform resolved the viewer from the container token.</li>
+</ol>
+<blockquote>
+<p><strong>Do NOT forward the container token to fnf.</strong> Your website calls <code>fnf.internal</code>
+with <strong>no</strong> auth header — the platform stamps in the viewer's real creds. The
+container token is ONLY for the container→your-website hop.</p>
+</blockquote>
+<p>The token is scoped to <strong>one user + one website</strong> and expires in <strong>3h</strong>. The
+container never holds a real Higgsfield/Cloudflare credential.</p>
+<h2>6. Results &amp; big files</h2>
+<ul>
+<li>Small results / status → the DO writes <strong>D1</strong> (it has <code>env.DB</code>).</li>
+<li>Big outputs (a video) → write to <strong>R2</strong> (declare <code>"r2": true</code>); the container
+  reports only the <strong>key</strong>, and your website/DO records it in D1. Don't pass big blobs
+  through HTTP bodies.</li>
+</ul>
+<h2>Gotchas (read before shipping)</h2>
+<ul>
+<li><strong>Cold-boot abort (#1 cause of "stuck at starting")</strong> — the first
+  <code>containerFetch</code> triggers the cold boot and waits for the port; a short
+  timeout/abort cancels the boot → <code>Failed to start container: Container request
+  aborted</code>. Boot <strong>patiently in the background</strong> (<code>ctx.waitUntil</code>, generous
+  timeout); only the <em>monitor</em> polls (with a short timeout) once the container is
+  <code>running</code>.</li>
+<li><strong>Don't block the alarm on the boot</strong> — a <code>tick</code> that awaits a cold boot is
+  killed (<code>exceededWallTime</code>). Kick the boot via <code>ctx.waitUntil</code> and re-arm.</li>
+<li><strong>Idle-kill</strong> — a busy-but-no-requests container sleeps unless you
+  <code>renewActivityTimeout()</code> (the <code>tick</code> loop). Easy to forget.</li>
+<li><strong>Ephemeral disk</strong> — container files vanish on restart; persist via D1/R2.</li>
+<li><strong>ONE shared instance</strong> — <code>max_instances</code> is 1. Route by a <strong>stable name</strong> and
+  track <strong>per-job state in the container</strong> (a <code>Map</code>); never <code>getByName(jobId)</code> or
+  a pool, and never <code>destroy()</code>/<code>stop()</code> the container while a sibling job runs.</li>
+<li><strong>Cold start</strong> — the first request after idle takes tens of seconds to boot;
+  show a "starting…" state and let the monitor converge.</li>
+<li><strong><code>port</code> must match</strong> the manifest, the Dockerfile <code>EXPOSE</code>/listen, and
+  <code>defaultPort</code> in <code>AppContainer</code>.</li>
+<li><strong>Don't call fnf from the container directly</strong> — always go through your website's
+  API with the container token (§5), and your website calls <code>fnf.internal</code> with no
+  token.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>tool-use · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/csharp/claude-api/tool-use.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Tool Use - C</h1>
+<p>For conceptual overview (tool definitions, tool choice, tips), see <a href="../../shared/tool-use-concepts.html">shared/tool-use-concepts.md</a>.</p>
+<h2>Tool Use</h2>
+<h3>Defining a tool</h3>
+<p><code>Tool</code> (NOT <code>ToolParam</code>) with an <code>InputSchema</code> record. <code>InputSchema.Type</code> is auto-set to <code>"object"</code> by the constructor - don't set it. <code>ToolUnion</code> has an implicit conversion from <code>Tool</code>, triggered by the collection expression <code>[...]</code>.</p>
+<pre><code class="language-csharp">using System.Text.Json;
+using Anthropic.Models.Messages;
+
+var parameters = new MessageCreateParams
+{
+    Model = Model.ClaudeSonnet4_6,
+    MaxTokens = 16000,
+    Tools = [
+        new Tool {
+            Name = &quot;get_weather&quot;,
+            Description = &quot;Get the current weather in a given location&quot;,
+            InputSchema = new() {
+                Properties = new Dictionary&lt;string, JsonElement&gt; {
+                    [&quot;location&quot;] = JsonSerializer.SerializeToElement(
+                        new { type = &quot;string&quot;, description = &quot;City name&quot; }),
+                },
+                Required = [&quot;location&quot;],
+            },
+        },
+    ],
+    Messages = [new() { Role = Role.User, Content = &quot;Weather in Paris?&quot; }],
+};
+</code></pre>
+<p>Derived from <code>anthropic-sdk-csharp/src/Anthropic/Models/Messages/Tool.cs</code> and <code>ToolUnion.cs:799</code> (implicit conversion).</p>
+<p>See <a href="../../shared/tool-use-concepts.html">shared tool use concepts</a> for the loop pattern.</p>
+<h3>Converting response content to the follow-up assistant message</h3>
+<p>When echoing Claude's response back in the assistant turn, <strong>there is no <code>.ToParam()</code> helper</strong> - manually reconstruct each <code>ContentBlock</code> variant as its <code>*Param</code> counterpart. Do NOT use <code>new ContentBlockParam(block.Json)</code>: it compiles and serializes, but <code>.Value</code> stays <code>null</code> so <code>TryPick*</code>/<code>Validate()</code> fail (degraded JSON pass-through, not the typed path).</p>
+<pre><code class="language-csharp">using Anthropic.Models.Messages;
+
+Message response = await client.Messages.Create(parameters);
+
+// No .ToParam() - reconstruct per variant. Implicit conversions from each
+// *Param type to ContentBlockParam mean no explicit wrapper.
+List&lt;ContentBlockParam&gt; assistantContent = [];
+List&lt;ContentBlockParam&gt; toolResults = [];
+foreach (ContentBlock block in response.Content)
+{
+    if (block.TryPickText(out TextBlock? text))
+    {
+        assistantContent.Add(new TextBlockParam { Text = text.Text });
+    }
+    else if (block.TryPickThinking(out ThinkingBlock? thinking))
+    {
+        // Signature MUST be preserved - the API rejects tampering
+        assistantContent.Add(new ThinkingBlockParam
+        {
+            Thinking = thinking.Thinking,
+            Signature = thinking.Signature,
+        });
+    }
+    else if (block.TryPickRedactedThinking(out RedactedThinkingBlock? redacted))
+    {
+        assistantContent.Add(new RedactedThinkingBlockParam { Data = redacted.Data });
+    }
+    else if (block.TryPickToolUse(out ToolUseBlock? toolUse))
+    {
+        // ToolUseBlock has required Caller; ToolUseBlockParam.Caller is optional - don't copy it
+        assistantContent.Add(new ToolUseBlockParam
+        {
+            ID = toolUse.ID,
+            Name = toolUse.Name,
+            Input = toolUse.Input,
+        });
+        // Execute the tool; collect ONE result per tool_use block - the API
+        // rejects the follow-up if any tool_use ID lacks a matching tool_result.
+        string result = ExecuteYourTool(toolUse.Name, toolUse.Input);
+        toolResults.Add(new ToolResultBlockParam
+        {
+            ToolUseID = toolUse.ID,
+            Content = result,
+        });
+    }
+}
+
+// Follow-up: prior messages + assistant echo + user tool_result(s)
+List&lt;MessageParam&gt; followUpMessages =
+[
+    .. parameters.Messages,
+    new() { Role = Role.Assistant, Content = assistantContent },
+    new() { Role = Role.User, Content = toolResults },
+];
+</code></pre>
+<p><code>ToolResultBlockParam</code> has no tuple constructor - use the object initializer. <code>Content</code> is a string-or-list union; a plain <code>string</code> implicitly converts.</p>
+<hr />
+<h2>Structured Output</h2>
+<pre><code class="language-csharp">OutputConfig = new OutputConfig {
+    Format = new JsonOutputFormat {
+        Schema = new Dictionary&lt;string, JsonElement&gt; {
+            [&quot;type&quot;] = JsonSerializer.SerializeToElement(&quot;object&quot;),
+            [&quot;properties&quot;] = JsonSerializer.SerializeToElement(
+                new { name = new { type = &quot;string&quot; } }),
+            [&quot;required&quot;] = JsonSerializer.SerializeToElement(new[] { &quot;name&quot; }),
+        },
+    },
+},
+</code></pre>
+<p><code>JsonOutputFormat.Type</code> is auto-set to <code>"json_schema"</code> by the constructor. <code>Schema</code> is <code>required</code>.</p>
+<hr />
+<h2>Anthropic-Defined Tools</h2>
+<p>Web search, bash, text editor, and code execution are Anthropic-defined tools with built-in schemas. Web search and code execution are server-executed; bash and text editor are client-executed (you handle the <code>tool_use</code> locally - see <code>shared/tool-use-concepts.md</code>). Type names are version-suffixed; constructors auto-set <code>name</code>/<code>type</code>. <strong>Wrap each in <code>new ToolUnion(...)</code> explicitly.</strong></p>
+<pre><code class="language-csharp">Tools = [
+    new ToolUnion(new WebSearchTool20260209()),
+    new ToolUnion(new ToolBash20250124()),
+    new ToolUnion(new ToolTextEditor20250728()),
+    new ToolUnion(new CodeExecutionTool20260120()),
+],
+</code></pre>
+<p>Also available: <code>new ToolUnion(new WebFetchTool20260209())</code>, <code>new ToolUnion(new MemoryTool20250818())</code>. <code>WebSearchTool20260209</code> optionals: <code>AllowedDomains</code>, <code>BlockedDomains</code>, <code>MaxUses</code>, <code>UserLocation</code>.</p>
+<hr />
+<h2>Tool Runner (Beta)</h2>
+<p>The C# SDK provides a <code>BetaToolRunner</code> for automatic tool execution loops. Define tools with raw JSON schemas, and the runner handles the API call -&gt; tool execution -&gt; result feedback loop.</p>
+<pre><code class="language-csharp">using Anthropic.Models.Beta.Messages;
+
+// Define tools and create params as shown in the Tool Use section above,
+// but using the beta namespace types (BetaToolUnion, etc.)
+var runner = client.Beta.Messages.ToolRunner(betaParams);
+
+await foreach (BetaMessage message in runner)
+{
+    foreach (var block in message.Content)
+    {
+        if (block.TryPickText(out var text))
+        {
+            Console.WriteLine(text.Text);
+        }
+    }
+}
+</code></pre>
+<hr /></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

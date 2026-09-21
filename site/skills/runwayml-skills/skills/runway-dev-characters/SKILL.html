@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>runway-dev-characters · Runway 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/runwayml-skills/">runwayml-skills</a><span class="crumb">/</span><span class="crumb">skills/runway-dev-characters/SKILL.md</span><button onclick="t()">🌓</button></nav>
+<main><div class="meta"><div class="m-name">runway-dev-characters</div><div class="m-desc">Build, modify, debug, or verify Runway Characters integrations: inspect preset or custom avatars with MCP, manage live Sessions via SDK, and connect the application UI. Use with +runway-dev. UI says Characters; MCP/API use avatars. Not for avatar video generation endpoints.</div><div class="m-src">源文件：<a href="https://github.com/runwayml/skills/blob/main/skills/runway-dev-characters/SKILL.md" target="_blank" rel="noopener">runwayml/skills/skills/runway-dev-characters/SKILL.md</a></div></div><h1>Runway Dev — Characters</h1>
+<blockquote>
+<p><strong>Companion:</strong> Use <code>+runway-dev</code> for shared guidance when available. If it is not installed, inspect the workspace, probe <code>RUNWAYML_API_SECRET</code> without printing it, and read the Characters docs linked by <code>llms.txt</code>. Encourage connecting Dev MCP to inspect or manage characters and knowledge documents. If the user declines or cannot connect, continue integration from current docs and an existing character ID.</p>
+</blockquote>
+<h2>Goal</h2>
+<p>Keep a Characters integration and its live Session lifecycle correct across the application's backend and UI. Verify changes end-to-end when safe.</p>
+<h2>Terminology</h2>
+<ul>
+<li>Dev Portal <strong>Characters</strong> = API <strong>avatars</strong> (<code>list_avatars</code>, <code>get_avatar</code>).</li>
+<li><strong>Character ID</strong> = avatar UUID.</li>
+<li><strong>live Session</strong> = realtime conversation via <code>POST /v1/realtime_sessions</code>.</li>
+<li>Fallback preset when the user wants a default: <code>influencer</code> (<code>{ type: 'runway-preset', presetId: 'influencer' }</code>).</li>
+</ul>
+<h2>No character specified</h2>
+<ol>
+<li>Ask whether the user wants an existing character, a preset, or a custom character from an image. Do not branch into avatar-video generation unless requested.</li>
+<li>For a custom character, ask the user to supply the image and use <code>create_avatar</code> according to its live MCP tool schema. If the user wants a default instead, use preset <code>influencer</code>.</li>
+<li>Implement the Session lifecycle behind the server boundary: create once, poll <code>NOT_READY</code> until <code>READY</code>, consume connection credentials once, and return only the connection fields the client needs.</li>
+<li>Connect the application's call UI with the current Avatar SDK, then end or cancel the Session during teardown so it does not keep running.</li>
+<li>For end-to-end verification, connect one Session successfully and cleanly end it.</li>
+</ol>
+<h2>Character specified</h2>
+<ol>
+<li><code>get_avatar</code> for status and attached knowledge document ids.</li>
+<li>Use that character id; do not substitute another avatar.</li>
+<li>If status is <code>PROCESSING</code>, poll until <code>READY</code> or stop on <code>FAILED</code>.</li>
+</ol>
+<h2>MCP tools</h2>
+<ul>
+<li><code>list_avatars</code> / <code>get_avatar</code> — inspect custom avatars in project.</li>
+<li><code>create_avatar</code> / <code>update_avatar</code> / <code>delete_avatar</code> — manage custom characters; confirm destructive changes before applying them.</li>
+<li><code>list_avatar_knowledge_documents</code> / <code>get_avatar_knowledge_document</code> — inspect attached knowledge.</li>
+<li><code>create_avatar_knowledge_document</code> / <code>update_avatar_knowledge_document</code> / <code>delete_avatar_knowledge_document</code> — manage domain knowledge when requested; confirm deletion first.</li>
+</ul>
+<h2>Application UI</h2>
+<ul>
+<li>Follow the current Avatar SDK README rather than copying component APIs from memory.</li>
+<li>In React, use <code>@runwayml/avatars-react</code> with its stylesheet. Keep session creation and credential consumption on the server; browser code receives only one-time connection fields.</li>
+<li>Use the packaged call component for standard UI or the SDK hooks for a custom experience. Handle microphone permission, connecting, active, error, and ended states.</li>
+<li>A failed connection needs a new Session because consumed credentials cannot be reused.</li>
+</ul>
+<h2>Knowledge</h2>
+<p>Use the MCP knowledge-document tools above for live state and CRUD. Inspect attached documents before updating them, keep content focused and structured, and do not delete knowledge without confirmation.</p>
+<h2>Docs</h2>
+<ul>
+<li>https://docs.dev.runwayml.com/llms.txt</li>
+<li>Characters: https://docs.dev.runwayml.com/_llms-txt/characters.txt</li>
+<li>Avatar SDK: https://github.com/runwayml/avatar-sdk-react</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

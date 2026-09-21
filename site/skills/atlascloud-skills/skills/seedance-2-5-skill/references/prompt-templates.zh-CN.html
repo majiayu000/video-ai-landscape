@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>prompt-templates.zh-CN · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/seedance-2-5-skill/references/prompt-templates.zh-CN.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>提示词模板</h1>
+<p>把尖括号中的占位内容替换成具体信息。每次选择一条路线，不要把所有模板塞进同一请求。</p>
+<h2>主体参考图：生图模型，可选</h2>
+<p>只有人物、产品、物体或场景需要反复出现时才使用。</p>
+<pre><code class="language-text">为&lt;主体&gt;生成一张干净的参考图。
+只固定这些不变量：&lt;轮廓或比例&gt;、&lt;标志性材质或服装&gt;、&lt;主色&gt;、&lt;不可改变的标识&gt;。
+&lt;人物：自然表情的脸部近景，简单背景，无文字。&gt;
+&lt;产品：清晰的三分之四视角，干净背景，无文字。&gt;
+</code></pre>
+<p>重复人物分别生成脸部近景和全身图。多视角转身图只可用于生图阶段的设计辅助，不要作为人物视频身份参考上传。</p>
+<h2>Seedream Storyboard 参考图：Seedance R2V 默认路线</h2>
+<p>用它生成将直接作为 <code>图片1</code> 上传到 Seedance 的一张 Storyboard。编号、箭头和简短注释可以保留，只要它们有助于理解顺序。</p>
+<pre><code class="language-text">为以下连续内容生成一张&lt;行数&gt;x&lt;列数&gt;的视觉分镜图，阅读顺序为从左到右、从上到下：
+&lt;整体剧情或动作概述&gt;。
+
+第1格：&lt;镜头目的、构图、动作&gt;。
+第2格：&lt;镜头目的、构图、动作&gt;。
+……
+
+所有格子中的&lt;人物、产品或场景&gt;保持一致：&lt;不变量&gt;。
+每格必须清楚呈现计划中的构图和动作。连续动作展示下一个有意义的可见瞬间；发生剪辑时清楚展示新镜头。需要帮助表达顺序或运动时，可以加入编号、简短注释、箭头，以及明确的剪辑或转场意图。
+</code></pre>
+<p>生成后先检查格子顺序、关键节奏、主体或场景一致性，以及任务关键的视觉元素是否可读。关键格出错时重做这张整图。通过后整张上传给 Seedance R2V；只有测试视频真的把备注或编号带进画面时才做清理版。</p>
+<h2>清理版 Storyboard：可选重试或 I2V 切格来源</h2>
+<pre><code class="language-text">为以下连续内容生成一张干净的&lt;行数&gt;x&lt;列数&gt;视觉分镜图：
+&lt;整体剧情或动作概述&gt;。
+
+每格只包含计划中的镜头构图和动作。&lt;人物、产品或场景&gt;保持一致：&lt;不变量&gt;。
+只使用细的中性格线。不要加入编号、说明文字、气泡、标签、字幕、标志、无关叠加标记、界面元素或拼贴说明文字。
+</code></pre>
+<p>只有原分镜实测把文字或格线带入视频，或明确需要切格用于 I2V 时才使用。切格前检查布局、位置和比例。</p>
+<h2>整张 Storyboard R2V：格子仍清晰可读时的首选</h2>
+<p>把整张 Storyboard 作为 <code>图片1</code> 上传。</p>
+<pre><code class="language-text">严格按图片1中的分镜图从左到右、从上到下的顺序生成短片，一次只出现一个完整镜头。
+
+镜头1：&lt;第1格的动作和镜头语言&gt;。
+镜头2：&lt;第2格的动作，以及与上一镜头的剪辑或转场关系&gt;。
+镜头3：&lt;第3格的动作和镜头语言&gt;。
+
+全片保持&lt;主体、产品或场景不变量&gt;；&lt;全局光影或风格规则&gt;。
+&lt;启用时的声音规则&gt;。
+图片1中的格线、编号、箭头和备注只用于理解分镜顺序与镜头意图，不要将它们渲染为最终视频画面。
+</code></pre>
+<p>不要先切格。决定因素不是格子数量，而是每格视觉细节是否仍清晰可读。只有单镜头重拍或精确起止状态比一次生成的自然转场更重要时，才改用 I2V 首尾帧。</p>
+<h2>R2V 参考素材：少量素材生成一条片段</h2>
+<p>只上传职责不同的素材。</p>
+<pre><code class="language-text">以图片1中的&lt;人物或产品&gt;为主体；图片2作为&lt;场景或服装&gt;参考；
+图片3作为&lt;画面风格或构图&gt;参考；&lt;视频1或音频1的职责，如有&gt;。
+
+&lt;一个主要动作&gt;。
+&lt;运镜和光影&gt;。
+保持&lt;2至3条关键不变量&gt;。
+</code></pre>
+<p>不要把大量连续分镜格伪装成素材包。连续剧情使用整张 Storyboard 路线或独立 I2V 镜头。</p>
+<h2>I2V 首尾帧：一个镜头的起止控制</h2>
+<p>首帧作为 <code>图片1</code>，目标尾帧作为 <code>图片2</code> 上传。</p>
+<pre><code class="language-text">从图片1的画面开始，主体为&lt;主体&gt;。
+&lt;一个连续、可观察的动作&gt;。
+镜头&lt;一个运镜&gt;，&lt;空间或重要物体关系&gt;。
+画面自然收束到图片2的构图与主体状态。
+&lt;光影或风格&gt;。
+保持&lt;身份、产品标签或场景不变量&gt;。
+</code></pre>
+<p>如果是有意硬切，不要把 <code>图片2</code> 作为下一镜头的首帧；下一镜头使用自己的首尾帧。</p>
+<h2>连续延长或接龙</h2>
+<p>只有同一镜头、同一不中断动作才用上一段真实尾帧作为下一段首帧。</p>
+<pre><code class="language-text">无缝承接上一段的最后画面：&lt;延续同一动作、主体、空间、光影和镜头意图&gt;。
+&lt;下一个动作节点&gt;。
+</code></pre>
+<p>继续下一段前检查边界。发生场景、机位、时间或叙事重点变化时，结束接龙并设计剪辑。</p>
+<h2>原生音频标记</h2>
+<pre><code class="language-text">（背景中播放着&lt;音乐描述&gt;）
+&lt;音效描述&gt;
+&lt;角色&gt;说道{台词}。
+画面出现【字幕内容】。
+</code></pre>
+<p>台词只使用一种语言。只有所选服务支持且镜头确实需要时才启用原生音频。</p>
+<h2>视频编辑变体</h2>
+<pre><code class="language-text">严格编辑视频1，将&lt;一个明确属性&gt;修改为&lt;新值&gt;，
+其余主体、动作、场景、光影和运镜保持不变。
+</code></pre>
+<p>编辑时直接引用 <code>视频1</code>，不要写 <code>参考视频1</code>。</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

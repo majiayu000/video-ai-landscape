@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>client-tools · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/agents/references/client-tools.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Client Tools</h1>
+<p>Extend your agent with custom capabilities. Tools let the agent take actions beyond just talking.</p>
+<h2>Tool Types</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Execution</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Webhook</strong></td>
+<td>Server-side via HTTP</td>
+<td>Database queries, API calls, secure operations</td>
+</tr>
+<tr>
+<td><strong>Client</strong></td>
+<td>Browser-side JavaScript</td>
+<td>UI updates, local storage, navigation</td>
+</tr>
+<tr>
+<td><strong>System</strong></td>
+<td>Built-in ElevenLabs</td>
+<td>End call, transfer, standard actions</td>
+</tr>
+</tbody>
+</table>
+<h2>Where Tools Live</h2>
+<p>Tools are defined inside <code>conversation_config.agent.prompt</code>. Webhook and client tools go in the <code>tools</code> array. System tools go in <code>built_in_tools</code>:</p>
+<pre><code class="language-python">conversation_config={
+    &quot;agent&quot;: {
+        &quot;prompt&quot;: {
+            &quot;prompt&quot;: &quot;You are helpful.&quot;,
+            &quot;llm&quot;: &quot;gemini-2.0-flash&quot;,
+            &quot;tools&quot;: [...],            # Webhook and client tools
+            &quot;built_in_tools&quot;: {...}     # System tools (end_call, transfer, etc.)
+        }
+    }
+}
+</code></pre>
+<h2>Webhook Tools</h2>
+<p>Execute server-side logic when the agent needs external data or actions.</p>
+<h3>Basic Webhook</h3>
+<pre><code class="language-python">agent = client.conversational_ai.agents.create(
+    name=&quot;Weather Assistant&quot;,
+    conversation_config={
+        &quot;agent&quot;: {
+            &quot;prompt&quot;: {
+                &quot;prompt&quot;: &quot;You are a helpful assistant that can check the weather.&quot;,
+                &quot;llm&quot;: &quot;gemini-2.0-flash&quot;,
+                &quot;tools&quot;: [{
+                    &quot;type&quot;: &quot;webhook&quot;,
+                    &quot;name&quot;: &quot;get_weather&quot;,
+                    &quot;description&quot;: &quot;Get current weather for a city. Use when user asks about weather.&quot;,
+                    &quot;api_schema&quot;: {
+                        &quot;url&quot;: &quot;https://api.example.com/weather&quot;,
+                        &quot;method&quot;: &quot;POST&quot;,
+                        &quot;request_headers&quot;: {
+                            &quot;Authorization&quot;: &quot;Bearer {{API_KEY}}&quot;
+                        },
+                        &quot;request_body_schema&quot;: {
+                            &quot;type&quot;: &quot;object&quot;,
+                            &quot;properties&quot;: {
+                                &quot;city&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                    &quot;description&quot;: &quot;City name, e.g., 'San Francisco'&quot;
+                                },
+                                &quot;units&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                    &quot;enum&quot;: [&quot;celsius&quot;, &quot;fahrenheit&quot;],
+                                    &quot;description&quot;: &quot;Temperature units&quot;
+                                }
+                            },
+                            &quot;required&quot;: [&quot;city&quot;]
+                        }
+                    }
+                }]
+            }
+        },
+        &quot;tts&quot;: {&quot;voice_id&quot;: &quot;JBFqnCBsd6RMkjVDRZzb&quot;}
+    }
+)
+</code></pre>
+<h3>Webhook Request Format</h3>
+<p>When the agent calls a webhook tool, ElevenLabs sends:</p>
+<pre><code class="language-json">{
+  &quot;tool_call_id&quot;: &quot;call_abc123&quot;,
+  &quot;tool_name&quot;: &quot;get_weather&quot;,
+  &quot;parameters&quot;: {
+    &quot;city&quot;: &quot;San Francisco&quot;,
+    &quot;units&quot;: &quot;fahrenheit&quot;
+  },
+  &quot;conversation_id&quot;: &quot;conv_xyz789&quot;
+}
+</code></pre>
+<h3>Webhook Response Format</h3>
+<p>Your server should respond with:</p>
+<pre><code class="language-json">{
+  &quot;result&quot;: &quot;The weather in San Francisco is 68°F and sunny.&quot;
+}
+</code></pre>
+<p>Or for structured data:</p>
+<pre><code class="language-json">{
+  &quot;result&quot;: {
+    &quot;temperature&quot;: 68,
+    &quot;condition&quot;: &quot;sunny&quot;,
+    &quot;humidity&quot;: 45
+  }
+}
+</code></pre>
+<h3>Webhook with Authentication</h3>
+<pre><code class="language-python"># Inside conversation_config.agent.prompt.tools:
+{
+    &quot;type&quot;: &quot;webhook&quot;,
+    &quot;name&quot;: &quot;lookup_order&quot;,
+    &quot;description&quot;: &quot;Look up order status by order ID&quot;,
+    &quot;response_timeout_secs&quot;: 10,
+    &quot;api_schema&quot;: {
+        &quot;url&quot;: &quot;https://api.mystore.com/orders/lookup&quot;,
+        &quot;method&quot;: &quot;POST&quot;,
+        &quot;request_headers&quot;: {
+            &quot;Authorization&quot;: &quot;Bearer {{ORDER_API_KEY}}&quot;,
+            &quot;X-Store-ID&quot;: &quot;store_123&quot;
+        },
+        &quot;request_body_schema&quot;: {
+            &quot;type&quot;: &quot;object&quot;,
+            &quot;properties&quot;: {
+                &quot;order_id&quot;: {
+                    &quot;type&quot;: &quot;string&quot;,
+                    &quot;description&quot;: &quot;Order ID (e.g., ORD-12345)&quot;
+                }
+            },
+            &quot;required&quot;: [&quot;order_id&quot;]
+        }
+    }
+}
+</code></pre>
+<p>Use workspace environment variables to keep a single server tool configuration working across
+staging and production. <code>{{system_env__label}}</code> works in server tool URLs, secret environment
+variables can populate <code>request_headers</code>, and auth-connection environment variables can populate
+<code>api_schema.auth_connection</code>. The same environment-variable resolution model also applies to MCP
+server connections.</p>
+<pre><code class="language-json">{
+  &quot;api_schema&quot;: {
+    &quot;url&quot;: &quot;https://{{system_env__api_host}}.example.com/orders&quot;,
+    &quot;method&quot;: &quot;GET&quot;,
+    &quot;request_headers&quot;: {
+      &quot;X-Api-Key&quot;: { &quot;env_var_label&quot;: &quot;orders_api_key&quot; }
+    },
+    &quot;auth_connection&quot;: { &quot;env_var_label&quot;: &quot;orders_oauth&quot; }
+  }
+}
+</code></pre>
+<p>Workspace auth connections support OAuth2 client credentials, OAuth2 JWT, private key JWT,
+basic auth, bearer auth, custom header auth, and mutual TLS (<code>mtls</code>).</p>
+<p>System dynamic variables are also available in tool parameters and headers. Use
+<code>{{system__conversation_history}}</code> when a webhook or sub-agent needs the full conversation
+context as a lazily evaluated JSON history object with user, agent, and tool entries.</p>
+<h3>Webhook Tool Options</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>response_timeout_secs</code></td>
+<td>int</td>
+<td><code>20</code></td>
+<td>Timeout in seconds (5-120)</td>
+</tr>
+<tr>
+<td><code>interruption_mode</code></td>
+<td>string</td>
+<td><code>"allow"</code></td>
+<td>Controls whether the user can interrupt around this tool call: <code>allow</code>, <code>disable_during_tool</code>, or <code>disable_during_tool_and_turn</code></td>
+</tr>
+<tr>
+<td><code>execution_mode</code></td>
+<td>string</td>
+<td><code>"immediate"</code></td>
+<td><code>immediate</code>, <code>post_tool_speech</code>, or <code>async</code></td>
+</tr>
+<tr>
+<td><code>tool_call_sound</code></td>
+<td>string</td>
+<td>-</td>
+<td>Sound during execution: <code>typing</code>, <code>elevator1</code>-<code>elevator4</code></td>
+</tr>
+<tr>
+<td><code>pre_tool_speech</code></td>
+<td>string</td>
+<td><code>"auto"</code></td>
+<td>Controls whether the agent speaks before execution: <code>auto</code>, <code>force</code>, or <code>off</code></td>
+</tr>
+<tr>
+<td><code>tool_error_handling_mode</code></td>
+<td>string</td>
+<td><code>"auto"</code></td>
+<td><code>auto</code>, <code>summarized</code>, <code>passthrough</code>, or <code>hide</code></td>
+</tr>
+<tr>
+<td><code>api_schema.response_filter</code></td>
+<td>object</td>
+<td>-</td>
+<td>Filters JSON webhook responses before the LLM sees them. Use <code>mode: "allow"</code> with <code>filters</code> dot-paths to keep selected fields, or <code>mode: "hide_all"</code> to hide the response</td>
+</tr>
+</tbody>
+</table>
+<p>MCP server configuration supports the same <code>pre_tool_speech</code>, <code>interruption_mode</code>, <code>execution_mode</code>, and
+<code>response_timeout_secs</code> controls at the server level, with per-tool overrides in
+<code>tool_config_overrides</code>. Set a per-tool <code>tool_call_sound</code> override to <code>"off"</code> to silence that tool
+while retaining the server default for other tools. MCP timeouts default to 30 seconds and must be
+5-300 seconds.</p>
+<p>Set <code>request_meta</code> on an MCP server configuration to send entries in the MCP <code>_meta</code> field of
+<code>tools/call</code> requests. Values can be JSON scalars or references to workspace secrets, dynamic
+variables, or environment variables that resolve for each call.</p>
+<p><strong>Note:</strong> The default <code>api_schema.method</code> is <code>GET</code>. Always set <code>"method": "POST"</code> explicitly for webhook tools that send request bodies.</p>
+<h3>Server Implementation (Node.js)</h3>
+<pre><code class="language-javascript">app.post(&quot;/webhook/get_weather&quot;, async (req, res) =&gt; {
+  const { parameters, conversation_id } = req.body;
+  const { city, units = &quot;fahrenheit&quot; } = parameters;
+
+  // Fetch weather from your data source
+  const weather = await weatherService.get(city, units);
+
+  res.json({
+    result: `It's ${weather.temp}°${units === &quot;celsius&quot; ? &quot;C&quot; : &quot;F&quot;} and ${weather.condition} in ${city}.`,
+  });
+});
+</code></pre>
+<h3>Server Implementation (Python)</h3>
+<pre><code class="language-python">@app.post(&quot;/webhook/get_weather&quot;)
+async def get_weather(request: Request):
+    data = await request.json()
+    city = data[&quot;parameters&quot;][&quot;city&quot;]
+    units = data[&quot;parameters&quot;].get(&quot;units&quot;, &quot;fahrenheit&quot;)
+
+    # Fetch weather from your data source
+    weather = weather_service.get(city, units)
+
+    return {
+        &quot;result&quot;: f&quot;It's {weather['temp']}°{'C' if units == 'celsius' else 'F'} and {weather['condition']} in {city}.&quot;
+    }
+</code></pre>
+<h2>Client Tools</h2>
+<p>Execute JavaScript in the user's browser. Useful for UI updates, navigation, or accessing browser APIs.</p>
+<h3>Defining Client Tools</h3>
+<p>Client tools are registered when starting a conversation:</p>
+<pre><code class="language-javascript">import { Conversation } from &quot;@elevenlabs/client&quot;;
+
+const conversation = await Conversation.startSession({
+  agentId: &quot;your-agent-id&quot;,
+  clientTools: {
+    show_product: async ({ productId }) =&gt; {
+      // Update UI to show product
+      const modal = document.getElementById(&quot;product-modal&quot;);
+      modal.innerHTML = await fetchProductCard(productId);
+      modal.showModal();
+      return { success: true, message: &quot;Showing product&quot; };
+    },
+
+    navigate_to: async ({ page }) =&gt; {
+      // Navigate to a page
+      window.location.href = `/${page}`;
+      return { success: true };
+    },
+
+    save_preference: async ({ key, value }) =&gt; {
+      // Store in localStorage
+      localStorage.setItem(key, value);
+      return { saved: true };
+    },
+  },
+});
+</code></pre>
+<h3>React Registration with <code>useConversationClientTool</code></h3>
+<p>When you use the React SDK, wrap your component tree in <code>ConversationProvider</code> and register
+client tools from components with <code>useConversationClientTool</code>. Handlers are cleaned up
+automatically on unmount and always use the latest closure value. Prefer granular hooks such as
+<code>useConversationControls</code> and <code>useConversationStatus</code> for the session UI; <code>useConversation</code>
+remains available when you want the full conversation object in one hook.</p>
+<pre><code class="language-typescript">import {
+  ConversationProvider,
+  useConversationClientTool,
+  useConversationControls,
+  useConversationStatus,
+} from &quot;@elevenlabs/react&quot;;
+
+function Storefront() {
+  useConversationClientTool(&quot;show_product&quot;, async ({ productId }) =&gt; {
+    const modal = document.getElementById(&quot;product-modal&quot;);
+    modal.innerHTML = await fetchProductCard(productId);
+    modal.showModal();
+    return { success: true };
+  });
+
+  const { startSession, endSession } = useConversationControls();
+  const { status } = useConversationStatus();
+
+  if (status === &quot;connected&quot;) {
+    return &lt;button onClick={endSession}&gt;End&lt;/button&gt;;
+  }
+
+  return (
+    &lt;button onClick={() =&gt; startSession({ agentId: &quot;your-agent-id&quot; })}&gt;
+      Start
+    &lt;/button&gt;
+  );
+}
+
+function App() {
+  return (
+    &lt;ConversationProvider&gt;
+      &lt;Storefront /&gt;
+    &lt;/ConversationProvider&gt;
+  );
+}
+</code></pre>
+<h3>Registering Client Tools with Agent</h3>
+<p>Tell the agent about available client tools in <code>conversation_config.agent.prompt.tools</code>:</p>
+<pre><code class="language-python">agent = client.conversational_ai.agents.create(
+    name=&quot;Shopping Assistant&quot;,
+    conversation_config={
+        &quot;agent&quot;: {
+            &quot;prompt&quot;: {
+                &quot;prompt&quot;: &quot;&quot;&quot;You are a shopping assistant.
+When users want to see a product, use show_product.
+When users want to go somewhere, use navigate_to.&quot;&quot;&quot;,
+                &quot;llm&quot;: &quot;gemini-2.0-flash&quot;,
+                &quot;tools&quot;: [
+                    {
+                        &quot;type&quot;: &quot;client&quot;,
+                        &quot;name&quot;: &quot;show_product&quot;,
+                        &quot;description&quot;: &quot;Display a product card to the user&quot;,
+                        &quot;parameters&quot;: {
+                            &quot;type&quot;: &quot;object&quot;,
+                            &quot;properties&quot;: {
+                                &quot;productId&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                    &quot;description&quot;: &quot;Product ID to display&quot;
+                                }
+                            },
+                            &quot;required&quot;: [&quot;productId&quot;]
+                        }
+                    },
+                    {
+                        &quot;type&quot;: &quot;client&quot;,
+                        &quot;name&quot;: &quot;navigate_to&quot;,
+                        &quot;description&quot;: &quot;Navigate user to a different page&quot;,
+                        &quot;parameters&quot;: {
+                            &quot;type&quot;: &quot;object&quot;,
+                            &quot;properties&quot;: {
+                                &quot;page&quot;: {
+                                    &quot;type&quot;: &quot;string&quot;,
+                                    &quot;enum&quot;: [&quot;cart&quot;, &quot;checkout&quot;, &quot;account&quot;, &quot;home&quot;],
+                                    &quot;description&quot;: &quot;Page to navigate to&quot;
+                                }
+                            },
+                            &quot;required&quot;: [&quot;page&quot;]
+                        }
+                    }
+                ]
+            }
+        },
+        &quot;tts&quot;: {&quot;voice_id&quot;: &quot;JBFqnCBsd6RMkjVDRZzb&quot;}
+    }
+)
+</code></pre>
+<h3>Client Tool Options</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>expects_response</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Whether the tool returns data to the agent</td>
+</tr>
+</tbody>
+</table>
+<h3>Client Tool Return Values</h3>
+<p>Return data that the agent can use in conversation:</p>
+<pre><code class="language-javascript">clientTools: {
+  check_cart: async () =&gt; {
+    const cart = JSON.parse(localStorage.getItem(&quot;cart&quot;) || &quot;[]&quot;);
+    return {
+      itemCount: cart.length,
+      total: cart.reduce((sum, item) =&gt; sum + item.price, 0),
+      items: cart.map((item) =&gt; item.name),
+    };
+  };
+}
+</code></pre>
+<p>The agent receives this data and can say: "You have 3 items in your cart totaling $45.99."</p>
+<h2>System Tools (built_in_tools)</h2>
+<p>Built-in tools provided by ElevenLabs. These are configured in <code>conversation_config.agent.prompt.built_in_tools</code> (not in the <code>tools</code> array):</p>
+<pre><code class="language-python">&quot;built_in_tools&quot;: {
+    &quot;end_call&quot;: {},
+    &quot;transfer_to_number&quot;: {...},
+    &quot;transfer_to_agent&quot;: {...},
+    &quot;language_detection&quot;: {},
+    &quot;skip_turn&quot;: {},
+    &quot;voicemail_detection&quot;: {...},
+    &quot;play_keypad_touch_tone&quot;: {}
+}
+</code></pre>
+<p>Current API schemas also expose <code>agent_prompt_change</code>, <code>memory_entry_create</code>, <code>memory_entry_delete</code>, <code>memory_entry_search</code>, and <code>memory_entry_update</code> in <code>built_in_tools</code>.</p>
+<p>Set <code>only_at_conversation_start: true</code> on the <code>language_detection</code> tool to constrain language
+switching when no switch occurs in the first two user turns. Leave it <code>false</code> when the conversation
+must remain able to switch languages later.</p>
+<h3>end_call</h3>
+<p>Ends the current conversation:</p>
+<pre><code class="language-python">&quot;built_in_tools&quot;: {
+    &quot;end_call&quot;: {}
+}
+</code></pre>
+<p>The agent can say "Goodbye!" and then end the call programmatically.</p>
+<h3>transfer_to_number</h3>
+<p>Transfer to a phone number (requires telephony integration):</p>
+<pre><code class="language-python">&quot;built_in_tools&quot;: {
+    &quot;transfer_to_number&quot;: {
+        &quot;transfers&quot;: [{
+            &quot;transfer_destination&quot;: {&quot;type&quot;: &quot;phone&quot;, &quot;phone_number&quot;: &quot;+1234567890&quot;},
+            &quot;condition&quot;: &quot;User asks to speak with a human agent&quot;
+        }]
+    }
+}
+</code></pre>
+<h3>transfer_to_agent</h3>
+<p>Transfer to another ElevenLabs agent or workflow node:</p>
+<pre><code class="language-python">&quot;built_in_tools&quot;: {
+    &quot;transfer_to_agent&quot;: {
+        &quot;transfers&quot;: [{
+            &quot;agent_id&quot;: &quot;other-agent-id&quot;,
+            &quot;node_id&quot;: &quot;destination-workflow-node-id&quot;,
+            &quot;preserve_client_tts_overrides&quot;: true,
+            &quot;condition&quot;: &quot;User asks about sales&quot;
+        }]
+    }
+}
+</code></pre>
+<p>Use <code>node_id</code> when the transfer should start at a specific workflow node. Omit
+<code>agent_id</code> when the transfer stays within the current agent's workflow.
+Set <code>preserve_client_tts_overrides</code> when client-side TTS overrides should continue
+after the transfer.</p>
+<h2>Best Practices</h2>
+<h3>Tool Descriptions</h3>
+<p>Write clear descriptions so the LLM knows when to use tools:</p>
+<pre><code class="language-python"># Good - specific and actionable
+&quot;description&quot;: &quot;Look up order status. Use when customer asks about their order, delivery, or shipping.&quot;
+
+# Bad - vague
+&quot;description&quot;: &quot;Order tool&quot;
+</code></pre>
+<h3>Parameter Descriptions</h3>
+<p>Help the LLM extract correct values:</p>
+<pre><code class="language-python">&quot;parameters&quot;: {
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;properties&quot;: {
+        &quot;order_id&quot;: {
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;description&quot;: &quot;Order ID in format ORD-XXXXX (e.g., ORD-12345)&quot;
+        },
+        &quot;email&quot;: {
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;description&quot;: &quot;Customer email address for verification&quot;
+        }
+    }
+}
+</code></pre>
+<p>For optional tool parameters that should never be sent in the request payload, set
+<code>is_omitted: true</code> on the JSON schema property. Do not combine it with <code>description</code>,
+<code>dynamic_variable</code>, <code>is_system_provided</code>, or <code>constant_value</code>.</p>
+<h3>Error Handling</h3>
+<p>Configure how tool errors are shared with the agent using <code>tool_error_handling_mode</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>auto</code></td>
+<td>ElevenLabs automatically decides how to handle errors</td>
+</tr>
+<tr>
+<td><code>summarized</code></td>
+<td>Errors are summarized before being sent to the agent</td>
+</tr>
+<tr>
+<td><code>passthrough</code></td>
+<td>Full error details are passed to the agent</td>
+</tr>
+<tr>
+<td><code>hide</code></td>
+<td>Errors are hidden from the agent</td>
+</tr>
+</tbody>
+</table>
+<p>Return helpful error messages:</p>
+<pre><code class="language-javascript">// Server webhook
+app.post(&quot;/webhook/lookup_order&quot;, async (req, res) =&gt; {
+  const { order_id } = req.body.parameters;
+
+  const order = await db.orders.find(order_id);
+
+  if (!order) {
+    return res.json({
+      result: {
+        error: true,
+        message: `Order ${order_id} not found. Please verify the order ID.`,
+      },
+    });
+  }
+
+  res.json({ result: order });
+});
+</code></pre>
+<h3>Timeouts</h3>
+<p>Set reasonable timeouts for webhooks using <code>response_timeout_secs</code> (5-120 seconds, default 20). MCP server tool calls use the same field with a 30-second default and a 5-300 second range:</p>
+<pre><code class="language-python">{
+    &quot;type&quot;: &quot;webhook&quot;,
+    &quot;name&quot;: &quot;slow_operation&quot;,
+    &quot;description&quot;: &quot;Run a slow operation&quot;,
+    &quot;response_timeout_secs&quot;: 30,
+    &quot;api_schema&quot;: {
+        &quot;url&quot;: &quot;https://api.example.com/slow-operation&quot;,
+        &quot;method&quot;: &quot;POST&quot;
+    }
+}
+</code></pre>
+<h2>Complete Example</h2>
+<pre><code class="language-python">agent = client.conversational_ai.agents.create(
+    name=&quot;E-commerce Assistant&quot;,
+    conversation_config={
+        &quot;agent&quot;: {
+            &quot;first_message&quot;: &quot;Hi! How can I help you today?&quot;,
+            &quot;language&quot;: &quot;en&quot;,
+            &quot;prompt&quot;: {
+                &quot;prompt&quot;: &quot;&quot;&quot;You are an e-commerce support assistant.
+
+Available actions:
+- lookup_order: Check order status
+- show_product: Display products to customer
+- end_call: End conversation politely
+- transfer_to_number: Transfer to human support
+
+Always verify order ID before lookup. Offer transfer for complex issues.&quot;&quot;&quot;,
+                &quot;llm&quot;: &quot;gemini-2.0-flash&quot;,
+                &quot;tools&quot;: [
+                    # Webhook: Server-side order lookup
+                    {
+                        &quot;type&quot;: &quot;webhook&quot;,
+                        &quot;name&quot;: &quot;lookup_order&quot;,
+                        &quot;description&quot;: &quot;Look up order status by order ID or email&quot;,
+                        &quot;api_schema&quot;: {
+                            &quot;url&quot;: &quot;https://api.mystore.com/orders/lookup&quot;,
+                            &quot;method&quot;: &quot;POST&quot;,
+                            &quot;request_headers&quot;: {&quot;Authorization&quot;: &quot;Bearer {{API_KEY}}&quot;},
+                            &quot;request_body_schema&quot;: {
+                                &quot;type&quot;: &quot;object&quot;,
+                                &quot;properties&quot;: {
+                                    &quot;order_id&quot;: {&quot;type&quot;: &quot;string&quot;},
+                                    &quot;email&quot;: {&quot;type&quot;: &quot;string&quot;}
+                                }
+                            }
+                        }
+                    },
+                    # Client: Browser-side product display
+                    {
+                        &quot;type&quot;: &quot;client&quot;,
+                        &quot;name&quot;: &quot;show_product&quot;,
+                        &quot;description&quot;: &quot;Display product details to the customer&quot;,
+                        &quot;parameters&quot;: {
+                            &quot;type&quot;: &quot;object&quot;,
+                            &quot;properties&quot;: {
+                                &quot;product_id&quot;: {&quot;type&quot;: &quot;string&quot;}
+                            },
+                            &quot;required&quot;: [&quot;product_id&quot;]
+                        }
+                    }
+                ],
+                &quot;built_in_tools&quot;: {
+                    &quot;end_call&quot;: {},
+                    &quot;transfer_to_number&quot;: {
+                        &quot;transfers&quot;: [{
+                            &quot;transfer_destination&quot;: {&quot;type&quot;: &quot;phone&quot;, &quot;phone_number&quot;: &quot;+1234567890&quot;},
+                            &quot;condition&quot;: &quot;User asks for human support&quot;
+                        }]
+                    }
+                }
+            }
+        },
+        &quot;tts&quot;: {&quot;voice_id&quot;: &quot;JBFqnCBsd6RMkjVDRZzb&quot;, &quot;model_id&quot;: &quot;eleven_flash_v2_5&quot;}
+    }
+)
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

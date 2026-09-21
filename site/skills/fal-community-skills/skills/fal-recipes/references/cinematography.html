@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cinematography · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/fal-recipes/references/cinematography.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Cinematography Recipe</h1>
+<p>Use this recipe when the user needs cinematic direction, not generic "make it cinematic" prompting. Write concrete visual direction. Avoid empty prestige words.</p>
+<h2>Inputs to collect</h2>
+<p>Ask only for what affects the shot:</p>
+<ul>
+<li>Subject and action.</li>
+<li>Medium: still image, video, image-to-video, edit, storyboard frame.</li>
+<li>Genre and mood.</li>
+<li>Framing: close-up, medium, wide, overhead, POV, profile, locked-off.</li>
+<li>Camera motion (video only): push-in, dolly, tracking, handheld, crane, drone.</li>
+<li>Lens feel: wide, normal, telephoto, macro, shallow or deep focus.</li>
+<li>Lighting: natural, practical, studio, noir, high key, low key, backlit.</li>
+<li>Output: aspect ratio, duration, first frame, last frame, download path.</li>
+<li>Preferred model, if the user has a specific cinematography model or quality/cost profile in mind.</li>
+</ul>
+<h2>Genmedia workflow</h2>
+<ol>
+<li>Start from routed endpoint IDs (see <a href="../../fal-models-catalog/SKILL.html">fal-models-catalog</a>):</li>
+</ol>
+<p><code>bash
+ genmedia models --endpoint_id openai/gpt-image-2 --json
+ genmedia models --endpoint_id fal-ai/nano-banana-pro --json
+ genmedia models --endpoint_id bytedance/seedance-2.0/text-to-video --json
+ genmedia models --endpoint_id bytedance/seedance-2.0/image-to-video --json
+ genmedia models --endpoint_id xai/grok-imagine-video/text-to-video --json</code></p>
+<p>Use text search only when no routed endpoint covers the camera-control role:</p>
+<p><code>bash
+ genmedia models "cinematic video generation camera movement" --json
+ genmedia docs "video generation camera movement prompt" --json</code></p>
+<ol start="2">
+<li>Inspect schema and use only supported controls.</li>
+</ol>
+<p><code>bash
+ genmedia schema &lt;endpoint_id&gt; --json
+ genmedia pricing &lt;endpoint_id&gt; --json</code></p>
+<ol start="3">
+<li>Upload references when using image-to-video, first-frame, last-frame, style reference, or character/product continuity.</li>
+</ol>
+<p><code>bash
+ genmedia upload ./frame.png --json</code></p>
+<ol start="4">
+<li>Stills with direct download:</li>
+</ol>
+<p><code>bash
+ genmedia run &lt;endpoint_id&gt; \
+ --prompt "&lt;cinematography prompt&gt;" \
+ --download "./outputs/cinema/{request_id}_{index}.{ext}" \
+ --json</code></p>
+<ol start="5">
+<li>Video async:</li>
+</ol>
+<p>```bash
+ genmedia run <endpoint_id> \
+ --prompt "<shot prompt>" \
+ --image_url "<uploaded frame if supported>" \
+ --async \
+ --json</p>
+<p>genmedia status <endpoint_id> <request_id> \
+ --download "./outputs/cinema/{request_id}_{index}.{ext}" \
+ --json
+ ```</p>
+<h2>Prompt build order (SCLCAM)</h2>
+<ol>
+<li><strong>S</strong>ubject, who or what is in frame.</li>
+<li><strong>C</strong>ontext, location, time, weather, story moment.</li>
+<li><strong>L</strong>ens / framing, distance, angle, focal length feel, depth of field.</li>
+<li><strong>C</strong>amera motion, only for video or if motion blur is desired.</li>
+<li><strong>A</strong>tmosphere, haze, rain, practicals, reflections, texture.</li>
+<li><strong>M</strong>ood / color, palette, contrast, grade, exposure style.</li>
+<li>Output controls, aspect ratio, duration, first-frame continuity.</li>
+</ol>
+<p>Skeleton:</p>
+<pre><code class="language-text">[subject] in [context], framed as [shot size and angle], [lens feel],
+[lighting setup], [camera movement if video], [color grade], [texture],
+[duration or aspect ratio], [continuity constraints]
+</code></pre>
+<h2>Shot language</h2>
+<h3>Shot sizes</h3>
+<ul>
+<li><strong>Extreme close-up</strong>: one detail, texture, eye, hand, product edge.</li>
+<li><strong>Close-up</strong>: face or object detail with emotional focus.</li>
+<li><strong>Medium close-up</strong>: chest-up subject, useful for dialogue and portraits.</li>
+<li><strong>Medium shot</strong>: waist-up subject, body language visible.</li>
+<li><strong>Full shot</strong>: entire body or object, silhouette and stance readable.</li>
+<li><strong>Wide shot</strong>: subject inside environment.</li>
+<li><strong>Extreme wide</strong>: scale, isolation, worldbuilding, architecture.</li>
+</ul>
+<h3>Angles</h3>
+<ul>
+<li><strong>Eye level</strong>: natural, direct, grounded.</li>
+<li><strong>Low angle</strong>: power, threat, awe.</li>
+<li><strong>High angle</strong>: vulnerability, surveillance, layout clarity.</li>
+<li><strong>Dutch angle</strong>: unease, instability. Use sparingly.</li>
+<li><strong>Over-the-shoulder</strong>: relationship, conversation, pursuit.</li>
+<li><strong>POV</strong>: subjective experience.</li>
+<li><strong>Profile</strong>: graphic composition, ritual, tension, fashion.</li>
+</ul>
+<h3>Camera movement</h3>
+<ul>
+<li><strong>Slow push-in</strong>: attention, realization, premium product reveal.</li>
+<li><strong>Pull-back</strong>: isolation, context, reveal.</li>
+<li><strong>Dolly left/right</strong>: spatial discovery.</li>
+<li><strong>Tracking shot</strong>: follow action with continuity.</li>
+<li><strong>Crane up</strong>: scale reveal or emotional release.</li>
+<li><strong>Handheld</strong>: urgency, intimacy, instability.</li>
+<li><strong>Locked-off</strong>: control, deadpan, formalism, surveillance.</li>
+<li><strong>Orbit</strong>: product reveal, character inspection, heightened drama.</li>
+<li><strong>Macro glide</strong>: product texture, food, jewelry, electronics.</li>
+</ul>
+<h3>Composition</h3>
+<ul>
+<li><strong>Centered symmetry</strong>: control, ritual, luxury, unease.</li>
+<li><strong>Rule of thirds</strong>: natural editorial composition.</li>
+<li><strong>Negative space</strong>: loneliness, premium ad copy area, tension.</li>
+<li><strong>Foreground obstruction</strong>: secrecy, surveillance, voyeurism.</li>
+<li><strong>Leading lines</strong>: architecture, movement, precision.</li>
+<li><strong>Frame within frame</strong>: confinement, observation, layered space.</li>
+</ul>
+<h3>Continuity language</h3>
+<ul>
+<li>"same subject and wardrobe as the reference"</li>
+<li>"preserve product shape and label"</li>
+<li>"continue from the uploaded first frame"</li>
+<li>"single continuous shot"</li>
+<li>"no cutaways"</li>
+<li>"no time jump"</li>
+<li>"same lighting direction throughout"</li>
+</ul>
+<h2>Lighting, lens, and color</h2>
+<h3>Lighting setups</h3>
+<ul>
+<li><strong>Soft key</strong>: flattering, commercial, calm.</li>
+<li><strong>Hard key</strong>: graphic, dramatic, fashion, noir.</li>
+<li><strong>Backlight</strong>: separation, glow, silhouette, premium edge.</li>
+<li><strong>Rim light</strong>: subject outline, product glass, metal highlights.</li>
+<li><strong>Practical light</strong>: lamps, signs, screens, candles in the scene.</li>
+<li><strong>Motivated light</strong>: light with a visible or logical source.</li>
+<li><strong>Low key</strong>: dark frame, selective highlights, suspense.</li>
+<li><strong>High key</strong>: bright, low contrast, beauty, comedy, clean product work.</li>
+<li><strong>Top light</strong>: interrogation, overhead realism, harsh institutional mood.</li>
+<li><strong>Window light</strong>: natural, intimate, documentary.</li>
+</ul>
+<h3>Lens feel</h3>
+<ul>
+<li><strong>14-20mm wide</strong>: scale, distortion, kinetic interiors, action.</li>
+<li><strong>24-28mm wide-normal</strong>: environmental realism, travel, documentary.</li>
+<li><strong>35mm</strong>: natural cinematic perspective, street, lifestyle, narrative.</li>
+<li><strong>50mm</strong>: classic portrait and product balance.</li>
+<li><strong>85mm</strong>: compressed portrait, beauty, isolation.</li>
+<li><strong>100mm macro</strong>: product detail, jewelry, food texture, eyes.</li>
+<li><strong>Telephoto compression</strong>: distance, surveillance, fashion runway.</li>
+</ul>
+<h3>Depth of field</h3>
+<ul>
+<li><strong>Shallow focus</strong>: isolate subject, premium portrait, product hero.</li>
+<li><strong>Deep focus</strong>: environment and blocking stay readable.</li>
+<li><strong>Rack focus</strong>: attention shifts between two subjects or details.</li>
+</ul>
+<h3>Color and grade</h3>
+<ul>
+<li><strong>Clean neutral grade</strong>: commercial, e-commerce, architecture.</li>
+<li><strong>Warm golden grade</strong>: nostalgia, comfort, luxury hospitality.</li>
+<li><strong>Cool cyan shadows</strong>: thriller, tech, night exterior.</li>
+<li><strong>Desaturated earth palette</strong>: realism, documentary, survival.</li>
+<li><strong>High contrast monochrome</strong>: noir, fashion, graphic product.</li>
+<li><strong>Pastel palette</strong>: beauty, wellness, light lifestyle.</li>
+<li><strong>Sodium vapor night</strong>: urban realism, tension.</li>
+</ul>
+<h3>Texture</h3>
+<ul>
+<li><strong>Fine film grain</strong>: organic image, period mood.</li>
+<li><strong>Clean digital</strong>: tech, luxury, e-commerce, architecture.</li>
+<li><strong>Halation</strong>: glowing highlights, dream, night practicals.</li>
+<li><strong>Mist filter</strong>: soft bloom, romance, beauty.</li>
+<li><strong>Crisp high shutter</strong>: action clarity.</li>
+<li><strong>Motion blur</strong>: speed, energy, handheld realism.</li>
+</ul>
+<h2>Examples</h2>
+<h3>Noir close-up</h3>
+<pre><code class="language-text">a detective sitting alone in a parked car at night, close-up from passenger
+seat angle, 50mm lens feel, rain streaks on the window in foreground, hard
+streetlight slashes across his face, low key noir lighting, deep shadows,
+muted green and amber grade, still frame, no text
+</code></pre>
+<h3>Product macro glide</h3>
+<pre><code class="language-text">single continuous macro glide across the brushed steel edge of a luxury watch,
+100mm macro lens feel, black velvet surface, thin strip light reflected along
+the bevel, shallow depth of field, slow controlled camera movement, clean dark
+commercial grade, no extra text, no logo distortion
+</code></pre>
+<h3>Sci-fi wide shot</h3>
+<pre><code class="language-text">small astronaut crossing a vast white salt flat toward a black monolith,
+extreme wide shot, low horizon, 24mm lens feel, late afternoon backlight,
+long shadow, minimal composition, cool silver color grade, quiet atmospheric
+haze, cinematic still, no extra ships
+</code></pre>
+<h3>Handheld pursuit</h3>
+<pre><code class="language-text">8 second handheld tracking shot following a woman running through a narrow
+market alley at night, camera shoulder-height behind her, practical neon and
+food stall lights, motion blur on background, subject remains readable,
+urgent thriller pacing, one continuous shot, no cuts
+</code></pre>
+<h3>Warm interior drama</h3>
+<pre><code class="language-text">two siblings at a kitchen table after midnight, medium-wide static frame,
+35mm lens feel, warm practical lamp on table, cool moonlight through window,
+subtle haze, quiet tension, naturalistic color grade, deep focus enough to
+read both faces, no melodramatic poses
+</code></pre>
+<h2>Quality bar</h2>
+<p>Before returning, check:</p>
+<ul>
+<li>Camera movement is physically plausible for the scene.</li>
+<li>Lens, shot size, and camera angle do not contradict each other.</li>
+<li>Lighting direction is clear and consistent.</li>
+<li>Color grade supports the mood without flattening subject detail.</li>
+<li>Video prompt describes one shot unless the selected model supports multiple prompts or shot lists.</li>
+<li>Downloaded files come from <code>downloaded_files[]</code>, not manually curled URLs.</li>
+</ul>
+<p>If a result looks generic, improve specificity in camera, blocking, light, and environment before adding more adjectives.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

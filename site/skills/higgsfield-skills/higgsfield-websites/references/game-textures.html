@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>game-textures · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/game-textures.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Texture Tile Factory</h1>
+<blockquote>
+<p><strong>Asset reference for game-generation.</strong> Use for any seamless / tileable texture
+with PBR maps (ground, walls, floors — from a reference image or a generated one).
+The pipeline may be entered at any phase (only the seam fix, or only maps from an
+existing tile). Generate through <code>higgsfield generate create</code>; local image paths are
+uploaded automatically. Embed the game's STYLE FORMULA
+(see <code>stylization.md</code>) in every generation prompt.</p>
+<p><strong>The post-process scripts live on disk</strong> in this skill's <code>scripts/</code>
+folder. Locate them once per run (see <strong>Locating the scripts</strong> below) and
+address them as <code>scripts/pipeline.py</code>.</p>
+</blockquote>
+<p>Turn a reference image into an engine-ready texture in one pass: a
+<strong>seamless edit</strong> with Higgsfield <code>gpt_image_2</code> that keeps the reference's
+pixels (material, style and colors survive; only the edges are reconciled),
+then a <strong>deterministic post-process</strong> — one Python command that restores the
+reference's exact palette, guarantees the tiling mathematically and computes
+the PBR map set in code.</p>
+<p>The order matters: palette transfer and seam fix run <strong>after</strong> GPT, because
+gpt_image_2 always slightly blurs the outer border and drifts the palette —
+the bundled script exists to cancel exactly those two artifacts.</p>
+<p>Work language: mirror the user's language in chat; keep all generation
+prompts in English.</p>
+<p>The user may want only part of the pipeline — seam-fix an existing tile, or
+maps from an already-seamless texture. Enter at the matching phase; don't
+force the full chain.</p>
+<h2>Prerequisites</h2>
+<ul>
+<li>Higgsfield CLI installed and authenticated — for Phase 1.</li>
+<li>Python with <code>numpy</code> and <code>pillow</code> — Phases 2–3 run fully offline
+  (<code>pip install numpy pillow --break-system-packages</code> if missing).</li>
+<li>The bundled scripts reachable on disk (next section). Never retype or
+  "improve" them inline — they are deterministic on purpose.</li>
+</ul>
+<h2>Locating the scripts</h2>
+<p>The scripts ship inside this skill's folder, flat in <code>scripts/</code>:
+<code>pipeline.py</code> (the whole factory: seam fix, palette transfer, PBR maps,
+masked-inpaint composite) and <code>seamless.py</code> (legacy standalone seam fix).</p>
+<ol>
+<li>Run the bundled scripts from this skill's directory; verify with
+   <code>python3 scripts/pipeline.py --help</code>.</li>
+<li>If the file is missing, <strong>find the skill on disk before doing anything
+   else</strong> — never fall back to rewriting the script from memory:</li>
+</ol>
+<p>Use the path supplied by the active skill loader or search the agent's installed skills
+   directory for <code>higgsfield-game-generation/SKILL.md</code>, then export its parent directory.
+3. Still nothing → stop and report the exact path tried; a run without
+   the bundled scripts is a blocker, not a license to improvise.</p>
+<h2>Phase 0 — Reference intake</h2>
+<p>Get the reference as a real file (chat previews don't always reach the
+filesystem — if the file is missing, ask the user to drop it into the
+working folder). Then:</p>
+<ul>
+<li><strong>Square-crop</strong> to <code>textures/{id}_ref.png</code>. If the photo has perspective
+  or depth of field, crop the sharpest square region — tilted detail and
+  bokeh produce mush at the seam.</li>
+<li><strong>Measure before generating.</strong> Run the seam check (Phase 3). If the tile
+  is already seamless (ratio ≈ 1.0), skip Phase 1 and run Phase 2 with
+  <code>--trim 0</code>.</li>
+<li>Pick <code>{id}</code>: short, lowercase, one per material (<code>sand</code>, <code>brick_red</code>).</li>
+</ul>
+<h2>Phase 1 — Seamless edit (gpt_image_2)</h2>
+<ul>
+<li>Pass the crop directly with <code>--image</code>; the CLI uploads and confirms local paths.</li>
+<li>Fill the EDIT prompt template from the <strong>Prompt templates</strong> section below.
+  <code>{MATERIAL}</code> = 3–6 concrete words from the
+  reference. For structured materials (bricks, planks, tiles) append the
+  alignment add-on; for references that are already tiled previews append
+  the anti-repetition add-on; for stock images append the watermark add-on.</li>
+<li>Submit and wait:
+  <code>bash
+  higgsfield generate create gpt_image_2 \
+    --prompt "&lt;EDIT prompt with STYLE FORMULA&gt;" \
+    --image textures/{id}_ref.png \
+    --aspect_ratio 1:1 \
+    --quality high \
+    --wait \
+    --json</code></li>
+<li>Download the result and <strong>look at it with the Read tool next to the
+  reference</strong>. Check: same material, same colors, nothing added or removed,
+  no restyle. If GPT restyled — one retry with a stronger "do not restyle"
+  clause. If a structured seam survives the retry, switch to the
+  offset-inpaint pass (Prompt templates §2 below) instead of rolling
+  the seed again: two identical failures mean the approach is wrong, not
+  the seed.</li>
+</ul>
+<p>Don't fight the border blur or palette drift in the prompt — Phase 2
+cancels both deterministically.</p>
+<h2>Phase 2 — Post-process and PBR maps</h2>
+<p>One command per material:</p>
+<pre><code class="language-bash">python3 &quot;scripts/pipeline.py&quot; gpt_output.png \
+    -o textures/{id} --ref textures/{id}_ref.png
+</code></pre>
+<p>In order: trims the blurred 4% border (<code>--trim</code>, set <code>0</code> for non-GPT
+input), transfers the reference's exact palette via per-channel histogram
+matching (<code>--ref</code> — the color-identity guarantee), fixes the seam
+mathematically (Moisan FFT periodic decomposition + 50% offset blend +
+luminance flatten against tile-grid banding), then computes the PBR set
+with wrap-around filters so tileability survives every map.</p>
+<p>Writes: <code>{id}_seamless.png</code>, <code>{id}_basecolor.png</code>, <code>{id}_normal.png</code>,
+<code>{id}_roughness.png</code>, <code>{id}_height.png</code>.</p>
+<p>The seam fix has two modes (<code>--blend</code>, default <code>cut</code>):</p>
+<ul>
+<li><strong><code>cut</code> (default)</strong> — a hard minimal-error cut: the junction is covered
+  by a thin donor tube whose boundaries are cyclic min-cost paths that
+  dodge detailed features (stones, planks) and run through low-detail
+  zones (mortar, moss). Fully sharp — no averaging anywhere except a
+  3-px feather along the cut line itself. <code>--overlap</code> (default <code>0.25</code>)
+  is the corridor the paths may wander in; wider gives the cut more room
+  to avoid features at zero blur cost.</li>
+<li><strong><code>feather</code></strong> — the legacy cross-fade. Guarantees the wrap but averages
+  the band, which smears structured materials; if used there, narrow the
+  band with <code>--overlap 0.08</code>.</li>
+</ul>
+<p>Partial-pipeline entries map to flags of the same command:</p>
+<ul>
+<li><strong>Seam-fix an existing tile</strong> (no GPT step): <code>--trim 0</code>.</li>
+<li><strong>Maps only, from an already-seamless tile</strong>: <code>--trim 0 --no-seam</code>
+  (the seam fix is skipped entirely so a verified tile is never touched).</li>
+<li><strong>Residual interior line</strong> (a faint tone step where a §2 inpaint cross
+  used to be, or a wrap ratio that stays above ~1.3): run the <strong>double
+  pass</strong> — <code>np.roll</code> the produced <code>{id}_seamless.png</code> by 50% on both axes
+  and run the same Phase 2 command again with <code>--trim 0</code>. The interior
+  line lands on the wrap junction and gets cut away; the already-clean
+  edges move to the interior. The script picks the donor strip
+  automatically from the cleanest region of the tile, so the pass is safe
+  to repeat.</li>
+</ul>
+<h2>Phase 3 — Verify and package</h2>
+<p>For every produced material:</p>
+<ul>
+<li>Tile the basecolor 2×2 and <strong>inspect with the Read tool</strong>: features wrap,
+  no grid banding, no brightness step at the joints.</li>
+<li><strong>Inspect at 1:1</strong>: full-resolution crops of both wrap junctions (paste
+  the two opposite edge strips side by side) and of the tile center.
+  Downscaled previews hide translucent smears and ghost elements.</li>
+<li>Seam ratio (≈ 1.0 = seamless; flag anything above 1.3 and consider the
+  offset-inpaint pass):</li>
+</ul>
+<pre><code class="language-bash">python3 - &lt;&lt;'EOF'
+import numpy as np; from PIL import Image
+a = np.asarray(Image.open(&quot;textures/{id}_basecolor.png&quot;).convert(&quot;RGB&quot;)).astype(float)
+seam = abs(a[0]-a[-1]).mean() + abs(a[:,0]-a[:,-1]).mean()
+base = abs(np.diff(a,axis=0)).mean() + abs(np.diff(a,axis=1)).mean()
+print(round(seam/base, 2))
+EOF
+</code></pre>
+<p>Assemble the final structure and write <code>textures/texture_manifest.json</code>
+mapping each id → files produced:</p>
+<pre><code>textures/
+├── texture_manifest.json   # id → {ref, seamless, maps[], seam_ratio}
+├── {id}_ref.png            # square crop of the user's reference
+├── {id}_seamless.png       # the tile itself
+├── {id}_basecolor.png      # PBR set — drops into Unity/UE/Godot as-is
+├── {id}_normal.png
+├── {id}_roughness.png
+└── {id}_height.png
+</code></pre>
+<p>Finish with a short summary table for the user: material, seam ratio,
+files. Offer the natural next steps without launching them: more tile
+variants against visible repetition on large areas, transition tiles
+between two materials, or running the next reference through the same
+pipeline.</p>
+<hr />
+<h2>Prompt templates</h2>
+<p>All prompts go to <code>gpt_image_2</code>, aspect <code>1:1</code>, quality <code>high</code>, with the
+reference attached as a media input (<code>media_id</code>, never a raw URL).</p>
+<h2>1. Seamless edit (Phase 1)</h2>
+<pre><code>Reproduce the attached image as faithfully as possible: the SAME {MATERIAL},
+same colors, same lighting, same shapes and detail, pixel-level similarity
+everywhere possible. Only make the MINIMAL adjustments needed so the image
+becomes a perfectly seamless tileable texture: the left edge must continue
+into the right edge and the top edge into the bottom edge with no visible
+seam when tiled. Do not restyle, do not add or remove elements, do not
+change colors or scale. Square 1:1.
+</code></pre>
+<p><code>{MATERIAL}</code> — 3–6 concrete words from the reference
+("hand-painted cracked dry earth with small grey stones").</p>
+<p>Add-ons, appended as extra sentences when they apply:</p>
+<ul>
+<li>structured materials (bricks, planks, tiles):
+  <code>The repeating units must be aligned so rows continue across the tile
+  borders: unit boundaries at the left edge continue into the right edge
+  and across top/bottom.</code></li>
+<li>the reference is itself a tiled preview (visible periodic repetition):
+  <code>Reduce the visible periodic repetition of distinctive features so the
+  pattern feels organic.</code></li>
+<li>stock image: <code>Remove any watermark text.</code></li>
+</ul>
+<h2>2. Offset-inpaint pass — structured seams that survive Phase 1</h2>
+<p>Move the seam to the center and have GPT repaint only the cross:</p>
+<ol>
+<li><code>np.roll</code> the tile by 50% on both axes (the seam becomes a center cross).</li>
+<li>Send to gpt_image_2:</li>
+</ol>
+<pre><code>This {MATERIAL} game texture is damaged along a vertical line and a
+horizontal line through the center: some pattern elements there are faded,
+semi-transparent, streaky or cut in half. Replace every damaged element
+with a brand-new complete one painted in the exact same crisp style: fully
+opaque, sharp confident strokes, same element size, same colors. No blur,
+no soft transparent elements, no smoothing - the repaired area must be
+indistinguishable in sharpness and detail from the rest of the image. Keep
+everything outside the damaged lines unchanged. The final image must be a
+perfectly seamless tileable texture: the left edge continues into the
+right edge and the top edge continues into the bottom edge with no visible
+seam when tiled. Flat even lighting, no shadows, no vignette.
+</code></pre>
+<p>Wording matters (live failed-run history): "repair the seam" biases the
+model toward smoothing and produces blurry ghost elements along the line —
+say "replace damaged elements with new complete ones" and explicitly
+forbid faded/semi-transparent results. Asking the model to "keep the
+borders unchanged" alone is NOT reliable — it usually repaints globally —
+so the prompt also demands the whole output stay tileable.</p>
+<ol start="3">
+<li><strong>Never trust the model's full output</strong> — it repaints the whole image
+   regardless of "keep the borders unchanged", and its repaint outside the
+   cross carries drift, ghosts and translucent smears (live failed runs of
+   this skill). Finish with the <strong>masked composite</strong> built into the
+   script — one command:</li>
+</ol>
+<pre><code class="language-bash">python3 &quot;scripts/pipeline.py&quot; {id}_rolled.png \
+    --inpaint gpt_cross_output.png -o textures/{id} --ref textures/{id}_ref.png
+</code></pre>
+<p>It takes from the model's output <strong>only the center cross</strong>, bounded by
+   cyclic min-cut paths laid where original and repaint agree (the SD
+   seamless-tile extensions do the same with a real inpaint mask — this
+   emulates it for models without mask support); ~70% of the tile stays
+   the untouched original. The composite is unrolled (the repaired cross
+   becomes the wrap), then the normal post-process runs.</p>
+<p>The edge-seam ratio alone can look perfect while an interior defect hides
+in the patched zone — Phase 3 inspection must include <strong>1:1 (100% zoom)
+crops</strong> of the wrap areas and the tile center; a downscaled 2×2 preview
+hides translucent smears (a live failed run of this skill).</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

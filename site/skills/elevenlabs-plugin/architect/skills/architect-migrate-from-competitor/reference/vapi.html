@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>vapi · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">architect/skills/architect-migrate-from-competitor/reference/vapi.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Vapi → ElevenLabs</h1>
+<h2>Read this first: Vapi Workflows are retired</h2>
+<p>Vapi's own documentation states that Workflows were retired on <strong>18 August 2026</strong>, that from 19 August
+2026 existing workflows no longer run, and that new workflows can no longer be created. Vapi directs
+customers to migrate to Assistants or Squads.</p>
+<p>Two consequences:</p>
+<ol>
+<li><strong>Classify the source as an Assistant or a Squad.</strong> Those are the live shapes.</li>
+<li><strong>If you are handed a Workflow, its node vocabulary is dead.</strong> Say / Gather / Condition / API
+   Request were legacy Workflow node names. Do not describe them to the user as current Vapi, and be
+   suspicious of any mapping table built on them — several in circulation are. A Workflow export is
+   still worth reading as a description of intent; it just no longer describes anything running.</li>
+</ol>
+<p>A customer on Vapi Workflows is being forced to re-platform anyway, which usually makes this an easier
+conversation than a normal migration.</p>
+<h2>Identifying the shape</h2>
+<ul>
+<li><strong>Assistant</strong> — a single agent. <code>model.messages</code> holds the system prompt (as a message entry, not a
+  top-level string), <code>model.toolIds</code> or inline <code>model.tools</code> hold tools.</li>
+<li><strong>Squad</strong> — <code>members[]</code>, each a saved assistant (<code>assistantId</code>) or a transient inline one
+  (<code>assistant</code>). Handoff tools carry the topology.</li>
+<li><strong>Workflow</strong> (legacy) — <code>nodes[]</code> of type <code>conversation</code> or <code>tool</code>, plus <code>edges[]</code>.</li>
+</ul>
+<h2>Construct mapping</h2>
+<table>
+<thead>
+<tr>
+<th>Vapi</th>
+<th>ElevenLabs</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Assistant</td>
+<td>Agent</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Squad</td>
+<td>one agent with <code>override_agent</code> nodes, <strong>or</strong> several agents</td>
+<td>Decide per member, not per squad — see below.</td>
+</tr>
+<tr>
+<td>Squad member, transient (inline <code>assistant</code>)</td>
+<td><code>override_agent</code> node</td>
+<td>Exists only for this flow.</td>
+</tr>
+<tr>
+<td>Squad member, saved (<code>assistantId</code>)</td>
+<td><code>standalone_agent</code> node pointing at a separate EL agent</td>
+<td>Keeps the reuse boundary.</td>
+</tr>
+<tr>
+<td>Handoff tool</td>
+<td>an <strong>edge</strong>, or a <code>standalone_agent</code> node / <code>transfer_to_agent</code></td>
+<td>Depends on destination type — see below.</td>
+</tr>
+<tr>
+<td><code>members[n].assistantOverrides</code>, <code>membersOverrides</code></td>
+<td><code>override_agent</code> node overrides</td>
+<td>Precedence is <strong>inverted</strong>: in Vapi the squad-wide override wins; in EL the node override wins.</td>
+</tr>
+<tr>
+<td><code>transferCall</code> tool</td>
+<td><code>transfer_to_number</code> / <code>transfer_to_agent</code></td>
+<td>A <code>Sip</code> destination maps to a SIP URI, not a phone number.</td>
+</tr>
+<tr>
+<td><code>dtmf</code> tool</td>
+<td><code>play_keypad_touch_tone</code> system tool</td>
+<td><code>sipInfoDtmfEnabled</code> ↔ the out-of-band DTMF flag, which only takes effect on SIP-trunk-imported numbers.</td>
+</tr>
+<tr>
+<td><code>endCall</code> tool</td>
+<td><code>end_call</code> system tool</td>
+<td><code>endCallMessage</code> maps across; <code>endCallPhrases</code> has no field equivalent and becomes prompt guidance.</td>
+</tr>
+<tr>
+<td><code>voicemailDetection</code> (setting or tool)</td>
+<td><code>voicemail_detection</code> system tool</td>
+<td>Tool→tool. The backoff/beep-await tuning has no field equivalent.</td>
+</tr>
+<tr>
+<td>Code tool</td>
+<td><code>code</code> tool</td>
+<td>EL runs TS/JS in a sandboxed isolate with npm deps. Feature-flagged — confirm availability; a webhook tool is the fallback.</td>
+</tr>
+<tr>
+<td>Function / <code>apiRequest</code> tool</td>
+<td><code>webhook</code> tool</td>
+<td>See the parameter-partitioning trap.</td>
+</tr>
+<tr>
+<td>MCP tool</td>
+<td>an MCP <strong>server</strong>, a separate workspace resource</td>
+<td>See the approval-policy trap.</td>
+</tr>
+<tr>
+<td><code>ConversationNode.variableExtractionPlan</code></td>
+<td><code>override_agent</code> node then an <code>update_state</code> node</td>
+<td><strong>Not</strong> data collection — that is post-call and not per-node.</td>
+</tr>
+<tr>
+<td><code>Edge.condition</code> (<code>type: "ai"</code>)</td>
+<td><code>llm</code> edge condition</td>
+<td>EL also has <code>unconditional</code>, <code>result</code> and a typed <code>expression</code> AST, so it is strictly more expressive here.</td>
+</tr>
+<tr>
+<td>Legacy Workflow <code>tool</code> node</td>
+<td><code>tool</code> node</td>
+<td>EL has a dedicated node type; you do not need to call a tool from an agent node.</td>
+</tr>
+<tr>
+<td>Legacy Workflow Say node</td>
+<td><code>say</code> node</td>
+<td>EL has a real <code>say</code> node taking literal text <em>or</em> an LLM prompt. Do not downgrade it to an agent node.</td>
+</tr>
+<tr>
+<td><code>apiRequest</code> static <code>parameters</code> (Liquid)</td>
+<td>per-node <code>schema_overrides</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>Knowledge base</td>
+<td>knowledge base</td>
+<td>Vapi's are file-based; EL also accepts <code>url</code>, <code>text</code> and <code>folder</code>, so scraped-page KBs can often be re-pointed at the source URL.</td>
+</tr>
+<tr>
+<td><code>query</code> tool</td>
+<td>RAG with optional retrieval enabled</td>
+<td>See the RAG trap.</td>
+</tr>
+<tr>
+<td>Custom knowledge base (webhook retrieval)</td>
+<td>an ordinary tool</td>
+<td>EL has no pluggable retrieval backend — see gaps.</td>
+</tr>
+<tr>
+<td><code>compliancePlan</code></td>
+<td>per-agent privacy config</td>
+<td>Retention is per agent. Route the model-eligibility half to <code>architect-llm-selection</code>.</td>
+</tr>
+<tr>
+<td>Evals / mock conversations</td>
+<td><code>llm</code> tests plus <code>tool</code> tests</td>
+<td>Not simulation tests — those are the multi-turn kind.</td>
+</tr>
+<tr>
+<td>System prompt in <code>model.messages</code></td>
+<td>agent prompt (+ per-node <code>additional_prompt</code>)</td>
+<td>Vapi prompts run long; expect to split rather than paste.</td>
+</tr>
+<tr>
+<td><code>firstMessage</code></td>
+<td><code>first_message</code></td>
+<td>Text only in EL — see gaps if the source is an audio URL.</td>
+</tr>
+<tr>
+<td><code>voice.speed</code></td>
+<td>TTS speed</td>
+<td>Carry it, or the agent sounds different.</td>
+</tr>
+</tbody>
+</table>
+<h2>Handoff tools are both topology and a callable function</h2>
+<p>This is the most commonly mis-mapped construct. A Vapi handoff tool is a real LLM-visible function
+<em>and</em> its <code>destinations</code> array encodes the graph. So the unit of conversion is a <strong>destination</strong>, not
+a tool:</p>
+<ul>
+<li>destination <code>assistant</code> naming a member <strong>inside the same squad</strong> → an edge into an <code>override_agent</code>
+  node.</li>
+<li>destination <code>assistant</code> pointing at a <strong>saved</strong> assistant, or destination <code>squad</code> → a
+  <code>standalone_agent</code> node, or the <code>transfer_to_agent</code> system tool.</li>
+<li>destination <code>dynamic</code>, where a webhook chooses the target at runtime → <strong>no edge equivalent</strong>. See
+  gaps.</li>
+</ul>
+<p>One handoff tool with three destinations becomes three EL constructs, possibly of different kinds.</p>
+<p>Assistant-to-assistant transfer crosses an agent boundary; workflow edges only move between nodes
+<em>inside</em> one agent. Mapping it to an edge flattens a multi-assistant setup into a single agent and
+loses the boundary. In the other direction, EL adds two things Vapi has no counterpart for: landing on
+a specific <code>node_id</code> of the destination agent, and a push/pop call stack — which is how you express
+"go do this and come back".</p>
+<h2>Traps specific to a Vapi import</h2>
+<ul>
+<li><strong>A migrated MCP call appears to hang.</strong> Each tool discovered from an EL MCP server carries an
+  approval policy that defaults to requiring approval. A Vapi assistant whose MCP tools just worked
+  will look broken until you set it. MCP servers are also capped at 10 per agent.</li>
+<li><strong>Transfer type defaults differ.</strong> EL's transfer type defaults to conference (warm). A Vapi blind
+  transfer must set blind explicitly, or a cold handoff silently becomes a warm one.</li>
+<li><strong>Only <code>voice.provider == "elevenlabs"</code> carries a reusable voice id.</strong> Every other provider —
+  including Vapi's own branded voices — needs a substitute chosen by hand; there is no id mapping.
+  Older exports may also name Vapi voices retired in early 2026 that no longer resolve even on Vapi.</li>
+<li><strong>Tool parameters must be partitioned.</strong> EL splits a webhook tool's inputs into path, query and body
+  schemas, so a single flat Vapi <code>function.parameters</code> object has to be divided by where each value
+  belongs in the request. Where the source has <code>apiRequest</code> tools, migrate from those instead — they
+  already separate body from headers.</li>
+<li><strong>RAG changes cost and latency profile.</strong> A Vapi <code>query</code> tool is something the model chooses to
+  call. EL's default RAG retrieves every turn. Enable optional retrieval to preserve the original
+  behaviour, or the migrated agent quietly gets slower and more expensive.</li>
+<li><strong>Override precedence is inverted</strong>, as noted in the table. A squad-wide override that used to win
+  will now lose to the node override.</li>
+<li><strong>PCI and HIPAA are enforced server-side.</strong> EL rejects a non-compliant model in HIPAA mode, and PCI
+  validation extends to the post-call webhook URL. Porting a compliance-enabled assistant with its
+  existing webhook will produce a validation error, not a warning.</li>
+</ul>
+<h2>Where the real gaps are</h2>
+<p>Treat any "Vapi has X and ElevenLabs does not" claim as wrong until you have searched and failed to
+find the feature. Most such assertions are. These hold up:</p>
+<ul>
+<li><strong>Context engineering between members.</strong> Vapi lets each handoff destination choose how much history
+  the next member sees — all, none, the last N messages, and so on. EL passes the full conversation
+  context to every node and agent. A member that was configured to see <em>nothing</em> will see everything
+  after migration. This is the gap most likely to change behaviour, and it needs to be raised with the
+  customer rather than worked around.</li>
+<li><strong>Field-level encryption of tool arguments.</strong> Vapi can encrypt named paths of a tool's request body
+  with the customer's own public key before the request leaves Vapi. EL has no field-level payload
+  encryption; it offers secret references and transport security instead.</li>
+<li><strong>ASR confidence is not exposed.</strong> There is no low-confidence event or hook to trigger a
+  re-prompt. The score exists internally but never reaches the agent.</li>
+<li><strong>No pluggable retrieval backend.</strong> A Vapi custom knowledge base becomes an ordinary tool, which
+  means retrieval stops being automatic and becomes a call the model must decide to make.</li>
+<li><strong><code>sipRequest</code>.</strong> Sending arbitrary SIP INFO/MESSAGE/NOTIFY with model-filled headers has no EL
+  equivalent. SIP REFER is unrelated — in EL that is a transfer type.</li>
+<li><strong><code>dynamic</code> handoff destinations.</strong> A webhook choosing the handoff target at runtime has no edge
+  equivalent.</li>
+<li><strong><code>firstMessage</code> as an audio URL.</strong> EL's first message is text. If the source points at an audio
+  file, that is a real loss — tell the customer rather than silently transcribing it.</li>
+<li><strong>No per-end-user container spanning conversations.</strong> Vapi Sessions group chat and SMS interactions,
+  though not voice calls. EL has no first-class equivalent, so continuity across conversations has to
+  be carried by the customer's own system.</li>
+</ul>
+<p>One more worth checking on the source side before you migrate it: <code>rejectionPlan</code> lets Vapi veto a
+tool call by regex or template. If the source relies on it to block an action, that protection does
+not come across, and per the tool-scoping rule in <code>reference/traps.md</code> it needs to be enforced at the endpoint.</p>
+<h2>How far to trust this file</h2>
+<p>The mappings above are drawn from Vapi's published API schema and documentation, so they are reliable
+about what a construct <strong>is</strong> and what it maps to. They are not a description of what real Vapi
+configs look like in practice — field nesting, which fields are actually populated, how a typical
+squad is arranged.</p>
+<p>So treat this as <strong>mapping rules</strong>. Read the customer's export for shape, and when it disagrees with
+something here about shape, the export wins. Say so plainly rather than forcing the config to match
+the table.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

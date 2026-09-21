@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mockups · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-brandkit/references/mockups.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Mockups</h1>
+<p>Create believable applications of the Brand Lock. Preserve the approved logo and colors; do not let the scene generator invent branding.</p>
+<p>Before planning, require only an approved logo through the Brandkit state script's <code>get_logo</code> action. Read approved palette/visual axes when available or when color/application decisions need them. Require typography only when readable text must appear. Use the exact approved logo path, URL, upload ID, or job ID returned by state everywhere; never substitute a newer generation or a recreated mark.</p>
+<p>Mockups are rendered images, not fully editable layered documents. If the user needs editable source artwork, use that asset's dedicated reference (for example <code>packaging.md</code> or <code>social-templates.md</code>) first.</p>
+<h2>Plan the application from brand input</h2>
+<p>Use the approved Brand Lock, user brief, persisted visual axes, preferences, and uploaded references before choosing mockup objects, materials, framing, or art direction.</p>
+<ul>
+<li>Choose applications people in that category credibly use.</li>
+<li>Extract useful composition/material cues from user-provided references.</li>
+<li>Never recreate a reference's exact scene, layout, or branded object.</li>
+</ul>
+<p>Each mockup needs one clear art-directed idea tied to this brand. “Put the logo on a generic object” is not a concept.</p>
+<h2>Anti-slop rules</h2>
+<p>Avoid the common synthetic/generic look:</p>
+<ul>
+<li>Arbitrary gradients or neon glows unrelated to the Brand Lock</li>
+<li>Plastic sheen on every material</li>
+<li>Floating products and physically meaningless props</li>
+<li>Excessive bloom, haze, depth of field, or cinematic lighting</li>
+<li>Generic marble/pedestal “luxury” staging</li>
+<li>Fake microcopy, pseudo-labels, invented claims, or decorative UI</li>
+<li>Impossible folds, embossing, reflections, print edges, or scale</li>
+<li>Too many props competing with the branded surface</li>
+<li>Warped logos or a different visual device in every mockup</li>
+</ul>
+<p>Prefer believable materials, restrained lighting, purposeful negative space, specific environments, and one focal branded application.</p>
+<h2>Required Seedream route</h2>
+<p>Use <strong>Seedream</strong> as the primary mockup generator. Soul models are forbidden. GPT Image 2 is allowed only as the conditional text/detail application stage below.</p>
+<p>Before generation, run <code>higgsfield model get seedream_v5_pro --json</code>. If that id is absent, inspect <code>higgsfield model list --image --json</code> and use the highest/newest Seedream tier it returns. Follow the live schema; request the highest supported resolution/quality tier and use the same Seedream model for every mockup in the set.</p>
+<h2>Ask for aspect ratio</h2>
+<p>Before submitting any mockup job, ask which ratio the user wants unless their current request already states it. Offer supported choices such as 1:1, 4:3, 3:4, 16:9, 9:16, 3:2, and 2:3; validate the answer against the live model schema. For several mockups, use one ratio for the set unless the user assigns ratios per item. Lock the selected ratio across every stage.</p>
+<h3>Existing photograph</h3>
+<p>When the user explicitly supplies the exact photograph to mock up, pass it as <code>Image0</code> and the selected logo variant as <code>Image1</code>. Use Seedream for symbol-only applications; use GPT Image 2 when the final image contains readable text. Preserve subject, camera, lighting, materials, folds, shadows, perspective, crop, background, and selected ratio.</p>
+<h2>Logo variant routing</h2>
+<p>Call the Brandkit state script's <code>get_logo</code> action and use one of its exact approved variant assets:</p>
+<ul>
+<li>Full-color logo: smooth surfaces and production methods that credibly support accurate multicolor printing.</li>
+<li>Black monochrome logo: light kraft paper, natural cardboard, pale fabric, stamps, dark-ink screen printing, engraving masks, and light uncoated stock.</li>
+<li>White monochrome logo: dark paper, dark boxes, dark fabric, reverse marks, light-ink screen printing, and dark signage.</li>
+<li>Embossing, debossing, foil, laser engraving, and one-color printing always use a monochrome variant. Never send the full-color mark as the application reference for those processes.</li>
+</ul>
+<p>Only after the user confirms a mockup whose physical production requires one-color/reverse artwork, run <code>python3 "$SKILL_ROOT/scripts/brandkit.py" logo-export</code> with <code>include_monochrome: true</code> and the approved color SVG when the required variant is absent. Never pre-generate monochrome assets for future mockups. Never ask Seedream to invent/recolor them or use manual SVG edits.</p>
+<h2>Seedream prompt contract</h2>
+<p>Pass references with repeated CLI <code>--image</code> flags; <code>Image0</code> is the first flag, <code>Image1</code> the second, and so on. For a new scene, pass the exported PNG of the selected logo variant as <code>Image0</code>; add approved product/artwork references afterward. For an existing photograph, use the photograph as <code>Image0</code> and logo PNG as <code>Image1</code>. State each role explicitly. Local PNG/JPG paths auto-upload. Never pass an SVG path as an image reference.</p>
+<pre><code class="language-text">[CREATE ONE FINISHED BRANDED MOCKUP]
+&lt;specific object/application, credible setting, camera, material, lighting,
+composition, and one brand-specific art-direction idea&gt;
+
+[AUTHORITATIVE LOGO]
+&lt;ImageN&gt; is the exact approved &lt;full-color/black/white&gt; logo. Preserve its
+spelling, silhouette, geometry, proportions, internal negative space, and exact
+color. Do not redraw, simplify, crop, stretch, outline, or add effects.
+
+[PLACEMENT LOCK]
+Target surface: &lt;exact object panel/face/material&gt;.
+Position: &lt;exact alignment and location, e.g. horizontally centered, upper
+third, optical center aligned to panel&gt;.
+Scale: logo occupies &lt;specific proportion&gt; of the target surface while keeping
+&lt;specific clear-space margin&gt;.
+Orientation: align to &lt;panel edge/seam/baseline&gt;; follow surface perspective
+without changing logo proportions.
+Color: use the supplied &lt;full-color/black/white&gt; variant exactly. State why it
+contrasts correctly with the material/background.
+
+[PHYSICAL APPLICATION]
+Render the logo using &lt;credible print/emboss/foil/engraving/ink behavior&gt;.
+Respect folds, grain, perspective, occlusion, reflections, scale, and
+manufacturing limits.
+
+No extra logos, pseudo-text, invented labels, warped marks, floating print,
+unrelated props, arbitrary gradients, plastic sheen, or generic luxury staging.
+</code></pre>
+<p>The prompt must contain concrete placement, scale, alignment, clear-space, color-variant, and material-application instructions. “Place the logo on the bag/box” is insufficient.</p>
+<p>Use <code>--wait --json</code> and retain the final job ID and result URL. Do not download and re-upload the same result unless a receiving stage requires a local file.</p>
+<p>Typical one-stage call:</p>
+<pre><code class="language-bash">higgsfield generate create seedream_v5_pro \
+  --image &quot;$BRANDKIT_WORKDIR/logo/approved-logo-2048.png&quot; \
+  --prompt &quot;&lt;complete Seedream prompt contract&gt;&quot; \
+  --aspect_ratio 3:4 \
+  --resolution 2k \
+  --wait --json
+</code></pre>
+<p>Replace ratio and resolution only with values confirmed by the live schema.</p>
+<h2>Conditional text/detail route</h2>
+<p>If the final mockup contains any readable text—wordmark, brand name, tagline, packaging label, signage, product copy, or interface text—do not ask Seedream to render it:</p>
+<ol>
+<li>Seedream creates the same-ratio scene with the target surface blank and no logo, letters, pseudo-text, or invented graphics.</li>
+<li>Submit GPT Image 2 with the Seedream job ID as the first <code>--image</code> and approved logo/artwork PNG as the second <code>--image</code>.</li>
+<li>The GPT prompt preserves Image0's camera, crop, objects, lighting, material, folds, shadows, perspective, and background exactly.</li>
+<li>State the exact literal text, logo variant, placement, scale, alignment, clear space, color, and physical print/application behavior.</li>
+<li>Keep the ratio identical to the user-approved ratio.</li>
+</ol>
+<pre><code class="language-bash">higgsfield generate create gpt_image_2 \
+  --image &quot;&lt;seedream-job-id&gt;&quot; \
+  --image &quot;$BRANDKIT_WORKDIR/logo/approved-logo-2048.png&quot; \
+  --prompt &quot;&lt;exact controlled text/detail application prompt&gt;&quot; \
+  --aspect_ratio 3:4 \
+  --resolution 4k \
+  --wait --json
+</code></pre>
+<p>Use GPT Image 2 only for this controlled second stage. If there is no readable text, keep the one-call Seedream route.</p>
+<h2>Deterministic compositing</h2>
+<p>Prefer deterministic placement over generative editing when:</p>
+<ul>
+<li>The target is a flat poster, screen, card, sign, or front-facing package</li>
+<li>The source logo already has transparency</li>
+<li>No physical deformation, folds, reflections, or occlusion are required</li>
+</ul>
+<p>Use image/SVG tooling to scale and place the official logo exactly. Preserve clear space and color. Add masks/perspective only when they can be controlled reliably.</p>
+<p>Use Seedream directly when the branding must interact with:</p>
+<ul>
+<li>Fabric folds</li>
+<li>Curved packaging</li>
+<li>Embossing/debossing</li>
+<li>Foil, print texture, reflections, or surface wear</li>
+<li>Occlusion and realistic perspective</li>
+</ul>
+<p>If Seedream corrupts the logo, retry once with stronger placement, geometry, and color constraints while keeping the same references. If it fails again, stop and use deterministic compositing when possible.</p>
+<h2>Mockup-specific guidance</h2>
+<h3>Packaging</h3>
+<ul>
+<li>Use the actual dieline/package proportions when supplied.</li>
+<li>Preserve material, closure, label area, and required legal/copy regions.</li>
+<li>Do not invent claims, ingredients, certifications, or regulatory text.</li>
+</ul>
+<h3>Apparel/merch</h3>
+<ul>
+<li>Use Seedream for the finished branded person/garment mockup.</li>
+<li>Define print/embroidery location, size, and material behavior.</li>
+<li>Preserve the person and garment between variants.</li>
+</ul>
+<h3>Signage/environment</h3>
+<ul>
+<li>Respect viewing distance, perspective, mounting, and lighting.</li>
+<li>Use the correct approved logo version for background contrast.</li>
+</ul>
+<h3>Device/screen</h3>
+<ul>
+<li>Treat the screen graphic as a separate editable asset from its dedicated module when possible, then composite it into the device.</li>
+<li>Do not ask GPT to invent interface copy that should be exact.</li>
+</ul>
+<h2>Variant discipline</h2>
+<p>For several mockups:</p>
+<ul>
+<li>Lock one base scene per mockup family.</li>
+<li>Vary only the requested application or colorway.</li>
+<li>Keep camera, lighting, material, and composition fixed for comparison sets.</li>
+<li>Do not generate a new person or environment for every colorway.</li>
+</ul>
+<h2>Mockup QA</h2>
+<ul>
+<li>Official logo matches the reference exactly</li>
+<li>No misspelling, extra glyph, warped geometry, or invented mark</li>
+<li>Correct colorway and sufficient contrast</li>
+<li>Physical application follows folds/perspective/material</li>
+<li>No floating print, impossible reflections, or duplicated graphics</li>
+<li>One brand-specific art-directed idea; not a generic logo-on-object scene</li>
+<li>Materials, props, lighting, and setting are credible for the industry</li>
+<li>No arbitrary gradients, plastic sheen, bloom, fake microcopy, or generic luxury staging</li>
+<li>When an existing photograph was supplied, every non-target scene element is unchanged</li>
+<li>Product/package proportions match supplied references</li>
+<li>All mockups use the same Brand Lock</li>
+<li>Rendered output is clearly labeled as non-editable unless a separate editable overlay/template is also delivered</li>
+</ul>
+<p>After QA, ask the user to approve the final mockup or set. Only then save it with the Brandkit state script's <code>approve_brandbook_element</code> action and <code>required_slots: ["logo"]</code>; add palette/typography only when the mockup actually used them. Generated or model-praised mockups are drafts until that approval.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

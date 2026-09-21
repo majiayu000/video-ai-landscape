@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>fal-gamedev · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/fal-gamedev/SKILL.md</span><button onclick="t()">🌓</button></nav>
+<main><div class="meta"><div class="m-name">fal-gamedev</div><div class="m-desc">&gt; Generate 2D pixel art game assets, characters, sprite sheets, background removal, and game backgrounds. Trigger for &quot;pixel art character&quot;, &quot;sprite sheet&quot;, &quot;walk cycle&quot;, &quot;game sprites&quot;, &quot;isometric sprites&quot;, &quot;side-scroller assets&quot;, &quot;RPG character sprites&quot;, &quot;idle animation&quot;, &quot;attack animation&quot;, &quot;jump animation&quot;, &quot;game background&quot;, &quot;parallax background&quot;, &quot;isometric map&quot;, &quot;2D game art&quot;, &quot;pixel art animation&quot;. Covers character generation (nano-banana-pro / gpt-image-2), sprite sheet animation (nano/edit or gpt-image-2/edit), background removal (Bria), and background generation (parallax layers or isometric map).</div><div class="m-src">源文件：<a href="https://github.com/fal-ai-community/skills/blob/main/skills/fal-gamedev/SKILL.md" target="_blank" rel="noopener">fal-ai-community/skills/skills/fal-gamedev/SKILL.md</a></div></div><h1>2D Game Assets</h1>
+<blockquote>
+<p>Requires the <a href="https://github.com/fal-ai-community/genmedia-cli">genmedia CLI</a> (run <code>genmedia init</code> once).</p>
+</blockquote>
+<p>Full pipeline for 2D pixel art game assets: character → sprite sheets → background removal → game background. Each recipe is independently invokable, run just the part you need.</p>
+<p>Always use <code>--json</code> so output is machine-readable. Use <code>--download</code> to save files locally. Do <strong>not</strong> curl URLs manually, use the <code>--download</code> flag.</p>
+<hr />
+<h2>Execution rules, follow these strictly</h2>
+<ol>
+<li>
+<p><strong>Each genmedia command = one Bash tool call</strong>: issue each <code>genmedia run</code> and <code>genmedia status</code> as its own bare tool call. No variable assignments, no pipes, no shell redirects. This keeps every call matching the <code>genmedia *</code> allowlist so it runs without permission prompts.</p>
+</li>
+<li>
+<p><strong>Parallel jobs → async</strong>: issue each <code>genmedia run --async</code> as its own separate Bash tool call (not combined into one shell block). All jobs queue and run in parallel on fal's side; total time ≈ slowest single job. After all are fired, poll each with <code>genmedia status</code> sequentially (not in parallel, one failure must not cancel others).
+ ```bash
+ # Step 1, fire async (each line = its own Bash tool call, returns request_id immediately)
+ genmedia run fal-ai/nano-banana-pro/edit --prompt "$WALK_PROMPT" --image_urls "[\"$CHARACTER_URL\"]" --aspect_ratio "1:1" --resolution "1K" --async --json
+ genmedia run fal-ai/nano-banana-pro/edit --prompt "$IDLE_PROMPT" --image_urls "[\"$CHARACTER_URL\"]" --aspect_ratio "1:1" --resolution "1K" --async --json</p>
+</li>
+</ol>
+<p># Step 2, poll sequentially (each line = its own Bash tool call)
+ genmedia status fal-ai/nano-banana-pro/edit <walk_request_id> --result --download ./walk.png --json
+ genmedia status fal-ai/nano-banana-pro/edit <idle_request_id> --result --download ./idle.png --json
+ ```</p>
+<ol start="3">
+<li>
+<p><strong>URL source</strong>: always read <code>downloaded_files[0].url</code> from the tool result JSON. This is the correct path for all models (nano, gpt, Bria).</p>
+</li>
+<li>
+<p><strong>Bria sync</strong>: Bria (<code>fal-ai/bria/background/remove</code>) has no queue endpoint and does not support <code>--async</code>. Run it sync. It completes in seconds.</p>
+</li>
+<li>
+<p><strong>Folder structure</strong>: always save into this layout, deriving the character slug from the character description (kebab-case, e.g. <code>pirate-carrot</code>):
+ <code>./game-assets/
+ &lt;character-slug&gt;/
+ character.png
+ sprites/
+ walk.png
+ idle.png
+ attack.png
+ jump.png
+ backgrounds/
+ layer1-sky.png
+ layer2-midground.png
+ layer3-foreground.png</code>
+ Create the folders before downloading (<code>mkdir -p</code>). Use this structure even for partial runs (e.g. just one sprite sheet still goes in <code>sprites/</code>).</p>
+</li>
+<li>
+<p><strong>End summary</strong>: after all downloads complete, print a summary listing every file path and its CDN URL. Format:
+ <code>=== Game Assets: pirate-carrot ===
+ character game-assets/pirate-carrot/character.png
+ https://...
+ walk game-assets/pirate-carrot/sprites/walk.png
+ https://...</code></p>
+</li>
+<li>
+<p><strong>400 on status poll</strong>: <code>genmedia status --result</code> fetches the result once; it does not poll automatically. A 400 with <code>"Request is still in progress"</code> means the job is still running, wait 10 seconds and retry the exact same <code>genmedia status</code> call with the same request_id. Do <strong>not</strong> re-fire the original <code>genmedia run --async</code> (the job is already running on fal's side). Keep retrying every 10–15 seconds until you get a successful result.</p>
+</li>
+</ol>
+<hr />
+<h2>When to use</h2>
+<ul>
+<li>Generating a pixel art character from a text description or reference image</li>
+<li>Creating sprite sheet animations (walk, jump, attack, idle) for a side-scroller</li>
+<li>Creating isometric RPG sprite sheets (walk, attack, idle across directions)</li>
+<li>Removing backgrounds from sprite sheets to get transparent PNGs</li>
+<li>Generating parallax backgrounds (3-layer) for side-scrollers</li>
+<li>Generating top-down isometric game maps for RPGs</li>
+</ul>
+<h2>Models in the stack</h2>
+<ul>
+<li><strong>Nano Banana Pro</strong>: <code>fal-ai/nano-banana-pro</code>, character + background generation; better quality and faster, recommended default</li>
+<li><strong>Nano Banana Pro Edit</strong>: <code>fal-ai/nano-banana-pro/edit</code>, sprite sheet generation from character image</li>
+<li><strong>GPT-Image-2</strong>: <code>openai/gpt-image-2</code>, character + background generation; slower than nano, use when user prefers it or wants cheaper output (<code>quality=low</code>)</li>
+<li><strong>GPT-Image-2 Edit</strong>: <code>openai/gpt-image-2/edit</code>, sprite sheet generation; slower than nano, requires model-specific walk prompt; use <code>quality=low</code> for cheaper runs</li>
+<li><strong>Bria RMBG 2.0</strong>: <code>fal-ai/bria/background/remove</code>, background removal on all sprite sheets</li>
+</ul>
+<hr />
+<h2>Recipe 1. Generate character</h2>
+<p>Ask the user: character description (text) or an existing image to convert. Ask model preference: <code>nano</code> (default, better quality + faster) or <code>gpt</code> (slower; use <code>quality=low</code> if user wants cheaper output).</p>
+<pre><code class="language-bash">CHARACTER_STYLE_PROMPT=&quot;Generate a single character only, centered in the frame on a plain white background. The character should be rendered in detailed 32-bit pixel art style (like PlayStation 1 / SNES era games). Include proper shading, highlights, and anti-aliased edges for a polished look. The character should have well-defined features, expressive details, and rich colors. Show in a front-facing or 3/4 view pose, standing idle, suitable for sprite sheet animation.&quot;
+
+IMAGE_TO_PIXEL_PROMPT=&quot;Transform this character into detailed 32-bit pixel art style (like PlayStation 1 / SNES era games). IMPORTANT: Must be a FULL BODY shot showing the entire character from head to feet. Keep the character centered in the frame on a plain white background. Include proper shading, highlights, and anti-aliased edges for a polished look. The character should have well-defined features, expressive details, and rich colors. Show in a front-facing or 3/4 view pose, standing idle, suitable for sprite sheet animation. Maintain the character's key features, colors, and identity while converting to pixel art.&quot;
+
+# Text → pixel art character (nano)
+genmedia run fal-ai/nano-banana-pro \
+ --prompt &quot;$CHARACTER_STYLE_PROMPT Character: &lt;character_desc&gt;&quot; \
+ --aspect_ratio &quot;1:1&quot; --resolution &quot;1K&quot; \
+ --download ./game-assets/&lt;slug&gt;/character.png --json
+
+# Text → pixel art character (gpt)
+genmedia run openai/gpt-image-2 \
+ --prompt &quot;$CHARACTER_STYLE_PROMPT Character: &lt;character_desc&gt;&quot; \
+ --image_size &quot;square_hd&quot; --quality &quot;high&quot; \
+ --download ./game-assets/&lt;slug&gt;/character.png --json
+
+# Existing image → pixel art (nano), upload source image first, then run edit
+genmedia upload /path/to/image.png --json
+genmedia run fal-ai/nano-banana-pro/edit \
+ --prompt &quot;$IMAGE_TO_PIXEL_PROMPT&quot; \
+ --image_urls &quot;[\&quot;&lt;uploaded_url_from_above&gt;\&quot;]&quot; \
+ --aspect_ratio &quot;1:1&quot; --resolution &quot;1K&quot; \
+ --download ./game-assets/&lt;slug&gt;/character.png --json
+</code></pre>
+<p>Read <code>downloaded_files[0].url</code> from the tool result, this is <code>CHARACTER_URL</code>, needed for all sprite sheet recipes.</p>
+<hr />
+<h2>Recipe 2. Generate sprite sheets</h2>
+<p>Pass <code>CHARACTER_URL</code> from Recipe 1. Choose <code>--style side</code> (side-scroller) or <code>--style iso</code> (isometric RPG). Choose model: <code>nano</code> or <code>gpt</code>.</p>
+<p><strong>Side-scroller sheets</strong>: 4-frame 2×2 grid animations. Covered types: <code>walk</code>, <code>jump</code>, <code>attack</code>, <code>idle</code>. Do not generate additional animation types (hurt, death, run, etc.) unless the user explicitly requests them.</p>
+<p>Fire all sheets async (each is its own Bash tool call), then poll sequentially:</p>
+<pre><code class="language-bash">WALK_PROMPT=&quot;Create a 4-frame pixel art walk cycle sprite sheet of this character. Arrange the 4 frames in a 2x2 grid on white background. The character is walking to the right. Top row (frames 1-2): Frame 1 (top-left): Right leg forward, left leg back - stride position. Frame 2 (top-right): Legs close together, passing/crossing - transition. Bottom row (frames 3-4): Frame 3 (bottom-left): Left leg forward, right leg back - opposite stride. Frame 4 (bottom-right): Legs close together, passing/crossing - transition back. Each frame shows a different phase of the walking motion. This creates a smooth looping walk cycle. Use detailed 32-bit pixel art style with proper shading and highlights. Same character design in all frames. Character facing right.&quot;
+
+WALK_PROMPT_GPT=&quot;Create a 4-frame pixel art walk cycle sprite sheet of this character. Character orientation (critical): The character is shown in SIDE PROFILE, with their face, chest, and front foot pointing toward the RIGHT edge of the image. The character's back is on the LEFT side of the image. This is the same side-profile orientation used in classic 2D platformers like Super Mario Bros or Mega Man moving rightward across the screen. Arrange the 4 frames in a 2x2 grid on white background. Top row (frames 1-2): Frame 1 (top-left): Front leg (right leg) extended forward toward the right edge of the image, back leg extended behind toward the left edge. Frame 2 (top-right): Legs close together, passing pose. Bottom row (frames 3-4): Frame 3 (bottom-left): Opposite stride, back leg (left leg) now forward toward the right edge. Frame 4 (bottom-right): Legs close together, passing pose. Use detailed 32-bit pixel art style with proper shading and highlights. Same character design in all frames. All 4 frames must show the character from the SAME side profile angle, facing the RIGHT edge of the image.&quot;
+
+JUMP_PROMPT=&quot;Create a 4-frame pixel art jump animation sprite sheet of this character. Arrange the 4 frames in a 2x2 grid on white background. The character is jumping. Top row (frames 1-2): Frame 1 (top-left): Crouch/anticipation - character slightly crouched, knees bent, preparing to jump. Frame 2 (top-right): Rising - character in air, legs tucked up, arms up, ascending. Bottom row (frames 3-4): Frame 3 (bottom-left): Apex/peak - character at highest point of jump, body stretched or tucked. Frame 4 (bottom-right): Landing - character landing, slight crouch to absorb impact. Use detailed 32-bit pixel art style with proper shading and highlights. Same character design in all frames. Character facing right.&quot;
+
+ATTACK_PROMPT=&quot;Create a 4-frame pixel art attack animation sprite sheet of this character. Arrange the 4 frames in a 2x2 grid on white background. The character is performing an attack that fits their design - could be a sword slash, magic spell, punch, kick, or energy blast depending on what suits the character best. Top row (frames 1-2): Frame 1 (top-left): Wind-up/anticipation - character preparing to attack, pulling back weapon or gathering energy. Frame 2 (top-right): Attack in motion - the strike or spell being unleashed. Bottom row (frames 3-4): Frame 3 (bottom-left): Impact/peak - maximum extension of attack, weapon fully swung or spell at full power. Frame 4 (bottom-right): Recovery - returning to ready stance. Use detailed 32-bit pixel art style with proper shading and highlights. Same character design in all frames. Character facing right. Make the attack visually dynamic and exciting.&quot;
+
+IDLE_PROMPT=&quot;Create a 4-frame pixel art idle/breathing animation sprite sheet of this character. Arrange the 4 frames in a 2x2 grid on white background. The character is standing still but with subtle idle animation. Top row (frames 1-2): Frame 1 (top-left): Neutral standing pose - relaxed stance. Frame 2 (top-right): Slight inhale - chest/body rises subtly, maybe slight arm movement. Bottom row (frames 3-4): Frame 3 (bottom-left): Full breath - slight upward posture. Frame 4 (bottom-right): Exhale - returning to neutral, slight settle. Keep movements SUBTLE - this is a gentle breathing/idle loop, not dramatic motion. Character should look alive but relaxed. Use detailed 32-bit pixel art style with proper shading and highlights. Same character design in all frames. Character facing right.&quot;
+
+# Fire all 4 async, each is its own Bash tool call
+genmedia run fal-ai/nano-banana-pro/edit --prompt &quot;$WALK_PROMPT&quot; --image_urls &quot;[\&quot;$CHARACTER_URL\&quot;]&quot; --aspect_ratio &quot;1:1&quot; --resolution &quot;1K&quot; --async --json
+genmedia run fal-ai/nano-banana-pro/edit --prompt &quot;$JUMP_PROMPT&quot; --image_urls &quot;[\&quot;$CHARACTER_URL\&quot;]&quot; --aspect_ratio &quot;1:1&quot; --resolution &quot;1K&quot; --async --json
+genmedia run fal-ai/nano-banana-pro/edit --prompt &quot;$ATTACK_PROMPT&quot; --image_urls &quot;[\&quot;$CHARACTER_URL\&quot;]&quot; --aspect_ratio &quot;21:9&quot; --resolution &quot;1K&quot; --async --json
+genmedia run fal-ai/nano-banana-pro/edit --prompt &quot;$IDLE_PROMPT&quot; --image_urls &quot;[\&quot;$CHARACTER_URL\&quot;]&quot; --aspect_ratio &quot;1:1&quot; --resolution &quot;1K&quot; --async --json
+
+# Poll each, each is its own Bash tool call, run sequentially
+genmedia status fal-ai/nano-banana-pro/edit &lt;walk_request_id&gt; --result --download ./game-assets/&lt;slug&gt;/sprites/walk.png --json
+genmedia status fal-ai/nano-banana-pro/edit &lt;jump_request_id&gt; --result --download ./game-assets/&lt;slug&gt;/sprites/jump.png --json
+genmedia status fal-ai/nano-banana-pro/edit &lt;attack_request_id&gt; --result --download ./game-assets/&lt;slug&gt;/sprites/attack.png --json
+genmedia status fal-ai/nano-banana-pro/edit &lt;idle_request_id&gt; --result --download ./game-assets/&lt;slug&gt;/sprites/idle.png --json
+
+# GPT variants: replace fal-ai/nano-banana-pro/edit with openai/gpt-image-2/edit
+# Walk must use WALK_PROMPT_GPT (not WALK_PROMPT)
+# Replace --aspect_ratio with explicit --image_size:
+# 1:1 → --image_size &quot;square_hd&quot;
+# 21:9 → --image_size &quot;{\&quot;width\&quot;: 2688, \&quot;height\&quot;: 1152}&quot;
+</code></pre>
+<p><strong>Isometric RPG sheets</strong>: 3/4 overhead perspective. Covered types: <code>walk-down</code>, <code>walk-up</code>, <code>walk-side</code>, <code>attack-down</code>, <code>attack-up</code>, <code>attack-side</code>, <code>idle-iso</code>. Do not generate additional animation types unless the user explicitly requests them.</p>
+<blockquote>
+<p>Generate attack-down first, attack-up and attack-side both reference it for style consistency.</p>
+</blockquote>
+<pre><code class="language-bash">WALK_DOWN_PROMPT=&quot;Create a 4-frame pixel art walk cycle sprite sheet of this character walking DOWNWARD (toward the camera) in a top-down isometric RPG perspective (3/4 overhead view, like a classic top-down RPG). Arrange the 4 frames in a 2x2 grid on white background. The character is walking toward the viewer (south/down). Top row: Frame 1 (top-left): Left foot forward stride, arms swinging naturally. Frame 2 (top-right): Feet together, passing/transition pose. Bottom row: Frame 3 (bottom-left): Right foot forward stride, arms swinging naturally. Frame 4 (bottom-right): Feet together, passing/transition back. We see the character's front/face. Top-down 3/4 view - we see the top of their head slightly. Use detailed 32-bit pixel art style with proper shading and highlights. Same character design in all frames.&quot;
+
+WALK_UP_PROMPT=&quot;Create a 4-frame pixel art walk cycle sprite sheet of this character walking UPWARD (away from the camera) in a top-down isometric RPG perspective (3/4 overhead view, like a classic top-down RPG). Arrange the 4 frames in a 2x2 grid on white background. CRITICAL: ALL 4 frames must show the character from EXACTLY the same angle, their BACK, facing directly away from the camera. Do NOT rotate or twist the character between frames. The ONLY difference between frames should be the leg and arm positions. Top row: Frame 1 (top-left): Left foot forward. BACK VIEW. Frame 2 (top-right): Feet together. BACK VIEW. Bottom row: Frame 3 (bottom-left): Right foot forward. BACK VIEW. Frame 4 (bottom-right): Feet together. BACK VIEW. Use detailed 32-bit pixel art style. Same character design in all frames.&quot;
+
+WALK_SIDE_PROMPT=&quot;Create a 4-frame pixel art walk cycle sprite sheet of this character WALKING TO THE RIGHT in a top-down isometric RPG perspective (3/4 overhead view, like a classic top-down RPG). Arrange the 4 frames in a 2x2 grid on white background. The character is FACING RIGHT and WALKING RIGHT. Top row: Frame 1 (top-left): Right leg forward, left leg back - stride, arms swinging. Frame 2 (top-right): Legs close together, passing - transition. Bottom row: Frame 3 (bottom-left): Left leg forward, right leg back - opposite stride, arms swinging. Frame 4 (bottom-right): Legs close together, passing - transition back. We see the character's RIGHT-facing side profile from a top-down 3/4 overhead angle. Use detailed 32-bit pixel art style. Same character design in all frames.&quot;
+
+ATTACK_DOWN_PROMPT=&quot;Create a 4-frame pixel art ATTACK animation sprite sheet of this character attacking DOWNWARD (toward the camera) in a top-down isometric RPG perspective (3/4 overhead view). Arrange the 4 frames in a 2x2 grid on white background. Top row: Frame 1 (top-left): Wind-up/anticipation - preparing to strike. Frame 2 (top-right): Attack in motion - strike unleashed toward camera. Bottom row: Frame 3 (bottom-left): Impact/peak - maximum extension. Frame 4 (bottom-right): Recovery. We see the character's front/face. The attack should fit the character's design. Use detailed 32-bit pixel art style. Make the attack visually dynamic.&quot;
+
+ATTACK_UP_PROMPT=&quot;Create a 4-frame pixel art ATTACK animation sprite sheet of this character attacking UPWARD (away from the camera) in a top-down isometric RPG perspective. I've also sent you a reference of the same character's front-facing attack. Use the EXACT SAME attack type, weapon, and visual effects - just show it from behind. Arrange the 4 frames in a 2x2 grid on white background. Top row: Frame 1 (top-left): Wind-up from behind. Frame 2 (top-right): Attack unleashed upward/away. Bottom row: Frame 3 (bottom-left): Impact/peak. Frame 4 (bottom-right): Recovery. We see the character's back. MUST use the same attack style as the reference image. Use detailed 32-bit pixel art style.&quot;
+
+ATTACK_SIDE_PROMPT=&quot;Create a 4-frame pixel art ATTACK animation sprite sheet of this character attacking SIDEWAYS (to the right) in a top-down isometric RPG perspective. I've also sent you a reference of the same character's front-facing attack. Use the EXACT SAME attack type, weapon, and visual effects - just show it from the side profile. Arrange the 4 frames in a 2x2 grid on white background. Character faces RIGHT. Top row: Frame 1 (top-left): Wind-up from side, facing right. Frame 2 (top-right): Strike unleashed to the right. Bottom row: Frame 3 (bottom-left): Impact/peak. Frame 4 (bottom-right): Recovery. IMPORTANT: Show the character's SIDE PROFILE facing RIGHT. MUST use the same attack style as the reference image. Use detailed 32-bit pixel art style.&quot;
+
+IDLE_ISO_PROMPT=&quot;Create a 4-frame pixel art idle/breathing animation sprite sheet of this character in a top-down isometric RPG perspective (3/4 overhead view). Arrange the 4 frames in a 2x2 grid on white background. Character is FACING TOWARD THE CAMERA (south/down). Top row: Frame 1 (top-left): Neutral standing pose, facing down. Frame 2 (top-right): Slight inhale - body rises subtly. Bottom row: Frame 3 (bottom-left): Full breath - slight upward posture. Frame 4 (bottom-right): Exhale - returning to neutral. Keep movements SUBTLE. Use detailed 32-bit pixel art style. Same character design in all frames.&quot;
+
+# Fire walk sheets + idle async, each is its own Bash tool call
+genmedia run fal-ai/nano-banana-pro/edit --prompt &quot;$WALK_DOWN_PROMPT&quot; --image_urls &quot;[\&quot;$CHARACTER_URL\&quot;]&quot; --aspect_ratio &quot;1:1&quot; --resolution &quot;1K&quot; --async --json
+genmedia run fal-ai/nano-banana-pro/edit --prompt &quot;$WALK_UP_PROMPT&quot; --image_urls &quot;[\&quot;$CHARACTER_URL\&quot;]&quot; --aspect_ratio &quot;1:1&quot; --resolution &quot;1K&quot; --async --json
+genmedia run fal-ai/nano-banana-pro/edit --prompt &quot;$WALK_SIDE_PROMPT&quot; --image_urls &quot;[\&quot;$CHARACTER_URL\&quot;]&quot; --aspect_ratio &quot;1:1&quot; --resolution &quot;1K&quot; --async --json
+genmedia run fal-ai/nano-banana-pro/edit --prompt &quot;$IDLE_ISO_PROMPT&quot; --image_urls &quot;[\&quot;$CHARACTER_URL\&quot;]&quot; --aspect_ratio &quot;1:1&quot; --resolution &quot;1K&quot; --async --json
+
+# Poll walk results sequentially
+genmedia status fal-ai/nano-banana-pro/edit &lt;walk_down_request_id&gt; --result --download ./game-assets/&lt;slug&gt;/sprites/walk-down.png --json
+genmedia status fal-ai/nano-banana-pro/edit &lt;walk_up_request_id&gt; --result --download ./game-assets/&lt;slug&gt;/sprites/walk-up.png --json
+genmedia status fal-ai/nano-banana-pro/edit &lt;walk_side_request_id&gt; --result --download ./game-assets/&lt;slug&gt;/sprites/walk-side.png --json
+genmedia status fal-ai/nano-banana-pro/edit &lt;idle_iso_request_id&gt; --result --download ./game-assets/&lt;slug&gt;/sprites/idle-iso.png --json
+
+# Attack-down sync, needed as reference before firing attack-up and attack-side
+genmedia run fal-ai/nano-banana-pro/edit --prompt &quot;$ATTACK_DOWN_PROMPT&quot; --image_urls &quot;[\&quot;$CHARACTER_URL\&quot;]&quot; --aspect_ratio &quot;9:16&quot; --resolution &quot;1K&quot; --download ./game-assets/&lt;slug&gt;/sprites/attack-down.png --json
+
+# Fire attack-up and attack-side async, passing attack-down URL from above result
+genmedia run fal-ai/nano-banana-pro/edit --prompt &quot;$ATTACK_UP_PROMPT&quot; --image_urls &quot;[\&quot;$CHARACTER_URL\&quot;, \&quot;&lt;attack_down_url&gt;\&quot;]&quot; --aspect_ratio &quot;9:16&quot; --resolution &quot;1K&quot; --async --json
+genmedia run fal-ai/nano-banana-pro/edit --prompt &quot;$ATTACK_SIDE_PROMPT&quot; --image_urls &quot;[\&quot;$CHARACTER_URL\&quot;, \&quot;&lt;attack_down_url&gt;\&quot;]&quot; --aspect_ratio &quot;16:9&quot; --resolution &quot;1K&quot; --async --json
+
+genmedia status fal-ai/nano-banana-pro/edit &lt;attack_up_request_id&gt; --result --download ./game-assets/&lt;slug&gt;/sprites/attack-up.png --json
+genmedia status fal-ai/nano-banana-pro/edit &lt;attack_side_request_id&gt; --result --download ./game-assets/&lt;slug&gt;/sprites/attack-side.png --json
+
+# GPT variants: replace fal-ai/nano-banana-pro/edit with openai/gpt-image-2/edit
+# Replace --aspect_ratio with explicit --image_size:
+# 1:1 → --image_size &quot;square_hd&quot;
+# 9:16 → --image_size &quot;{\&quot;width\&quot;: 720, \&quot;height\&quot;: 1280}&quot;
+# 16:9 → --image_size &quot;{\&quot;width\&quot;: 1280, \&quot;height\&quot;: 720}&quot;
+</code></pre>
+<hr />
+<h2>Recipe 3. Remove backgrounds</h2>
+<p>Bria has no queue endpoint, run sync (no <code>--async</code>). Each is its own Bash tool call:</p>
+<pre><code class="language-bash">genmedia run fal-ai/bria/background/remove --image_url &quot;&lt;walk_url&gt;&quot; --download ./game-assets/&lt;slug&gt;/sprites/walk-transparent.png --json
+genmedia run fal-ai/bria/background/remove --image_url &quot;&lt;jump_url&gt;&quot; --download ./game-assets/&lt;slug&gt;/sprites/jump-transparent.png --json
+genmedia run fal-ai/bria/background/remove --image_url &quot;&lt;attack_url&gt;&quot; --download ./game-assets/&lt;slug&gt;/sprites/attack-transparent.png --json
+genmedia run fal-ai/bria/background/remove --image_url &quot;&lt;idle_url&gt;&quot; --download ./game-assets/&lt;slug&gt;/sprites/idle-transparent.png --json
+</code></pre>
+<hr />
+<h2>Recipe 4. Generate backgrounds</h2>
+<p><strong>Pipeline note:</strong> Layer 1 (sky) and the isometric map only need <code>CHARACTER_DESC</code>, no image reference. Fire Layer 1 async immediately after character generation so it runs in parallel while you generate sprite sheets. Layers 2 and 3 are sequential (each needs the previous layer's URL from the tool result).</p>
+<p><strong>Side-scroller, 3-layer parallax</strong></p>
+<pre><code class="language-bash"># Layer 1, sky/backdrop. Fire async (no image dep) so it runs in parallel with sprite generation
+genmedia run fal-ai/nano-banana-pro \
+ --prompt &quot;Create the SKY/BACKDROP layer for a side-scrolling pixel art game parallax background. This is for a character: &lt;character_desc&gt;. Create an environment that fits this character's world. This is the FURTHEST layer - only sky and very distant elements (distant mountains, clouds, horizon). Style: Pixel art, 32-bit retro game aesthetic. Wide panoramic scene.&quot; \
+ --aspect_ratio &quot;21:9&quot; --resolution &quot;1K&quot; --async --json
+
+# Poll Layer 1 (after sprite sheets are done), then read its URL from the result
+genmedia status fal-ai/nano-banana-pro &lt;layer1_request_id&gt; --result --download ./game-assets/&lt;slug&gt;/backgrounds/layer1-sky.png --json
+
+# Layer 2, midground (needs CHARACTER_URL + layer1 URL from above result)
+genmedia run fal-ai/nano-banana-pro/edit \
+ --prompt &quot;Create the MIDDLE layer of a 3-layer parallax background for a side-scrolling pixel art game. I've sent you images of: 1) the character, 2) the sky layer already created. Create the character's ICONIC/CANONICAL location from their story, home village, famous landmarks, signature battlegrounds. Elements should fill the frame from middle down to bottom. Style: Pixel art matching the other images. IMPORTANT: Use a transparent background so this layer can overlay the others.&quot; \
+ --image_urls &quot;[\&quot;&lt;character_url&gt;\&quot;, \&quot;&lt;layer1_url&gt;\&quot;]&quot; \
+ --aspect_ratio &quot;21:9&quot; --resolution &quot;1K&quot; --download ./game-assets/&lt;slug&gt;/backgrounds/layer2-midground.png --json
+
+# Bria bg-remove on layer 2 (sync, no queue endpoint)
+genmedia run fal-ai/bria/background/remove --image_url &quot;&lt;layer2_url&gt;&quot; --download ./game-assets/&lt;slug&gt;/backgrounds/layer2-transparent.png --json
+
+# Layer 3, foreground (needs CHARACTER_URL + layer1 URL + layer2-transparent URL from above result)
+genmedia run fal-ai/nano-banana-pro/edit \
+ --prompt &quot;Create the FOREGROUND layer of a 3-layer parallax background for a side-scrolling pixel art game. I've sent you images of: 1) the character, 2) the sky layer, 3) the middle layer. Create the closest foreground elements (ground, grass, rocks, platforms) that complete the scene. Style: Pixel art matching the other images. IMPORTANT: Use a transparent background so this layer can overlay the others.&quot; \
+ --image_urls &quot;[\&quot;&lt;character_url&gt;\&quot;, \&quot;&lt;layer1_url&gt;\&quot;, \&quot;&lt;layer2_transparent_url&gt;\&quot;]&quot; \
+ --aspect_ratio &quot;21:9&quot; --resolution &quot;1K&quot; --download ./game-assets/&lt;slug&gt;/backgrounds/layer3-foreground.png --json
+
+# Bria bg-remove on layer 3 (sync, no queue endpoint)
+genmedia run fal-ai/bria/background/remove --image_url &quot;&lt;layer3_url&gt;&quot; --download ./game-assets/&lt;slug&gt;/backgrounds/layer3-transparent.png --json
+
+# GPT variant: replace nano endpoints with openai/gpt-image-2 and openai/gpt-image-2/edit
+# Use --image_size '{&quot;width&quot;: 2688, &quot;height&quot;: 1152}' for 21:9 with gpt
+</code></pre>
+<p><strong>Isometric, single top-down map</strong></p>
+<pre><code class="language-bash">genmedia run fal-ai/nano-banana-pro \
+ --prompt &quot;Create a large, detailed top-down isometric pixel art game world map for a character: $CHARACTER_DESC. Do not place the character on the map. Style: Classic RPG top-down map, 3/4 overhead perspective. Include: winding dirt/stone paths connecting areas, a small body of water, a few buildings or structures that fit the character's world, rocky areas or hills, various terrain types. Single large continuous map image (NOT tiled, NOT a tileset). Complete explorable game world viewed from above. Detailed 32-bit pixel art style. Fill the entire image with map content, no empty borders.&quot; \
+ --aspect_ratio &quot;1:1&quot; --resolution &quot;1K&quot; \
+ --download ./game-assets/&lt;slug&gt;/backgrounds/map.png --json
+</code></pre>
+<hr />
+<h2>Parameters</h2>
+<ul>
+<li><strong>Model</strong>: <code>nano</code> is the default: better quality and faster. <code>gpt</code> is slower; use it when the user specifically requests it or asks for the cheapest option, in that case set <code>--quality "low"</code> to significantly reduce cost</li>
+<li><strong>Walk + gpt-image-2</strong>: always use <code>WALK_PROMPT_GPT</code>, not <code>WALK_PROMPT</code>. GPT needs explicit side-profile orientation instructions to get the direction right</li>
+<li><strong>Attack aspect ratio</strong>: <code>21:9</code> (nano) or <code>2688×1152</code> (gpt) for side-scroller attacks. Isometric attacks: <code>9:16</code> for down/up, <code>16:9</code> for side</li>
+<li><strong>Isometric attack-up and attack-side</strong>: always pass <code>ATTACK_DOWN_URL</code> as second reference image to keep attack style consistent across directions</li>
+<li><strong>Background layers</strong>: generate in order (1 → 2 → 3). Each references previous layers. Layer 1 keeps background; layers 2 and 3 get background-removed</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

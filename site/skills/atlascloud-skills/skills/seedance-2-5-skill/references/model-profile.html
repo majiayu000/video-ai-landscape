@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>model-profile · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/seedance-2-5-skill/references/model-profile.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Model profiles: Seedance family</h1>
+<p>Measured behaviour, not documented behaviour. The compiler reads these fields to
+decide what to emit and what to degrade.</p>
+<p>Field definitions and the blank template live in
+<a href="../../universal-video-prompt-skill/references/model-profile-schema.html">the Universal Video Prompt Skill</a>.
+If that link does not resolve, the Seedance 2.5 Skill installation is incomplete.
+Help the user install <code>universal-video-prompt-skill</code> before continuing and <strong>do not
+invent a schema</strong>.</p>
+<p><strong>Unknown is a valid value.</strong> An empty field prompts a probe; a guessed field
+silently corrupts every run built on it.</p>
+<hr />
+<h2><code>bytedance/seedance-2.0</code></h2>
+<p>Last verified: 2026-08-03</p>
+<h3>Capability layer</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+<th>How verified</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reference addressing</td>
+<td><code>@image1</code>, <code>@image2</code>, …</td>
+<td>Generation</td>
+</tr>
+<tr>
+<td>Max references</td>
+<td>9 images</td>
+<td>Provider docs</td>
+</tr>
+<tr>
+<td>Multi-shot in one generation</td>
+<td>yes — ordered segments with cuts</td>
+<td>15s multi-segment run</td>
+</tr>
+<tr>
+<td>Hard cut support</td>
+<td>yes</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>Duration range</td>
+<td>4–15s</td>
+<td>Provider docs</td>
+</tr>
+<tr>
+<td>Resolution</td>
+<td>480p, 720p, 1080p depending on provider</td>
+<td>Provider model page</td>
+</tr>
+<tr>
+<td>Native audio</td>
+<td>yes</td>
+<td>Generation with audio enabled</td>
+</tr>
+<tr>
+<td>Timing adherence</td>
+<td>Requested beats land <strong>~2s late</strong> across a 15s piece; segment <strong>order holds</strong></td>
+<td>Controlled 15s run against a timestamped prompt</td>
+</tr>
+<tr>
+<td>Recommended granularity</td>
+<td><strong>stages</strong></td>
+<td>Derived from the row above</td>
+</tr>
+<tr>
+<td>Extension / chaining</td>
+<td>via tail-frame chaining</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Audio-only reference</td>
+<td>not supported</td>
+<td>Provider docs</td>
+</tr>
+</tbody>
+</table>
+<h3>Bias layer</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+<th>How verified</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Default aesthetic bias</td>
+<td>Strong cinematic priors; interprets sparse prompts well and improvises sensibly</td>
+<td>A/B against an over-specified variant of the same segment</td>
+</tr>
+<tr>
+<td>Effective anti-default phrasing</td>
+<td><strong>Name the drawing tool, not the abstract property.</strong> <code>crayon / coloured pencil / coarse brush, visible stroke direction, uneven fill, ragged edges</code> produced genuinely hand-drawn marks</td>
+<td>Controlled A/B on one hand-drawn VFX spec</td>
+</tr>
+<tr>
+<td>Ineffective or overshooting</td>
+<td><strong><code>graphically flat, never photoreal</code> — satisfied exactly and uselessly.</strong> The model honoured it with smooth neon-tube vector outlines and even fill: flat, but not hand-drawn at all. Swapping this one lock for tool names reversed the result on the same spec</td>
+<td>Same A/B as above</td>
+</tr>
+<tr>
+<td>Ineffective or overshooting</td>
+<td><strong>Storyboard-grid over-specification scores worse than text-only staging</strong> on heavy-VFX segments — it suppresses the camera priors that make those shots work</td>
+<td>A/B on the same segment</td>
+</tr>
+<tr>
+<td>Negative-lock behaviour</td>
+<td>Respected. Front-load them</td>
+<td>Iteration</td>
+</tr>
+<tr>
+<td>Reference-versus-text priority</td>
+<td><strong>The image wins.</strong> Composition references override written composition</td>
+<td>Iteration</td>
+</tr>
+<tr>
+<td>Handheld / POV</td>
+<td>Executes handheld POV convincingly, including motion blur on fast follows and a hand entering frame from below</td>
+<td>Hand-drawn VFX spec, v2</td>
+</tr>
+<tr>
+<td>Live-action texture retention</td>
+<td>Strong. Keeps real bone, glass, stone, and ceiling fixtures at their own colour while a drawn layer sits on top</td>
+<td>Same</td>
+</tr>
+<tr>
+<td><strong>Prompt-length tolerance</strong></td>
+<td><strong>High.</strong> A longer revision kept the hand, the opening transformation, the drawn texture, and gained the new beats. A comparison model on the same two prompts lost all three</td>
+<td>v3 of the same spec</td>
+</tr>
+<tr>
+<td>Contact shadows unprompted</td>
+<td>Adds a cast shadow under a drawn object sitting on a real surface, without being asked. This is the strongest available evidence of the "both media share one physical space" contract</td>
+<td>v3</td>
+</tr>
+<tr>
+<td>Spatial containment</td>
+<td>Reads <code>open plinth</code> correctly — renders plinth surface, support rod, and shadow, not a vitrine</td>
+<td>v3</td>
+</tr>
+</tbody>
+</table>
+<h3>Known failure modes</h3>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Detail</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Small text errors</td>
+<td>UI labels and signage render with character-level errors and garbled small type</td>
+<td>Post-production for anything that must read exactly</td>
+</tr>
+<tr>
+<td>Dropped list items</td>
+<td>Enumerated menu entries partially render — some items simply absent</td>
+<td>Reduce the count, or add the text in post</td>
+</tr>
+<tr>
+<td>Camera move ignored</td>
+<td>A stated move is skipped while the rest of the segment lands correctly</td>
+<td>Re-state the move as the segment's primary intent, or accept and reframe</td>
+</tr>
+<tr>
+<td>Timeline drift</td>
+<td>Whole timeline shifts later, ~2s over 15s</td>
+<td>Use stages; if second-level is required, write beats early and verify</td>
+</tr>
+<tr>
+<td><strong>Dropped stages under load</strong></td>
+<td>A 15s piece with <strong>four</strong> staged events rendered only stages 1 and 4 — the two middle stages were skipped entirely, not merely delayed. Raising event density per stage while keeping five shorter stages did <strong>not</strong> reproduce the drop</td>
+<td>Treat ~4 distinct state-changes in 15s as the ceiling. If the spec needs more, either shorten each stage and raise density, or split across requests</td>
+</tr>
+</tbody>
+</table>
+<h3>Compile notes</h3>
+<ul>
+<li>Emit <code>@imageN</code>. Never bracketed or spelled-out reference labels.</li>
+<li>Default to <code>stages</code>.</li>
+<li>Prefer text-driven staging over feeding a storyboard grid for heavy-VFX and
+  large-scale segments.</li>
+<li>When a composition reference and written composition conflict, drop the written
+  one — it will lose anyway and only adds noise.</li>
+</ul>
+<hr />
+<h2><code>bytedance/seedance-2.5</code></h2>
+<p>Last verified: — · Status: <strong>not yet measured</strong></p>
+<p>Availability differs by provider. Verify against the provider's model page before
+offering 2.5-specific routes; see <a href="capabilities.html">capabilities</a>.</p>
+<h3>Capability layer</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+<th>How verified</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reference addressing</td>
+<td><code>@Image 1</code> / <code>@image1</code> — <strong>unverified</strong>, confirm against the provider</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Max references</td>
+<td>up to 30 images, 10 video, 10 audio, ~50 combined</td>
+<td>Launch material</td>
+</tr>
+<tr>
+<td>Multi-shot in one generation</td>
+<td>expected yes</td>
+<td>Not measured</td>
+</tr>
+<tr>
+<td>Duration range</td>
+<td>4–30s</td>
+<td>Launch material</td>
+</tr>
+<tr>
+<td>Resolution</td>
+<td>read the provider's model page</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Native audio</td>
+<td>yes</td>
+<td>Launch material</td>
+</tr>
+<tr>
+<td>Audio-only reference</td>
+<td>supported</td>
+<td>Launch material</td>
+</tr>
+<tr>
+<td>Timing adherence</td>
+<td><strong>not measured</strong> — the single most valuable probe</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Recommended granularity</td>
+<td><strong>unknown</strong> — do not assume it differs from 2.0</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Editing / extension / bridging</td>
+<td>announced; API exposure varies</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3>Bias layer</h3>
+<p>Not measured. Do <strong>not</strong> copy 2.0's bias-layer entries here — anti-default
+phrasing is per-model by definition, and launch material specifically claims
+changed default behaviour around unrequested subtitles and music, which is exactly
+the kind of thing a 2.0-tuned negative list would now be redundantly fighting.</p>
+<h3>First probes to run, in order</h3>
+<ol>
+<li><strong>Reference addressing</strong> — one generation with two bound references. Everything
+   else is blocked on getting this right.</li>
+<li><strong>Timing adherence</strong> — the same spec at <code>stages</code> and at <code>second-level</code>; measure
+   the drift. Fills timing adherence, recommended granularity, and usually a
+   failure mode in one run.</li>
+<li><strong>Unrequested subtitles and music</strong> — generate with no negatives at all. If
+   they no longer appear, 2.0's negative lines are dead weight here.</li>
+<li><strong>Reference ceiling in practice</strong> — where stability actually degrades, not where
+   the documented limit sits.</li>
+</ol>
+<p>Record results here as they land, including negative results.</p>
+<hr />
+<h2>Related</h2>
+<ul>
+<li><a href="../../universal-video-prompt-skill/references/model-profile-schema.html">model profile schema</a> — field definitions</li>
+<li><a href="capabilities.html">capabilities</a> — documented limits and platform-versus-API</li>
+<li><a href="troubleshooting.html">troubleshooting</a> — symptom-driven fixes</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DEMO · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/fal-redesign/DEMO.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>fal-redesign, launch-day demo cheat-sheet</h1>
+<p>Copy-paste blocks in order. Designed for a 60–90s screen recording.</p>
+<h2>0. Setup (off-camera)</h2>
+<pre><code class="language-bash">export FAL_KEY=... # https://fal.ai/dashboard/keys
+
+# Demo subject, a deliberately plain starter HTML:
+cd ~/mon-projet-web # contains index.html (PixelFind)
+open index.html # show the &quot;before&quot; in the browser
+
+# Open a second terminal for the skill commands
+cd ~/mon-projet-web
+</code></pre>
+<h2>1. Single redesign (the core money shot)</h2>
+<pre><code class="language-bash">node ~/.claude/skills/fal-redesign/runtime/bin/fal-site.mjs upgrade \
+ --target ./index.html \
+ --context &quot;PixelFind, a royalty-free image search and in-browser editor&quot;
+</code></pre>
+<p>Artifacts land in <code>./.fal-site-upgrade/</code>:
+- <code>before.png</code> current screenshot
+- <code>after.png</code> redesign
+- <code>changes.md</code> build-spec (Hard constraints section first)
+- <code>tokens.json</code> design tokens
+- <code>edit-prompt.txt</code></p>
+<p>Open <code>after.png</code> at the 20–35s mark of the video for the reveal.</p>
+<pre><code class="language-bash">open ./.fal-site-upgrade/after.png
+cat ./.fal-site-upgrade/changes.md | head -40
+</code></pre>
+<h2>2. Hand off to Claude Code for implementation</h2>
+<p>In a separate Claude Code session:</p>
+<blockquote>
+<p>Réimplémente <code>./index.html</code> en suivant strictement <code>.fal-site-upgrade/changes.md</code>. La section "Hard constraints" est non-négociable. Utilise les valeurs exactes de <code>.fal-site-upgrade/tokens.json</code>. Regarde <code>.fal-site-upgrade/after.png</code> directement pour l'imagerie du grid.</p>
+</blockquote>
+<p>Refresh the browser. Split-screen the old vs. new. That's the delivery.</p>
+<h2>3. Residual pixel-fix pass (optional)</h2>
+<pre><code class="language-bash">node ~/.claude/skills/fal-redesign/runtime/bin/fal-site.mjs iterate \
+ --target ./index.html \
+ --reference ./.fal-site-upgrade/after.png
+</code></pre>
+<p>Produces <code>current.png</code> + <code>delta.md</code>. Hand <code>delta.md</code> back to Claude Code; refresh.</p>
+<h2>4. Multi-direction teaser (outro shot)</h2>
+<pre><code class="language-bash">node ~/.claude/skills/fal-redesign/runtime/bin/fal-site.mjs upgrade \
+ --target ./index.html \
+ --context &quot;PixelFind, a royalty-free image search and in-browser editor&quot; \
+ --variants 4 \
+ --out ./.fal-redesign-variants
+</code></pre>
+<p>Then open the gallery:</p>
+<pre><code class="language-bash">open ./.fal-redesign-variants/gallery.html
+</code></pre>
+<p>4 redesigns side-by-side in 4 distinct directions. Use this as the closing shot of the video: "one command, four futures, pick one."</p>
+<h2>5. Greenfield (bonus for a future video)</h2>
+<pre><code class="language-bash">node ~/.claude/skills/fal-redesign/runtime/bin/fal-site.mjs generate \
+ --context &quot;a volunteer-run bouldering gym inside a deconsecrated 19th-century church in Lyon, key-fob 24/7, weekly route-voting assemblies, Sunday brioche breakfast in the old sacristy&quot; \
+ --variants 3 \
+ --out ./.fal-redesign-greenfield
+</code></pre>
+<p>Produces N standalone single-file HTML pages in different directions.</p>
+<hr />
+<h2>Timing per step (approximate)</h2>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Typical duration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>upgrade</code> single</td>
+<td>60–150s</td>
+</tr>
+<tr>
+<td><code>upgrade</code> 4-variant</td>
+<td>90–180s (parallel)</td>
+</tr>
+<tr>
+<td><code>describe</code></td>
+<td>20–40s</td>
+</tr>
+<tr>
+<td><code>iterate</code></td>
+<td>40–70s</td>
+</tr>
+<tr>
+<td><code>generate</code> 3-var</td>
+<td>180–300s</td>
+</tr>
+</tbody>
+</table>
+<h2>One-liner you can pin to your Raycast / Alfred</h2>
+<pre><code class="language-bash">node ~/.claude/skills/fal-redesign/runtime/bin/fal-site.mjs upgrade --target ./index.html --context &quot;&lt;brand&gt;&quot;
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

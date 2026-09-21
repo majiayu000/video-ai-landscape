@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>managed-agents-self-hosted-sandboxes · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/managed-agents-self-hosted-sandboxes.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Managed Agents - Self-Hosted Sandboxes</h1>
+<p>With <code>config.type: "self_hosted"</code>, the <strong>agent loop stays on Anthropic's orchestration layer</strong> but <strong>tool execution moves to infrastructure you control</strong> - bash, file ops, and code run inside your container, so filesystem contents and the sandbox's network egress never leave your environment. (<code>web_search</code> / <code>web_fetch</code> are the exception: they run on Anthropic's servers in both environment types - restrict them with <code>allowed_domains</code> / <code>blocked_domains</code> in the agent toolset, <code>shared/managed-agents-tools.md</code> § Web search &amp; web fetch settings.) Tool inputs/outputs still flow to Anthropic's control plane so the model can see results; the agent's skills and the contents of any attached memory stores are stored by Anthropic and copied into your sandbox for the session (memory changes sync back - see § Memory stores). Contrast with <code>config.type: "cloud"</code>, where Anthropic runs the container. Connectivity is <strong>outbound-only</strong>: your worker long-polls Anthropic's work queue; Anthropic never dials into your network.</p>
+<h2>Flow</h2>
+<pre><code>1. Create environment:      config: {type: &quot;self_hosted&quot;}        -&gt; env_...
+2. Generate environment key (Console, on the environment page)   -&gt; sk-ant-oat01-...  as ANTHROPIC_ENVIRONMENT_KEY
+3. Run a worker:            EnvironmentWorker.run()  or  ant beta:worker poll
+4. Sessions reference       environment_id=env_... exactly as for cloud
+</code></pre>
+<h2>Create the environment</h2>
+<pre><code class="language-python">client = anthropic.Anthropic()
+
+environment = client.beta.environments.create(
+    name=&quot;self-hosted&quot;, config={&quot;type&quot;: &quot;self_hosted&quot;}
+)
+</code></pre>
+<p><code>{"type": "self_hosted"}</code> is the entire config - there are no pool, capacity, or networking sub-fields; you control those on your side.</p>
+<h2>Run a worker - SDK (primary path)</h2>
+<p><code>EnvironmentWorker</code> wraps the poll -&gt; dispatch -&gt; tool-execute loop. <code>.run()</code> is the always-on loop (loops until cancelled). <code>.handle_item()</code> / <code>.handleItem()</code> / <code>.HandleItem()</code> services <strong>one already-claimed</strong> work item without polling - IDs fall back to <code>ANTHROPIC_WORK_ID</code> / <code>ANTHROPIC_ENVIRONMENT_ID</code> / <code>ANTHROPIC_SESSION_ID</code>, the key to the worker's own <code>environment_key</code> and then <code>ANTHROPIC_ENVIRONMENT_KEY</code>, and the per-session secret to <code>ANTHROPIC_WORK_SECRET</code>, so inside an <code>ant beta:worker poll --on-work</code> container it needs no arguments. It ignores (and force-stops) non-session work items itself. There is no <code>run_one()</code>; claiming is done by <code>.run()</code> or by the mid-level poller (below).</p>
+<p><strong>Python - always-on:</strong></p>
+<pre><code class="language-python">import asyncio
+import contextlib
+import os
+import signal
+from anthropic import AsyncAnthropic
+from anthropic.lib.environments import EnvironmentWorker
+
+
+async def main() -&gt; None:
+    environment_key = os.environ[&quot;ANTHROPIC_ENVIRONMENT_KEY&quot;]
+    environment_id = os.environ[&quot;ANTHROPIC_ENVIRONMENT_ID&quot;]
+    async with AsyncAnthropic(auth_token=environment_key) as client:
+        worker = EnvironmentWorker(
+            client,
+            environment_id=environment_id,
+            environment_key=environment_key,
+            workdir=&quot;/workspace&quot;,
+        )
+        task = asyncio.create_task(worker.run())
+        # Cancel the task (don't kill the process): the worker stops its in-flight
+        # work item and uploads changed memory files before exiting.
+        loop = asyncio.get_running_loop()
+        for signum in (signal.SIGINT, signal.SIGTERM):
+            loop.add_signal_handler(signum, task.cancel)
+        with contextlib.suppress(asyncio.CancelledError):
+            await task
+
+
+asyncio.run(main())
+</code></pre>
+<p><strong>TypeScript - always-on:</strong></p>
+<pre><code class="language-typescript">import Anthropic from &quot;@anthropic-ai/sdk&quot;;
+import { EnvironmentWorker } from &quot;@anthropic-ai/sdk/helpers/beta/environments&quot;;
+
+const environmentKey = process.env.ANTHROPIC_ENVIRONMENT_KEY!;
+const environmentId = process.env.ANTHROPIC_ENVIRONMENT_ID!;
+const client = new Anthropic({ authToken: environmentKey });
+const ctrl = new AbortController();
+process.once(&quot;SIGTERM&quot;, () =&gt; ctrl.abort());
+process.once(&quot;SIGINT&quot;, () =&gt; ctrl.abort());
+
+await new EnvironmentWorker({
+  client,
+  environmentId,
+  environmentKey,
+  workdir: &quot;/workspace&quot;,
+  signal: ctrl.signal
+}).run();
+</code></pre>
+<p><strong>Customizing tools.</strong> <code>EnvironmentWorker</code> runs the built-in toolset by default. To add or replace tools, use <code>AgentToolContext(workdir=, client=, session_id=)</code> with <code>beta_agent_toolset(env)</code> / <code>betaAgentToolset(env)</code> and pass the resulting tools to the lower-level <code>tool_runner()</code>. Skills attached to the agent are downloaded into <code>{workdir}/skills/&lt;name&gt;/</code> before tool calls begin (<code>AgentToolContext</code> handles this when given <code>client</code> and <code>session_id</code>). Downloaded skill files are marked executable automatically by the CLI and SDK; if you implement skills download yourself, you set permissions.</p>
+<blockquote>
+<p><strong>Runtime deps:</strong> the SDK helpers require <code>/bin/bash</code> at that exact path (not consulted via <code>PATH</code>). The TypeScript SDK additionally requires <code>unzip</code> and <code>tar</code> on <code>PATH</code> and Node.js 22+; Python and Go use their standard libraries for archive extraction. Memory stores additionally need a POSIX host (Linux or macOS - not Windows, the worker opens memory files with <code>O_NOFOLLOW</code>) with a writable <code>/mnt/memory</code> - see § Memory stores.</p>
+</blockquote>
+<p><strong>File-tool confinement.</strong> <code>AgentToolContext</code> confines <code>read</code>/<code>write</code>/<code>edit</code>/<code>glob</code>/<code>grep</code> to the working directory plus <code>allowed_roots</code> (<code>allowedRoots</code> / <code>AllowedRoots</code>); <code>write</code> and <code>edit</code> also refuse paths under <code>read_only_roots</code> (<code>readOnlyRoots</code> / <code>ReadOnlyRoots</code>). <code>EnvironmentWorker</code> adds the session's memory store directories to these lists itself. This is a guardrail for the file tools only - it does <strong>not</strong> constrain <code>bash</code>. The old <code>unrestricted_paths</code> option is no longer accepted (passing it raises); add directories to <code>allowed_roots</code> instead.</p>
+<h2>Run a worker - <code>ant</code> CLI (fixed tools)</h2>
+<p>The <code>ant</code> CLI ships a worker with the fixed built-in toolset (<code>bash</code>, <code>read</code>, <code>write</code>, <code>edit</code>, <code>glob</code>, <code>grep</code>). Install per <code>shared/anthropic-cli.md</code>, then:</p>
+<pre><code class="language-sh">export ANTHROPIC_ENVIRONMENT_KEY=sk-ant-oat01-...
+ant beta:worker poll --environment-id env_... --workdir /workspace
+</code></pre>
+<ul>
+<li><code>--workdir</code> is the directory tools operate in (default <code>.</code>); tool calls are sandboxed to it.</li>
+<li><code>--environment-key</code> overrides the env var.</li>
+<li><code>--on-work &lt;script&gt;</code> runs your script per work item (e.g. to spin a fresh container per session - see Container orchestration below).</li>
+<li><code>--unrestricted-paths</code>, <code>--max-idle</code> (default <code>60s</code>), <code>--log-format</code> - see <code>ant beta:worker poll --help</code>.</li>
+<li>Flags fall back to env vars (<code>ANTHROPIC_ENVIRONMENT_ID</code>, <code>ANTHROPIC_ENVIRONMENT_KEY</code>).</li>
+<li>Exits cleanly on SIGTERM/SIGINT after draining in-flight work.</li>
+<li><strong>Fixed toolset</strong> - for custom tools, use the SDK worker above.</li>
+<li><strong>Does not mount memory stores.</strong> A session that attaches one still runs, but the agent finds nothing at the store's <code>/mnt/memory/&lt;store-name&gt;/</code> directory and nothing syncs back. To combine the CLI poller with memory stores, keep <code>ant beta:worker poll --on-work</code> on the host and run the <strong>SDK</strong> worker (<code>EnvironmentWorker.handle_item()</code>) inside the per-session sandbox - see § Memory stores -&gt; Sandbox-per-session.</li>
+</ul>
+<p>Inside an <code>--on-work</code> container, run <code>ant beta:worker run --workdir &lt;dir&gt;</code> as the entrypoint (or the SDK worker, if the session needs memory stores).</p>
+<h2>Webhook-driven wake (instead of always-on)</h2>
+<p>Register a webhook for <code>session.status_run_started</code> (see <code>shared/managed-agents-webhooks.md</code>), verify the delivery, then <strong>drain</strong> the queue with the poller (<code>drain=True</code> stops when it's empty; <code>block_ms=None</code> is non-blocking; <code>auto_stop=False</code> because <code>handle_item</code> force-stops the item itself) and hand each claimed item to <code>handle_item()</code>. <strong>Don't <code>await</code> the drain inside the HTTP handler</strong> - a session run outlives the webhook delivery timeout, so acknowledge the delivery and run the drain as a background task (<code>asyncio.create_task</code> / a detached promise / a goroutine off <code>context.Background()</code>), keeping the process alive until it finishes:</p>
+<pre><code class="language-python">import asyncio
+import os
+import anthropic
+
+environment_key = os.environ[&quot;ANTHROPIC_ENVIRONMENT_KEY&quot;]
+environment_id = os.environ[&quot;ANTHROPIC_ENVIRONMENT_ID&quot;]
+client = anthropic.AsyncAnthropic(
+    auth_token=environment_key,
+)  # reads ANTHROPIC_WEBHOOK_SIGNING_KEY from env for webhooks.unwrap()
+
+
+async def handle(raw: bytes, headers: dict[str, str]) -&gt; dict:
+    event = client.beta.webhooks.unwrap(raw.decode(), headers=headers)
+    if event.data.type != &quot;session.status_run_started&quot;:
+        return {&quot;status&quot;: &quot;ignored&quot;}
+    asyncio.create_task(drain())  # keep a reference if your framework may GC it
+    return {&quot;status&quot;: &quot;accepted&quot;}
+
+
+async def drain() -&gt; None:
+    async for work in client.beta.environments.work.poller(
+        environment_id=environment_id,
+        environment_key=environment_key,
+        block_ms=None,
+        reclaim_older_than_ms=2000,
+        drain=True,
+        auto_stop=False,
+    ):
+        await client.beta.environments.work.worker(workdir=&quot;/workspace&quot;).handle_item(
+            work_id=work.id,
+            environment_id=environment_id,
+            session_id=work.data.id,
+            environment_key=environment_key,
+            work_secret=work.secret,  # lets the worker mount the session's memory stores
+        )
+</code></pre>
+<p>TypeScript: same shape with <code>client.beta.webhooks.unwrap(body, {headers})</code>, <code>client.beta.environments.work.poller({environmentId, environmentKey, blockMs: null, reclaimOlderThanMs: 2000, drain: true, autoStop: false})</code>, and <code>client.beta.environments.work.worker({workdir}).handleItem({workId, environmentId, sessionId, environmentKey, workSecret: work.secret})</code>. Go: no <code>RunOne</code> convenience either - <code>environments.NewWorkPoller(ctx, client, environments.WorkPollerOptions{EnvironmentID, EnvironmentKey, BlockMs: param.Null[int64](), ReclaimOlderThanMs: param.NewOpt[int64](2000), Drain: true, AutoStop: param.NewOpt(false)})</code>, then <code>worker.HandleItem(ctx, environments.HandleItemOptions{WorkID: item.ID, EnvironmentID: item.EnvironmentID, SessionID: item.Data.ID, EnvironmentKey, WorkSecret: item.Secret})</code> per <code>poller.Next()</code> item, in a goroutine off <code>context.Background()</code>. Always pass the work item's <code>secret</code> through, or sessions with memory stores fail at claim time. <code>handle_item</code> skips non-session work items itself, so the drain loop needs no <code>work.data.type</code> check.</p>
+<h2>Container orchestration (mid-level)</h2>
+<p><code>EnvironmentWorker.run()</code> polls and executes tools in the same process. To run each session in its <strong>own</strong> container, use the mid-level poller in a thin orchestrator - Python <code>client.beta.environments.work.poller(environment_id=, environment_key=, drain=, block_ms=, reclaim_older_than_ms=, auto_stop=)</code>; TypeScript <code>new WorkPoller({client, environmentId, environmentKey, autoStop})</code> from <code>@anthropic-ai/sdk/helpers/beta/environments</code> - and, for each yielded <code>work</code> item, start a fresh container with these env vars injected, whose entrypoint runs <code>ant beta:worker run</code> or an <code>EnvironmentWorker(...).handle_item()</code> (required if the session attaches memory stores). <code>block_ms</code> is 1-999 (or <code>None</code> for non-blocking); <code>reclaim_older_than_ms</code> re-claims items leased to a dead worker; <code>drain</code> stops once the queue is empty; <code>auto_stop</code> posts a stop signal after the iterator exits (set <code>False</code> when the launched container owns the stop call). Go: <code>environments.NewWorkPoller(ctx, client, environments.WorkPollerOptions{EnvironmentID, EnvironmentKey, BlockMs, ReclaimOlderThanMs, Drain, AutoStop: param.NewOpt(false)})</code> with <code>poller.Next()</code> / <code>poller.Current()</code> / <code>poller.Err()</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Env var</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ANTHROPIC_SESSION_ID</code></td>
+<td><code>work.data.id</code></td>
+</tr>
+<tr>
+<td><code>ANTHROPIC_WORK_ID</code></td>
+<td><code>work.id</code></td>
+</tr>
+<tr>
+<td><code>ANTHROPIC_ENVIRONMENT_ID</code></td>
+<td><code>work.environment_id</code></td>
+</tr>
+<tr>
+<td><code>ANTHROPIC_ENVIRONMENT_KEY</code></td>
+<td>pass through</td>
+</tr>
+<tr>
+<td><code>ANTHROPIC_BASE_URL</code></td>
+<td>pass through</td>
+</tr>
+<tr>
+<td><code>ANTHROPIC_WORK_SECRET</code></td>
+<td><code>work.secret</code> - the per-session credential the worker inside needs to mount memory stores. <code>ant beta:worker poll --on-work</code> does <strong>not</strong> set it for the spawned script; read it from the work-item JSON on stdin (<code>jq -r '.secret // empty'</code>) and pass it in. Only into the sandbox serving that session; never log it.</td>
+</tr>
+</tbody>
+</table>
+<p>Skip items where <code>work.data.type != "session"</code> when you dispatch containers yourself (<code>handle_item</code> does this check for you).</p>
+<h2>Memory stores</h2>
+<p>Sessions on a self-hosted environment attach memory stores exactly like cloud sessions - <code>resources=[{"type": "memory_store", "memory_store_id": ..., "access": ...}]</code> at session create, up to 8 per session (see <code>shared/managed-agents-memory.md</code>). The difference is <em>who materializes them</em>: on cloud, Anthropic mounts a live FUSE filesystem; on self-hosted, the <strong>SDK worker</strong> (<code>EnvironmentWorker</code>, or its <code>handle_item()</code> / <code>handleItem()</code> / <code>HandleItem()</code>) downloads a working copy and syncs it. Requires the Python, TypeScript, or Go SDK; the <code>ant</code> CLI worker and the C#/Java/PHP/Ruby SDKs don't mount stores. Not available on Claude Platform on AWS.</p>
+<p><strong>What the worker does</strong> when it claims a work item whose session has stores attached:</p>
+<ol>
+<li>Downloads each store to its mount path under <code>/mnt/memory/</code> - derived from the store's name, not a settable field (e.g. <code>/mnt/memory/user-preferences/</code> for a store named "User Preferences"); the same path cloud sessions use, and the session's system prompt describes it to the agent. Authenticates with the work item's per-session <code>secret</code>.</li>
+<li>Adds those directories to the file tools' <code>allowed_roots</code>, and <code>access: "read_only"</code> stores to <code>read_only_roots</code>, so the agent uses the ordinary <code>read</code>/<code>write</code>/<code>edit</code>/<code>glob</code>/<code>grep</code> tools on memories.</li>
+<li>Reconciles after tool calls, at most once per sync interval (default 15 s): remote changes are written to disk, files the agent changed are uploaded.</li>
+<li>On session end: final sync, flushes pending uploads for up to 30 s, removes the directories. A worker that is <em>cancelled</em> mid-session skips the final sync but still uploads changed files and removes the directories; a worker that is <em>killed</em> runs no teardown at all.</li>
+</ol>
+<p>The store on Anthropic's side remains the source of truth - memory versions, redaction, and Console viewing/editing work as for cloud sessions, and the agent's memory reads/writes appear in the event stream as ordinary tool events. Because sync is interval-based, a change written by one self-hosted session is visible to another running session only after both have synced (typically well under a minute); cloud sessions see each other's changes almost immediately. Each store directory holds a marker file <code>.anthropic-memory-store</code> - leave it alone; the worker won't sync a directory whose marker is missing or altered.</p>
+<p><strong>Prepare the host.</strong> POSIX (Linux/macOS) only; a case-sensitive filesystem is recommended. Before starting the worker:</p>
+<pre><code class="language-bash">sudo mkdir -p /mnt/memory &amp;&amp; sudo chown &quot;$USER&quot; /mnt/memory
+</code></pre>
+<p>Do <strong>not</strong> create the per-store directories yourself - the worker creates each store's directory when a session starts, <strong>refuses the work item if something already exists at that path</strong>, and removes it at session end. Two rules follow: (a) two sessions can't mount the same store on one host simultaneously (they need the same path) - give each session its own sandbox; (b) stop workers gracefully. <code>EnvironmentWorker</code> installs no signal handlers: wire SIGTERM/SIGINT to cancellation yourself (abort the <code>signal</code> in TypeScript, cancel the context in Go, cancel the task running <code>run()</code> / <code>handle_item()</code> in Python), send SIGTERM, and allow &gt;= 30 s before any hard kill. If a worker is killed before teardown, remove the leftover directory under <code>/mnt/memory/</code> before the next session that attaches that store - unsynced edits in it are lost.</p>
+<p><strong>Sandbox-per-session</strong> (the pattern from § Container orchestration) satisfies rule (a) automatically. Keep <code>ant beta:worker poll --on-work</code> (or the SDK poller) on the host; build the per-session image around the SDK worker instead of <code>ant beta:worker run</code> - its entrypoint constructs <code>EnvironmentWorker</code> and calls <code>handle_item()</code>, which reads the session/work/environment IDs from the <code>ANTHROPIC_*</code> vars and the per-session secret from <code>ANTHROPIC_WORK_SECRET</code> (or pass <code>work_secret=</code> / <code>workSecret</code> / <code>WorkSecret</code> explicitly). <code>--on-work</code> does not set <code>ANTHROPIC_WORK_SECRET</code> for the spawn script, so read it from the work-item JSON on stdin:</p>
+<pre><code class="language-bash">#!/bin/bash
+# spawn.sh - called once per claimed work item; the work item arrives as JSON on stdin
+ANTHROPIC_WORK_SECRET=&quot;$(jq -r '.secret // empty')&quot;
+export ANTHROPIC_WORK_SECRET
+exec docker run --rm \
+  -e ANTHROPIC_SESSION_ID -e ANTHROPIC_WORK_ID -e ANTHROPIC_ENVIRONMENT_ID \
+  -e ANTHROPIC_ENVIRONMENT_KEY -e ANTHROPIC_BASE_URL -e ANTHROPIC_WORK_SECRET \
+  my-sdk-worker-image
+</code></pre>
+<p>The per-session entrypoint is a few lines - no arguments needed, <code>handle_item()</code> reads the forwarded <code>ANTHROPIC_*</code> vars including <code>ANTHROPIC_WORK_SECRET</code>; wire signals to cancellation so a stopped container still uploads:</p>
+<pre><code class="language-python">import asyncio, contextlib, os, signal
+from anthropic import AsyncAnthropic
+from anthropic.lib.environments import EnvironmentWorker
+
+
+async def main() -&gt; None:
+    async with AsyncAnthropic(auth_token=os.environ[&quot;ANTHROPIC_ENVIRONMENT_KEY&quot;]) as client:
+        task = asyncio.create_task(EnvironmentWorker(client, workdir=&quot;/workspace&quot;).handle_item())
+        loop = asyncio.get_running_loop()
+        for signum in (signal.SIGINT, signal.SIGTERM):
+            loop.add_signal_handler(signum, task.cancel)
+        with contextlib.suppress(asyncio.CancelledError):
+            await task
+
+
+asyncio.run(main())
+</code></pre>
+<p>TypeScript: <code>new EnvironmentWorker({ client, workdir: "/workspace", signal: controller.signal }).handleItem()</code> with <code>process.once("SIGTERM"/"SIGINT", () =&gt; controller.abort())</code>. Go: <code>signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)</code> then <code>environments.NewEnvironmentWorker(client, environments.EnvironmentWorkerOptions{Workdir: "/workspace"}).HandleItem(ctx, environments.HandleItemOptions{})</code>.</p>
+<p>The image needs a writable <code>/mnt/memory</code>; the memory directories need <strong>not</strong> be bind-mounted to the host - the worker uploads before the sandbox exits, and a discarded sandbox leaves nothing to clean up. Stop a container early with a signal the entrypoint turns into cancellation, not a kill, so that upload still runs.</p>
+<p><strong>Configure sync</strong> - two <code>EnvironmentWorker</code> options (constructor or <code>client.beta.environments.work.worker()</code> factory in Python; the options object in TypeScript; <code>environments.EnvironmentWorkerOptions</code> in Go):</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Python / TypeScript / Go</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sync interval</td>
+<td><code>memory_sync_interval</code> (seconds) / <code>memorySyncIntervalMs</code> (ms) / <code>MemorySyncInterval</code> (duration)</td>
+<td>Default 15 s, minimum 5 s. Shorter narrows the stale window at the cost of more memory-store requests. <code>None</code> / <code>null</code> / negative duration <strong>disables memory support entirely</strong> - stores are neither downloaded nor synced, and a session with stores attached runs without them even though its system prompt still describes them. Only disable on workers whose sessions never attach stores. While enabled, a work item that arrives without a <code>secret</code> for a session with stores <strong>fails</strong> rather than running memory-less.</td>
+</tr>
+<tr>
+<td>Delete propagation</td>
+<td><code>memory_sync_deletes</code> / <code>memorySyncDeletes</code> / <code>MemorySyncDeletes</code></td>
+<td><code>"enabled"</code> (default - deletes from the store once a later sync confirms the file is still gone), <code>"log_only"</code> (same checks, only logs what it would delete - use to audit before trusting <code>enabled</code>), <code>"disabled"</code> (never deletes from the store). Go: <code>environments.MemorySyncDeletesEnabled</code> (zero value) / <code>LogOnly</code> / <code>Disabled</code>. Uploads/downloads are unaffected.</td>
+</tr>
+</tbody>
+</table>
+<p>For example, sync every 10 s and only <em>log</em> would-be deletes: Python <code>EnvironmentWorker(client, environment_id=..., environment_key=..., workdir="/workspace", memory_sync_interval=10, memory_sync_deletes="log_only")</code>; TypeScript <code>new EnvironmentWorker({ client, environmentId, environmentKey, workdir: "/workspace", memorySyncIntervalMs: 10_000, memorySyncDeletes: "log_only" })</code>; Go <code>environments.EnvironmentWorkerOptions{..., MemorySyncInterval: 10 * time.Second, MemorySyncDeletes: environments.MemorySyncDeletesLogOnly}</code>.</p>
+<p><strong>Read-only stores and conflicts.</strong> For <code>access: "read_only"</code>, <code>write</code>/<code>edit</code> refuse changes under the directory (the only memory errors that reach the agent, as tool errors) and nothing uploads; the memory-store endpoints also reject writes made with the session's <code>secret</code>. <code>bash</code> edits aren't blocked locally - they never sync and the next remote change overwrites them. Conflicts resolve <strong>in favor of the store</strong>: if the agent changes a file that also changed remotely since the last sync, the worker keeps the store's version at the next sync, overwrites the local file, and logs a warning - <code>write</code>/<code>edit</code> still succeed and no error reaches the agent; it can re-read and re-apply.</p>
+<p><strong>Troubleshooting.</strong> Mount and background-sync failures are <em>logged</em>, not reported to the session. If a store can't be mounted at claim time the worker fails the work item - the session emits no error event and sits <code>idle</code> (<code>requires_action</code> stop reason).</p>
+<table>
+<thead>
+<tr>
+<th>Log line / symptom</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>the work item carried no sessions token</code> (Go: <code>ErrSessionMemoryNoToken</code>), work item fails</td>
+<td>The per-session <code>secret</code> didn't reach the worker - memory on self-hosted isn't enabled for your org, or your spawn script didn't forward it</td>
+<td>Forward <code>ANTHROPIC_WORK_SECRET</code> into the sandbox. If the in-process worker (poll + run in one process) still logs this, contact support</td>
+</tr>
+<tr>
+<td><code>something already exists at the memory store's path</code></td>
+<td>Leftover directory from a killed worker</td>
+<td>Remove the named directory (unsynced edits are lost)</td>
+</tr>
+<tr>
+<td><code>cannot create the memory store's folder</code> + <code>the worker host must make this mount path writable</code></td>
+<td>Worker user can't create dirs under <code>/mnt/memory</code></td>
+<td><code>mkdir -p /mnt/memory &amp;&amp; chown &lt;worker-user&gt; /mnt/memory</code></td>
+</tr>
+<tr>
+<td>Session <code>idle</code> with <code>requires_action</code>, no error event, shortly after a claim</td>
+<td>Worker failed the work item on a mount error above</td>
+<td>Fix the host, then send <code>user.interrupt</code> - the work is re-queued and the next claim retries the mount</td>
+</tr>
+</tbody>
+</table>
+<h2>Monitoring &amp; control</h2>
+<p>These are <strong>control-plane</strong> calls - authenticate with <code>x-api-key</code> (not the environment key); <code>managed-agents-2026-04-01</code> beta header. <strong>Call them from outside the worker host</strong> - setting <code>ANTHROPIC_API_KEY</code> on the worker host exposes an organization-scoped credential to agent tool calls.</p>
+<table>
+<thead>
+<tr>
+<th>SDK (<code>client.beta.environments.work.*</code>)</th>
+<th>REST</th>
+<th>CLI</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>stats(environment_id)</code></td>
+<td><code>GET /v1/environments/{id}/work/stats</code></td>
+<td><code>ant beta:environments:work stats</code></td>
+<td><code>{type:"work_queue_stats", depth, pending, oldest_queued_at, workers_polling}</code></td>
+</tr>
+<tr>
+<td><code>stop(work_id, environment_id=)</code></td>
+<td><code>POST /v1/environments/{id}/work/{work_id}/stop</code></td>
+<td><code>ant beta:environments:work stop</code></td>
+<td><code>work.state</code></td>
+</tr>
+</tbody>
+</table>
+<h2>What changes vs <code>cloud</code></h2>
+<table>
+<thead>
+<tr>
+<th>Concern</th>
+<th><code>cloud</code></th>
+<th><code>self_hosted</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Container lifecycle, hardening, networking</td>
+<td>Anthropic</td>
+<td><strong>You</strong> - run non-root, read-only rootfs, drop caps; egress is whatever your VPC/firewall allows - except <code>web_search</code> / <code>web_fetch</code>, which run on Anthropic's servers either way (restrict them per tool with <code>allowed_domains</code> / <code>blocked_domains</code>)</td>
+</tr>
+<tr>
+<td><code>file</code> / <code>github_repository</code> resource mounting</td>
+<td>Anthropic mounts into the container</td>
+<td><strong>You</strong> - pass pointers via <code>sessions.create(metadata={...})</code> and have your orchestrator fetch/clone before dispatch</td>
+</tr>
+<tr>
+<td><code>memory_store</code> resources</td>
+<td>Mounted by Anthropic at <code>/mnt/memory/&lt;name&gt;/</code> (live FUSE mount)</td>
+<td><strong>Supported via the SDK worker</strong> (Python / TypeScript / Go <code>EnvironmentWorker</code>), which downloads each store to <code>/mnt/memory/&lt;store-name&gt;/</code> and syncs on an interval - see § Memory stores. Not mounted by the <code>ant</code> CLI worker; not available in the C#, Java, PHP, or Ruby SDKs. <code>memory_store</code> is the <strong>only</strong> resource type self-hosted environments accept - <code>file</code> / <code>github_repository</code> are still rejected with the 400 message "Environment env_... is a self-hosted environment. <code>resources</code> are not supported with self-hosted environments." (deployments targeting a self-hosted environment follow the same rule; the Console deployment form doesn't offer memory stores for them - use the API/SDK).</td>
+</tr>
+<tr>
+<td>Vault <code>environment_variable</code> credentials</td>
+<td>Supported (substituted at Anthropic-managed egress)</td>
+<td><strong>Not yet supported</strong> - egress is yours, so there's nowhere to substitute the secret. Use MCP credentials or a host-side custom tool (<code>shared/managed-agents-client-patterns.md</code> Pattern 9)</td>
+</tr>
+<tr>
+<td>Built-in tools</td>
+<td>Via <code>agent_toolset_20260401</code></td>
+<td>Supplied by your worker (<code>EnvironmentWorker</code> default / <code>beta_agent_toolset(env)</code> / <code>ant</code> CLI fixed set)</td>
+</tr>
+<tr>
+<td>Skills download</td>
+<td>Automatic</td>
+<td><code>EnvironmentWorker</code> / <code>AgentToolContext</code> fetch into <code>{workdir}/skills/</code> (needs <code>client</code> + <code>session_id</code>)</td>
+</tr>
+<tr>
+<td>Claude Platform on AWS</td>
+<td>Supported</td>
+<td>Supported - the worker authenticates with AWS IAM (SigV4) or an AWS-Console-generated API key (Console-generated environment keys don't work against the AWS endpoint); attach the <code>AnthropicSelfHostedEnvironmentAccess</code> managed policy to the worker's principal. <strong>Memory stores cannot be attached</strong> to sessions on self-hosted environments there (rejected at session create); cloud environments attach them as usual.</td>
+</tr>
+<tr>
+<td>SDK worker helpers</td>
+<td>All SDKs</td>
+<td><strong>Python, TypeScript, Go only</strong> (<code>EnvironmentWorker</code> / poller not in Java, Ruby, PHP, or C#) - use one of those three or the <code>ant</code> CLI</td>
+</tr>
+</tbody>
+</table>
+<h2>Credentials</h2>
+<table>
+<thead>
+<tr>
+<th>Credential</th>
+<th>Format</th>
+<th>Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ANTHROPIC_ENVIRONMENT_KEY</code></td>
+<td><code>sk-ant-oat01-...</code></td>
+<td>One environment's work queue. Generate in Console ("Generate environment key"). Pass as <code>auth_token=</code> / <code>authToken</code> on the client <strong>and</strong> as <code>environment_key=</code> / <code>environmentKey</code> on <code>EnvironmentWorker</code>. Store in a secrets manager; rotate on exposure.</td>
+</tr>
+<tr>
+<td><code>ANTHROPIC_WEBHOOK_SIGNING_KEY</code></td>
+<td><code>whsec_...</code></td>
+<td>Webhook signature verification (if using webhook-driven wake). The SDK reads this env var automatically for <code>client.beta.webhooks.unwrap()</code>.</td>
+</tr>
+<tr>
+<td>Work-item <code>secret</code> (<code>ANTHROPIC_WORK_SECRET</code>)</td>
+<td>per-session, issued by Anthropic on the claimed work item</td>
+<td>Posts that session's events and reads/writes the memory stores attached to it. You don't generate it; the in-process worker picks it up from the work item, and in the sandbox-per-session pattern you forward it into the sandbox yourself (or pass <code>work_secret=</code> / <code>workSecret</code> / <code>WorkSecret</code> explicitly). Treat like the environment key: only into the sandbox serving that session, never in images, shared volumes, or logs.</td>
+</tr>
+</tbody>
+</table>
+<h2>Security - what you own</h2>
+<p>Container hardening; egress restriction for the sandbox (there is no default; the server-side <code>web_search</code> / <code>web_fetch</code> are governed only by their <code>allowed_domains</code> / <code>blocked_domains</code>); <code>ANTHROPIC_ENVIRONMENT_KEY</code> custody and rotation; one workspace + environment per trust boundary when running untrusted code; least-privilege for the tool process; log retention and redaction. <strong>Anthropic cannot</strong>: fast-revoke a leaked environment key, verify your image or supply chain, sandbox tool execution inside your container, or enforce retention after tool output reaches your infrastructure. <strong>Memory stores</strong> stay hosted by Anthropic (with version history), but the working copy under <code>/mnt/memory/</code> is yours for the session's duration: the worker deletes it on teardown, a killed worker leaves it behind, and permissions/isolation between sessions sharing a filesystem are your responsibility. A <code>read_only</code> store is protected from <em>upload</em>, not from local modification - <code>bash</code> can still change the local copy (later tool calls in that session read the changed copy until the store next changes that memory); disable <code>bash</code> or mount the path read-only if the agent must not alter even its local view. See the Self-Hosted Sandboxes Security page in <code>shared/live-sources.md</code> for the full checklist.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

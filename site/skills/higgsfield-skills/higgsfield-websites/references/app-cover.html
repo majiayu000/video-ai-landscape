@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>app-cover · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/app-cover.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>App cover + OG image (3:2, Higgsfield brand style)</h1>
+<p>Produce launch covers that could sit NEXT TO the official Higgsfield covers
+without looking like a knock-off. This is the image behind <code>og_image_url</code> and
+the marketplace card. Also use it when the user directly asks for a "cover",
+"кавер", "обложка", "OG image", "launch cover" or "thumbnail" for a product,
+model, feature or app announcement.</p>
+<h2>The one rule that makes or breaks this skill</h2>
+<p><strong>The image model NEVER renders text. Not the title, not the wordmark, not
+labels, not UI. It renders ONLY the scene.</strong> Every glyph on the cover is drawn
+by <code>compose_cover.py</code> from the bundled Inter font — that is why the type is
+identical and crisp on every cover, like the official ones. If a generated
+scene comes back with lettering in it, the candidate is DEAD. Regenerate with
+"no text, no letters, no logos, no captions" appended.</p>
+<p>Division of labor:</p>
+<ul>
+<li><strong>The image model</strong> → one vivid full-bleed scene (people, product, world).
+  Nothing else. (<code>higgsfield generate create</code>.)</li>
+<li><strong><code>image_background_remover</code></strong> → subject cutout for the capsule break-out.</li>
+<li><strong><code>compose_cover.py</code></strong> → capsule, frame, dots, wordmark, TITLE, CTA pill,
+  scrim, break-out compositing. All geometry and typography. Text is ALWAYS the
+  topmost layer.</li>
+</ul>
+<p><strong>Outputs</strong> (one compose run makes all three, same pixels/scene in each):</p>
+<table>
+<thead>
+<tr>
+<th>file</th>
+<th>what</th>
+<th>use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;slug&gt;_cover.png</code></td>
+<td>full-bleed 3:2 scene + type lockup</td>
+<td>marketplace / <code>marketplace_cover_url</code></td>
+</tr>
+<tr>
+<td><code>&lt;slug&gt;_og.png</code></td>
+<td>frame + stadium capsule + corner dots</td>
+<td>OG / <code>og_image_url</code></td>
+</tr>
+<tr>
+<td><code>&lt;slug&gt;_og_wide.png</code></td>
+<td>same, 1.91:1</td>
+<td>Twitter/FB link cards</td>
+</tr>
+</tbody>
+</table>
+<h2>What an official cover looks like (internalize before prompting)</h2>
+<ol>
+<li><strong>A big, vivid, energetic scene with STORY DENSITY.</strong> Saturated color,
+   strong art direction, subject filling 55–75 % of the frame — and the frame
+   is FULL: 2–4 supporting story props/layers around the subject. Never a dim
+   empty room, never a lone subject floating on a bare seamless, never a "moody
+   teal void". One person on an empty backdrop reads as AI slop even when
+   bright — stage a world, not a portrait.</li>
+<li><strong>One structured type lockup</strong>, left-anchored or centered: the real
+   Higgsfield wordmark (bundled squiggle glyph + "Higgsfield", drawn
+   automatically by the script) → HUGE display-caps title (2 lines max; aim for
+   the official scale — the title is the loudest thing on the cover) →
+   <code>( Available now at higgsfield.ai )</code> pill. NO tagline — the reference lockup
+   is wordmark → title → CTA, three rows, nothing else. Tight, aligned, flat
+   white. It reads as ONE unit, not scattered captions.</li>
+<li><strong>Text is the LAST layer — always.</strong> The full lockup renders on top of
+   everything; the subject NEVER covers a letter. Type may sit over the
+   subject's body/props — keep it OFF the face: position with <code>--block-x/y</code> so
+   the title crosses shoulders, arms or background, not eyes/mouth.</li>
+<li><strong>The capsule variant</strong>: solid frame color from the approved palette,
+   stadium-shaped window, 4 corner dots — and with <code>--cutout</code> the subject
+   BREAKS OUT of the capsule onto the frame. That pop-out is the whole point of
+   the cutout.</li>
+</ol>
+<p>Hard bans (non-negotiable): acid lime/yellow <code>#D9FF2E</code>-family frames or text
+(the script blocks them), 3D/chrome/beveled/gradient lettering, watermarks,
+borders inside the art, model-rendered UI panels, any MODEL-rendered
+squiggle/logo (the real glyph is bundled and pasted by code — never ask the
+model to draw it).</p>
+<h2>Workflow</h2>
+<h3>1. Brief</h3>
+<p>You need: the <strong>product/feature name</strong> (exact spelling — the script renders it
+as the title), a <strong>scene concept</strong>, and a <strong>typography treatment</strong>. For an app
+build, derive the name from <code>og_title</code> and the scene from what the app does.</p>
+<p><strong>Keep <code>og_title</code> SHORT — at most 3–4 words, ideally ONE</strong> (<code>Lumen</code>,
+<code>PixelForge</code>, <code>Recipe Vault</code>): it is the feed-card title, the browser tab
+title, and the dominant cover text. Put the pitch in <code>og_description</code>, never in
+<code>og_title</code>.</p>
+<p>Decide:</p>
+<ul>
+<li><strong>slug</strong> (<code>dreamcut</code>), <strong>title</strong> (<code>DreamCut</code> — break long names with <code>\n</code>),
+  CTA (default stands). NO tagline unless the user explicitly hands you one.</li>
+<li><strong>Scene concept</strong> — the creative leap. Take the product's core verb and stage
+  it as a physical, photographable moment with humor or spectacle (Higgsfield
+  covers are witty, not corporate). "AI video editor" → an editor mid-leap
+  slicing a giant ribbon of film with chrome scissors in a bright studio.
+  "Skill marketplace" → a tiny craftsman forging a glowing card. Never settle
+  for "person looks at hologram UI".</li>
+<li><strong>Route</strong>: humans/lifestyle/fashion → PHOTO (a Soul model). Product/3D/
+  illustrated world, no humans → GRAPHIC (<code>gpt_image_2</code>). Default PHOTO in
+  doubt. Run <code>higgsfield model list</code> if unsure which job types are available.</li>
+</ul>
+<h3>2. Scene prompt doctrine (both routes)</h3>
+<p>Build the prompt from these blocks, in order:</p>
+<ol>
+<li>Subject + action, concrete and physical ("a film editor in a bold red
+   bomber jacket mid-leap, cutting a giant arc of 35mm film with oversized
+   chrome scissors").</li>
+<li><strong>World + props (story density)</strong>: name 2–4 supporting elements that fill
+   the frame around the subject. Add "no readable screens" whenever
+   screens/props could sprout text.</li>
+<li><strong>Scale + placement</strong>: "waist-up, subject fills two thirds of the frame,
+   positioned right-of-center" — and reserve the block side: "soft open
+   negative space upper-left on a warm white wall". Negative space = a real
+   surface (wall, sky, backdrop), NOT a black void.</li>
+<li>Palette, committed and saturated: name 2–3 colors. Avoid lime/acid
+   yellow-green.</li>
+<li>Light + lens: "bright soft key with punchy shadows, low wide angle,
+   commercial editorial grade".</li>
+<li>Always end with: "no text, no letters, no logos, no captions, no UI".</li>
+</ol>
+<p><strong>Reference the scene mood.</strong> Pass 1–2 hosted scene refs that match the
+intended mood as repeated <code>--image</code> flags (the CLI auto-imports http(s) URLs) —
+they carry grade/energy only; never let a ref's content leak into the concept.
+Hosted at <code>https://static.higgsfield.ai/website-builder/app-cover-generator/refs/</code>:</p>
+<table>
+<thead>
+<tr>
+<th>ref file</th>
+<th>mood</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scene-stadium-action.jpg</code></td>
+<td>epic sports spectacle, golden hour</td>
+</tr>
+<tr>
+<td><code>scene-studio-fashion.jpg</code></td>
+<td>clean bright studio, bold single color</td>
+</tr>
+<tr>
+<td><code>scene-epic-film.jpg</code></td>
+<td>cinematic blockbuster scale</td>
+</tr>
+<tr>
+<td><code>scene-glow-portrait.jpg</code></td>
+<td>neon/beauty glow portrait</td>
+</tr>
+<tr>
+<td><code>scene-street-lifestyle.jpg</code></td>
+<td>sunny UGC lifestyle</td>
+</tr>
+<tr>
+<td><code>scene-office-banana.jpg</code> / <code>scene-office-slapstick.jpg</code></td>
+<td>office comedy</td>
+</tr>
+<tr>
+<td><code>scene-comedy-absurd.jpg</code></td>
+<td>staged absurdist studio humor</td>
+</tr>
+<tr>
+<td><code>scene-beauty-product.jpg</code></td>
+<td>glossy product macro</td>
+</tr>
+<tr>
+<td><code>scene-cozy-ugc.jpg</code></td>
+<td>warm handheld authenticity</td>
+</tr>
+<tr>
+<td><code>scene-painterly-epic.jpg</code></td>
+<td>painterly fantasy</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PHOTO route</strong> — a Soul model (<code>soul_cinematic</code>, or a cleaner
+fashion/studio Soul), <code>--aspect_ratio 3:2 --quality 2k --count 2</code>, with 1–2
+scene refs as <code>--image</code>.</p>
+<p><strong>GRAPHIC route</strong> — <code>gpt_image_2 --aspect_ratio 3:2 --quality high
+--resolution 2k --count 2</code>. Same prompt doctrine; style words like "glossy 3D
+render / claymation diorama / painterly still" replace the lens block.</p>
+<pre><code class="language-bash">higgsfield generate create gpt_image_2 \
+  --aspect_ratio 3:2 --quality high --resolution 2k --count 2 \
+  --image https://static.higgsfield.ai/website-builder/app-cover-generator/refs/scene-epic-film.jpg \
+  --prompt &quot;&lt;scene prompt — ends with: no text, no letters, no logos, no captions, no UI&gt;&quot; \
+  --wait
+</code></pre>
+<h3>3. Judge the scenes BEFORE composing</h3>
+<p>Look at both candidates. Kill a candidate if ANY of: text/letters appeared;
+subject under ~50 % of frame; palette washed-out or muddy; the reserved
+negative space is missing (no room for the lockup); anatomy/prop glitches; "AI
+slop" tells (waxy skin, melted hands, gibberish objects). If both die, fix the
+prompt (usually: more concrete action, harder scale words, brighter palette)
+and regenerate — do not compose a weak scene. Compose is free; generations are
+not.</p>
+<p>If the winning scene is under ~1500 px wide, upscale it first
+(<code>higgsfield generate create bytedance_image_upscale --image &lt;url&gt; --wait</code>) —
+the script refuses art below 1500 px.</p>
+<h3>4. Break-out pass (whenever there is a clear subject)</h3>
+<p>Run <code>image_background_remover</code> on the winning scene and download the cutout PNG
+— it must be the SAME image, subject isolated with alpha:</p>
+<pre><code class="language-bash">higgsfield generate create image_background_remover \
+  --image &lt;winning_scene_url_or_id&gt; --wait
+</code></pre>
+<p>Pass the cutout as <code>--cutout</code>: on the framed OG variants the subject then
+BREAKS OUT of the stadium capsule onto the frame color instead of being
+amputated by the window edge (the official pop-out look). The window shrink is
+ADAPTIVE — it only kicks in when the subject actually reaches the window's
+top/side edges; a subject sitting fully inside keeps the full scene, no fat
+frame ring. The cutout MUST come from the same job as <code>--art</code> or it silently
+misaligns.</p>
+<h3>5. Compose</h3>
+<p>Write <code>compose_cover.py</code> from the block at the END of this document to your
+workspace verbatim, then run it (needs Pillow — <code>pip install pillow</code> if
+missing; the script fetches the Inter font + wordmark glyph from the hosted
+asset base on first run and caches them):</p>
+<pre><code class="language-bash">python3 compose_cover.py \
+  --art scene.png --cutout cutout.png \
+  --title &quot;DreamCut&quot; \
+  --title-width 0.48 \
+  --anchor left --block-x 0.07 --block-y 0.30 \
+  --frame-color &quot;#D23B2E&quot; \
+  --out-cover dreamcut_cover.png --out-og dreamcut_og.png \
+  --out-og-wide dreamcut_og_wide.png
+</code></pre>
+<p><strong>ONE typeface, hardcoded.</strong> Inter — the title face on the reference cover —
+renders everything: wordmark, title, CTA. There is no font flag. A different
+face is a manual edit, not a skill feature.</p>
+<p><strong>All type is flat white — no shadows.</strong> Legibility comes from scene contrast
+(dark negative space) and the scrim, not effects.</p>
+<p><strong>Frame color</strong> (approved palette): pick FROM the scene's palette with contrast
+— bright scene → deep frame (<code>deep-navy #243A5E</code>, <code>signal-red #D23B2E</code>, `olive</p>
+<h1>7A7D3C<code>); dark scene → light frame (</code>sky-blue #A9CFF4<code>,</code>peach #F7DDB9<code>,</code>cream</h1>
+<h1>F1EEE6<code>,</code>dusty-rose #E7B7B0<code>,</code>warm-gray #D6D3CE`). Echoing an accent already</h1>
+<p>in the scene (red jacket → signal-red) looks intentional; a random pastel does
+not. Lime is BLOCKED by the script — do not <code>--force-frame-color</code> around it.</p>
+<p><strong>Block placement</strong>: <code>--anchor left --block-x 0.07</code> with the subject on the
+right (or mirror it); <code>--anchor center</code> only for symmetric hero scenes.
+<code>--block-y</code> so the title sits on the subject's torso band (0.26–0.38 usually).
+<code>--scrim 60-110</code> depending on how busy the art is behind the block. On framed
+outputs the whole lockup is clamped INSIDE the capsule automatically — text
+never touches the frame.</p>
+<h3>6. Final check + deliver — the side-by-side gate</h3>
+<p>Open your <code>_og.png</code> NEXT TO the official covers at
+<code>https://static.higgsfield.ai/website-builder/app-cover-generator/layout/layout-hooks.jpg</code>
+and <code>.../layout/layout-stadium.jpg</code> and honestly answer: <strong>"If these were in
+the same folder, does mine look like the intern made it?"</strong> Concretely verify:</p>
+<ul>
+<li>[ ] scene is vivid + dense — no dead darkness, subject dominates</li>
+<li>[ ] lockup reads as one designed unit; title huge (≥ 3× wordmark height)</li>
+<li>[ ] text is the topmost layer, fully legible, off the face; on OG the subject
+      breaks out of the capsule (no window amputation)</li>
+<li>[ ] zero model-rendered text anywhere in the art</li>
+<li>[ ] frame color from palette, correct contrast, dots visible</li>
+<li>[ ] no lime, no 3D text, no squiggle, no watermarks</li>
+<li>[ ] art ≥ 1500 px wide (script enforces)</li>
+</ul>
+<p>If any box fails — fix and re-run.</p>
+<h3>7. Deliver / wire into the app</h3>
+<ul>
+<li><strong>Standalone cover request</strong>: show all three files to the user and save them
+  to their folder if one is connected.</li>
+<li><strong>App/website build (the publish gate)</strong>: upload the cover + OG with
+  <code>higgsfield upload create</code> and set the returned durable URLs in
+  <code>app/src/app-meta.json</code>: <code>&lt;slug&gt;_og.png</code> → <code>og_image_url</code>, <code>&lt;slug&gt;_cover.png</code>
+  → <code>marketplace_cover_url</code>. Commit before running <code>higgsfield website publish</code>.</li>
+</ul>
+<p>If the text (drawn by the script) ever needs adjusting, it is a compose-flag
+change (<code>--title</code>, <code>--block-x/y</code>, <code>--title-width</code>), never a regeneration — the
+model never touched the text.</p>
+<h2>Deviations</h2>
+<p>User-driven only (they may override colors, layout, CTA, partner lockups,
+tagline — note that lime still requires their explicit insistence, use
+<code>--force-frame-color</code>). On errors: font/glyph won't fetch → check network to
+the hosted asset base (override with <code>$COVER_ASSET_BASE</code>); Pillow missing →
+<code>pip install pillow</code>; generation refusals → rework the prompt content, keep the
+structure. The brand system is the default, not a cage.</p>
+<h2>compose_cover.py (write this file verbatim, then run it)</h2>
+<pre><code class="language-python">#!/usr/bin/env python3
+&quot;&quot;&quot;Build Higgsfield-style covers from one full-bleed SCENE image (no text on it).
+
+The image model renders ONLY the scene. ALL typography is drawn here as ONE
+structured lockup block, matching the official covers:
+
+        Higgsfield                 &lt;- wordmark (small)
+        DREAMCUT                   &lt;- title (huge caps)
+        ( Available now at … )     &lt;- CTA pill
+(NO tagline by default — the reference lockup has none; --tagline exists
+only for an explicit user request.)
+
+Break-out: pass --cutout (subject with alpha from remove_background, same
+size as the scene) and on the framed OG variants the subject pops OUT of the
+stadium capsule onto the frame color instead of being clipped by the window.
+Text is ALWAYS the last (topmost) layer — the subject never covers a letter.
+
+The stadium capsule, frame and corner dots are code too. Outputs:
+  --out-cover   full-bleed scene + lockup (marketplace cover)
+  --out-og      frame + capsule + dots + lockup, same ratio as the art (3:2)
+  --out-og-wide the 1.91:1 social-card variant
+
+ONE typeface: Inter (the title face on the reference cover) renders
+EVERYTHING — wordmark, title, CTA. No other font ships in the bundle.
+
+All type is FLAT white. No shadows, no outlines, no gradients — ever.
+On framed outputs the whole lockup is clamped INSIDE the stadium capsule
+(rounded ends included) — text never touches the frame.
+
+Only Pillow required.
+
+ASSETS: the font + logo glyph are NOT bundled — they are fetched once from the
+hosted asset base and cached locally (~/.cache/higgsfield-cover, override with
+$COVER_ASSET_CACHE). Point at a different host with $COVER_ASSET_BASE.
+&quot;&quot;&quot;
+import argparse
+import colorsys
+import os
+import sys
+import urllib.request
+
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
+
+ALLOWED_FRAMES = {
+    &quot;sky-blue&quot;: &quot;#A9CFF4&quot;,
+    &quot;peach&quot;: &quot;#F7DDB9&quot;,
+    &quot;olive&quot;: &quot;#7A7D3C&quot;,
+    &quot;warm-gray&quot;: &quot;#D6D3CE&quot;,
+    &quot;dusty-rose&quot;: &quot;#E7B7B0&quot;,
+    &quot;deep-navy&quot;: &quot;#243A5E&quot;,
+    &quot;signal-red&quot;: &quot;#D23B2E&quot;,
+    &quot;cream&quot;: &quot;#F1EEE6&quot;,
+}
+DEFAULT_FRAME = ALLOWED_FRAMES[&quot;sky-blue&quot;]
+CTA_DEFAULT = &quot;Available now at higgsfield.ai&quot;
+# ONE font. Inter Bold — the title face on the reference cover.
+BRAND_FONT = &quot;Inter-Variable.ttf&quot;
+
+# Hosted asset base (font + logo). Override with $COVER_ASSET_BASE. The two
+# assets live at &lt;base&gt;/fonts/Inter-Variable.ttf and &lt;base&gt;/logo/hf-glyph.png.
+ASSET_BASE = os.environ.get(
+    &quot;COVER_ASSET_BASE&quot;,
+    &quot;https://static.higgsfield.ai/website-builder/app-cover-generator&quot;,
+).rstrip(&quot;/&quot;)
+
+
+def cache_dir():
+    d = os.environ.get(
+        &quot;COVER_ASSET_CACHE&quot;,
+        os.path.join(os.path.expanduser(&quot;~&quot;), &quot;.cache&quot;, &quot;higgsfield-cover&quot;),
+    )
+    os.makedirs(d, exist_ok=True)
+    return d
+
+
+def ensure_asset(rel_path):
+    &quot;&quot;&quot;Return a local path to a hosted asset, downloading + caching on first use.
+    rel_path is relative to ASSET_BASE, e.g. 'fonts/Inter-Variable.ttf'.&quot;&quot;&quot;
+    local = os.path.join(cache_dir(), os.path.basename(rel_path))
+    if os.path.exists(local) and os.path.getsize(local) &gt; 0:
+        return local
+    url = f&quot;{ASSET_BASE}/{rel_path}&quot;
+    try:
+        # A browser-ish User-Agent — some CDNs/WAFs 403 the default urllib UA.
+        req = urllib.request.Request(url, headers={&quot;User-Agent&quot;: &quot;Mozilla/5.0&quot;})
+        with urllib.request.urlopen(req, timeout=30) as r:  # noqa: S310 (trusted host)
+            data = r.read()
+        with open(local, &quot;wb&quot;) as f:
+            f.write(data)
+        return local
+    except Exception as e:  # pragma: no cover - network/host failure
+        print(f&quot;WARNING: could not fetch asset {url}: {e}&quot;, file=sys.stderr)
+        return None
+
+
+def hex_rgb(s):
+    c = s.lstrip(&quot;#&quot;)
+    if len(c) != 6:
+        sys.exit(f&quot;bad hex color: {s}&quot;)
+    return tuple(int(c[i:i + 2], 16) for i in (0, 2, 4))
+
+
+def check_frame_color(rgb, force):
+    h, s, v = colorsys.rgb_to_hsv(*(c / 255 for c in rgb))
+    if 40 / 360 &lt;= h &lt;= 160 / 360 and s &gt; 0.55 and v &gt; 0.55:
+        msg = (&quot;frame color %02X%02X%02X is in the BANNED acid lime/yellow band. &quot;
+               &quot;Allowed: %s&quot; %
+               (*rgb, &quot;, &quot;.join(f&quot;{k} {v}&quot; for k, v in ALLOWED_FRAMES.items())))
+        if force:
+            print(&quot;WARNING:&quot;, msg)
+        else:
+            sys.exit(&quot;ERROR: &quot; + msg)
+
+
+def luminance(rgb):
+    r, g, b = (c / 255 for c in rgb)
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+
+def brand_font(px, weight):
+    &quot;&quot;&quot;Inter at the given weight (opsz pinned for display). The ONLY typeface.&quot;&quot;&quot;
+    path = ensure_asset(f&quot;fonts/{BRAND_FONT}&quot;)
+    if path is None:
+        return ImageFont.load_default(px)
+    try:
+        f = ImageFont.truetype(path, px)
+        try:
+            f.set_variation_by_axes([32, weight])
+        except Exception:
+            pass
+        return f
+    except Exception:
+        return ImageFont.load_default(px)
+
+
+def measure(d, text, font):
+    x0, y0, x1, y1 = d.textbbox((0, 0), text, font=font)
+    return x1 - x0, y1 - y0, x0, y0
+
+
+class Lockup:
+    &quot;&quot;&quot;One structured type block: wordmark / title lines / tagline / CTA pill.&quot;&quot;&quot;
+
+    def __init__(self, a, W, H):
+        self.a = a
+        probe = ImageDraw.Draw(Image.new(&quot;RGB&quot;, (8, 8)))
+        lines = [ln.strip() for part in a.title.split(&quot;\\n&quot;)
+                 for ln in part.split(&quot;\n&quot;) if ln.strip()]
+        if a.title_caps == &quot;upper&quot;:
+            lines = [ln.upper() for ln in lines]
+        self.title_lines = lines
+
+        # Size the title so its longest line fills the width budget…
+        budget = W * a.title_width
+        px = round(H * 0.5)
+        f = brand_font(px, 700)
+        w = max(measure(probe, ln, f)[0] for ln in self.title_lines)
+        px = max(24, round(px * budget / max(1, w)))
+        # …capped by line height and by total available width at the anchor.
+        px = min(px, round(H * a.title_max_h))
+        avail = W * (0.94 - a.block_x) if a.anchor == &quot;left&quot; else W * 0.88
+        f = brand_font(px, 700)
+        w = max(measure(probe, ln, f)[0] for ln in self.title_lines)
+        if w &gt; avail:
+            px = round(px * avail / w)
+        self.title_px = px
+        self.f_title = brand_font(px, 700)
+
+        glyph_path = ensure_asset(&quot;logo/hf-glyph.png&quot;)
+        self.glyph = (Image.open(glyph_path).convert(&quot;RGBA&quot;)
+                      if glyph_path and os.path.exists(glyph_path) else None)
+        self.f_word = brand_font(max(16, round(px * 0.26)), 650)
+        self.f_tag = brand_font(max(14, round(px * 0.20)), 500)
+        self.f_cta = brand_font(max(13, round(px * 0.17)), 500)
+        self.cta_pad_y = round(px * 0.14)
+        self.cta_pad_x = round(px * 0.30)
+
+        def rows_for(names):
+            rows = []
+            if &quot;word&quot; in names and a.wordmark:
+                rows.append((&quot;word&quot;, a.wordmark, self.f_word, 0))
+            if &quot;title&quot; in names:
+                for i, ln in enumerate(self.title_lines):
+                    gap = round(px * (0.30 if (i == 0 and a.wordmark) else 0.10 if i else 0))
+                    rows.append((&quot;title&quot;, ln, self.f_title, gap))
+            if &quot;tag&quot; in names and a.tagline:
+                rows.append((&quot;tag&quot;, a.tagline, self.f_tag, round(px * 0.26)))
+            if &quot;cta&quot; in names and a.cta:
+                rows.append((&quot;cta&quot;, a.cta, self.f_cta, round(px * 0.30)))
+            out = []
+            for kind, text, font, gap in rows:
+                tw, th, ox, oy = measure(probe, text, font)
+                if kind == &quot;cta&quot;:
+                    tw += 2 * self.cta_pad_x
+                    th += 2 * self.cta_pad_y
+                if kind == &quot;word&quot; and self.glyph is not None:
+                    gh = round(th * 1.3)
+                    tw += round(gh * self.glyph.width / self.glyph.height) \
+                        + round(th * 0.45)
+                    th = max(th, gh)
+                out.append([kind, text, font, gap, tw, th, ox, oy])
+            return out
+
+        self.rows = rows_for((&quot;word&quot;, &quot;title&quot;, &quot;tag&quot;, &quot;cta&quot;))
+        self.width = max(r[4] for r in self.rows)
+        self.height = sum(r[3] + r[5] for r in self.rows)
+
+    def origin(self, W, H, window=None):
+        a = self.a
+        bx = round(W * a.block_x)
+        by = round(H * a.block_y)
+        if a.anchor == &quot;center&quot;:
+            bx -= self.width // 2
+        bx = max(round(W * 0.05), min(bx, W - self.width - round(W * 0.05)))
+        by = max(round(H * 0.07), min(by, H - self.height - round(H * 0.075)))
+        if window:
+            # Framed variant: the WHOLE block must sit inside the stadium
+            # capsule, including its rounded ends — never on/over the frame.
+            wx0, wy0, wx1, wy1 = window
+            r = (wy1 - wy0) / 2
+            cy = (wy0 + wy1) / 2
+            pad = round(W * 0.015)
+            by = max(wy0 + pad, min(by, wy1 - self.height - pad))
+            for _ in range(3):
+                dy = max(abs(by - cy), abs(by + self.height - cy))
+                dx = r - (max(r * r - dy * dy, 0.0)) ** 0.5
+                lo = round(wx0 + dx) + pad
+                hi = round(wx1 - dx) - pad - self.width
+                bx = max(lo, min(bx, max(lo, hi)))
+                by = max(wy0 + pad, min(by, wy1 - self.height - pad))
+        return bx, by
+
+    def render(self, im, cutout=None, window=None):
+        &quot;&quot;&quot;Layer order: scene -&gt; scrim -&gt; subject cutout -&gt; ALL text LAST.
+
+        The cutout's only job is the capsule break-out on the framed OG
+        variants (the subject pops over the frame like the official covers).
+        Text is always the topmost layer and never hidden by the subject.&quot;&quot;&quot;
+        a = self.a
+        W, H = im.size
+        bx, by = self.origin(W, H, window)
+        base = im.convert(&quot;RGBA&quot;)
+
+        if a.scrim &gt; 0:
+            scr = Image.new(&quot;L&quot;, (W, H), 0)
+            pad = round(self.title_px * 0.8)
+            ImageDraw.Draw(scr).rounded_rectangle(
+                (bx - pad, by - pad, bx + self.width + pad, by + self.height + pad),
+                radius=pad, fill=a.scrim)
+            scr = scr.filter(ImageFilter.GaussianBlur(pad))
+            base.alpha_composite(
+                Image.composite(Image.new(&quot;RGBA&quot;, (W, H), (8, 8, 12, 255)),
+                                Image.new(&quot;RGBA&quot;, (W, H), (0, 0, 0, 0)), scr))
+
+        white = (255, 255, 255, 255)
+
+        def draw_rows(target, kinds):
+            layer = Image.new(&quot;RGBA&quot;, (W, H), (0, 0, 0, 0))
+            d = ImageDraw.Draw(layer)
+            y = by
+            for kind, text, font, gap, tw, th, ox, oy in self.rows:
+                y += gap
+                if kind not in kinds:
+                    y += th
+                    continue
+                x = bx if a.anchor == &quot;left&quot; else bx + (self.width - tw) // 2
+                if kind == &quot;cta&quot;:
+                    ss = 4
+                    tile = Image.new(&quot;RGBA&quot;, (tw * ss, th * ss), (0, 0, 0, 0))
+                    td = ImageDraw.Draw(tile)
+                    td.rounded_rectangle((0, 0, tw * ss - 1, th * ss - 1),
+                                         radius=th * ss // 2, fill=(15, 15, 18, 135),
+                                         outline=(255, 255, 255, 115), width=ss)
+                    layer.alpha_composite(tile.resize((tw, th), Image.LANCZOS), (x, y))
+                    d.text((x + self.cta_pad_x - ox, y + self.cta_pad_y - oy),
+                           text, font=font, fill=white)
+                elif kind == &quot;word&quot; and self.glyph is not None:
+                    twt, tht, oxt, oyt = measure(d, text, font)
+                    gh = round(tht * 1.3)
+                    gw = round(gh * self.glyph.width / self.glyph.height)
+                    tile = Image.new(&quot;RGBA&quot;, (tw, th), (0, 0, 0, 0))
+                    tile.alpha_composite(
+                        self.glyph.resize((gw, gh), Image.LANCZOS), (0, (th - gh) // 2))
+                    ImageDraw.Draw(tile).text(
+                        (gw + round(tht * 0.45) - oxt, (th - tht) // 2 - oyt),
+                        text, font=font, fill=white)
+                    layer.alpha_composite(tile, (x, y))
+                else:
+                    d.text((x - ox, y - oy), text, font=font, fill=white)
+                y += th
+            target.alpha_composite(layer)
+
+        if cutout is not None:
+            base.alpha_composite(cutout.convert(&quot;RGBA&quot;))
+        draw_rows(base, {&quot;title&quot;, &quot;word&quot;, &quot;tag&quot;, &quot;cta&quot;})
+        return base.convert(&quot;RGB&quot;)
+
+
+def stadium_mask(size, box):
+    W, H = size
+    ss = 4 if max(W, H) &lt;= 1800 else 2
+    big = Image.new(&quot;L&quot;, (W * ss, H * ss), 0)
+    r = (box[3] - box[1]) // 2
+    ImageDraw.Draw(big).rounded_rectangle([v * ss for v in box],
+                                          radius=r * ss, fill=255)
+    return big.resize((W, H), Image.LANCZOS)
+
+
+def draw_dots(im, dot_rgb):
+    W, H = im.size
+    dr = max(3, round(W * 0.008))
+    ox, oy = round(W * 0.028), round(H * 0.045)
+    ss = 4
+    tile = Image.new(&quot;RGBA&quot;, (dr * 2 * ss, dr * 2 * ss), (0, 0, 0, 0))
+    ImageDraw.Draw(tile).ellipse((0, 0, dr * 2 * ss - 1, dr * 2 * ss - 1),
+                                 fill=(*dot_rgb, 255))
+    tile = tile.resize((dr * 2, dr * 2), Image.LANCZOS)
+    for cx in (ox, W - ox):
+        for cy in (oy, H - oy):
+            im.paste(tile, (cx - dr, cy - dr), tile)
+
+
+def crop_box_for(size, ratio):
+    w, h = size
+    if w / h &gt; ratio:
+        nw = round(h * ratio)
+        x = (w - nw) // 2
+        return (x, 0, x + nw, h)
+    nh = round(w / ratio)
+    y = (h - nh) // 2
+    return (0, y, w, y + nh)
+
+
+def touches_edges(piece, band_h, band_w):
+    &quot;&quot;&quot;True if the subject plate has meaningful alpha in the top or side
+    bands of the window — i.e. the subject actually reaches the capsule
+    edge and a breakout is possible.&quot;&quot;&quot;
+    alpha = piece.getchannel(&quot;A&quot;)
+    w, h = alpha.size
+    for bbox in (
+        (0, 0, w, max(1, band_h)),          # top band
+        (0, 0, max(1, band_w), h),          # left band
+        (w - max(1, band_w), 0, w, h),      # right band
+    ):
+        region = alpha.crop(bbox)
+        hist = region.histogram()
+        solid = sum(hist[128:])
+        if solid &gt; 0.005 * (region.width * region.height):
+            return True
+    return False
+
+
+def build_framed(art, cutout, canvas_ratio, a, frame_rgb, dot_rgb):
+    W = art.width
+    H = round(W / canvas_ratio)
+    mx, my = round(W * a.margin_x), round(H * a.margin_y)
+    box = (mx, my, W - mx, H - my)
+    bw, bh = box[2] - box[0], box[3] - box[1]
+    cb = crop_box_for(art.size, bw / bh)
+
+    scene = Image.new(&quot;RGB&quot;, (W, H), frame_rgb)
+    scene.paste(art.crop(cb).resize((bw, bh), Image.LANCZOS), (box[0], box[1]))
+
+    cut = None
+    mask_box = box
+    if cutout is not None:
+        # UNCLIPPED on purpose: the subject breaks out of the capsule onto the
+        # frame (official look — Cinema Studio 4's boot + ball over the green).
+        cut = Image.new(&quot;RGBA&quot;, (W, H), (0, 0, 0, 0))
+        piece = cutout.crop(cb).resize((bw, bh), Image.LANCZOS)
+        cut.paste(piece, (box[0], box[1]), piece)
+        # ADAPTIVE window shrink: only if the subject actually reaches the
+        # window's top/side edges does the window pull in (top + sides,
+        # bottom stays flush) so the full-size plate pops over the capsule
+        # with zero ghosting. Otherwise the window keeps the full scene —
+        # no wasted frame ring.
+        ins = round(bh * a.pop_inset)
+        if ins &gt; 0 and touches_edges(piece, round(bh * 0.06), round(bw * 0.04)):
+            mask_box = (box[0] + ins, box[1] + ins, box[2] - ins, box[3])
+
+    mask = stadium_mask((W, H), mask_box)
+    out = Image.composite(scene, Image.new(&quot;RGB&quot;, (W, H), frame_rgb), mask)
+    if not a.no_dots:
+        draw_dots(out, dot_rgb)
+    return Lockup(a, W, H).render(out, cut, window=mask_box)
+
+
+def main():
+    p = argparse.ArgumentParser(description=__doc__,
+                                formatter_class=argparse.RawDescriptionHelpFormatter)
+    p.add_argument(&quot;--art&quot;, required=True, help=&quot;full-bleed SCENE image, no text on it&quot;)
+    p.add_argument(&quot;--cutout&quot;, help=&quot;subject-with-alpha PNG aligned to --art &quot;
+                                    &quot;(remove_background output); pops out of the OG capsule&quot;)
+    p.add_argument(&quot;--title&quot;, required=True, help=r&quot;product name; '\n' splits lines&quot;)
+    p.add_argument(&quot;--title-caps&quot;, choices=[&quot;upper&quot;, &quot;keep&quot;], default=&quot;upper&quot;)
+    p.add_argument(&quot;--title-width&quot;, type=float, default=0.52,
+                   help=&quot;longest title line as fraction of canvas width (0.35-0.62)&quot;)
+    p.add_argument(&quot;--title-max-h&quot;, type=float, default=0.26)
+    p.add_argument(&quot;--wordmark&quot;, default=&quot;Higgsfield&quot;, help=&quot;'' to disable&quot;)
+    p.add_argument(&quot;--tagline&quot;, default=&quot;&quot;)
+    p.add_argument(&quot;--cta&quot;, default=CTA_DEFAULT, help=&quot;'' to disable&quot;)
+    p.add_argument(&quot;--anchor&quot;, choices=[&quot;left&quot;, &quot;center&quot;], default=&quot;left&quot;)
+    p.add_argument(&quot;--block-x&quot;, type=float, default=0.07)
+    p.add_argument(&quot;--block-y&quot;, type=float, default=0.28)
+    p.add_argument(&quot;--scrim&quot;, type=int, default=90,
+                   help=&quot;0-255 soft dark scrim behind the block (0 = off)&quot;)
+    p.add_argument(&quot;--out-cover&quot;)
+    p.add_argument(&quot;--out-og&quot;)
+    p.add_argument(&quot;--out-og-wide&quot;)
+    p.add_argument(&quot;--frame-color&quot;, default=DEFAULT_FRAME)
+    p.add_argument(&quot;--force-frame-color&quot;, action=&quot;store_true&quot;)
+    p.add_argument(&quot;--dot-color&quot;, default=&quot;auto&quot;)
+    p.add_argument(&quot;--no-dots&quot;, action=&quot;store_true&quot;)
+    p.add_argument(&quot;--margin-x&quot;, type=float, default=0.045)
+    p.add_argument(&quot;--margin-y&quot;, type=float, default=0.055)
+    p.add_argument(&quot;--pop-inset&quot;, type=float, default=0.03,
+                   help=&quot;with --cutout: shrink the capsule window by this &quot;
+                        &quot;fraction of its height (top/sides) so the subject &quot;
+                        &quot;plate pops over the edge — applied ONLY when the &quot;
+                        &quot;subject actually reaches the window edge; 0 disables&quot;)
+    p.add_argument(&quot;--min-width&quot;, type=int, default=1500)
+    a = p.parse_args()
+
+    if not (a.out_cover or a.out_og or a.out_og_wide):
+        sys.exit(&quot;nothing to do: pass --out-cover / --out-og / --out-og-wide&quot;)
+
+    frame_rgb = hex_rgb(a.frame_color)
+    check_frame_color(frame_rgb, a.force_frame_color)
+    dot_rgb = ((26, 26, 26) if luminance(frame_rgb) &gt; 0.55 else (255, 255, 255)) \
+        if a.dot_color == &quot;auto&quot; else hex_rgb(a.dot_color)
+
+    art = Image.open(a.art).convert(&quot;RGB&quot;)
+    if art.width &lt; a.min_width:
+        sys.exit(f&quot;ERROR: art is {art.width}px wide (&lt; {a.min_width}). Upscale &quot;
+                 f&quot;first — do not ship a soft cover.&quot;)
+    cutout = None
+    if a.cutout:
+        cutout = Image.open(a.cutout).convert(&quot;RGBA&quot;)
+        if cutout.size != art.size:
+            cutout = cutout.resize(art.size, Image.LANCZOS)
+
+    if a.out_cover:
+        out = Lockup(a, art.width, art.height).render(art, cutout)
+        out.save(a.out_cover)
+        print(f&quot;cover    {a.out_cover} {out.size[0]}x{out.size[1]}&quot;)
+
+    if a.out_og:
+        out = build_framed(art, cutout, art.width / art.height, a, frame_rgb, dot_rgb)
+        out.save(a.out_og)
+        print(f&quot;og       {a.out_og} {out.size[0]}x{out.size[1]} frame={a.frame_color}&quot;)
+
+    if a.out_og_wide:
+        out = build_framed(art, cutout, 1.91, a, frame_rgb, dot_rgb)
+        out.save(a.out_og_wide)
+        print(f&quot;og-wide  {a.out_og_wide} {out.size[0]}x{out.size[1]} frame={a.frame_color}&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>using-procedure-api · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/agents/references/using-procedure-api.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Using the Procedure API</h1>
+<p>Procedures are reusable instruction blocks that an agent runs when a trigger matches. Create, edit, compile, and publish them with the Python or JavaScript SDK, or from the shell with the ElevenLabs CLI. Reference: <a href="https://elevenlabs.io/docs/eleven-agents/customization/procedures.md">Procedures</a> · <a href="https://elevenlabs.io/docs/api-reference/agents/procedures/">API Reference</a>.</p>
+<p>For what belongs in <code>trigger</code> and <code>content</code>, see <a href="writing-procedures.html">Writing Procedures</a>.</p>
+<p>Procedures are in Alpha. The feature set and the content schema are still changing, and some changes may break. Check the reference pages above before relying on a detail here.</p>
+<h2>Prerequisites</h2>
+<ul>
+<li><code>ELEVENLABS_API_KEY</code> is set, with the <code>CONVAI_READ</code> and <code>CONVAI_WRITE</code> scopes.</li>
+<li>Reading requires the viewer role on the target agent. Creating, updating, removing, compiling, and publishing require the editor role. Publishing to a protected branch requires admin.</li>
+<li>The target <code>agent_id</code> is known.</li>
+<li>The target <code>branch_id</code> is known. If not, read <code>main_branch_id</code> with <code>elevenlabs agents get --agent-id "$AGENT_ID" --query main_branch_id</code>, or list branches with <code>elevenlabs agents branches list --agent-id "$AGENT_ID"</code>.</li>
+</ul>
+<pre><code class="language-bash">AGENT_ID=&quot;your-agent-id&quot;
+BRANCH_ID=&quot;your-branch-id&quot;
+</code></pre>
+<p>The CLI reads <code>ELEVENLABS_API_KEY</code> from the environment automatically; never pass the key as a flag, and never print or persist it.</p>
+<h2>SDKs</h2>
+<p>Procedure APIs are available in both SDKs starting in <code>2.60.0</code>. Earlier versions do not include a <code>procedures</code> client, so install at or above that version:</p>
+<pre><code class="language-bash">pip install &quot;elevenlabs&gt;=2.60.0&quot;
+npm install @elevenlabs/elevenlabs-js@^2.60.0
+</code></pre>
+<p>For JavaScript, use <code>@elevenlabs/elevenlabs-js</code>. The unscoped <code>elevenlabs</code> npm package is the deprecated v1.x and has no procedures client at any version.</p>
+<p>Both clients read <code>ELEVENLABS_API_KEY</code> from the environment; never pass a literal key.</p>
+<p>Use these SDK methods for the procedure endpoints. Python nests them under <code>client.conversational_ai.agents</code>; JavaScript uses <code>client.conversationalAi.agents</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Endpoint</th>
+<th>Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>List</td>
+<td><code>GET .../procedures</code></td>
+<td><code>procedures.list</code></td>
+</tr>
+<tr>
+<td>Create</td>
+<td><code>POST .../procedures</code></td>
+<td><code>procedures.create</code></td>
+</tr>
+<tr>
+<td>Read branch HEAD</td>
+<td><code>GET .../procedures/{procedure_id}</code></td>
+<td><code>procedures.get</code></td>
+</tr>
+<tr>
+<td>Read draft</td>
+<td><code>GET .../procedures/{procedure_id}/draft</code></td>
+<td><code>procedures.drafts.get</code></td>
+</tr>
+<tr>
+<td>Update draft</td>
+<td><code>PATCH .../procedures/{procedure_id}/draft</code></td>
+<td><code>procedures.drafts.update</code></td>
+</tr>
+<tr>
+<td>Discard draft</td>
+<td><code>DELETE .../procedures/{procedure_id}/draft</code></td>
+<td><code>procedures.drafts.delete</code></td>
+</tr>
+<tr>
+<td>Remove</td>
+<td><code>DELETE .../procedures/{procedure_id}</code></td>
+<td><code>procedures.remove</code></td>
+</tr>
+<tr>
+<td>Compile</td>
+<td><code>POST .../procedures/compile</code></td>
+<td><code>procedures.compile</code></td>
+</tr>
+<tr>
+<td>Publish</td>
+<td><code>PATCH /v1/convai/agents/{agent_id}?branch_id=...</code></td>
+<td><code>agents.update</code></td>
+</tr>
+</tbody>
+</table>
+<p>SDK notes:</p>
+<ul>
+<li>JavaScript takes the IDs positionally, then a body object. Python takes keyword arguments — except <code>procedures.create</code>, which takes its body as <code>request=CreateProcedureRequestModel(...)</code>. Flat keywords on <code>create</code> raise <code>TypeError</code>.</li>
+<li>Read one historical version with <code>procedures.get(..., version_id=...)</code> or <code>procedures.get(agentId, branchId, procedureId, { versionId })</code>.</li>
+<li>For structured changes, pass the <code>workflow</code> returned by <code>procedures.compile</code> to <code>agents.update</code>.</li>
+</ul>
+<p>The flow below creates a free-form procedure, edits its draft, and publishes it.</p>
+<h3>Python</h3>
+<pre><code class="language-python">from elevenlabs import ElevenLabs
+from elevenlabs.types import CreateProcedureRequestModel
+
+client = ElevenLabs()
+procedures = client.conversational_ai.agents.procedures
+
+created = procedures.create(
+    agent_id=AGENT_ID,
+    branch_id=BRANCH_ID,
+    request=CreateProcedureRequestModel(
+        name=&quot;Refund requests&quot;,
+        type=&quot;free_form&quot;,
+        trigger=&quot;When the user asks for a refund&quot;,
+        content=&quot;Confirm the order number, check eligibility, and explain the next step.&quot;,
+    ),
+)
+
+draft = procedures.drafts.get(
+    agent_id=AGENT_ID, branch_id=BRANCH_ID, procedure_id=created.procedure_id
+)
+procedures.drafts.update(
+    agent_id=AGENT_ID,
+    branch_id=BRANCH_ID,
+    procedure_id=created.procedure_id,
+    name=draft.name,
+    type=&quot;free_form&quot;,
+    trigger=draft.trigger,
+    content=&quot;Confirm the order number. Check refund eligibility. Explain the refund timeline.&quot;,
+)
+
+client.conversational_ai.agents.update(
+    agent_id=AGENT_ID,
+    branch_id=BRANCH_ID,
+    version_description=&quot;Publish refund procedure&quot;,
+)
+</code></pre>
+<p>If the pending changes include structured procedures, compile before publishing:</p>
+<pre><code class="language-python">from elevenlabs.errors import BadRequestError
+
+try:
+    compiled = procedures.compile(agent_id=AGENT_ID, branch_id=BRANCH_ID)
+except BadRequestError as error:
+    print(f&quot;Compile failed, nothing published: {error.body}&quot;)
+    raise
+
+client.conversational_ai.agents.update(
+    agent_id=AGENT_ID,
+    branch_id=BRANCH_ID,
+    workflow=compiled.workflow,
+    version_description=&quot;Publish refund procedure&quot;,
+)
+</code></pre>
+<h3>JavaScript</h3>
+<pre><code class="language-javascript">import { ElevenLabsClient } from &quot;@elevenlabs/elevenlabs-js&quot;;
+
+const client = new ElevenLabsClient();
+const procedures = client.conversationalAi.agents.procedures;
+
+const created = await procedures.create(agentId, branchId, {
+  name: &quot;Refund requests&quot;,
+  type: &quot;free_form&quot;,
+  trigger: &quot;When the user asks for a refund&quot;,
+  content: &quot;Confirm the order number, check eligibility, and explain the next step.&quot;,
+});
+
+const draft = await procedures.drafts.get(agentId, branchId, created.procedureId);
+await procedures.drafts.update(agentId, branchId, created.procedureId, {
+  name: draft.name,
+  type: &quot;free_form&quot;,
+  trigger: draft.trigger,
+  content: &quot;Confirm the order number. Check refund eligibility. Explain the refund timeline.&quot;,
+});
+
+await client.conversationalAi.agents.update(agentId, {
+  branchId,
+  versionDescription: &quot;Publish refund procedure&quot;,
+});
+</code></pre>
+<p>If the pending changes include structured procedures, compile before publishing:</p>
+<pre><code class="language-javascript">import { ElevenLabsError } from &quot;@elevenlabs/elevenlabs-js&quot;;
+
+try {
+  const compiled = await procedures.compile(agentId, branchId);
+  await client.conversationalAi.agents.update(agentId, {
+    branchId,
+    workflow: compiled.workflow,
+    versionDescription: &quot;Publish refund procedure&quot;,
+  });
+} catch (error) {
+  if (error instanceof ElevenLabsError &amp;&amp; error.statusCode === 400) {
+    console.error(&quot;Compile or publish failed, nothing published:&quot;, error.body);
+  }
+  throw error;
+}
+</code></pre>
+<h2>Procedure Lifecycle</h2>
+<ul>
+<li>Procedures belong to an agent branch. Drafts are scoped to the current user.</li>
+<li>Create, update, discard, and remove act on your draft working set. Nothing reaches the live agent until you publish.</li>
+<li>Publishing is not a procedure endpoint. Use <code>PATCH /v1/convai/agents/{agent_id}?branch_id=...</code> to version all changed procedure drafts on the branch.</li>
+<li>Each branch maps every <code>procedure_id</code> to a published <code>version_id</code>, or to no version while only a draft exists. A branch-HEAD read therefore returns <code>404</code> until the first publish.</li>
+<li>Compile structured-procedure changes before publishing. Publish free-form-only changes without compiling. See <a href="#compile-and-publish">Compile and Publish</a>.</li>
+<li>Structured content has no dry-run. Save the draft, compile to validate it, and repair what compile reports. See <a href="#compile-and-publish">Compile and Publish</a>.</li>
+<li>Draft writes are last-write-wins. Read the draft immediately before editing and avoid concurrent writers.</li>
+</ul>
+<p>Reads resolve against different sources:</p>
+<table>
+<thead>
+<tr>
+<th>Request</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET .../procedures/{procedure_id}</code></td>
+<td>Branch HEAD. <code>404</code> until the procedure's first publish.</td>
+</tr>
+<tr>
+<td><code>GET .../procedures/{procedure_id}/draft</code></td>
+<td>Your draft, falling back to branch HEAD when you have none.</td>
+</tr>
+<tr>
+<td><code>GET .../procedures/{procedure_id}?version_id=...</code></td>
+<td>One pinned, immutable historical version.</td>
+</tr>
+</tbody>
+</table>
+<h2>List Procedures</h2>
+<p>List the effective working set:</p>
+<pre><code class="language-bash">elevenlabs agents procedures list \
+  --agent-id &quot;$AGENT_ID&quot; --branch-id &quot;$BRANCH_ID&quot;
+</code></pre>
+<p>Each entry carries <code>procedure_id</code>, <code>version_id</code>, <code>name</code>, <code>type</code>, <code>trigger</code>, and <code>has_draft</code>. <code>has_draft</code> is true when the procedure has unpublished draft changes on this branch, in which case its <code>name</code>, <code>type</code>, and <code>trigger</code> reflect that draft. <code>version_id</code> is the version published on this branch, and is null exactly when <code>has_draft</code> is true — including for a procedure that was published earlier and has since been edited.</p>
+<p>The list does not include procedure content. Read a body with <code>GET .../procedures/{procedure_id}</code> or its <code>/draft</code> variant.</p>
+<h2>Create</h2>
+<pre><code class="language-bash">CREATE_RESPONSE=$(
+  elevenlabs agents procedures create \
+    --agent-id &quot;$AGENT_ID&quot; --branch-id &quot;$BRANCH_ID&quot; \
+    --json '{
+      &quot;name&quot;: &quot;Refund requests&quot;,
+      &quot;type&quot;: &quot;free_form&quot;,
+      &quot;trigger&quot;: &quot;When the user asks for a refund&quot;,
+      &quot;content&quot;: &quot;Confirm the order number, check eligibility, and explain the next step.&quot;
+    }'
+)
+PROCEDURE_ID=$(printf '%s' &quot;$CREATE_RESPONSE&quot; | jq -r '.procedure_id')
+</code></pre>
+<p>Fail if <code>procedure_id</code> is empty or null.</p>
+<p>A structured procedure uses the same endpoint with <code>type</code> set to <code>deterministic</code> and its steps JSON-encoded into <code>content</code>. See <a href="writing-procedures.html">Writing Procedures</a> for what belongs in <code>trigger</code> and <code>content</code>, and for building that JSON string.</p>
+<h2>Read and Update the Draft</h2>
+<pre><code class="language-bash">elevenlabs agents procedures drafts get \
+  --agent-id &quot;$AGENT_ID&quot; --branch-id &quot;$BRANCH_ID&quot; --procedure-id &quot;$PROCEDURE_ID&quot;
+
+elevenlabs agents procedures drafts update \
+  --agent-id &quot;$AGENT_ID&quot; --branch-id &quot;$BRANCH_ID&quot; --procedure-id &quot;$PROCEDURE_ID&quot; \
+  --json '{
+    &quot;name&quot;: &quot;Refund requests&quot;,
+    &quot;type&quot;: &quot;free_form&quot;,
+    &quot;trigger&quot;: &quot;When the user asks for a refund&quot;,
+    &quot;content&quot;: &quot;Confirm the order number. Check refund eligibility. Explain the refund timeline.&quot;
+  }'
+</code></pre>
+<p>Treat the draft update body as a full replacement. Read the current draft, preserve <code>name</code>, <code>type</code>, and <code>trigger</code> unless the user requested changes to them, and send them with the new <code>content</code>. The API accepts an omitted <code>trigger</code> and then derives it from <code>content</code>; omit it only when that is intentional. Preserve <code>type</code> unless the user explicitly requests a conversion.</p>
+<p>Publish with the flow under <a href="#compile-and-publish">Compile and Publish</a>.</p>
+<h2>Compile and Publish</h2>
+<p>One publish versions every changed procedure draft on the branch:</p>
+<pre><code class="language-bash">elevenlabs agents update \
+  --agent-id &quot;$AGENT_ID&quot; --branch-id &quot;$BRANCH_ID&quot; \
+  --json '{&quot;version_description&quot;: &quot;Publish refund procedure&quot;}'
+</code></pre>
+<p>Compile only when structured procedures have changed. Compilation turns structured drafts into workflow nodes and merges them into the existing agent workflow. The agent loads free-form procedures from their published versions at the start of a conversation, so publish free-form-only changes without <code>workflow</code>.</p>
+<p>Also compile after removing the last structured procedure; compilation removes the workflow nodes generated for it.</p>
+<p>Compilation requires a pending draft on the branch. With nothing staged, it fails with <code>no_draft_to_compile</code>, which also means there is nothing to publish.</p>
+<p>Compilation validates structured content using saved drafts rather than an inline request body:</p>
+<ol>
+<li>Save the content as a draft. A draft that does not validate still saves.</li>
+<li>Compile. On <code>400</code>, <code>errors</code> is keyed by procedure ID, and each entry carries the <code>path</code> of the offending field and a message naming the step, such as <code>steps[0].ask.instruction</code> and <code>Step 1: Ask step requires an instruction</code>.</li>
+<li>Repair every entry and compile again. Each compile returns the errors detected in that pass; fixing field-level errors may reveal structural errors on the next pass. Continue until compile returns a workflow.</li>
+<li>Publish, sending that <code>workflow</code> with the publish.</li>
+</ol>
+<pre><code class="language-bash">WORKFLOW=$(
+  elevenlabs agents procedures compile \
+    --agent-id &quot;$AGENT_ID&quot; --branch-id &quot;$BRANCH_ID&quot; \
+    | jq -c '.workflow'
+)
+</code></pre>
+<p>A successful compile returns <code>200</code> with <code>workflow</code>; validation failure returns <code>400</code> with <code>errors</code> and no workflow, and the CLI exits non-zero and prints that error payload. Do not publish while compile reports errors — repair and recompile — and fail if <code>WORKFLOW</code> is empty or null.</p>
+<p>SDK methods raise on compile failure. Catch the error around <code>procedures.compile</code>; see <a href="#sdks">SDKs</a> for the flow and <a href="#error-handling">Error Handling</a> for the response fields.</p>
+<p>Publish the drafts with the compiled workflow:</p>
+<pre><code class="language-bash">PUBLISH_BODY=$(
+  jq -n \
+    --argjson workflow &quot;$WORKFLOW&quot; \
+    --arg description &quot;Publish refund procedure&quot; \
+    '{workflow: $workflow, version_description: $description}'
+)
+
+elevenlabs agents update \
+  --agent-id &quot;$AGENT_ID&quot; --branch-id &quot;$BRANCH_ID&quot; \
+  --json &quot;$PUBLISH_BODY&quot;
+</code></pre>
+<p>Include <code>workflow</code> whenever publishing structured changes. Without it, the publish versions the procedure drafts but leaves the previously published workflow unchanged.</p>
+<p>Verify a published procedure and record its <code>version_id</code>:</p>
+<pre><code class="language-bash">elevenlabs agents procedures get \
+  --agent-id &quot;$AGENT_ID&quot; --branch-id &quot;$BRANCH_ID&quot; --procedure-id &quot;$PROCEDURE_ID&quot;
+</code></pre>
+<h2>Discard Edits</h2>
+<p>Discard only your own unpublished draft:</p>
+<pre><code class="language-bash">elevenlabs agents procedures drafts delete \
+  --agent-id &quot;$AGENT_ID&quot; --branch-id &quot;$BRANCH_ID&quot; --procedure-id &quot;$PROCEDURE_ID&quot;
+</code></pre>
+<p>This restores the branch-HEAD version. For a procedure that was never published, it deletes the procedure. Read the draft afterwards to confirm what remains.</p>
+<h2>Remove a Procedure</h2>
+<p>Stage the removal:</p>
+<pre><code class="language-bash">elevenlabs agents procedures remove \
+  --agent-id &quot;$AGENT_ID&quot; --branch-id &quot;$BRANCH_ID&quot; --procedure-id &quot;$PROCEDURE_ID&quot;
+</code></pre>
+<p>This removes the procedure from the branch working set. It does not erase versions still referenced by agent history.</p>
+<p>The removal remains a draft until published. If the procedure is structured, compile before publishing to remove its generated workflow nodes. Then confirm that the procedure is absent from the list and that a branch-HEAD lookup returns <code>404</code>.</p>
+<h2>Error Handling</h2>
+<p>Common errors:
+- <strong>400</strong> from compile, with <code>errors</code>: structured validation failed. Fix every returned procedure error, recompile, and only then publish.
+- <strong>400</strong> from compile, with <code>no_draft_to_compile</code>: nothing is staged on this branch, so there is nothing to publish either.
+- <strong>401</strong>: <code>ELEVENLABS_API_KEY</code> is unset or invalid.
+- <strong>403</strong>: the key lacks <code>CONVAI_READ</code>/<code>CONVAI_WRITE</code>, the agent role is too low, or the branch is protected and only admins may publish to it.
+- <strong>404</strong>: verify that the agent, branch, and procedure IDs belong together. Before a procedure's first publish, read the draft endpoint rather than branch HEAD.</p>
+<p>The SDKs raise for these responses. The payload is on <code>error.body</code>, and the status is on <code>error.status_code</code> in Python or <code>error.statusCode</code> in JavaScript.</p>
+<p>Do not blindly retry create, update, delete, or publish requests. Read current state before deciding whether a retry is safe.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

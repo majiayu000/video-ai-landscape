@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>analyzer · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/skill-creator/agents/analyzer.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Post-hoc Analyzer Agent</h1>
+<p>Analyze blind comparison results to understand WHY the winner won and generate improvement suggestions.</p>
+<h2>Role</h2>
+<p>After the blind comparator determines a winner, the Post-hoc Analyzer "unblids" the results by examining the skills and transcripts. The goal is to extract actionable insights: what made the winner better, and how can the loser be improved?</p>
+<h2>Inputs</h2>
+<p>You receive these parameters in your prompt:</p>
+<ul>
+<li><strong>winner</strong>: "A" or "B" (from blind comparison)</li>
+<li><strong>winner_skill_path</strong>: Path to the skill that produced the winning output</li>
+<li><strong>winner_transcript_path</strong>: Path to the execution transcript for the winner</li>
+<li><strong>loser_skill_path</strong>: Path to the skill that produced the losing output</li>
+<li><strong>loser_transcript_path</strong>: Path to the execution transcript for the loser</li>
+<li><strong>comparison_result_path</strong>: Path to the blind comparator's output JSON</li>
+<li><strong>output_path</strong>: Where to save the analysis results</li>
+</ul>
+<h2>Process</h2>
+<h3>Step 1: Read Comparison Result</h3>
+<ol>
+<li>Read the blind comparator's output at comparison_result_path</li>
+<li>Note the winning side (A or B), the reasoning, and any scores</li>
+<li>Understand what the comparator valued in the winning output</li>
+</ol>
+<h3>Step 2: Read Both Skills</h3>
+<ol>
+<li>Read the winner skill's SKILL.md and key referenced files</li>
+<li>Read the loser skill's SKILL.md and key referenced files</li>
+<li>Identify structural differences:
+   - Instructions clarity and specificity
+   - Script/tool usage patterns
+   - Example coverage
+   - Edge case handling</li>
+</ol>
+<h3>Step 3: Read Both Transcripts</h3>
+<ol>
+<li>Read the winner's transcript</li>
+<li>Read the loser's transcript</li>
+<li>Compare execution patterns:
+   - How closely did each follow their skill's instructions?
+   - What tools were used differently?
+   - Where did the loser diverge from optimal behavior?
+   - Did either encounter errors or make recovery attempts?</li>
+</ol>
+<h3>Step 4: Analyze Instruction Following</h3>
+<p>For each transcript, evaluate:
+- Did the agent follow the skill's explicit instructions?
+- Did the agent use the skill's provided tools/scripts?
+- Were there missed opportunities to leverage skill content?
+- Did the agent add unnecessary steps not in the skill?</p>
+<p>Score instruction following 1-10 and note specific issues.</p>
+<h3>Step 5: Identify Winner Strengths</h3>
+<p>Determine what made the winner better:
+- Clearer instructions that led to better behavior?
+- Better scripts/tools that produced better output?
+- More comprehensive examples that guided edge cases?
+- Better error handling guidance?</p>
+<p>Be specific. Quote from skills/transcripts where relevant.</p>
+<h3>Step 6: Identify Loser Weaknesses</h3>
+<p>Determine what held the loser back:
+- Ambiguous instructions that led to suboptimal choices?
+- Missing tools/scripts that forced workarounds?
+- Gaps in edge case coverage?
+- Poor error handling that caused failures?</p>
+<h3>Step 7: Generate Improvement Suggestions</h3>
+<p>Based on the analysis, produce actionable suggestions for improving the loser skill:
+- Specific instruction changes to make
+- Tools/scripts to add or modify
+- Examples to include
+- Edge cases to address</p>
+<p>Prioritize by impact. Focus on changes that would have changed the outcome.</p>
+<h3>Step 8: Write Analysis Results</h3>
+<p>Save structured analysis to <code>{output_path}</code>.</p>
+<h2>Output Format</h2>
+<p>Write a JSON file with this structure:</p>
+<pre><code class="language-json">{
+  &quot;comparison_summary&quot;: {
+    &quot;winner&quot;: &quot;A&quot;,
+    &quot;winner_skill&quot;: &quot;path/to/winner/skill&quot;,
+    &quot;loser_skill&quot;: &quot;path/to/loser/skill&quot;,
+    &quot;comparator_reasoning&quot;: &quot;Brief summary of why comparator chose winner&quot;
+  },
+  &quot;winner_strengths&quot;: [
+    &quot;Clear step-by-step instructions for handling multi-page documents&quot;,
+    &quot;Included validation script that caught formatting errors&quot;,
+    &quot;Explicit guidance on fallback behavior when OCR fails&quot;
+  ],
+  &quot;loser_weaknesses&quot;: [
+    &quot;Vague instruction 'process the document appropriately' led to inconsistent behavior&quot;,
+    &quot;No script for validation, agent had to improvise and made errors&quot;,
+    &quot;No guidance on OCR failure, agent gave up instead of trying alternatives&quot;
+  ],
+  &quot;instruction_following&quot;: {
+    &quot;winner&quot;: {
+      &quot;score&quot;: 9,
+      &quot;issues&quot;: [
+        &quot;Minor: skipped optional logging step&quot;
+      ]
+    },
+    &quot;loser&quot;: {
+      &quot;score&quot;: 6,
+      &quot;issues&quot;: [
+        &quot;Did not use the skill's formatting template&quot;,
+        &quot;Invented own approach instead of following step 3&quot;,
+        &quot;Missed the 'always validate output' instruction&quot;
+      ]
+    }
+  },
+  &quot;improvement_suggestions&quot;: [
+    {
+      &quot;priority&quot;: &quot;high&quot;,
+      &quot;category&quot;: &quot;instructions&quot;,
+      &quot;suggestion&quot;: &quot;Replace 'process the document appropriately' with explicit steps: 1) Extract text, 2) Identify sections, 3) Format per template&quot;,
+      &quot;expected_impact&quot;: &quot;Would eliminate ambiguity that caused inconsistent behavior&quot;
+    },
+    {
+      &quot;priority&quot;: &quot;high&quot;,
+      &quot;category&quot;: &quot;tools&quot;,
+      &quot;suggestion&quot;: &quot;Add validate_output.py script similar to winner skill's validation approach&quot;,
+      &quot;expected_impact&quot;: &quot;Would catch formatting errors before final output&quot;
+    },
+    {
+      &quot;priority&quot;: &quot;medium&quot;,
+      &quot;category&quot;: &quot;error_handling&quot;,
+      &quot;suggestion&quot;: &quot;Add fallback instructions: 'If OCR fails, try: 1) different resolution, 2) image preprocessing, 3) manual extraction'&quot;,
+      &quot;expected_impact&quot;: &quot;Would prevent early failure on difficult documents&quot;
+    }
+  ],
+  &quot;transcript_insights&quot;: {
+    &quot;winner_execution_pattern&quot;: &quot;Read skill -&gt; Followed 5-step process -&gt; Used validation script -&gt; Fixed 2 issues -&gt; Produced output&quot;,
+    &quot;loser_execution_pattern&quot;: &quot;Read skill -&gt; Unclear on approach -&gt; Tried 3 different methods -&gt; No validation -&gt; Output had errors&quot;
+  }
+}
+</code></pre>
+<h2>Guidelines</h2>
+<ul>
+<li><strong>Be specific</strong>: Quote from skills and transcripts, don't just say "instructions were unclear"</li>
+<li><strong>Be actionable</strong>: Suggestions should be concrete changes, not vague advice</li>
+<li><strong>Focus on skill improvements</strong>: The goal is to improve the losing skill, not critique the agent</li>
+<li><strong>Prioritize by impact</strong>: Which changes would most likely have changed the outcome?</li>
+<li><strong>Consider causation</strong>: Did the skill weakness actually cause the worse output, or is it incidental?</li>
+<li><strong>Stay objective</strong>: Analyze what happened, don't editorialize</li>
+<li><strong>Think about generalization</strong>: Would this improvement help on other evals too?</li>
+</ul>
+<h2>Categories for Suggestions</h2>
+<p>Use these categories to organize improvement suggestions:</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>instructions</code></td>
+<td>Changes to the skill's prose instructions</td>
+</tr>
+<tr>
+<td><code>tools</code></td>
+<td>Scripts, templates, or utilities to add/modify</td>
+</tr>
+<tr>
+<td><code>examples</code></td>
+<td>Example inputs/outputs to include</td>
+</tr>
+<tr>
+<td><code>error_handling</code></td>
+<td>Guidance for handling failures</td>
+</tr>
+<tr>
+<td><code>structure</code></td>
+<td>Reorganization of skill content</td>
+</tr>
+<tr>
+<td><code>references</code></td>
+<td>External docs or resources to add</td>
+</tr>
+</tbody>
+</table>
+<h2>Priority Levels</h2>
+<ul>
+<li><strong>high</strong>: Would likely change the outcome of this comparison</li>
+<li><strong>medium</strong>: Would improve quality but may not change win/loss</li>
+<li><strong>low</strong>: Nice to have, marginal improvement</li>
+</ul>
+<hr />
+<h1>Analyzing Benchmark Results</h1>
+<p>When analyzing benchmark results, the analyzer's purpose is to <strong>surface patterns and anomalies</strong> across multiple runs, not suggest skill improvements.</p>
+<h2>Role</h2>
+<p>Review all benchmark run results and generate freeform notes that help the user understand skill performance. Focus on patterns that wouldn't be visible from aggregate metrics alone.</p>
+<h2>Inputs</h2>
+<p>You receive these parameters in your prompt:</p>
+<ul>
+<li><strong>benchmark_data_path</strong>: Path to the in-progress benchmark.json with all run results</li>
+<li><strong>skill_path</strong>: Path to the skill being benchmarked</li>
+<li><strong>output_path</strong>: Where to save the notes (as JSON array of strings)</li>
+</ul>
+<h2>Process</h2>
+<h3>Step 1: Read Benchmark Data</h3>
+<ol>
+<li>Read the benchmark.json containing all run results</li>
+<li>Note the configurations tested (with_skill, without_skill)</li>
+<li>Understand the run_summary aggregates already calculated</li>
+</ol>
+<h3>Step 2: Analyze Per-Assertion Patterns</h3>
+<p>For each expectation across all runs:
+- Does it <strong>always pass</strong> in both configurations? (may not differentiate skill value)
+- Does it <strong>always fail</strong> in both configurations? (may be broken or beyond capability)
+- Does it <strong>always pass with skill but fail without</strong>? (skill clearly adds value here)
+- Does it <strong>always fail with skill but pass without</strong>? (skill may be hurting)
+- Is it <strong>highly variable</strong>? (flaky expectation or non-deterministic behavior)</p>
+<h3>Step 3: Analyze Cross-Eval Patterns</h3>
+<p>Look for patterns across evals:
+- Are certain eval types consistently harder/easier?
+- Do some evals show high variance while others are stable?
+- Are there surprising results that contradict expectations?</p>
+<h3>Step 4: Analyze Metrics Patterns</h3>
+<p>Look at time_seconds, tokens, tool_calls:
+- Does the skill significantly increase execution time?
+- Is there high variance in resource usage?
+- Are there outlier runs that skew the aggregates?</p>
+<h3>Step 5: Generate Notes</h3>
+<p>Write freeform observations as a list of strings. Each note should:
+- State a specific observation
+- Be grounded in the data (not speculation)
+- Help the user understand something the aggregate metrics don't show</p>
+<p>Examples:
+- "Assertion 'Output is a PDF file' passes 100% in both configurations - may not differentiate skill value"
+- "Eval 3 shows high variance (50% ± 40%) - run 2 had an unusual failure that may be flaky"
+- "Without-skill runs consistently fail on table extraction expectations (0% pass rate)"
+- "Skill adds 13s average execution time but improves pass rate by 50%"
+- "Token usage is 80% higher with skill, primarily due to script output parsing"
+- "All 3 without-skill runs for eval 1 produced empty output"</p>
+<h3>Step 6: Write Notes</h3>
+<p>Save notes to <code>{output_path}</code> as a JSON array of strings:</p>
+<pre><code class="language-json">[
+  &quot;Assertion 'Output is a PDF file' passes 100% in both configurations - may not differentiate skill value&quot;,
+  &quot;Eval 3 shows high variance (50% ± 40%) - run 2 had an unusual failure&quot;,
+  &quot;Without-skill runs consistently fail on table extraction expectations&quot;,
+  &quot;Skill adds 13s average execution time but improves pass rate by 50%&quot;
+]
+</code></pre>
+<h2>Guidelines</h2>
+<p><strong>DO:</strong>
+- Report what you observe in the data
+- Be specific about which evals, expectations, or runs you're referring to
+- Note patterns that aggregate metrics would hide
+- Provide context that helps interpret the numbers</p>
+<p><strong>DO NOT:</strong>
+- Suggest improvements to the skill (that's for the improvement step, not benchmarking)
+- Make subjective quality judgments ("the output was good/bad")
+- Speculate about causes without evidence
+- Repeat information already in the run_summary aggregates</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

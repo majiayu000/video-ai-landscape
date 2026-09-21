@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>README · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/csharp/claude-api/README.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Claude API - C</h1>
+<blockquote>
+<p><strong>Note:</strong> The C# SDK is the official Anthropic SDK for C#. Tool use is supported via the Messages API with a beta <code>BetaToolRunner</code> for automatic tool execution loops. The SDK also supports Microsoft.Extensions.AI IChatClient integration with function invocation and Managed Agents (beta).</p>
+</blockquote>
+<h2>Namespace Reference</h2>
+<p>Types are organized by namespace. If a type you need isn't shown in an example below, locate it via this table first - don't block on fetching SDK source over the network.</p>
+<table>
+<thead>
+<tr>
+<th><code>using</code></th>
+<th>Contains</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Anthropic</code></td>
+<td><code>AnthropicClient</code>, top-level options</td>
+</tr>
+<tr>
+<td><code>Anthropic.Models.Messages</code></td>
+<td>non-beta request/response types - <code>MessageCreateParams</code>, <code>Model</code>, <code>Role</code>, <code>ContentBlock</code>, <code>TextBlock</code>, <code>ToolUseBlock</code>, <code>ToolResultBlockParam</code>, <code>Tool*</code> (tool definition classes)</td>
+</tr>
+<tr>
+<td><code>Anthropic.Models.Beta.Messages</code></td>
+<td>beta-endpoint equivalents - <code>MessageCreateParams</code>, <code>BetaMessage</code>, <code>BetaTool*</code>, <code>Speed</code>, <code>BetaRequestMcpServerUrlDefinition</code>, context-editing/compaction configs</td>
+</tr>
+<tr>
+<td><code>Anthropic.Models.Beta</code></td>
+<td>shared beta constants</td>
+</tr>
+<tr>
+<td><code>Anthropic.Models.Beta.Files</code></td>
+<td>Files API types</td>
+</tr>
+<tr>
+<td><code>Anthropic.Models.Messages.Batches</code></td>
+<td>Batch API types</td>
+</tr>
+<tr>
+<td><code>Anthropic.Helpers.Beta</code></td>
+<td><code>BetaToolRunner</code>, beta helper utilities</td>
+</tr>
+<tr>
+<td><code>Anthropic.Exceptions</code></td>
+<td><code>AnthropicApiException</code>, <code>AnthropicRateLimitException</code>, <code>Anthropic5xxException</code>, etc. - see <code>shared/error-codes.md</code></td>
+</tr>
+<tr>
+<td><code>Anthropic.Bedrock</code> / <code>Anthropic.Vertex</code> / <code>Anthropic.Foundry</code> / <code>Anthropic.Aws</code></td>
+<td>platform clients (separate NuGet packages): <code>AnthropicBedrockMantleClient</code>, <code>AnthropicFoundryClient</code>, <code>AnthropicAwsClient</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>client.Messages.*</code> uses non-beta types; <code>client.Beta.Messages.*</code> uses the <code>Anthropic.Models.Beta.Messages</code> types. Both namespaces define a <code>MessageCreateParams</code> - pick the one matching the client path you call.</p>
+<h3>Key types per feature</h3>
+<p>Write from this table instead of reflecting the SDK assembly. Endpoint column tells you whether to use <code>client.Messages.*</code> or <code>client.Beta.Messages.*</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Endpoint</th>
+<th>Key C# types (namespace per table above)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>User profiles</td>
+<td>beta</td>
+<td><code>client.Beta.UserProfiles.Create(...)</code> / <code>.Retrieve(id)</code> / <code>.List()</code>. Pass the returned profile id on the beta messages call. Requires a beta header - check the SDK's beta-headers reference for the current flag.</td>
+</tr>
+<tr>
+<td>Agent Skills</td>
+<td>beta</td>
+<td><code>BetaContainerParams</code> (with <code>Skills = [new BetaSkillParams { ... }]</code>), <code>BetaCodeExecutionTool20250825</code>. <code>Betas = ["code-execution-2025-08-25"]</code> (Skills is out of beta - no <code>skills-2025-10-02</code>). Download the output via <code>client.Beta.Files.Download(fileId)</code>.</td>
+</tr>
+<tr>
+<td>Advisor tool</td>
+<td>beta</td>
+<td><code>BetaAdvisorTool20260301</code> - may not be in all SDK releases yet</td>
+</tr>
+<tr>
+<td>Cache diagnostics</td>
+<td>beta</td>
+<td><code>Diagnostics = new() { PreviousMessageID = ... }</code>, <code>BetaCacheControlEphemeral</code>, <code>BetaContentBlockParam</code></td>
+</tr>
+<tr>
+<td>Context editing</td>
+<td>beta</td>
+<td><code>ContextManagement = new BetaContextManagementConfig { Edits = [new BetaClearToolUses20250919Edit()] }</code>. <code>Betas = ["context-management-2025-06-27"]</code> (not <code>compact-2026-01-12</code> - that's for <code>BetaCompact20260112Edit</code>).</td>
+</tr>
+<tr>
+<td>Memory tool</td>
+<td>non-beta</td>
+<td><code>Tools = [new ToolUnion(new MemoryTool20250818())]</code></td>
+</tr>
+<tr>
+<td>Programmatic tool calling</td>
+<td>non-beta</td>
+<td><code>CodeExecutionTool20260120</code>, <code>ToolResultBlockParam</code>, <code>ContentBlockParam</code></td>
+</tr>
+<tr>
+<td>Task budgets</td>
+<td>beta</td>
+<td><code>BetaOutputConfig</code> with <code>TaskBudget = new BetaTokenTaskBudget { ... }</code></td>
+</tr>
+<tr>
+<td>Tool search</td>
+<td>non-beta</td>
+<td><code>new ToolUnion(new ToolSearchToolRegex20251119 { Type = ToolSearchToolRegex20251119Type.ToolSearchToolRegex20251119 })</code> - <code>Type</code> must be set explicitly.</td>
+</tr>
+<tr>
+<td>Web search</td>
+<td>non-beta</td>
+<td><code>new ToolUnion(new WebSearchTool20260209())</code> - the latest variant with dynamic filtering (Claude Fable 5.1 + Claude Opus 5 + Opus 4.8/4.7/4.6 + Claude Sonnet 5 + Sonnet 4.6). For older models or Vertex, use <code>WebSearchTool20250305()</code></td>
+</tr>
+</tbody>
+</table>
+<h3>Discovering type and member names</h3>
+<p>If a type or member you need isn't in the tables above, <code>strings ~/.nuget/packages/anthropic/*/lib/*/Anthropic.dll | grep -i &lt;term&gt;</code> is fast and sufficient for locating class and property names. <strong>Do not escalate to a <code>dotnet run</code> reflection probe</strong> to dump members precisely - the first compile is slow enough to be backgrounded in many environments, trapping you in a polling loop. Instead, write <code>Program.cs</code> using the names <code>strings | grep</code> found; if a member name is wrong the compiler error (<code>error CS1061: 'X' does not contain a definition for 'Y'</code>) points at it in a few seconds, faster than any reflection probe.</p>
+<p>Note that <code>strings</code> will not surface wire-format snake_case field names (<code>output_tokens</code>, <code>stop_reason</code>) - those are stored in the DLL differently. <strong>C# properties are the PascalCase equivalent of the wire field</strong> (<code>response.Usage.OutputTokens</code>, <code>response.StopReason</code>). If you know the wire field name from the docs, write the PascalCase property and compile; do not probe for the snake_case string.</p>
+<h3>Minimal working skeleton</h3>
+<p><strong>Write a plain <code>Program.cs</code> body</strong> - <code>using</code> statements followed by top-level statements, as below. Do <strong>not</strong> add a <code>#!/usr/bin/env dotnet</code> shebang or <code>#:package Anthropic@*</code> directive: those are .NET file-based-app syntax and fail with <code>CS1024: Preprocessor directive expected</code> when the file is compiled via an existing <code>.csproj</code>. The standard project setup (per the <a href="https://platform.claude.com/docs/en/get-started">C# quickstart</a>: <code>dotnet new console</code> -&gt; <code>dotnet add package Anthropic</code> -&gt; edit <code>Program.cs</code> -&gt; <code>dotnet run</code>) provides the <code>.csproj</code> and package reference.</p>
+<p>Start from this - it compiles as-is. Fill in the feature-specific fields; do not spend turns running reflection or XML-doc inspection to discover type names first.</p>
+<pre><code class="language-csharp">using System;
+using Anthropic;
+using Anthropic.Models.Messages;       // or Anthropic.Models.Beta.Messages for beta endpoints
+
+AnthropicClient client = new();
+
+var message = await client.Messages.Create(new MessageCreateParams
+{
+    Model = &quot;claude-opus-5&quot;,
+    MaxTokens = 1024,
+    Messages = [ new() { Role = Role.User, Content = &quot;Hello, Claude&quot; } ],
+});
+
+Console.WriteLine(message);
+</code></pre>
+<p>For beta features (anything behind an <code>anthropic-beta</code> header), use the beta client path and namespace - same overall shape:</p>
+<pre><code class="language-csharp">using System;
+using Anthropic;
+using Anthropic.Models.Beta.Messages;
+
+AnthropicClient client = new();
+
+var response = await client.Beta.Messages.Create(new MessageCreateParams
+{
+    Model = &quot;claude-opus-5&quot;,
+    MaxTokens = 4096,
+    Betas = [&quot;&lt;beta-flag&gt;&quot;],
+    Messages = [ new() { Role = Role.User, Content = &quot;...&quot; } ],
+    // Tools = new BetaToolUnion[] { new BetaSomeTool { ... } },   // for tool features
+});
+
+Console.WriteLine(response);
+</code></pre>
+<p>If a type name the feature needs isn't in this file, write it following the naming pattern in the Namespace Reference above and fix from compiler output - producing a <code>Program.cs</code> and iterating beats researching.</p>
+<h3>Common C# compile errors</h3>
+<ul>
+<li><strong>CS8803 (top-level statements must precede type declarations):</strong> put any <code>record</code>/<code>class</code>/<code>struct</code> definitions <strong>after</strong> the last top-level statement, at the end of the file. A record defined above <code>var client = new AnthropicClient()</code> will not compile.</li>
+<li><strong><code>await foreach</code> on a <code>Task&lt;...Page&gt;</code>:</strong> <code>client.Models.List()</code> returns a <code>Task&lt;ModelListPage&gt;</code>, which is not directly async-enumerable. Await it first, then iterate: <code>var page = await client.Models.List(); foreach (var m in page.Items) {...}</code>. For auto-pagination, check whether the page type exposes <code>AutoPagingEachAsync()</code> or similar before reaching for <code>await foreach</code>.</li>
+</ul>
+<h2>Installation</h2>
+<pre><code class="language-bash">dotnet add package Anthropic
+</code></pre>
+<h2>Client Initialization</h2>
+<pre><code class="language-csharp">using Anthropic;
+
+// Default (uses ANTHROPIC_API_KEY env var)
+AnthropicClient client = new();
+
+// Explicit API key (use environment variables - never hardcode keys)
+AnthropicClient client = new() {
+    ApiKey = Environment.GetEnvironmentVariable(&quot;ANTHROPIC_API_KEY&quot;)
+};
+</code></pre>
+<hr />
+<h2>Basic Message Request</h2>
+<pre><code class="language-csharp">using Anthropic.Models.Messages;
+
+var parameters = new MessageCreateParams
+{
+    Model = &quot;claude-opus-5&quot;,
+    MaxTokens = 16000,
+    Messages = [new() { Role = Role.User, Content = &quot;What is the capital of France?&quot; }]
+};
+var response = await client.Messages.Create(parameters);
+
+// ContentBlock is a union wrapper. .Value unwraps to the variant object,
+// then OfType&lt;T&gt; filters to the type you want. Or use the TryPick* idiom
+// shown in the Thinking section below.
+foreach (var text in response.Content.Select(b =&gt; b.Value).OfType&lt;TextBlock&gt;())
+{
+    Console.WriteLine(text.Text);
+}
+</code></pre>
+<hr />
+<h2>Thinking</h2>
+<p><strong>Adaptive thinking is the recommended mode for Claude 4.6+ models.</strong> Claude decides dynamically when and how much to think.</p>
+<blockquote>
+<p><strong>Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking (below). <code>new ThinkingConfigEnabled { BudgetTokens = N }</code> is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<strong>Claude Opus 5:</strong> thinking is on by default - omitting <code>Thinking</code> runs adaptive (<code>ThinkingConfigAdaptive</code> is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. <code>ThinkingConfigDisabled</code> is accepted only at effort <code>high</code> or lower; pairing it with <code>xhigh</code>/<code>max</code> returns a 400.
+<strong>Older models:</strong> Use <code>new ThinkingConfigEnabled { BudgetTokens = N }</code> (budget must be &lt; <code>MaxTokens</code>, min 1024).</p>
+</blockquote>
+<pre><code class="language-csharp">using Anthropic.Models.Messages;
+
+var response = await client.Messages.Create(new MessageCreateParams
+{
+    Model = &quot;claude-opus-5&quot;,
+    MaxTokens = 16000,
+    // ThinkingConfigParam? implicitly converts from the concrete variant classes -
+    // no wrapper needed.
+    // display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Claude Opus 5 / Opus 4.8 / 4.7
+    Thinking = new ThinkingConfigAdaptive { Display = Display.Summarized },
+    Messages =
+    [
+        new() { Role = Role.User, Content = &quot;Solve: 27 * 453&quot; },
+    ],
+});
+
+// ThinkingBlock(s) precede TextBlock in Content. TryPick* narrows the union.
+foreach (var block in response.Content)
+{
+    if (block.TryPickThinking(out ThinkingBlock? t))
+    {
+        Console.WriteLine($&quot;[thinking] {t.Thinking}&quot;);
+    }
+    else if (block.TryPickText(out TextBlock? text))
+    {
+        Console.WriteLine(text.Text);
+    }
+}
+</code></pre>
+<p>Alternative to <code>TryPick*</code>: <code>.Select(b =&gt; b.Value).OfType&lt;ThinkingBlock&gt;()</code> (same LINQ pattern as the Basic Message example).</p>
+<hr />
+<h2>Context Editing / Compaction (Beta)</h2>
+<p><strong>Beta-namespace prefix is inconsistent</strong> (source-verified against <code>src/Anthropic/Models/Beta/Messages/*.cs</code> @ 12.9.0). No prefix: <code>MessageCreateParams</code>, <code>MessageCountTokensParams</code>, <code>Role</code>, <code>Speed</code>. <strong>Everything else has the <code>Beta</code> prefix</strong>: <code>BetaMessageParam</code>, <code>BetaMessage</code>, <code>BetaContentBlock</code>, <code>BetaToolUseBlock</code>, all block param types. The unprefixed <code>Role</code> WILL collide with <code>Anthropic.Models.Messages.Role</code> if you import both namespaces (CS0104). Safest: import only Beta; if mixing, alias the beta <code>Role</code>:</p>
+<pre><code class="language-csharp">using Anthropic.Models.Beta.Messages;
+using NonBeta = Anthropic.Models.Messages;  // only if you also need non-beta types
+// Now: MessageCreateParams, BetaMessageParam, Role (beta's), NonBeta.Role (if needed)
+</code></pre>
+<p><code>BetaMessage.Content</code> is <code>IReadOnlyList&lt;BetaContentBlock&gt;</code> - a 15-variant discriminated union. Narrow with <code>TryPick*</code>. <strong>Response <code>BetaContentBlock</code> is NOT assignable to param <code>BetaContentBlockParam</code></strong> - there's no <code>.ToParam()</code> in C#. Round-trip by converting each block:</p>
+<pre><code class="language-csharp">using Anthropic.Models.Beta.Messages;
+
+var betaParams = new MessageCreateParams   // no Beta prefix - see unprefixed list above
+{
+    Model = &quot;claude-opus-5&quot;,
+    MaxTokens = 16000,
+    Betas = [&quot;compact-2026-01-12&quot;],
+    ContextManagement = new BetaContextManagementConfig
+    {
+        Edits = [new BetaCompact20260112Edit()],
+    },
+    Messages = messages,
+};
+BetaMessage resp = await client.Beta.Messages.Create(betaParams);
+
+foreach (BetaContentBlock block in resp.Content)
+{
+    if (block.TryPickCompaction(out BetaCompactionBlock? compaction))
+    {
+        // Content is nullable - compaction can fail server-side
+        Console.WriteLine($&quot;compaction summary: {compaction.Content}&quot;);
+    }
+}
+
+// Context-edit metadata lives on a separate nullable field
+if (resp.ContextManagement is { } ctx)
+{
+    foreach (var edit in ctx.AppliedEdits)
+        Console.WriteLine($&quot;cleared {edit.ClearedInputTokens} tokens&quot;);
+}
+
+// ROUND-TRIP: BetaMessageParam.Content is BetaMessageParamContent (a string|list
+// union). It implicit-converts from List&lt;BetaContentBlockParam&gt;, NOT from the
+// response's IReadOnlyList&lt;BetaContentBlock&gt;. Convert each block:
+List&lt;BetaContentBlockParam&gt; paramBlocks = [];
+foreach (var b in resp.Content)
+{
+    if (b.TryPickText(out var t)) paramBlocks.Add(new BetaTextBlockParam { Text = t.Text });
+    else if (b.TryPickCompaction(out var c)) paramBlocks.Add(new BetaCompactionBlockParam { Content = c.Content });
+    // ... other variants as needed
+}
+messages.Add(new BetaMessageParam { Role = Role.Assistant, Content = paramBlocks });
+</code></pre>
+<p>All 15 <code>BetaContentBlock.TryPick*</code> variants: <code>Text</code>, <code>Thinking</code>, <code>RedactedThinking</code>, <code>ToolUse</code>, <code>ServerToolUse</code>, <code>WebSearchToolResult</code>, <code>WebFetchToolResult</code>, <code>CodeExecutionToolResult</code>, <code>BashCodeExecutionToolResult</code>, <code>TextEditorCodeExecutionToolResult</code>, <code>ToolSearchToolResult</code>, <code>McpToolUse</code>, <code>McpToolResult</code>, <code>ContainerUpload</code>, <code>Compaction</code>.</p>
+<p><strong><code>BetaToolUseBlock.Input</code> is <code>IReadOnlyDictionary&lt;string, JsonElement&gt;</code></strong> - index by key then call the <code>JsonElement</code> extractor:</p>
+<pre><code class="language-csharp">if (block.TryPickToolUse(out BetaToolUseBlock? tu))
+{
+    int a = tu.Input[&quot;a&quot;].GetInt32();
+    string s = tu.Input[&quot;name&quot;].GetString()!;
+}
+</code></pre>
+<hr />
+<h2>Effort Parameter</h2>
+<p>Effort is nested under <code>OutputConfig</code>, NOT a top-level property. <code>ApiEnum&lt;string, Effort&gt;</code> has an implicit conversion from the enum, so assign <code>Effort.High</code> directly.</p>
+<pre><code class="language-csharp">OutputConfig = new OutputConfig { Effort = Effort.High },
+</code></pre>
+<p>Values: <code>Effort.Low</code>, <code>Effort.Medium</code>, <code>Effort.High</code>, <code>Effort.Max</code>. Combine with <code>Thinking = new ThinkingConfigAdaptive()</code> for cost-quality control.</p>
+<hr />
+<h2>Prompt Caching</h2>
+<p><code>System</code> takes <code>MessageCreateParamsSystem?</code> - a union of <code>string</code> or <code>List&lt;TextBlockParam&gt;</code>. There is no <code>SystemTextBlockParam</code>; use plain <code>TextBlockParam</code>. The implicit conversion needs the concrete <code>List&lt;TextBlockParam&gt;</code> type (array literals won't convert). For placement patterns and the silent-invalidator audit checklist, see <code>shared/prompt-caching.md</code>.</p>
+<pre><code class="language-csharp">System = new List&lt;TextBlockParam&gt; {
+    new() {
+        Text = longSystemPrompt,
+        CacheControl = new CacheControlEphemeral(),  // auto-sets Type = &quot;ephemeral&quot;
+    },
+},
+</code></pre>
+<p>Optional <code>Ttl</code> on <code>CacheControlEphemeral</code>: <code>new() { Ttl = Ttl.Ttl1h }</code> or <code>Ttl.Ttl5m</code>. <code>CacheControl</code> also exists on <code>Tool.CacheControl</code> and top-level <code>MessageCreateParams.CacheControl</code>.</p>
+<p>Verify hits via <code>response.Usage.CacheCreationInputTokens</code> / <code>response.Usage.CacheReadInputTokens</code>.</p>
+<hr />
+<h2>Token Counting</h2>
+<pre><code class="language-csharp">MessageTokensCount result = await client.Messages.CountTokens(new MessageCountTokensParams {
+    Model = &quot;claude-opus-5&quot;,
+    Messages = [new() { Role = Role.User, Content = &quot;Hello&quot; }],
+});
+long tokens = result.InputTokens;
+</code></pre>
+<p><code>MessageCountTokensParams.Tools</code> uses a different union type (<code>MessageCountTokensTool</code>) than <code>MessageCreateParams.Tools</code> (<code>ToolUnion</code>) - if you're passing tools, the compiler will tell you when it matters.</p>
+<hr />
+<h2>PDF / Document Input</h2>
+<p><code>DocumentBlockParam</code> takes a <code>DocumentBlockParamSource</code> union: <code>Base64PdfSource</code> / <code>UrlPdfSource</code> / <code>PlainTextSource</code> / <code>ContentBlockSource</code>. <code>Base64PdfSource</code> auto-sets <code>MediaType = "application/pdf"</code> and <code>Type = "base64"</code>.</p>
+<pre><code class="language-csharp">new MessageParam {
+    Role = Role.User,
+    Content = new List&lt;ContentBlockParam&gt; {
+        new DocumentBlockParam { Source = new Base64PdfSource { Data = base64String } },
+        new TextBlockParam { Text = &quot;Summarize this PDF&quot; },
+    },
+}
+</code></pre>
+<hr />
+<h2>Fast Mode (Beta)</h2>
+<pre><code class="language-csharp">var response = await client.Beta.Messages.Create(new MessageCreateParams {
+    Model = &quot;claude-opus-5&quot;, MaxTokens = 4096,
+    Speed = Speed.Fast,
+    Betas = [&quot;fast-mode-2026-02-01&quot;],
+    Messages = [...],
+});
+</code></pre>
+<h2>Models API</h2>
+<pre><code class="language-csharp">var page = await client.Models.List();
+foreach (var m in page.Items) { Console.WriteLine(m.ID); }
+var one = await client.Models.Retrieve(&quot;claude-opus-5&quot;);
+</code></pre>
+<h2>Long Output (128k) + Prefill</h2>
+<p>Set <code>MaxTokens = 128000</code> on <code>client.Messages</code> and use the streaming path (see <code>streaming.md</code>). On Claude 4+ models, 128k output is native - no <code>output-128k-*</code> beta header or beta namespace is needed.</p>
+<p><strong>Prefilling the assistant message</strong> (putting a trailing <code>Role.Assistant</code> message in the input) is <strong>not supported</strong> on Claude Fable 5.1, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6 - requests return a 400. Use <code>OutputConfig.Format</code> (structured outputs) instead.</p>
+<h2>Stop Details</h2>
+<p>When <code>StopReason</code> is <code>"refusal"</code>, the response includes structured <code>StopDetails</code>:</p>
+<pre><code class="language-csharp">if (response.StopReason == &quot;refusal&quot; &amp;&amp; response.StopDetails is { } details)
+{
+    Console.WriteLine($&quot;Category: {details.Category}&quot;);
+    Console.WriteLine($&quot;Explanation: {details.Explanation}&quot;);
+}
+</code></pre>
+<p><strong>Refusal fallbacks (Claude Fable 5.1) - opt in by default.</strong> Fallbacks are opt-in: without them a refused request simply stops. In <code>claude-fable-5-1</code> code, include <code>Fallbacks = [new(Model.ClaudeOpus4_8)]</code> plus the <code>AnthropicBeta.ServerSideFallback2026_06_01</code> beta on the beta messages call by default - a policy decline is re-served by the fallback model inside the same call. Not available on Amazon Bedrock, Vertex AI, or Microsoft Foundry - use the client-side handler there: <code>new AnthropicClient { Handlers = [new BetaRefusalFallbackHandler { Fallbacks = [new(Model.ClaudeOpus4_8)] }] }</code> (namespace <code>Anthropic.Helpers</code>), with per-conversation state via <code>BetaFallbackState.Create()</code> scoped with <code>using (fallbackState.Use()) { ... }</code>. Full semantics (billing, sticky routing, streaming) and a runnable example: <code>shared/model-migration.md</code> -&gt; Migrating to Claude Fable 5.1 -&gt; <code>refusal</code> stop reason, and the C# SDK repo's <code>examples/</code> (WebFetch via <code>shared/live-sources.md</code>).</p>
+<hr />
+<h2>Managed Agents (Beta)</h2>
+<p>The C# SDK supports Managed Agents via <code>client.Beta.Agents</code>, <code>client.Beta.Sessions</code>, <code>client.Beta.Environments</code>, and related namespaces. See <code>shared/managed-agents-overview.md</code> for the architecture and <code>curl/managed-agents.md</code> for the wire-level reference.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

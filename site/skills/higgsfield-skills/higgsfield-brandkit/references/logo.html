@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>logo · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-brandkit/references/logo.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Logo system</h1>
+<p>Load this module only when the user asks to create, extend, document, or apply a logo. A request for other branded graphics does not authorize a redesign.</p>
+<h2>Route</h2>
+<h3>Existing official logo</h3>
+<p>Use the supplied file as authoritative.</p>
+<ol>
+<li>Analyze source geometry, variants, colors, clear space, and minimum-size guidance from source files/brandbook.</li>
+<li>Record its exact local path, public URL, upload ID, or job ID in the Brand Lock. Upload it only when a Higgsfield generation stage requires that file.</li>
+<li>Reuse or deterministically place the exact asset.</li>
+<li>Generate only requested variants/applications.</li>
+</ol>
+<p>Never ask an image model to redraw a logo merely to change its background, size, placement, or colorway. Use SVG/PPTX/image compositing when the source supports it.</p>
+<h3>Partial logo system</h3>
+<p>Examples: only a primary logo exists; no monochrome/reverse version, symbol, clear-space rule, or lockup.</p>
+<ul>
+<li>Preserve the primary mark.</li>
+<li>Propose only missing variants.</li>
+<li>Derive variants from source geometry rather than inventing a second style.</li>
+<li>Ask before separating a symbol from a wordmark if the source does not demonstrate that they may be used independently.</li>
+</ul>
+<h3>New logo</h3>
+<p>Run only when explicitly requested.</p>
+<ol>
+<li>In an interactive new-identity flow, complete the palette review in <code>concept-boards.md</code> first. Require a user-selected and persisted palette before generating logo candidates. Color/style preferences from intake are not palette selection. Only explicit auto/no-question mode may select the palette internally; it must call <code>approve_palette</code> and receive a successful state response before generating logo candidates.</li>
+<li>Load <code>brandkit-design-brain.md</code> and run <code>PROPOSE_LOGO_MECHANISMS</code> with the brief, references, visual axes, and selected palette.</li>
+<li>Require exactly three distinct symbol-only candidate specifications.</li>
+<li>Apply <code>logo-prompt-enhancer.md</code> exactly once per candidate, building one complete structured candidate input per application.</li>
+<li>Run <code>higgsfield model get recraft_v4_1 --json</code>, then submit the three enhanced prompts as three separate <code>higgsfield generate create recraft_v4_1 --model_type vector --wait --json</code> requests with exact hex arrays in <code>--colors</code> and the selected <code>--background_color</code>.</li>
+<li>Use the three Recraft SVG result URLs directly. Do not pass them through the HTML preview script or any SVG normalizer/editor.</li>
+<li>Show all three SVGs per the logo review in <code>inline-widgets.md</code> in every mode, including explicit auto/no-question mode; never return them only as bare URLs. Then send a normal message inviting the user to review and comment when interaction is allowed.</li>
+<li>When the user selects one SVG, run <code>logo-inspect --source &lt;selected SVG URL or absolute path&gt;</code>. It validates the source and fingerprints the mark after ignoring a detected full-canvas Recraft background without modifying the approved SVG.</li>
+<li>Immediately save that exact asset and the returned <code>geometry_fingerprint</code> with the Brandkit state script's <code>approve_logo</code> action. Continue to typography only when the original request requires text/type; a logo-only request does not.</li>
+</ol>
+<h2>Enhancer contract</h2>
+<p>For each of the three Design Brain mechanisms, assemble the complete structured candidate input defined in <code>logo-prompt-enhancer.md</code>:</p>
+<pre><code class="language-text">{
+  brand_context: {
+    name,
+    offering,
+    industry,
+    positioning,
+    audience,
+    values
+  },
+  visual_axes: {
+    restrained_expressive,
+    geometric_organic,
+    familiar_experimental
+  },
+  candidate: {
+    mark_type,
+    central_idea,
+    visual_mechanism,
+    distinctive_element,
+    shape_logic,
+    treatment,
+    style_register,
+    user_style_directive,
+    composition
+  },
+  palette: {
+    count,
+    user_requested_more_than_three,
+    roles
+  },
+  reference_signals,
+  forbidden_elements
+}
+</code></pre>
+<p>Apply that reference's full contract to produce one enhanced prompt per candidate. Use only that enhanced prompt as the candidate's Recraft prompt. Never merge the three enhanced prompts into one request.</p>
+<p>Exact hex colors never enter the enhanced prompt prose. Pass them directly in each Recraft request's <code>colors</code> and <code>background_color</code> params.</p>
+<p>Set <code>user_requested_more_than_three: true</code> only when the user explicitly asks for a logo with more than three colors. Otherwise pass exactly the one, two, or three logo colors the concept requires, even if the broader brand palette contains more. Never add colors merely to reach three.</p>
+<p>In explicit no-question mode, rank the three candidates privately but still show all three and stop for the user's logo selection. Never write approval state for an unselected brand mark.</p>
+<h2>Exactly three comparable SVG candidates</h2>
+<p>All three must:</p>
+<ul>
+<li>Be true SVG outputs returned directly by Recraft V4.1 vector mode</li>
+<li>Use the same aspect ratio, palette parameters, background, and generation quality</li>
+<li>Belong to the selected draft palette and user-defined direction</li>
+<li>Differ in mark construction, not presentation quality</li>
+<li>Stay simple enough to reproduce faithfully with vector geometry</li>
+<li>Express one visual concept only; never fuse two metaphors unless the user's own request explicitly described that exact fusion</li>
+<li>Include one concrete distinctive silhouette, negative-space device, motif treatment, or unexpected locked color-role pairing</li>
+<li>Preserve any explicit user-requested style in the candidate and enhanced prompt</li>
+<li>Use one, two, or three logo colors as the concept requires; three is a maximum, not a default, unless the user explicitly requested more</li>
+<li>Avoid generic swooshes, arbitrary initials, stock startup symbols, tiny details, gradients/effects unless concept-critical, and mockup scenes</li>
+</ul>
+<p>Typography is selected afterward. Every enhancer prompt must include “no text” in its constraint tail. Monograms may contain only their explicitly requested initials.</p>
+<p>If prompt enhancement or the Recraft call fails, retry once with the same candidate specification. If it fails again, stop and report the error. Never substitute GPT Image or select a winner for the user yourself.</p>
+<p>During typography selection, the mark and wordmark must feel like one lockup:</p>
+<ul>
+<li>Match stroke/weight and corner character</li>
+<li>Balance mark height against cap/x-height</li>
+<li>Use deliberate gap and optical alignment</li>
+<li>Avoid a detailed/heavy mark beside a weak or unrelated wordmark</li>
+</ul>
+<p>Never reproduce or cite a reference mark as the target.</p>
+<h2>Color revision and optional variant export</h2>
+<p>Logo approval requires only the selected color Recraft SVG. Monochrome/reverse variants are optional. Do not announce, prepare, generate, or save them unless the user explicitly requested them.</p>
+<p>When logo files or a confirmed production method require export:</p>
+<ol>
+<li>Load <a href="logo-export-payloads.html">exact logo-export payloads</a>, then keep the exact Recraft SVG as the geometry source.</li>
+<li>Write <code>"$BRANDKIT_WORKDIR/logo-export.json"</code>, then run <code>python3 "$SKILL_ROOT/scripts/brandkit.py" logo-export</code> with <code>include_monochrome: false</code> by default. This creates only the approved color SVG and transparent 2048×2048 PNG.</li>
+<li>Set <code>include_monochrome: true</code> only after an explicit request for monochrome/reverse files or when a user-confirmed output requires one-color production. Then set <code>primary_color</code> to the dominant approved source color.</li>
+<li>Pass <code>replacements</code> only for a requested full-color revision.</li>
+<li>Do not call Recraft or GPT Image for a color-only change.</li>
+</ol>
+<p><code>logo-inspect</code> and <code>logo-export</code> use the same canonical fingerprint, so a removed full-canvas Recraft background cannot create a false geometry mismatch. The export script fingerprints every generated variant. Any geometry mismatch is a hard stop. Optional black/white variants are deterministic derivatives of the approved color SVG, not separate concepts or image-model recolors.</p>
+<p>For a user-requested solid palette-color/one-color variant, pass that target hex once as <code>single_color</code>. The script recolors every actual SVG paint automatically and adds the SVG/transparent PNG pair. Never inspect source paints or construct per-fill <code>replacements</code> for a monochrome variant.</p>
+<p>The script accepts Recraft hex, <code>rgb()</code>, and <code>rgba()</code> paint values and removes a detected full-canvas background. A failed color match reports the available source colors itself. If export still fails, stop and report the exact error. Never inspect or create copies with ad-hoc shell commands, <code>grep</code>, <code>sed</code>, regex scripts, or manual SVG rewriting.</p>
+<p>Only when the user explicitly requests logo files, deliver the requested local SVG/PNG paths. Use the PNG as a later Higgsfield image reference; local image paths auto-upload during generation. Keep the SVG as the authoritative editable source.</p>
+<h2>System deliverables</h2>
+<p>Produce only requested items:</p>
+<ul>
+<li>Primary horizontal lockup</li>
+<li>Secondary/stacked lockup</li>
+<li>Symbol/monogram</li>
+<li>Wordmark</li>
+<li>Small-size/favicon treatment</li>
+<li>Clear-space diagram</li>
+<li>Minimum-size guidance</li>
+<li>Approved backgrounds</li>
+<li>Incorrect-use examples</li>
+</ul>
+<h2>Clear space and minimum size</h2>
+<p>For an existing identity, copy official rules. If none exist, propose rules and mark them <code>inferred</code>:</p>
+<ul>
+<li>Define a repeatable unit <code>x</code> from a stable feature (symbol width, cap height, or dominant stroke), not an arbitrary pixel count.</li>
+<li>Apply <code>x</code> consistently around each lockup.</li>
+<li>Test at intended digital and print sizes.</li>
+<li>Create a simplified small-size treatment only with user approval; do not silently remove details from the primary mark.</li>
+</ul>
+<h2>Editable output</h2>
+<ul>
+<li>Three original Recraft SVG candidates</li>
+<li>Approved Recraft SVG source for the selected mark</li>
+<li>Full-color SVG and 2048×2048 PNG exports</li>
+<li>Black/white SVG and PNG variants only when explicitly requested or production-required</li>
+<li>PPTX brand-guide pages when requested</li>
+</ul>
+<p>SVG wordmarks remain editable text and require the approved font to be installed. Do not promise native AI/EPS/Figma/Canva/PSD.</p>
+<h2>Logo QA</h2>
+<ul>
+<li>Exact spelling and glyph order</li>
+<li>No altered proportions or invented details</li>
+<li>No unintended gradients, shadows, bevels, or effects</li>
+<li>Correct palette and contrast</li>
+<li>Black and white variants have the exact approved geometry and one solid color</li>
+<li>Exactly three candidates generated with identical Recraft parameters</li>
+<li>Selected mark and later wordmark treatment look optically complete together</li>
+<li>Legible silhouette at small size</li>
+<li>Clear-space and minimum-size examples match the actual asset</li>
+<li>Every mockup/template uses the approved anchor, not a regenerated copy</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

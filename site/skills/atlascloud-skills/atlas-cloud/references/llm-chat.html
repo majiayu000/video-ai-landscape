@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>llm-chat · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">atlas-cloud/references/llm-chat.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>LLM Chat API — Complete Code Templates</h1>
+<p>Atlas Cloud LLM API is fully OpenAI-compatible. You can use the OpenAI SDK or raw HTTP requests.</p>
+<h2>Table of Contents</h2>
+<ul>
+<li><a href="#python-openai-sdk">Python (OpenAI SDK)</a></li>
+<li><a href="#python-raw-http">Python (Raw HTTP)</a></li>
+<li><a href="#nodejs--typescript-openai-sdk">Node.js / TypeScript (OpenAI SDK)</a></li>
+<li><a href="#nodejs--typescript-raw-fetch">Node.js / TypeScript (Raw fetch)</a></li>
+<li><a href="#streaming-responses">Streaming Responses</a></li>
+<li><a href="#curl">cURL</a></li>
+</ul>
+<hr />
+<h2>Python (OpenAI SDK)</h2>
+<pre><code class="language-python">from openai import OpenAI
+import os
+
+client = OpenAI(
+    api_key=os.environ.get(&quot;ATLASCLOUD_API_KEY&quot;),
+    base_url=&quot;https://api.atlascloud.ai/v1&quot;,
+)
+
+response = client.chat.completions.create(
+    model=&quot;qwen/qwen3.5-397b-a17b&quot;,
+    messages=[
+        {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;You are a helpful assistant.&quot;},
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Explain quantum computing in simple terms.&quot;},
+    ],
+    max_tokens=1024,
+    temperature=0.7,
+)
+
+print(response.choices[0].message.content)
+print(f&quot;Tokens used: {response.usage.total_tokens}&quot;)
+</code></pre>
+<hr />
+<h2>Python (Raw HTTP)</h2>
+<pre><code class="language-python">import requests
+import os
+
+ATLAS_API_KEY = os.environ.get(&quot;ATLASCLOUD_API_KEY&quot;)
+
+response = requests.post(
+    &quot;https://api.atlascloud.ai/v1/chat/completions&quot;,
+    headers={
+        &quot;Authorization&quot;: f&quot;Bearer {ATLAS_API_KEY}&quot;,
+        &quot;Content-Type&quot;: &quot;application/json&quot;,
+    },
+    json={
+        &quot;model&quot;: &quot;qwen/qwen3.5-397b-a17b&quot;,
+        &quot;messages&quot;: [
+            {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;You are a helpful assistant.&quot;},
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Explain quantum computing in simple terms.&quot;},
+        ],
+        &quot;max_tokens&quot;: 1024,
+        &quot;temperature&quot;: 0.7,
+    },
+    timeout=120,
+)
+
+data = response.json()
+print(data[&quot;choices&quot;][0][&quot;message&quot;][&quot;content&quot;])
+</code></pre>
+<hr />
+<h2>Node.js / TypeScript (OpenAI SDK)</h2>
+<pre><code class="language-typescript">import OpenAI from 'openai';
+
+const client = new OpenAI({
+  apiKey: process.env.ATLASCLOUD_API_KEY,
+  baseURL: 'https://api.atlascloud.ai/v1',
+});
+
+const response = await client.chat.completions.create({
+  model: 'qwen/qwen3.5-397b-a17b',
+  messages: [
+    { role: 'system', content: 'You are a helpful assistant.' },
+    { role: 'user', content: 'Explain quantum computing in simple terms.' },
+  ],
+  max_tokens: 1024,
+  temperature: 0.7,
+});
+
+console.log(response.choices[0].message.content);
+console.log(`Tokens used: ${response.usage?.total_tokens}`);
+</code></pre>
+<hr />
+<h2>Node.js / TypeScript (Raw fetch)</h2>
+<pre><code class="language-typescript">const response = await fetch('https://api.atlascloud.ai/v1/chat/completions', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${process.env.ATLASCLOUD_API_KEY}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'qwen/qwen3.5-397b-a17b',
+    messages: [
+      { role: 'system', content: 'You are a helpful assistant.' },
+      { role: 'user', content: 'Explain quantum computing in simple terms.' },
+    ],
+    max_tokens: 1024,
+    temperature: 0.7,
+  }),
+});
+
+const data = await response.json();
+console.log(data.choices[0].message.content);
+</code></pre>
+<hr />
+<h2>Streaming Responses</h2>
+<h3>Python (OpenAI SDK)</h3>
+<pre><code class="language-python">from openai import OpenAI
+import os
+
+client = OpenAI(
+    api_key=os.environ.get(&quot;ATLASCLOUD_API_KEY&quot;),
+    base_url=&quot;https://api.atlascloud.ai/v1&quot;,
+)
+
+stream = client.chat.completions.create(
+    model=&quot;qwen/qwen3.5-397b-a17b&quot;,
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Write a short poem about the ocean.&quot;}],
+    max_tokens=512,
+    stream=True,
+)
+
+for chunk in stream:
+    content = chunk.choices[0].delta.content
+    if content:
+        print(content, end=&quot;&quot;, flush=True)
+print()
+</code></pre>
+<h3>Node.js / TypeScript (OpenAI SDK)</h3>
+<pre><code class="language-typescript">import OpenAI from 'openai';
+
+const client = new OpenAI({
+  apiKey: process.env.ATLASCLOUD_API_KEY,
+  baseURL: 'https://api.atlascloud.ai/v1',
+});
+
+const stream = await client.chat.completions.create({
+  model: 'qwen/qwen3.5-397b-a17b',
+  messages: [{ role: 'user', content: 'Write a short poem about the ocean.' }],
+  max_tokens: 512,
+  stream: true,
+});
+
+for await (const chunk of stream) {
+  const content = chunk.choices[0]?.delta?.content;
+  if (content) {
+    process.stdout.write(content);
+  }
+}
+console.log();
+</code></pre>
+<h3>Raw SSE Streaming (Node.js)</h3>
+<pre><code class="language-typescript">const response = await fetch('https://api.atlascloud.ai/v1/chat/completions', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${process.env.ATLASCLOUD_API_KEY}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'qwen/qwen3.5-397b-a17b',
+    messages: [{ role: 'user', content: 'Write a short poem about the ocean.' }],
+    max_tokens: 512,
+    stream: true,
+  }),
+});
+
+const reader = response.body!.getReader();
+const decoder = new TextDecoder();
+
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
+
+  const text = decoder.decode(value, { stream: true });
+  const lines = text.split('\n').filter((line) =&gt; line.startsWith('data: '));
+
+  for (const line of lines) {
+    const data = line.slice(6); // Remove &quot;data: &quot;
+    if (data === '[DONE]') break;
+
+    const parsed = JSON.parse(data);
+    const content = parsed.choices[0]?.delta?.content;
+    if (content) {
+      process.stdout.write(content);
+    }
+  }
+}
+</code></pre>
+<hr />
+<h2>cURL</h2>
+<h3>Basic Request</h3>
+<pre><code class="language-bash">curl -X POST &quot;https://api.atlascloud.ai/v1/chat/completions&quot; \
+  -H &quot;Authorization: Bearer $ATLASCLOUD_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{
+    &quot;model&quot;: &quot;qwen/qwen3.5-397b-a17b&quot;,
+    &quot;messages&quot;: [
+      {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;You are a helpful assistant.&quot;},
+      {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Explain quantum computing in simple terms.&quot;}
+    ],
+    &quot;max_tokens&quot;: 1024,
+    &quot;temperature&quot;: 0.7
+  }'
+</code></pre>
+<h3>Streaming</h3>
+<pre><code class="language-bash">curl -X POST &quot;https://api.atlascloud.ai/v1/chat/completions&quot; \
+  -H &quot;Authorization: Bearer $ATLASCLOUD_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -N \
+  -d '{
+    &quot;model&quot;: &quot;qwen/qwen3.5-397b-a17b&quot;,
+    &quot;messages&quot;: [
+      {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Write a short poem about the ocean.&quot;}
+    ],
+    &quot;max_tokens&quot;: 512,
+    &quot;stream&quot;: true
+  }'
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sound-effects · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/sound-effects/SKILL.md</span><button onclick="t()">🌓</button></nav>
+<main><div class="meta"><div class="m-name">sound-effects</div><div class="m-desc">Generate sound effects from text descriptions using ElevenLabs. Use when creating sound effects, generating audio textures, producing ambient sounds, cinematic impacts, UI sounds, or any audio that isn&#x27;t speech. Supports looping, duration control, and prompt influence tuning.</div><div class="m-src">源文件：<a href="https://github.com/elevenlabs/plugin/blob/main/skills/general/sound-effects/SKILL.md" target="_blank" rel="noopener">elevenlabs/plugin/skills/general/sound-effects/SKILL.md</a></div></div><h1>ElevenLabs Sound Effects</h1>
+<p>Generate sound effects from text descriptions — supports looping, custom duration, and prompt adherence control.</p>
+<blockquote>
+<p><strong>Setup:</strong> See <a href="references/installation.html">Installation Guide</a>. For JavaScript, use <code>@elevenlabs/*</code> packages only.</p>
+</blockquote>
+<h2>Quick Start</h2>
+<h3>Python</h3>
+<pre><code class="language-python">from elevenlabs import ElevenLabs
+
+client = ElevenLabs()
+
+audio = client.text_to_sound_effects.convert(
+    text=&quot;Thunder rumbling in the distance with light rain&quot;,
+)
+
+with open(&quot;thunder.mp3&quot;, &quot;wb&quot;) as f:
+    for chunk in audio:
+        f.write(chunk)
+</code></pre>
+<h3>JavaScript</h3>
+<pre><code class="language-javascript">import { ElevenLabsClient } from &quot;@elevenlabs/elevenlabs-js&quot;;
+import { createWriteStream } from &quot;fs&quot;;
+
+const client = new ElevenLabsClient();
+const audio = await client.textToSoundEffects.convert({
+  text: &quot;Thunder rumbling in the distance with light rain&quot;,
+});
+audio.pipe(createWriteStream(&quot;thunder.mp3&quot;));
+</code></pre>
+<h3>CLI</h3>
+<pre><code class="language-bash">elevenlabs text-to-sound-effects convert \
+  --text &quot;Thunder rumbling in the distance with light rain&quot; \
+  --output thunder.mp3
+</code></pre>
+<h2>Parameters</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>text</code></td>
+<td>string (required)</td>
+<td>—</td>
+<td>Description of the desired sound effect</td>
+</tr>
+<tr>
+<td><code>model_id</code></td>
+<td>string</td>
+<td><code>eleven_text_to_sound_v2</code></td>
+<td>Model to use</td>
+</tr>
+<tr>
+<td><code>duration_seconds</code></td>
+<td>number | null</td>
+<td>null (auto)</td>
+<td>Duration 0.5–30s; auto-calculated if null</td>
+</tr>
+<tr>
+<td><code>prompt_influence</code></td>
+<td>number | null</td>
+<td>0.3</td>
+<td>How closely to follow the prompt (0–1)</td>
+</tr>
+<tr>
+<td><code>loop</code></td>
+<td>boolean</td>
+<td>false</td>
+<td>Generate a seamlessly looping sound (v2 model only)</td>
+</tr>
+</tbody>
+</table>
+<h2>Examples with Parameters</h2>
+<pre><code class="language-python"># Looping ambient sound, 10 seconds
+audio = client.text_to_sound_effects.convert(
+    text=&quot;Gentle forest ambiance with birds chirping&quot;,
+    duration_seconds=10.0,
+    prompt_influence=0.5,
+    loop=True,
+)
+
+# Short UI sound, high prompt adherence
+audio = client.text_to_sound_effects.convert(
+    text=&quot;Soft notification chime&quot;,
+    duration_seconds=1.0,
+    prompt_influence=0.8,
+)
+</code></pre>
+<h2>Output Formats</h2>
+<p>Pass <code>--output-format</code> (CLI) or <code>output_format</code> as an SDK parameter:</p>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mp3_44100_128</code></td>
+<td>MP3 44.1kHz 128kbps (default)</td>
+</tr>
+<tr>
+<td><code>pcm_44100</code></td>
+<td>Raw uncompressed CD quality</td>
+</tr>
+<tr>
+<td><code>opus_48000_128</code></td>
+<td>Opus 48kHz 128kbps — efficient compressed</td>
+</tr>
+<tr>
+<td><code>ulaw_8000</code></td>
+<td>μ-law 8kHz — telephony</td>
+</tr>
+</tbody>
+</table>
+<p>Full list: <code>mp3_22050_32</code>, <code>mp3_24000_48</code>, <code>mp3_44100_32</code>, <code>mp3_44100_64</code>, <code>mp3_44100_96</code>, <code>mp3_44100_128</code>, <code>mp3_44100_192</code>, <code>pcm_8000</code>, <code>pcm_16000</code>, <code>pcm_22050</code>, <code>pcm_24000</code>, <code>pcm_32000</code>, <code>pcm_44100</code>, <code>pcm_48000</code>, <code>ulaw_8000</code>, <code>alaw_8000</code>, <code>opus_48000_32</code>, <code>opus_48000_64</code>, <code>opus_48000_96</code>, <code>opus_48000_128</code>, <code>opus_48000_192</code>.</p>
+<h2>Prompt Tips</h2>
+<ul>
+<li>Be specific: "Heavy rain on a tin roof" &gt; "Rain"</li>
+<li>Combine elements: "Footsteps on gravel with distant traffic"</li>
+<li>Specify style: "Cinematic braam, horror" or "8-bit retro jump sound"</li>
+<li>Mention mood/context: "Eerie wind howling through an abandoned building"</li>
+</ul>
+<h2>Error Handling</h2>
+<pre><code class="language-python">try:
+    audio = client.text_to_sound_effects.convert(text=&quot;Explosion&quot;)
+except Exception as e:
+    print(f&quot;API error: {e}&quot;)
+</code></pre>
+<p>Common errors:
+- <strong>401</strong>: Invalid API key
+- <strong>422</strong>: Invalid parameters (check duration range, prompt_influence range)
+- <strong>429</strong>: Rate limit exceeded</p>
+<h2>References</h2>
+<ul>
+<li><a href="references/installation.html">Installation Guide</a></li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

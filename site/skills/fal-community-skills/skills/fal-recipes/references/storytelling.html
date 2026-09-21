@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>storytelling · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/fal-recipes/references/storytelling.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Storytelling Recipe</h1>
+<p>Use this recipe when the user wants a sequence, not a single asset. The goal is clear story beats and executable genmedia runs. Avoid generic inspiration copy, fake dialogue, and em dashes.</p>
+<h2>Inputs to collect</h2>
+<p>Ask only when missing information affects execution.</p>
+<ul>
+<li>Format: ad, short film, music video, documentary, tutorial, social story.</li>
+<li>Duration and aspect ratio.</li>
+<li>Number of shots or allowed range.</li>
+<li>Main subject, character, product, or location.</li>
+<li>Continuity anchors: character, product, wardrobe, environment, color.</li>
+<li>Source media: first frame, reference image, product shot, audio track.</li>
+<li>Audio needs: narration, music, sound design, transcript, no audio.</li>
+<li>Preferred model or model family, quality, cost, speed, audio, or multi-shot tradeoffs.</li>
+</ul>
+<h2>Genmedia workflow</h2>
+<ol>
+<li>Routed endpoints (see <a href="../../fal-models-catalog/references/text-to-video.html">fal-models-catalog/text-to-video</a> and <a href="../../fal-models-catalog/references/image-to-video.html">image-to-video</a>):</li>
+</ol>
+<p><code>bash
+ genmedia models --endpoint_id bytedance/seedance-2.0/text-to-video --json
+ genmedia models --endpoint_id bytedance/seedance-2.0/image-to-video --json
+ genmedia models --endpoint_id bytedance/seedance-2.0/reference-to-video --json
+ genmedia models --endpoint_id fal-ai/kling-video/v3/pro/text-to-video --json
+ genmedia models --endpoint_id alibaba/happy-horse/text-to-video --json
+ genmedia models --endpoint_id veed/fabric-1.0 --json</code></p>
+<p>Fallback discovery for unsupported sequence controls:</p>
+<p><code>bash
+ genmedia models "first frame last frame video generation" --json
+ genmedia docs "multi shot video generation" --json</code></p>
+<ol start="2">
+<li>Inspect schema before planning exact payloads.</li>
+</ol>
+<p><code>bash
+ genmedia schema &lt;endpoint_id&gt; --json
+ genmedia pricing &lt;endpoint_id&gt; --json</code></p>
+<ol start="3">
+<li>Upload references.</li>
+</ol>
+<p><code>bash
+ genmedia upload ./first-frame.png --json
+ genmedia upload ./character.png --json
+ genmedia upload ./product.png --json
+ genmedia upload ./voiceover.wav --json</code></p>
+<ol start="4">
+<li>Choose the sequence route:</li>
+</ol>
+<ul>
+<li><strong>Highest quality video</strong>: Seedance 2.0 endpoints first.</li>
+<li><strong>Native multi-prompt</strong>: when schema has shot arrays, prompt lists, or timeline fields.</li>
+<li><strong>First/last frame</strong>: controlled transitions between key frames.</li>
+<li><strong>Image-to-video per shot</strong>: maximum continuity from approved stills.</li>
+<li><strong>Manual per-shot generation</strong>: when the model only supports one prompt.</li>
+<li><strong>Audio-first</strong>: generate or upload audio, then plan visual shot lengths.</li>
+<li><strong>Lip-sync or talking avatar</strong>: Fabric 1.0 or Creatify Aurora (see <a href="character-lipsync.html">character-lipsync.md</a>).</li>
+</ul>
+<ol start="5">
+<li>Run long jobs async and download every result with a unique template:</li>
+</ol>
+<p>```bash
+ genmedia run <endpoint_id> \
+ --prompt "<shot or sequence prompt>" \
+ --async \
+ --json</p>
+<p>genmedia status <endpoint_id> <request_id> \
+ --download "./outputs/story/{request_id}_{index}.{ext}" \
+ --json
+ ```</p>
+<ol start="6">
+<li>Return a shot table with endpoint, request id, prompt summary, local path, and continuity issues. Genmedia downloads clips; it does not replace a timeline editor unless the chosen model returns a complete stitched video.</li>
+</ol>
+<h2>Shot planning</h2>
+<p>Plan every sequence as beats first:</p>
+<ol>
+<li><strong>Hook</strong>: immediate visual reason to keep watching.</li>
+<li><strong>Setup</strong>: who, what, where, and why it matters.</li>
+<li><strong>Development</strong>: movement, discovery, proof, or escalation.</li>
+<li><strong>Turn</strong>: reveal, transformation, result, or emotional change.</li>
+<li><strong>Close</strong>: final image, product memory, CTA-safe frame, or unresolved mood.</li>
+</ol>
+<p>For each shot, write:</p>
+<ul>
+<li>Shot number and duration.</li>
+<li>Story purpose.</li>
+<li>Visual prompt.</li>
+<li>Continuity anchor.</li>
+<li>Input reference, if any.</li>
+<li>Genmedia endpoint.</li>
+<li>Expected output path.</li>
+</ul>
+<h2>Prompt build order</h2>
+<pre><code class="language-text">SHOT [number], [duration]:
+[story purpose]. [subject and action]. [location and time]. [camera framing].
+[camera movement]. [lighting and color]. [continuity anchor]. [transition or
+relationship to previous shot].
+</code></pre>
+<p>Keep one shot to one clear action unless the selected model supports multi-shot or timeline prompting.</p>
+<h2>Sequence shapes</h2>
+<h3>15 second social ad</h3>
+<table>
+<thead>
+<tr>
+<th>Shot</th>
+<th>Time</th>
+<th>Purpose</th>
+<th>Visual role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0-2s</td>
+<td>Hook</td>
+<td>striking product or problem image</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2-6s</td>
+<td>Context</td>
+<td>product in use or character reaction</td>
+</tr>
+<tr>
+<td>3</td>
+<td>6-11s</td>
+<td>Proof</td>
+<td>feature, texture, process, result</td>
+</tr>
+<tr>
+<td>4</td>
+<td>11-15s</td>
+<td>Close</td>
+<td>memorable final frame with safe space</td>
+</tr>
+</tbody>
+</table>
+<h3>30 second commercial</h3>
+<table>
+<thead>
+<tr>
+<th>Shot</th>
+<th>Time</th>
+<th>Purpose</th>
+<th>Visual role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0-3s</td>
+<td>Hook</td>
+<td>image that defines the world</td>
+</tr>
+<tr>
+<td>2</td>
+<td>3-7s</td>
+<td>Product or hero</td>
+<td>show subject clearly</td>
+</tr>
+<tr>
+<td>3</td>
+<td>7-13s</td>
+<td>Benefit</td>
+<td>action, feature, transformation</td>
+</tr>
+<tr>
+<td>4</td>
+<td>13-20s</td>
+<td>Lifestyle or proof</td>
+<td>real context, emotion, result</td>
+</tr>
+<tr>
+<td>5</td>
+<td>20-27s</td>
+<td>Escalation</td>
+<td>strongest beauty or motion shot</td>
+</tr>
+<tr>
+<td>6</td>
+<td>27-30s</td>
+<td>End frame</td>
+<td>clean brand-safe final composition</td>
+</tr>
+</tbody>
+</table>
+<h3>Short cinematic scene</h3>
+<table>
+<thead>
+<tr>
+<th>Shot</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Establishing</td>
+<td>where the scene happens and mood</td>
+</tr>
+<tr>
+<td>Character reveal</td>
+<td>who matters</td>
+</tr>
+<tr>
+<td>Action beat</td>
+<td>what changes</td>
+</tr>
+<tr>
+<td>Reaction</td>
+<td>emotional consequence</td>
+</tr>
+<tr>
+<td>Detail insert</td>
+<td>object, clue, texture, proof</td>
+</tr>
+<tr>
+<td>Resolution</td>
+<td>new state or unanswered tension</td>
+</tr>
+</tbody>
+</table>
+<h2>Continuity anchors</h2>
+<h3>Character anchor</h3>
+<pre><code class="language-text">same character face, hair, wardrobe, age, posture, and style as the approved
+reference
+</code></pre>
+<h3>Product anchor</h3>
+<pre><code class="language-text">same product shape, color, packaging, logo placement, and material as the
+reference
+</code></pre>
+<h3>Location anchor</h3>
+<pre><code class="language-text">same room layout, window direction, color palette, and time of day
+</code></pre>
+<h3>Motion anchor</h3>
+<pre><code class="language-text">single continuous shot, starts where previous shot ended, no time jump
+</code></pre>
+<h3>Pacing guidance</h3>
+<ul>
+<li><strong>Fast</strong>: 1-3 second shots, strong motion, clear graphic frames.</li>
+<li><strong>Medium</strong>: 3-6 second shots, product demos, lifestyle, dialogue-like scenes.</li>
+<li><strong>Slow</strong>: 6-10 second shots, luxury, drama, architecture, atmosphere.</li>
+<li><strong>Variable</strong>: fast hook, slower proof, strong final frame.</li>
+</ul>
+<h2>Workflows</h2>
+<h3>Native multi-prompt sequence</h3>
+<p>Use only when schema supports multiple prompts, shot arrays, scenes, timeline, or keyframe-like fields.</p>
+<ol>
+<li>Inspect schema and identify the exact multi-shot fields.</li>
+<li>Convert the story into concise shot prompts.</li>
+<li>Keep one continuity anchor outside the repeated shot details if schema supports a global prompt.</li>
+<li>Run async and download the completed result.</li>
+<li>Check whether the model returned one video or per-shot files.</li>
+</ol>
+<h3>Manual per-shot video</h3>
+<p>Use when the model supports only one shot at a time.</p>
+<ol>
+<li>Create a shot table.</li>
+<li>Generate or upload a reference frame for each shot.</li>
+<li>Run each shot with unique download templates.</li>
+<li>Record endpoint, request id, prompt, local output path, and defects.</li>
+<li>Return clips in timeline order. Do not claim they are stitched unless they actually are.</li>
+</ol>
+<h3>First-frame to last-frame</h3>
+<ol>
+<li>Generate or choose the opening frame.</li>
+<li>Generate or choose the target final frame.</li>
+<li>Upload both frames if local.</li>
+<li>Inspect schema for accepted first/last frame fields.</li>
+<li>Prompt the transition as one physical motion or transformation.</li>
+<li>Run async and download.</li>
+</ol>
+<h3>Character narrative</h3>
+<ol>
+<li>Use <a href="character-design.html">character-design.md</a> to create or confirm the anchor.</li>
+<li>Build shot variables around action, expression, and location.</li>
+<li>Use image-to-video from approved stills when identity drift matters.</li>
+<li>Compare each result to the anchor before advancing.</li>
+</ol>
+<h3>Product narrative</h3>
+<ol>
+<li>Use <a href="commercial.html">commercial.md</a> to define product invariants.</li>
+<li>Plan the sequence around hook, feature, context, proof, final frame.</li>
+<li>Use the same product reference for every shot if schema allows it.</li>
+<li>Keep motion modest when packaging fidelity matters.</li>
+</ol>
+<h3>Audio narrative</h3>
+<ol>
+<li>Search for narration, music, or sound generation models.</li>
+<li>Inspect schema and run audio jobs with <code>--download</code>.</li>
+<li>Use transcript or beat timing to set shot durations.</li>
+<li>Return audio path and visual clip paths separately unless a model produces combined audio-video output.</li>
+</ol>
+<h2>Examples</h2>
+<h3>15 second coffee social ad</h3>
+<table>
+<thead>
+<tr>
+<th>Shot</th>
+<th>Duration</th>
+<th>Prompt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2s</td>
+<td>macro close-up of espresso crema swirling in a glass cup, warm morning window light, shallow focus, immediate sensory hook</td>
+</tr>
+<tr>
+<td>2</td>
+<td>4s</td>
+<td>same coffee cup placed beside a small bag of beans on a clean kitchen counter, slow push-in, product and texture readable</td>
+</tr>
+<tr>
+<td>3</td>
+<td>5s</td>
+<td>hand pours milk into the coffee, soft cloud bloom, controlled motion, warm lifestyle lighting, no text</td>
+</tr>
+<tr>
+<td>4</td>
+<td>4s</td>
+<td>final hero frame of cup and beans with clean negative space on right for copy, calm premium breakfast mood</td>
+</tr>
+</tbody>
+</table>
+<p>Generate still or video per shot unless the selected endpoint supports a prompt list.</p>
+<h3>30 second architecture brand film</h3>
+<table>
+<thead>
+<tr>
+<th>Shot</th>
+<th>Duration</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>4s</td>
+<td>dawn exterior of a modern house, wide static frame, warm interior lights</td>
+</tr>
+<tr>
+<td>2</td>
+<td>5s</td>
+<td>slow tracking shot along concrete wall and timber detail, tactile proof</td>
+</tr>
+<tr>
+<td>3</td>
+<td>5s</td>
+<td>architect's hand sketches over plan, natural desk light, human process</td>
+</tr>
+<tr>
+<td>4</td>
+<td>6s</td>
+<td>family crosses the living room, soft backlight, space feels livable</td>
+</tr>
+<tr>
+<td>5</td>
+<td>6s</td>
+<td>crane up from courtyard to roofline, shows scale and geometry</td>
+</tr>
+<tr>
+<td>6</td>
+<td>4s</td>
+<td>quiet final exterior with empty safe space for brand mark</td>
+</tr>
+</tbody>
+</table>
+<p>Continuity anchor:</p>
+<pre><code class="language-text">same house, same material palette of warm timber, pale concrete, black steel
+frames, and soft morning light
+</code></pre>
+<h3>Cinematic reunion scene</h3>
+<table>
+<thead>
+<tr>
+<th>Shot</th>
+<th>Duration</th>
+<th>Prompt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>5s</td>
+<td>empty train platform in blue hour rain, wide locked-off frame, practical lights reflected on wet ground</td>
+</tr>
+<tr>
+<td>2</td>
+<td>4s</td>
+<td>close-up of woman noticing someone off screen, same coat and hairstyle, soft backlight, restrained emotion</td>
+</tr>
+<tr>
+<td>3</td>
+<td>4s</td>
+<td>medium shot of man stepping from train doorway, matching eyeline, cool station light</td>
+</tr>
+<tr>
+<td>4</td>
+<td>5s</td>
+<td>slow tracking two-shot as they walk toward each other, shallow depth of field, no crowd distraction</td>
+</tr>
+<tr>
+<td>5</td>
+<td>6s</td>
+<td>close hands meeting, rain on sleeves, quiet emotional detail</td>
+</tr>
+<tr>
+<td>6</td>
+<td>6s</td>
+<td>wide final frame of both under station clock, warm practical light, unresolved calm</td>
+</tr>
+</tbody>
+</table>
+<h3>Product launch sequence</h3>
+<pre><code class="language-text">SHOT 1, 3s:
+black screen opens to a thin rim light tracing the product silhouette, centered
+macro frame, premium suspense, no text.
+
+SHOT 2, 4s:
+slow orbit reveals the product material and main contour, controlled studio
+reflections, same product shape and logo placement as the reference.
+
+SHOT 3, 5s:
+close-up of the key feature in use, clean hand interaction, product remains
+sharp, no fake labels.
+
+SHOT 4, 3s:
+final hero composition on simple surface with large negative space for copy,
+brand-safe end frame, no generated text.
+</code></pre>
+<h2>Quality bar</h2>
+<p>Before returning:</p>
+<ul>
+<li>Shot order has a clear narrative function.</li>
+<li>The first shot is strong enough for the platform.</li>
+<li>Continuity anchors are repeated without bloating every prompt.</li>
+<li>Camera motion is varied but not random.</li>
+<li>Durations add up to the requested runtime.</li>
+<li>Async request IDs and downloaded files are recorded.</li>
+<li>The model's actual schema, not assumptions, drove the final command.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

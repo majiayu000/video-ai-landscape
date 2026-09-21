@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>model-catalog · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-generate/references/model-catalog.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Model Catalog</h1>
+<p>The full lineup of generation models available through Higgsfield. Each entry has its own sweet spot — pick the one that matches your brief. For the actual <code>--model</code> ID to pass to <code>higgsfield generate create</code>, run <code>higgsfield model list --json</code> and look up by display name.</p>
+<p>Preferred defaults for examples and quick-start guidance in this repo:
+- <strong>Images/design/text:</strong> <code>gpt_image_2_5</code> (general/high-fidelity) and <code>nano_banana_2</code> (character/cartoon).
+- <strong>Video:</strong> <code>seedance_2_5</code> (SOTA all-purpose video).
+- <strong>Character/stylized image work:</strong> <code>text2image_soul_v2</code>.
+- <strong>Ads/UGC/product demos:</strong> <code>marketing_studio_video</code> or <code>marketing_studio_image</code>.
+- <strong>Audio:</strong> <code>seed_audio</code> (general text-to-audio, voice-style, SFX, ambience, and music-like audio).
+- <strong>Video analysis:</strong> Virality Predictor (<code>brain_activity</code>) for attention, hook, retention, and virality scoring. It may appear under text/analysis because the output is a report, but the input and intent are video analysis.</p>
+<hr />
+<h2>Image models</h2>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Provider</th>
+<th>What it's for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nano Banana 2</td>
+<td>Google</td>
+<td><strong>Fast everyday default for character work.</strong> Edits, general generation, character / cartoon / animated-style outputs. The reach-for-this model when the brief calls for character or cartoon-style image generation.</td>
+</tr>
+<tr>
+<td>Nano Banana 2 Lite</td>
+<td>Google</td>
+<td><strong>Lightweight Nano Banana 2.</strong> Fast reference-driven image generation and edits when the brief is simple or cost/speed matters more than Pro-level fidelity. Supports up to 14 image references.</td>
+</tr>
+<tr>
+<td>Nano Banana Pro</td>
+<td>Google</td>
+<td><strong>Top-tier Nano Banana.</strong> Same canvas as Nano Banana 2 with extra fidelity and accuracy on harder briefs. Pick when 2 isn't getting there.</td>
+</tr>
+<tr>
+<td>Nano Banana</td>
+<td>Google</td>
+<td>Reliable, budget-friendly entry in the Nano Banana family — picks up the same realistic look at a lighter price point.</td>
+</tr>
+<tr>
+<td>Higgsfield Soul 2.0</td>
+<td>Higgsfield</td>
+<td><strong>Aesthetic UGC, fashion editorial, character generation.</strong> When the brief leans editorial, lifestyle, or "looks like a magazine cover". Soul-aware (accepts a Soul Character reference).</td>
+</tr>
+<tr>
+<td>Soul Cinema</td>
+<td>Higgsfield</td>
+<td><strong>Cinematic stills, film-grade lighting.</strong> The pick when the user asks for "cinematic" or wants concept-art mood.</td>
+</tr>
+<tr>
+<td>Soul Cast</td>
+<td>Higgsfield</td>
+<td><strong>Distinctive, characterful personas.</strong> When the brief calls for a creative, expressive character rather than photoreal default. Text-only (no reference image).</td>
+</tr>
+<tr>
+<td>Soul Location</td>
+<td>Higgsfield</td>
+<td><strong>Best-in-class environments and locations.</strong> Unmatched for pure scene and place generation without a person in frame.</td>
+</tr>
+<tr>
+<td>Seedream 4.5</td>
+<td>Bytedance</td>
+<td><strong>Complex scene edits with faces.</strong> When the brief is a face-anchored photo edit into a complex new scene (more than an outfit change), without heavy filters.</td>
+</tr>
+<tr>
+<td>Seedream 5.0 Lite</td>
+<td>Bytedance</td>
+<td>Same Seedream lineage as 4.5 with faster turnaround for visual-reasoning and instruction-based edits.</td>
+</tr>
+<tr>
+<td>Z Image</td>
+<td>Tongyi-MAI</td>
+<td><strong>Fastest in the catalog.</strong> Built for speed, drafts, and LoRA-driven stylization. The pick when the brief is "fast and cheap, let me iterate".</td>
+</tr>
+<tr>
+<td>Flux 2.0</td>
+<td>Black Forest Labs</td>
+<td>Precise prompt adherence with multiple variants (pro, flex, max). A strong creative alternative when the user wants a different look from the Banana family.</td>
+</tr>
+<tr>
+<td>Flux Kontext Max</td>
+<td>Black Forest Labs</td>
+<td><strong>Context-aware editing and style transfer.</strong> Strong for anime, stylized looks, typography remix — when defaults feel too generic.</td>
+</tr>
+<tr>
+<td>Kling O1 Image</td>
+<td>Kling</td>
+<td>Versatile photorealistic image generation with broad aspect-ratio support.</td>
+</tr>
+<tr>
+<td>GPT Image 1.5</td>
+<td>OpenAI</td>
+<td>Earlier-generation OpenAI image model with editing and text-rendering capabilities.</td>
+</tr>
+<tr>
+<td>GPT Image 2</td>
+<td>OpenAI</td>
+<td>High-fidelity image generation and editing. Used by <code>higgsfield-product-photoshoot</code> under the hood.</td>
+</tr>
+<tr>
+<td>GPT Image 2.5 (<code>gpt_image_2_5</code>)</td>
+<td>OpenAI</td>
+<td><strong>Default high-fidelity image generation.</strong> Graphic design, UI, banners, typography, and on-image text. Reference-guided editing with Flare/Sunburst variants and quality tiers through <code>max</code>.</td>
+</tr>
+<tr>
+<td>Grok Imagine</td>
+<td>xAI</td>
+<td>Expressive, high-contrast, bold creative outputs. Worth trying for anime and stylized looks.</td>
+</tr>
+<tr>
+<td>Recraft V4.1</td>
+<td>Recraft</td>
+<td><strong>Clean graphic and vector-style design assets.</strong> Logos, icons, flat illustrations, brand marks, and controlled-palette visuals. Use <code>model_type=vector</code> for vector-like output and <code>standard</code> for raster-style graphics.</td>
+</tr>
+<tr>
+<td>Cinema Studio Image 2.5</td>
+<td>Higgsfield</td>
+<td>Cinematic still frames up to 4K, dramatic film look.</td>
+</tr>
+<tr>
+<td>Marketing Studio Image</td>
+<td>Higgsfield</td>
+<td><strong>Branded image ads.</strong> Retrieval-augmented over the user's avatars and products — runs inside the Marketing Studio flow.</td>
+</tr>
+<tr>
+<td>Auto</td>
+<td>Higgsfield</td>
+<td><strong>Smart routing layer.</strong> Picks the best image model from the prompt automatically. Use when the user's intent is open and you don't want to commit to a specific model.</td>
+</tr>
+</tbody>
+</table>
+<h2>Video models</h2>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Provider</th>
+<th>What it's for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gemini Omni Flash</td>
+<td>Google</td>
+<td><strong>Fast multimodal reference-to-video.</strong> Use for prompt-guided video generation from image references and optionally one video reference, especially when the brief benefits from Google's Gemini/Veo-style understanding without making it the default over Seedance 2.5.</td>
+</tr>
+<tr>
+<td>Seedance 2.0</td>
+<td>Bytedance</td>
+<td>Video generation up to 4K. Use when native 4K output is required.</td>
+</tr>
+<tr>
+<td>Seedance 2.5</td>
+<td>Bytedance</td>
+<td><strong>SOTA all-purpose video; the default for serious motion, cinematic and production briefs.</strong> Supports 4–30s output up to 1080p, reference-driven generation, editing and extension. Modes <code>t2v</code> / <code>omni_reference</code> / <code>video_edit</code> / <code>video_extension</code>.</td>
+</tr>
+<tr>
+<td>Kling 3.0</td>
+<td>Kling</td>
+<td><strong>Lower-cost option</strong> for single-plane scenes that don't need heavy motion. Multi-shot, audio sync, motion transfer.</td>
+</tr>
+<tr>
+<td>Kling 3.0 Turbo</td>
+<td>Kling</td>
+<td><strong>Fast Kling option for simple motion.</strong> Text-to-video and single start-frame animation when the user explicitly wants speed, lower cost, or a quick Kling 3.0 variant.</td>
+</tr>
+<tr>
+<td>Seedance 1.5 Pro</td>
+<td>Bytedance</td>
+<td>A budget-friendly Seedance for clean single-take shots.</td>
+</tr>
+<tr>
+<td>Marketing Studio</td>
+<td>Higgsfield</td>
+<td><strong>All advertising and commercial video</strong> — UGC, unboxing, TV spot, product showcase. The default whenever the brief is "make an ad". See <code>marketing-modes.md</code>.</td>
+</tr>
+<tr>
+<td>Cinema Studio Video 3.0</td>
+<td>Higgsfield</td>
+<td><strong>Top-tier cinema-grade execution.</strong> The pick for film-look briefs at the highest fidelity.</td>
+</tr>
+<tr>
+<td>Veo 3.1 Lite</td>
+<td>Google</td>
+<td><strong>Fast and cost-effective Veo.</strong> Built for batch and volume work.</td>
+</tr>
+<tr>
+<td>Google Veo 3.1</td>
+<td>Google</td>
+<td>Ultra-realistic, top-tier cinematic quality. Quality tiers basic/high/ultra. Format set is constrained — verify accepted aspect ratio and duration before submitting.</td>
+</tr>
+<tr>
+<td>Google Veo 3</td>
+<td>Google</td>
+<td>Reliable cinematic with broad creative range and audio support.</td>
+</tr>
+<tr>
+<td>Minimax Hailuo</td>
+<td>Hailuo</td>
+<td><strong>Cheap with strong physics.</strong> Solid budget pick when natural-physics motion matters; no audio in current variants.</td>
+</tr>
+<tr>
+<td>Wan 2.7</td>
+<td>Wan</td>
+<td>Synchronized audio with character-consistent video. The newer Wan release.</td>
+</tr>
+<tr>
+<td>Wan 2.6</td>
+<td>Wan</td>
+<td>Open-weight, stylized, experimental creative. Cheap option when the brief is intentionally artistic.</td>
+</tr>
+<tr>
+<td>Kling 2.6</td>
+<td>Kling</td>
+<td>Cinematic motion with advanced physics — earlier Kling release alongside 3.0.</td>
+</tr>
+<tr>
+<td>Grok Video 1.5</td>
+<td>xAI</td>
+<td><strong>Bold image-to-video from a required reference frame.</strong> Use when the user wants stylized, anime-like, high-contrast, or experimental motion from one starting image. Requires one <code>--start-image</code> or <code>--image</code>; duration 2–15s; resolution <code>480p</code> or <code>720p</code>.</td>
+</tr>
+<tr>
+<td>Grok Imagine (video)</td>
+<td>xAI</td>
+<td>Text and image-to-video with audio support. Worth trying for stylized creative briefs.</td>
+</tr>
+<tr>
+<td>Cinema Studio Video</td>
+<td>Higgsfield</td>
+<td>Cinematic compositions with dramatic mood. Use Cinema Studio Video 3.0 as the modern default.</td>
+</tr>
+<tr>
+<td>Cinema Studio Video v2</td>
+<td>Higgsfield</td>
+<td>Refined cinematic camera and color with genre control. Use Cinema Studio Video 3.0 as the modern default.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>3D models</h2>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Provider</th>
+<th>What it's for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Multi-Image to 3D</td>
+<td>Meshy</td>
+<td><strong>Create an actual 3D asset from object/product reference images.</strong> Takes 1–4 images and returns a 3D mesh/GLB-style asset. Use repeated <code>--image</code>; add <code>--should_texture true</code> when texture matters.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Audio models</h2>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Provider</th>
+<th>What it's for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Seed Audio 1.0</td>
+<td>Bytedance</td>
+<td><strong>Default audio generation.</strong> Use for text-to-audio, sound effects, ambience, foley, impacts, environmental audio, voice-style generations, and music-like audio. Requires <code>--prompt</code>; optional references use <code>--audio-references</code>/<code>--image-references</code>.</td>
+</tr>
+<tr>
+<td>Sonilo Music</td>
+<td>Sonilo</td>
+<td><strong>Generate music from text.</strong> Use for backing tracks, instrumental beds, jingles, and musical moods. Requires <code>--prompt</code> and <code>--duration</code>; returns audio and does not take media inputs.</td>
+</tr>
+<tr>
+<td>Mirelo Text to Audio</td>
+<td>Mirelo</td>
+<td><strong>Generate non-speech audio from text.</strong> Use for sound effects, ambience, foley, impacts, transitions, and environmental sounds. Requires <code>--prompt</code> and <code>--duration</code>; returns audio and does not take media inputs.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Text / analysis models</h2>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Provider</th>
+<th>What it's for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Virality Predictor (<code>brain_activity</code>)</td>
+<td>Higgsfield</td>
+<td><strong>Objective attention proxy for video creative testing.</strong> Scores how effectively a clip captures and sustains attention, useful for hook validation, virality potential, ad review, and product/content focus. Takes a video input and returns a text report with overall score, peak second, sustain, and an Open report link. Raw <code>.glb</code> / <code>.bin</code> render artifacts stay in JSON/debug output.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Picking flow</h2>
+<p>Practical defaults from production use. Match by intent, not surface keyword. When two could apply, the higher entry wins.</p>
+<p>Core focus first: GPT Image 2.5 for images/design/text, Seedance 2.5 for video,
+Nano Banana 2/Lite/Pro for character or reference-driven image work, and
+Marketing Studio for ads and brand/product content. Use Seed Audio 1.0 for audio.</p>
+<h3>Image — pick this default</h3>
+<ol>
+<li><strong>Brand product visual (Pinterest pin, lifestyle, hero banner, ad pack, virtual try-on, restyle)</strong> → use <code>higgsfield-product-photoshoot</code> instead. NOT this skill.</li>
+<li><strong>Generated product concept / packaging / can / bottle with brand name or label text</strong> → GPT Image 2.5.</li>
+<li><strong>Branded ad image with presenter avatar + product (Marketing Studio shape with RAG over user assets)</strong> → Marketing Studio Image.</li>
+<li><strong>Aesthetic UGC / fashion editorial / lifestyle character</strong> → Soul 2.0.</li>
+<li><strong>Cinematic still frame</strong> → Soul Cinema.</li>
+<li><strong>Highly characterful, creative character (text-only, distinctive persona, no reference photo)</strong> → Soul Cast.</li>
+<li><strong>Locations / environments / no-people scenes</strong> → Soul Location. Best in class — nothing else matches.</li>
+<li><strong>Logo, icon, vector-like illustration, brand mark, controlled-palette graphic</strong> → Recraft V4.1. Use <code>--model_type vector</code> for vector-style output.</li>
+<li><strong>Face edit + complex scene swap (more than outfit change, no heavy filters)</strong> → Seedream 4.5. Seedream 5.0 Lite for the same niche but faster.</li>
+<li><strong>Soul Character (reference id from <code>higgsfield-soul-id</code>)</strong> → Soul 2.0 for stills; Soul Cinema for cinematic vibe.</li>
+<li><strong>Anime / stylized / non-default look where defaults feel flat</strong> → Flux Kontext Max or Grok Imagine. Worth trying.</li>
+<li><strong>Character or cartoon-style work</strong> → Nano Banana 2; step up to Nano Banana Pro on hard cases.</li>
+<li><strong>Fast Nano Banana reference edit where speed/cost matters</strong> → Nano Banana 2 Lite (<code>nano_banana_2_lite</code>).</li>
+<li><strong>Fast and cheap iteration / drafts / LoRA work</strong> → Z Image.</li>
+<li><strong>Default for everything else</strong> → GPT Image 2.5. High-fidelity general generation, graphic design, UI, banners, anything with on-image text.</li>
+<li><strong>Intent-only request, no preference, want auto-routing</strong> → Auto.</li>
+</ol>
+<h3>Video — pick this default</h3>
+<ol>
+<li><strong>All advertising / commercial video (UGC, unboxing, TV spot, product showcase, branded ad)</strong> → Marketing Studio. See <code>marketing-modes.md</code>.</li>
+<li><strong>Default all-purpose serious video (multi-shot, consistent identity, motion-heavy, production work, image-to-video, 4–30s requests)</strong> → Seedance 2.5. SOTA. Validate this first before falling back.</li>
+<li><strong>Single-plane scene without strong dynamics, cheaper</strong> → Kling 3.0. Use when motion isn't critical; use Kling 3.0 Turbo when the user asks for a faster/lower-cost Kling result or names Turbo.</li>
+<li><strong>Cheap clean shot without cuts, only when the user asks for budget output</strong> → Seedance 1.5 Pro. Do not pick it over Seedance 2.5 just because duration validation looks simpler.</li>
+<li><strong>Image-to-video with explicit first frame</strong> → Seedance 2.5 with <code>--mode omni_reference --start-image</code>, or Kling 3.0 for simpler motion.</li>
+<li><strong>Cinema-grade execution (highest fidelity, film look)</strong> → Cinema Studio Video 3.0.</li>
+<li><strong>Cheap with strong physics, audio not needed</strong> → Minimax Hailuo.</li>
+<li><strong>Fast batch / volume</strong> → Veo 3.1 Lite.</li>
+<li><strong>Veo-format-bound work (specific aspect / duration set Veo accepts)</strong> → Veo 3.1; Veo 3 is slightly behind.</li>
+<li><strong>Stylized / animation-style edit-driven work</strong> → Wan 2.7.</li>
+<li><strong>Stylized cheap experimental</strong> → Wan 2.6.</li>
+<li><strong>Multimodal Google reference-to-video from up to 7 images or one video reference</strong> → Gemini Omni Flash (<code>gemini_omni</code>). Do not make it the default over Seedance 2.5 for general video.</li>
+<li><strong>Anime / bold-style image-to-video with a start frame</strong> → Grok Video 1.5 (<code>grok_video_v15</code>). Requires one <code>--start-image</code> or <code>--image</code>, duration 2–15s, resolution <code>480p</code> or <code>720p</code>.</li>
+<li><strong>Anime / bold-style text-to-video or older Grok-style outputs where defaults feel flat</strong> → Grok Imagine (video). Worth trying.</li>
+</ol>
+<h3>Video analysis — pick this default</h3>
+<ol>
+<li><strong>Evaluate a finished clip's hook, virality potential, attention, retention, or distraction risk</strong> → Virality Predictor (<code>brain_activity</code>). It takes <code>--video</code>, needs no prompt, and returns a text score/report plus an Open report link rather than generated media.</li>
+</ol>
+<h3>3D — pick this default</h3>
+<ol>
+<li><strong>Create an actual 3D mesh/model/GLB from one or more object/product reference images</strong> → Multi-Image to 3D (<code>multi_image_to_3d</code>). Pass 1–4 repeated <code>--image</code> flags. Use <code>--should_texture true</code> for textured assets; use rigging/animation flags only when the user explicitly wants a rigged or animated asset.</li>
+<li><strong>Create a picture that merely looks like a 3D render</strong> → use an image model instead, usually GPT Image 2.5 or Nano Banana 2 depending on the brief.</li>
+</ol>
+<h3>Audio — pick this default</h3>
+<ol>
+<li><strong>Default audio generation (text-to-audio, voice-style, SFX, ambience, foley, impacts, environmental audio, or music-like audio)</strong> → Seed Audio 1.0 (<code>seed_audio</code>). Requires <code>--prompt</code>; use optional <code>--audio-references</code>/<code>--image-references</code> only when references are provided.</li>
+<li><strong>Create music, backing tracks, jingles, or instrumental beds with the specialist legacy music model</strong> → Sonilo Music (<code>sonilo_music</code>) only when the user names Sonilo or Seed Audio is not appropriate. Requires <code>--prompt</code> and <code>--duration</code>.</li>
+<li><strong>Create SFX with the specialist legacy SFX model</strong> → Mirelo Text to Audio (<code>mirelo_text_to_audio</code>) only when the user names Mirelo or Seed Audio is not appropriate. Requires <code>--prompt</code> and <code>--duration</code>.</li>
+<li><strong>Add soundtrack/audio to a generated video ad</strong> → use Marketing Studio Video with <code>--generate_audio true</code>, not Seed Audio/Sonilo/Mirelo.</li>
+</ol>
+<h3>Things to keep in mind</h3>
+<ul>
+<li><strong>Don't invent model names.</strong> Run <code>higgsfield model list</code> if you're unsure — submitting an unknown model returns <code>unknown model "..."</code>.</li>
+<li><strong>Don't downgrade for schema convenience.</strong> If Seedance 2.5 fits the intent, validate or submit it first; do not choose Seedance 1.5 only because it lists a requested duration more explicitly.</li>
+<li><strong>Do not misroute video analysis because the output is text.</strong> A request like "analyze this video" or "score this ad" maps to Virality Predictor (<code>brain_activity</code>) when the user provides or references a finished video.</li>
+<li><strong>Do not misroute 3D style into 3D asset generation.</strong> <code>multi_image_to_3d</code> is for actual mesh/GLB-style assets from reference images. A prompt like "make a 3D render" is usually image generation.</li>
+<li><strong>Do not treat audio generation as an audio media input.</strong> <code>seed_audio</code>, <code>mirelo_text_to_audio</code>, and <code>sonilo_music</code> create audio from text. <code>--audio</code> is for reference audio on video models like Seedance 2.0 or an alias for <code>audio_references</code> on Seed Audio.</li>
+<li><strong>Audio reference for Seedance 2.0</strong> comes through the media inputs with role <code>audio</code>, not via a separate <code>generate_audio</code> flag.</li>
+<li><strong>Prompt-only models reject reference media.</strong> Z Image, Recraft V4.1, Soul Cast, Soul Location, and some Wan configs are prompt-only; pass no media flags to them. Virality Predictor is different: it returns text but requires a video input.</li>
+<li><strong>Route branded product visuals through <code>higgsfield-product-photoshoot</code></strong> — its prompt enhancer adds 10 mode-specific templates on top of GPT Image 2. Direct GPT Image 2.5 generation here is the right call for everything that isn't a product photoshoot.</li>
+<li><strong>For cinema video, prefer Cinema Studio Video 3.0</strong> as the modern default; reach for the earlier Cinema Studio Video variants only when the user names them.</li>
+<li><strong>When the user names a specific model, use it.</strong> The defaults above cover the common intents — the rest of the catalog exists for users who know what they want.</li>
+</ul>
+<hr />
+<h2>Media role conventions</h2>
+<p>Each model accepts a fixed set of media roles or <code>*_references</code> params. When unsure, run <code>higgsfield model get &lt;model&gt;</code> and inspect the schema.</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Accepted media roles</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gemini Omni Flash</td>
+<td><code>image_references</code> (0–7) and <code>video_references</code> (0–1); with a video reference, max 5 image references</td>
+</tr>
+<tr>
+<td>Nano Banana 2 Lite</td>
+<td><code>image_references</code> (0–14); <code>aspect_ratio=auto</code> requires at least one image reference</td>
+</tr>
+<tr>
+<td>Seedance 2.0</td>
+<td><code>image</code>, <code>start_image</code>, <code>end_image</code>, <code>video</code>, <code>audio</code></td>
+</tr>
+<tr>
+<td>Seedance 2.5</td>
+<td><code>start_image</code>, <code>end_image</code>, <code>image_references</code>, <code>video_references</code>, <code>audio_references</code>; use <code>omni_reference</code> for reference generation</td>
+</tr>
+<tr>
+<td>Kling 3.0</td>
+<td><code>start_image</code>, <code>end_image</code></td>
+</tr>
+<tr>
+<td>Kling 3.0 Turbo</td>
+<td><code>start_image</code> (max 1; CLI also accepts <code>--image</code>)</td>
+</tr>
+<tr>
+<td>Kling 2.6</td>
+<td><code>start_image</code></td>
+</tr>
+<tr>
+<td>Grok Video 1.5</td>
+<td><code>start_image</code> (required max 1; CLI also accepts <code>--image</code>)</td>
+</tr>
+<tr>
+<td>Veo 3.1</td>
+<td><code>start_image</code> (max 1)</td>
+</tr>
+<tr>
+<td>Veo 3</td>
+<td><code>image</code> (max 1)</td>
+</tr>
+<tr>
+<td>Marketing Studio (video)</td>
+<td><code>image</code>, <code>start_image</code>, <code>end_image</code></td>
+</tr>
+<tr>
+<td>Virality Predictor (<code>brain_activity</code>)</td>
+<td><code>video</code></td>
+</tr>
+<tr>
+<td>Multi-Image to 3D</td>
+<td><code>image</code> (1–4)</td>
+</tr>
+<tr>
+<td>Seed Audio 1.0</td>
+<td><code>audio_references</code> or <code>image_references</code> (optional; mutually exclusive)</td>
+</tr>
+<tr>
+<td>Mirelo Text to Audio</td>
+<td>(no media — pass <code>--prompt</code>)</td>
+</tr>
+<tr>
+<td>Sonilo Music</td>
+<td>(no media — pass <code>--prompt</code> and <code>--duration</code>)</td>
+</tr>
+<tr>
+<td>Most image models</td>
+<td><code>image</code> (1+)</td>
+</tr>
+<tr>
+<td>Z Image, Recraft V4.1, Soul Cast, Soul Location</td>
+<td>(no media — prompt-only)</td>
+</tr>
+</tbody>
+</table>
+<p>For simple image-to-video, the <code>start_image</code> role is what you want. For pure video models that only declare <code>image</code>, the <code>image</code> flag is auto-remapped to <code>start_image</code> by the CLI.</p>
+<h2>Aspect ratios and durations</h2>
+<p>These are model-specific. The CLI clamps unsupported values to the nearest allowed one (with a <code>Note: adjustments applied</code> warning) when the model declares a closed set. When in doubt:</p>
+<pre><code class="language-bash">higgsfield model get &lt;model&gt;
+</code></pre>
+<p>Common patterns:</p>
+<ul>
+<li><strong>Seedance 2.5</strong>: duration 4–30s; resolution <code>480p</code>, <code>720p</code>, or <code>1080p</code>. Use <code>t2v</code> for prompt-only generation and <code>omni_reference</code> for reference inputs. Use Seedance 2.0 when native 4K is required.</li>
+<li><strong>Seedance 2.0</strong> image: <code>auto</code>, <code>21:9</code>, <code>16:9</code>, <code>4:3</code>, <code>1:1</code>, <code>3:4</code>, <code>9:16</code>. Duration 4–15s. Resolution <code>480p</code>, <code>720p</code>, <code>1080p</code>, or <code>4k</code>. Optional <code>--bitrate_mode standard|high</code>, default <code>standard</code>.</li>
+<li><strong>Kling 3.0</strong>: <code>16:9</code>, <code>9:16</code>, <code>1:1</code>. Duration 3–15s. Modes <code>pro</code>/<code>std</code>. Sound <code>on</code>/<code>off</code>.</li>
+<li><strong>Kling 3.0 Turbo</strong>: <code>16:9</code>, <code>9:16</code>, <code>1:1</code>. Duration 3–15s. Resolution <code>720p</code> or <code>1080p</code>. Optional single <code>start_image</code> only.</li>
+<li><strong>Soul 2.0</strong>: <code>1:1</code>, <code>16:9</code>, <code>9:16</code>, <code>4:3</code>, <code>3:4</code>, <code>3:2</code>, <code>2:3</code>. Quality <code>1.5k</code> or <code>2k</code> maps to backend <code>720p</code>/<code>1080p</code>.</li>
+<li><strong>Soul Cinema</strong>: same as Soul 2.0 plus <code>21:9</code>. Quality <code>1.5k</code> or <code>2k</code>.</li>
+<li><strong>Soul Location</strong>: <code>1:1</code>, <code>4:3</code>, <code>3:4</code>, <code>16:9</code>, <code>9:16</code>, <code>3:2</code>, <code>2:3</code>, <code>21:9</code>, <code>9:21</code>. No quality/resolution selector; dimensions are fixed by aspect ratio.</li>
+<li><strong>Veo 3.1</strong>: <code>16:9</code> or <code>9:16</code>. Duration <code>4</code>, <code>6</code>, or <code>8</code> only. Quality <code>basic</code>/<code>high</code>/<code>ultra</code>.</li>
+<li><strong>Marketing Studio (video)</strong>: <code>auto</code>/<code>21:9</code>/<code>16:9</code>/<code>4:3</code>/<code>1:1</code>/<code>3:4</code>/<code>9:16</code>. Resolution <code>480p</code> or <code>720p</code>.</li>
+</ul>
+<h2>When you submit an unknown value</h2>
+<p>The CLI reports two kinds of feedback:</p>
+<ul>
+<li><strong>Adjustments</strong> — a non-fatal coercion. E.g. you passed <code>aspect_ratio=99:99</code> and the model accepts a closed set; the CLI picks the closest match and continues. The adjustments map is included in the response.</li>
+<li><strong>Validation error</strong> — a fatal mismatch. E.g. an unknown declared parameter, or a media role the model doesn't accept. The CLI returns an error and does not submit.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

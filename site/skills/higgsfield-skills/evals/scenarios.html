@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>scenarios · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">evals/scenarios.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Scenarios</h1>
+<p>Starter scenarios across the Higgsfield skills. Each is one user request + what the agent should do + how to score it.</p>
+<p>These exist to be run by a human (or by another agent acting as the user) in a fresh session with skills installed.</p>
+<hr />
+<h2>Scenario 1 — Cheap photorealistic image (generate)</h2>
+<p><strong>User request:</strong></p>
+<blockquote>
+<p>Make me a quick photorealistic image of a fox in a snowy forest.</p>
+</blockquote>
+<p><strong>Expected behavior:</strong></p>
+<ul>
+<li>Picks <code>nano_banana_2</code>, <code>flux_2</code>, or another photorealistic-default model.</li>
+<li>Does NOT pick a Soul model (no face mentioned).</li>
+<li>Does NOT pick <code>gpt_image_2</code> (overkill for "quick").</li>
+<li>Submits via <code>higgsfield generate create &lt;model&gt; --prompt "..." --wait</code> (one-shot create+poll, no separate <code>wait</code> step).</li>
+<li>Stays silent until done (no "checking status..." spam).</li>
+<li>Delivers ONE URL with a short summary.</li>
+</ul>
+<p><strong>Score:</strong></p>
+<ul>
+<li>Pass: correct model class, single URL out, no internal narration.</li>
+<li>Partial: correct model but excessive narration ("calling the API now…").</li>
+<li>Fail: wrong model class, multiple jobs submitted, broken URL.</li>
+</ul>
+<hr />
+<h2>Scenario 2 — Image-to-video animation (generate)</h2>
+<p><strong>User request:</strong></p>
+<blockquote>
+<p>Animate this photo into a 5-second clip with the camera slowly pulling back.
+[attached: still.jpg]</p>
+</blockquote>
+<p><strong>Expected behavior:</strong></p>
+<ul>
+<li>Picks <code>kling3_0</code> (default for image-to-video) or <code>seedance_2_0</code>.</li>
+<li>Uses <code>--start-image still.jpg</code>.</li>
+<li>Uses motion verbs in the prompt ("pulls back", "ambient motion") not redescribed scene.</li>
+<li><code>--duration 5</code>.</li>
+<li>Delivers ONE video URL.</li>
+</ul>
+<p><strong>Score:</strong></p>
+<ul>
+<li>Pass: correct model, <code>--start-image</code> used, prompt focuses on motion.</li>
+<li>Partial: redescribed scene in prompt instead of motion-only.</li>
+<li>Fail: text-only video model picked (ignored the photo), wrong duration, no <code>--start-image</code>.</li>
+</ul>
+<hr />
+<h2>Scenario 3 — Soul training (soul)</h2>
+<p><strong>User request:</strong></p>
+<blockquote>
+<p>Train my Soul on these 8 photos. Call it "founder".
+[attached: 8 photos]</p>
+</blockquote>
+<p><strong>Expected behavior:</strong></p>
+<ul>
+<li>Picks <code>--soul-2</code> (default).</li>
+<li>Submits <code>higgsfield soul-id create --name founder --soul-2 --image ... --image ...</code>.</li>
+<li>Polls silently. Soul training takes 15–45 min.</li>
+<li>Delivers: "Soul <code>founder</code> ready. Use in generate with <code>--soul-id &lt;id&gt;</code>."</li>
+<li>Does NOT print the raw <code>reference_id</code> in chat (UX rule).</li>
+</ul>
+<p><strong>Score:</strong></p>
+<ul>
+<li>Pass: correct variant, all 8 photos passed, terminal success message clean.</li>
+<li>Partial: prints raw <code>reference_id</code> (against UX rule).</li>
+<li>Fail: wrong variant, fewer photos passed than provided, polling spam.</li>
+</ul>
+<hr />
+<h2>Scenario 4 — Soul + Generate chain</h2>
+<p><strong>User request:</strong></p>
+<blockquote>
+<p>Use my Soul "founder" (already trained) to make a cinematic portrait of me on a Tokyo street at night.</p>
+</blockquote>
+<p><strong>Expected behavior:</strong></p>
+<ul>
+<li>Looks up the existing Soul reference (asks user for the id, OR detects from a workspace state file if one exists).</li>
+<li>Picks <code>text2image_soul_v2</code> or <code>soul_cinematic</code> (the cinematic variant fits the "cinematic" word).</li>
+<li>Passes <code>--soul-id &lt;id&gt;</code>.</li>
+<li>Does NOT re-train Soul.</li>
+<li>Delivers ONE URL.</li>
+</ul>
+<p><strong>Score:</strong></p>
+<ul>
+<li>Pass: correct chaining, no re-training, cinematic variant chosen.</li>
+<li>Partial: re-trained Soul unnecessarily.</li>
+<li>Fail: ignored Soul, used a generic photo-real model.</li>
+</ul>
+<hr />
+<h2>Scenario 5 — Pinterest pin (product-photoshoot)</h2>
+<p><strong>User request:</strong></p>
+<blockquote>
+<p>Make a Pinterest pin of my candle [attached: candle.jpg]. Cottagecore mood.</p>
+</blockquote>
+<p><strong>Expected behavior:</strong></p>
+<ul>
+<li>Picks <code>--mode moodboard_pin</code>.</li>
+<li>NOT <code>lifestyle_scene</code> or <code>product_shot</code>.</li>
+<li>Calls <code>higgsfield product-photoshoot create --mode moodboard_pin --image candle.jpg --prompt "..."</code>.</li>
+<li>Does NOT call <code>higgsfield generate create gpt_image_2 ...</code> directly (must go through the prompt enhancer).</li>
+<li>Asks ≤4 short questions (count, mood, anything to emphasize). Mode is obvious from the request.</li>
+<li>Delivers ONE URL or a short bulleted list if <code>--count &gt; 1</code>.</li>
+</ul>
+<p><strong>Score:</strong></p>
+<ul>
+<li>Pass: correct mode, routed through <code>product-photoshoot</code> (not direct <code>gpt_image_2</code>).</li>
+<li>Partial: asks too many interview questions.</li>
+<li>Fail: wrong mode, bypassed the prompt enhancer.</li>
+</ul>
+<hr />
+<h2>Scenario 6 — Hero banner with use case (product-photoshoot)</h2>
+<p><strong>User request:</strong></p>
+<blockquote>
+<p>Hero banner for my landing page showing my serum being applied.</p>
+</blockquote>
+<p><strong>Expected behavior:</strong></p>
+<ul>
+<li>Picks <code>--mode hero_banner</code> (banner format wins over closeup-with-person tie-breaker per SKILL.md).</li>
+<li>Default aspect ratio appropriate for hero banner (16:9 or wider).</li>
+<li>Skips Type-A interview because mode is obvious.</li>
+</ul>
+<p><strong>Score:</strong></p>
+<ul>
+<li>Pass: <code>hero_banner</code> mode, correct aspect ratio.</li>
+<li>Partial: <code>closeup_product_with_person</code> (specific genre tie-break that loses to banner format here).</li>
+<li>Fail: random other mode.</li>
+</ul>
+<hr />
+<h2>Scenario 7 — Marketing Studio UGC video from URL (generate)</h2>
+<p><strong>User request:</strong></p>
+<blockquote>
+<p>Make a 15-second UGC ad for https://shop.example.com/sneakers, 9:16.</p>
+</blockquote>
+<p><strong>Expected behavior:</strong></p>
+<ul>
+<li>Calls <code>higgsfield marketing-studio products fetch --url ... --wait</code> first.</li>
+<li>Then lists/picks an avatar (<code>higgsfield marketing-studio avatars list</code>).</li>
+<li>Then <code>higgsfield generate create marketing_studio_video</code> with <code>--mode ugc</code>, <code>--duration 15</code>, <code>--aspect_ratio 9:16</code>, <code>--wait</code>.</li>
+<li>Asks one question at a time. Does NOT batch-ask (avatar + product + mode + duration upfront).</li>
+</ul>
+<p><strong>Score:</strong></p>
+<ul>
+<li>Pass: full 3-step Marketing Studio flow, single-question phases.</li>
+<li>Partial: batch-asked questions upfront.</li>
+<li>Fail: tried to use generic <code>kling3_0</code> instead of <code>marketing_studio_video</code>.</li>
+</ul>
+<hr />
+<h2>Scenario 8 — Language detection</h2>
+<p><strong>User request:</strong> (in Russian)</p>
+<blockquote>
+<p>Сгенерируй мне фотореалистичную картинку лисы в зимнем лесу.</p>
+</blockquote>
+<p><strong>Expected behavior:</strong></p>
+<ul>
+<li>Detects user_language = <code>ru</code>.</li>
+<li>Replies in Russian for status, questions, summary.</li>
+<li>Keeps technical flags English (<code>--model nano_banana_2</code>, <code>--aspect_ratio 16:9</code>).</li>
+<li>Picks <code>nano_banana_2</code> or <code>flux_2</code>.</li>
+</ul>
+<p><strong>Score:</strong></p>
+<ul>
+<li>Pass: Russian for human-facing text, English for flags.</li>
+<li>Partial: half-translated (e.g. translates "16:9" to "16 на 9").</li>
+<li>Fail: replies in English when user wrote Russian.</li>
+</ul>
+<hr />
+<h2>Scenario 9 — Vague request (product-photoshoot Type F)</h2>
+<p><strong>User request:</strong></p>
+<blockquote>
+<p>Make me something cool for my brand.</p>
+</blockquote>
+<p><strong>Expected behavior:</strong></p>
+<ul>
+<li>Routes to <code>higgsfield-product-photoshoot</code> Type F interview.</li>
+<li>Asks 2–3 disambiguating questions (what product, goal, reference image?).</li>
+<li>Does NOT submit a generic image immediately.</li>
+</ul>
+<p><strong>Score:</strong></p>
+<ul>
+<li>Pass: structured 2–3 labeled questions.</li>
+<li>Partial: too many open-ended questions ("what's your brand about?").</li>
+<li>Fail: submits a generic image without asking.</li>
+</ul>
+<hr />
+<h2>Scenario 10 — Don't invent model names</h2>
+<p><strong>User request:</strong></p>
+<blockquote>
+<p>Use Higgsfield's new "supernova_v9" model to make a sci-fi cityscape.</p>
+</blockquote>
+<p><strong>Expected behavior:</strong></p>
+<ul>
+<li>Notices the model name is unfamiliar.</li>
+<li>Runs <code>higgsfield model list</code> to verify.</li>
+<li>Reports back: "supernova_v9 isn't in the catalog. Suggested alternatives: …".</li>
+<li>Does NOT submit with a fabricated model name.</li>
+</ul>
+<p><strong>Score:</strong></p>
+<ul>
+<li>Pass: verified before submitting, correct fallback.</li>
+<li>Partial: submitted anyway and surfaced the API error.</li>
+<li>Fail: hallucinated some other model name without verification.</li>
+</ul>
+<hr />
+<h2>Scenario 11 — Virality Predictor video scoring</h2>
+<p><strong>User request:</strong></p>
+<blockquote>
+<p>Analyze this ad video and tell me whether the hook is strong enough to hold attention.
+[attached: ad.mp4]</p>
+</blockquote>
+<p><strong>Expected behavior:</strong></p>
+<ul>
+<li>Picks Virality Predictor (<code>brain_activity</code>).</li>
+<li>Uses <code>--video ad.mp4</code>.</li>
+<li>Does NOT ask for a prompt; the video is the input.</li>
+<li>Treats the result as a text score report, not a generated video/image.</li>
+<li>Delivers overall score, peak hook second, sustain score, region highlights, and a business interpretation of attention/virality potential.</li>
+<li>Links the Open report URL for visual inspection.</li>
+</ul>
+<p><strong>Score:</strong></p>
+<ul>
+<li>Pass: correct model, <code>--video</code> used, text metrics summarized with business interpretation, and the Open report URL included.</li>
+<li>Partial: correct model but treats the result URL as the only output.</li>
+<li>Fail: uses a video generation model, asks for a generation prompt, or ignores the uploaded clip.</li>
+</ul>
+<hr />
+<h2>Scenario 12 — Video explainer preset selection</h2>
+<p><strong>User request:</strong></p>
+<blockquote>
+<p>Make a one-minute narrated explainer in Russian about how neural networks learn. Show me the available visual styles first.</p>
+</blockquote>
+<p><strong>Expected behavior:</strong></p>
+<ul>
+<li>Routes to <code>higgsfield-video-explainer</code>, not generic video generation.</li>
+<li>Runs <code>higgsfield preset list video-explainer --json</code> and shows current preview links.</li>
+<li>Waits for style selection, then resolves its UUID with <code>higgsfield preset resolve video-explainer</code>.</li>
+<li>Lets the user choose one voice and creates six Russian <code>seed_audio</code> narration jobs first.</li>
+<li>Creates six matching 10-second <code>gemini_omni</code> clips second, all with the resolved style key.</li>
+<li>Builds ordered <code>blocks.json</code> pairs and finishes with one <code>explainer_video</code> generation job.</li>
+</ul>
+<p><strong>Score:</strong></p>
+<ul>
+<li>Pass: live preset and voice selection, six matched audio/video blocks, final assembled MP4.</li>
+<li>Partial: correct block pipeline but chooses a requested option without showing it or loses a block pairing.</li>
+<li>Fail: embeds a preset list, fabricates an ID, uses <code>video_explainer</code>, or returns loose clips.</li>
+</ul>
+<hr />
+<h2>Scenario 13 — Playable browser game</h2>
+<p><strong>User request:</strong></p>
+<blockquote>
+<p>Build a small mobile-friendly browser game where a fox collects stars, then give me a play link.</p>
+</blockquote>
+<p><strong>Expected behavior:</strong></p>
+<ul>
+<li>Routes to <code>higgsfield-game-generation</code>.</li>
+<li>Produces a STYLE FORMULA and <code>design/assets.csv</code> before visuals/code.</li>
+<li>Builds responsive touch + keyboard controls and a complete win/lose/restart loop.</li>
+<li>Verifies locally, packages the required root layout, and runs <code>higgsfield game deploy</code>.</li>
+<li>Does not run <code>higgsfield game publish</code> unless marketplace publication is requested.</li>
+</ul>
+<p><strong>Score:</strong></p>
+<ul>
+<li>Pass: coherent game, manifest-driven assets, local verification, returned deploy URL.</li>
+<li>Partial: playable and deployed but missing one planning artifact or mobile verification.</li>
+<li>Fail: returns only concept art/code, constructs a URL manually, or publishes publicly without consent.</li>
+</ul>
+<hr />
+<h2>Scenario 14 — Complete visual identity (brandkit)</h2>
+<p><strong>User request:</strong></p>
+<blockquote>
+<p>Create a visual identity and brandbook for Northline, a calm technical logistics platform. Start from scratch.</p>
+</blockquote>
+<p><strong>Expected behavior:</strong></p>
+<ul>
+<li>Routes to <code>higgsfield-brandkit</code>, not generic generation or Marketing Studio's URL-import brand kit.</li>
+<li>Asks only for unresolved context/preferences and checks stage-specific local dependencies without installing them silently.</li>
+<li>Creates 2–3 palette boards, shows them, and waits for a selection.</li>
+<li>After palette approval, generates exactly three <code>recraft_v4_1</code> vector SVG marks with identical technical parameters and waits for logo selection.</li>
+<li>Proposes typography only after logo selection, persists each approval in project-local <code>brandkit/state.json</code>, and builds the canonical PPTX/PDF Brandbook only after all three slots are approved.</li>
+<li>Does not use FFmpeg, self-select a logo, invent brand claims, or replace an approved mark during downstream mockups.</li>
+</ul>
+<p><strong>Score:</strong></p>
+<ul>
+<li>Pass: correct staged routing, three SVG candidates, explicit approval gates, durable state, and dependency-aware Brandbook output.</li>
+<li>Partial: correct assets but asks a full questionnaire, installs tools without permission, or loses approval state.</li>
+<li>Fail: uses the Marketing Studio metadata kit, self-approves a mark, produces only raster logos, or skips palette/logo/type selection.</li>
+</ul>
+<hr />
+<h2>Round template (copy when recording results)</h2>
+<pre><code>Round: &lt;N&gt;
+Date: &lt;YYYY-MM-DD&gt;
+Commit: &lt;sha&gt;
+Skills version: &lt;0.x.x&gt;
+
+Scenario 1: pass | partial | fail — &lt;one-line reason&gt;
+Scenario 2: ...
+...
+Scenario 10: ...
+Scenario 11: ...
+Scenario 12: ...
+Scenario 13: ...
+Scenario 14: ...
+
+Aggregate: &lt;P pass / Q partial / F fail&gt;
+Time-to-result mean: &lt;Ns&gt;
+Notable regressions: &lt;list&gt;
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

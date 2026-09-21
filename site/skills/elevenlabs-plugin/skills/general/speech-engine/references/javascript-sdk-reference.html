@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>javascript-sdk-reference · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/speech-engine/references/javascript-sdk-reference.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>JavaScript SDK Reference</h1>
+<p>Use <code>@elevenlabs/elevenlabs-js</code> for server-side Speech Engine work.</p>
+<pre><code class="language-typescript">import { ElevenLabsClient } from &quot;@elevenlabs/elevenlabs-js&quot;;
+
+const elevenlabs = new ElevenLabsClient();
+</code></pre>
+<h2>Resource Methods</h2>
+<h3>Create</h3>
+<p>Only <code>speechEngine.wsUrl</code> is required. Use a secure WebSocket URL such as <code>wss://example.com/ws</code>. Add optional config blocks when the Speech Engine needs custom voice, speech recognition, turn-taking, request headers, client-side first-message overrides, or privacy behavior.</p>
+<pre><code class="language-typescript">const engine = await elevenlabs.speechEngine.create({
+  name: &quot;My Speech Engine&quot;,
+  speechEngine: {
+    wsUrl: &quot;wss://example.com/ws&quot;,
+    requestHeaders: {
+      &quot;x-agent-runtime&quot;: &quot;openclaw&quot;,
+    },
+  },
+  overrides: {
+    firstMessage: true,
+  },
+  tts: {
+    modelId: &quot;eleven_flash_v2_5&quot;,
+    voiceId: &quot;cjVigY5qzO86Huf0OWal&quot;,
+    optimizeStreamingLatency: &quot;2&quot;,
+  },
+  asr: {
+    provider: &quot;scribe_realtime&quot;,
+    keywords: [&quot;OpenClaw&quot;, &quot;Acme Cloud&quot;],
+  },
+  turn: {
+    turnEagerness: &quot;normal&quot;,
+    speculativeTurn: true,
+  },
+  privacy: {
+    recordVoice: false,
+  },
+});
+
+console.log(engine.engineId);
+</code></pre>
+<p>Enable <code>overrides.firstMessage</code> before using <code>overrides.agent.firstMessage</code> when starting a browser session.</p>
+<h3>Get</h3>
+<pre><code class="language-typescript">const engine = await elevenlabs.speechEngine.get(&quot;seng_...&quot;);
+</code></pre>
+<p>The returned resource has an engine ID plus helpers for attaching Speech Engine handling to a trusted HTTP server.</p>
+<h3>Attach</h3>
+<p>Attach Speech Engine WebSocket handling to an existing Node HTTP server. Keep response generation behind a validation boundary so raw speech-recognition text does not directly control responses, tools, secrets, or privileged actions.</p>
+<pre><code class="language-typescript">const engine = await elevenlabs.speechEngine.get(process.env.ELEVENLABS_SPEECH_ENGINE_ID!);
+engine.attach(httpServer, &quot;/ws&quot;, { debug: true, ...validatedCallbacks });
+</code></pre>
+<p>Call <code>await attachment.close()</code> to stop accepting Speech Engine connections without shutting down the HTTP server.</p>
+<p>Callback options include <code>onInit</code>, <code>onTranscript</code>, <code>onClose</code>, <code>onDisconnect</code>, <code>onError</code>, <code>debug</code>, and <code>disableAuth</code>. Use <code>onClose</code> for clean disconnects from ElevenLabs and <code>onDisconnect</code> when the WebSocket drops unexpectedly.</p>
+<h3>disableAuth (dangerous)</h3>
+<p><code>attach()</code> and <code>SpeechEngine.Server</code> verify the <code>X-Elevenlabs-Speech-Engine-Authorization</code> JWT on every incoming connection by default. Passing <code>disableAuth: true</code> in the callback options turns that check off. When it is off, the server accepts any client that can reach it — an attacker who finds the URL can open unlimited conversations, drain your ElevenLabs and downstream LLM quota, and inject arbitrary transcripts into your response pipeline.</p>
+<p>Only recommend this option when the developer has already implemented <strong>at least one</strong> compensating control:</p>
+<ul>
+<li>an <strong>IP allowlist</strong> restricting inbound traffic to <a href="https://elevenlabs.io/docs/overview/capabilities/speech-engine#ip-allowlisting">ElevenLabs' egress ranges</a>, or</li>
+<li>a <strong>custom shared-secret header</strong> — configured via <code>speechEngine.requestHeaders</code> on the Speech Engine resource at create time — validated by an upstream proxy or middleware before the request reaches the SDK.</li>
+</ul>
+<p>If neither is in place, do not disable auth. When it is enabled, the SDK also emits a <code>console.warn</code> at startup to make the state visible in logs. <code>apiKey</code> is not required in this mode, since it is only used for JWT verification.</p>
+<h3>verifyRequest</h3>
+<p>Use only when managing WebSocket upgrades manually:</p>
+<pre><code class="language-typescript">const isValid = await engine.verifyRequest(req);
+</code></pre>
+<p>It checks <code>X-Elevenlabs-Speech-Engine-Authorization</code> against a JWT signed with the SHA-256 hash of the ElevenLabs API key.</p>
+<h2>Session API</h2>
+<p>Each Speech Engine session represents one conversation.</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>conversationId</code></td>
+<td>Assigned after initialization</td>
+</tr>
+<tr>
+<td><code>isOpen</code></td>
+<td>Whether the WebSocket is open</td>
+</tr>
+<tr>
+<td><code>sendResponse(response)</code></td>
+<td>Send response text or a text stream back for TTS</td>
+</tr>
+<tr>
+<td><code>close()</code></td>
+<td>Close the WebSocket</td>
+</tr>
+</tbody>
+</table>
+<p><code>sendResponse()</code> accepts a string or async iterable of response text.</p>
+<h2>Safety</h2>
+<p>Speech-recognition text is untrusted user-controlled data. Validate intent with deterministic checks, allowlists, or explicit confirmation before it affects response generation, tool calls, secrets, or privileged workflows.</p>
+<h2>Wire Protocol</h2>
+<p>The SDK handles protocol details automatically. Outgoing messages from your server are response text chunks and connection keep-alives.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

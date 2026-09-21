@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>contest · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/contest.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>App contest — how to enter, and how it shapes the build</h1>
+<p>Higgsfield runs an app contest with a <strong>$100,000 total prize pool</strong>. If the
+user wants to enter (or asks what the contest is), this is the reference.
+<code>higgsfield website contest &lt;website_id&gt;</code> is the command that submits an app.</p>
+<blockquote>
+<p>Prizes, dates, and rules below are the <strong>current</strong> contest as of 2026-07-08.
+The contest is admin-curated and recurs — treat specifics (amounts, dates) as
+this round's, and the live details are on
+<code>https://higgsfield.ai/supercomputer/apps?tab=prizes</code>. The mechanics
+(auto-publish on entry, social-link submission, judging on real usage) are
+stable.</p>
+</blockquote>
+<h2>What it is</h2>
+<ul>
+<li><strong>$100,000 total.</strong> 1st <strong>$25,000</strong>, 2nd <strong>$15,000</strong>, 3rd <strong>$10,000</strong>, plus
+  <strong>10 honorable mentions at $5,000 each</strong>.</li>
+<li><strong>Timeline (this round):</strong> submissions open <strong>Jul 8, 2026</strong>, close <strong>Jul 22,
+  2026 (8:00 AM PT)</strong>; judging Jul 22–29; winners announced <strong>Jul 29, 2026</strong>.
+  Rankings refresh every 24h during the contest.</li>
+<li><strong>No fixed theme</strong> — build anything that gives people a reason to <em>create</em> on
+  Higgsfield (productivity tools, games, image/video generators, novelty apps).</li>
+</ul>
+<h2>How entering shapes what you build (bake this in from the start)</h2>
+<p>Even before the user mentions the contest, these are just good <code>type: "app"</code>
+practice — and they're the eligibility bar and the scoring rubric:</p>
+<ul>
+<li><strong>Must use Higgsfield image and/or video generation.</strong> An app that routes
+  generation through a third-party API instead of Higgsfield is DISQUALIFIED.
+  (This is already the app rule — generation runs on Higgsfield via the fnf
+  SDK; never offer a bring-your-own-API path.)</li>
+<li><strong>Original work, no third-party IP.</strong> No protected characters, films, music,
+  celebrities, or brands — in the app's concept, assets, or generated output
+  framing. (Also the platform content rule.)</li>
+<li><strong>Must be freshly published</strong> on Higgsfield on/after the contest open date —
+  a brand-new listing, not a pre-existing app.</li>
+<li><strong>Judging is mostly real usage.</strong> Weights: <strong>Usage generated 40%</strong> (the
+  primary metric — total Higgsfield generation by users inside the app),
+  <strong>Creativity &amp; concept 30%</strong>, <strong>social engagement 15%</strong>, <strong>in-app gallery
+  engagement 15%</strong>. So design for repeat generation: a fast path to a first
+  result, an obvious reason to generate again, shareable output. Artificially
+  inflated usage is discounted at Higgsfield's discretion.</li>
+</ul>
+<h2>Entering — <code>higgsfield website contest</code> (it publishes for you)</h2>
+<p>An app not yet on the community feed is <strong>published automatically by the
+entry</strong> — no separate <code>higgsfield website publish</code> needed. The flow when the
+user asks to enter:</p>
+<ol>
+<li><strong>Make it listable.</strong> The app needs a <strong>live production deploy</strong>
+   (<code>higgsfield website deploy &lt;website_id&gt;</code>) — an undeployed app is rejected
+   ("deploy first"). And because the entry lists the app on the feed, the page
+   metadata (cover + <code>og_title</code>, see <code>references/app-flow.md</code>) must be filled
+   BEFORE entering — the auto-published listing renders from it, and an empty
+   <code>og_title</code> is invisible on the feed. Deploy after changing metadata.</li>
+<li><strong>Get the social link(s).</strong> The contest requires the app posted to at least
+   one <strong>public</strong> social platform (Instagram, TikTok, YouTube, or X) with a
+   link back to the Higgsfield app and the <strong><code>#HiggsfieldApp</code></strong> hashtag. Pass
+   one or more <code>--url</code> flags, each a link to that public post — any other host
+   is rejected. The user posts it themselves; ask for the URL(s) if you don't
+   have them, and remind them to include the app link + <code>#HiggsfieldApp</code> in the
+   post.</li>
+<li><strong>Submit.</strong> Run <code>higgsfield website contest &lt;website_id&gt;</code> with the <code>--url</code>
+   flag(s). There's a single active contest, so no contest id. One entry per app
+   — re-running OVERWRITES the urls (use it to fix or add links, it doesn't
+   create a second entry).</li>
+</ol>
+<pre><code class="language-bash"># after `higgsfield website deploy &lt;website_id&gt;` has shipped (metadata filled)
+higgsfield website contest &lt;website_id&gt; \
+  --url https://x.com/&lt;user&gt;/status/…   # ≥1 public post, #HiggsfieldApp
+</code></pre>
+<p>If the user asks to enter but hasn't posted anywhere yet, get the app deployed
+with real metadata, then tell them the one thing only they can do — post it
+publicly with the app link and <code>#HiggsfieldApp</code> — and enter as soon as they
+give you the URL.</p>
+<h2>Eligibility (relay if asked)</h2>
+<p>18+, a Higgsfield account, free to enter. No third-party IP. Prizes paid within
+30 days of the announcement after eligibility verification; winners cover their
+own taxes. Void where prohibited. Jury decisions are final. Full official rules
+are on the prizes page.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

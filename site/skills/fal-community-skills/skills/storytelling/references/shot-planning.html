@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>shot-planning · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/storytelling/references/shot-planning.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Shot planning reference</h1>
+<h2>Basic sequence shapes</h2>
+<h2>15 second social ad</h2>
+<table>
+<thead>
+<tr>
+<th>Shot</th>
+<th>Time</th>
+<th>Purpose</th>
+<th>Visual role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0-2s</td>
+<td>Hook</td>
+<td>striking product or problem image</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2-6s</td>
+<td>Context</td>
+<td>product in use or character reaction</td>
+</tr>
+<tr>
+<td>3</td>
+<td>6-11s</td>
+<td>Proof</td>
+<td>feature, texture, process, result</td>
+</tr>
+<tr>
+<td>4</td>
+<td>11-15s</td>
+<td>Close</td>
+<td>memorable final frame with safe space</td>
+</tr>
+</tbody>
+</table>
+<h2>30 second commercial</h2>
+<table>
+<thead>
+<tr>
+<th>Shot</th>
+<th>Time</th>
+<th>Purpose</th>
+<th>Visual role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0-3s</td>
+<td>Hook</td>
+<td>image that defines the world</td>
+</tr>
+<tr>
+<td>2</td>
+<td>3-7s</td>
+<td>Product or hero</td>
+<td>show subject clearly</td>
+</tr>
+<tr>
+<td>3</td>
+<td>7-13s</td>
+<td>Benefit</td>
+<td>action, feature, transformation</td>
+</tr>
+<tr>
+<td>4</td>
+<td>13-20s</td>
+<td>Lifestyle or proof</td>
+<td>real context, emotion, result</td>
+</tr>
+<tr>
+<td>5</td>
+<td>20-27s</td>
+<td>Escalation</td>
+<td>strongest beauty or motion shot</td>
+</tr>
+<tr>
+<td>6</td>
+<td>27-30s</td>
+<td>End frame</td>
+<td>clean brand-safe final composition</td>
+</tr>
+</tbody>
+</table>
+<h2>Short cinematic scene</h2>
+<table>
+<thead>
+<tr>
+<th>Shot</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Establishing</td>
+<td>where the scene happens and mood</td>
+</tr>
+<tr>
+<td>Character reveal</td>
+<td>who matters</td>
+</tr>
+<tr>
+<td>Action beat</td>
+<td>what changes</td>
+</tr>
+<tr>
+<td>Reaction</td>
+<td>emotional consequence</td>
+</tr>
+<tr>
+<td>Detail insert</td>
+<td>object, clue, texture, proof</td>
+</tr>
+<tr>
+<td>Resolution</td>
+<td>new state or unanswered tension</td>
+</tr>
+</tbody>
+</table>
+<h2>Continuity anchors</h2>
+<p>Character anchor:</p>
+<pre><code class="language-text">same character face, hair, wardrobe, age, posture, and style as the approved
+reference
+</code></pre>
+<p>Product anchor:</p>
+<pre><code class="language-text">same product shape, color, packaging, logo placement, and material as the
+reference
+</code></pre>
+<p>Location anchor:</p>
+<pre><code class="language-text">same room layout, window direction, color palette, and time of day
+</code></pre>
+<p>Motion anchor:</p>
+<pre><code class="language-text">single continuous shot, starts where previous shot ended, no time jump
+</code></pre>
+<h2>Pacing guidance</h2>
+<ul>
+<li>Fast: 1-3 second shots, strong motion, clear graphic frames.</li>
+<li>Medium: 3-6 second shots, product demos, lifestyle, dialogue-like scenes.</li>
+<li>Slow: 6-10 second shots, luxury, drama, architecture, atmosphere.</li>
+<li>Variable: fast hook, slower proof, strong final frame.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

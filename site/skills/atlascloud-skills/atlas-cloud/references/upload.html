@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>upload · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">atlas-cloud/references/upload.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Upload Media — Complete Code Templates</h1>
+<p>Upload local image/media files to Atlas Cloud to get a publicly accessible URL. Use this when you need to provide an <code>image_url</code> to image-editing or image-to-video models but only have a local file.</p>
+<blockquote>
+<p><strong>WARNING</strong>: This upload endpoint is strictly for temporary use with Atlas Cloud generation tasks only. Do NOT use it as permanent file hosting, CDN, or for any purpose unrelated to Atlas Cloud image/video generation. Abuse (e.g., bulk uploads, hosting illegal or unrelated content) may result in immediate API key suspension.</p>
+</blockquote>
+<h2>Table of Contents</h2>
+<ul>
+<li><a href="#python">Python</a></li>
+<li><a href="#nodejs--typescript">Node.js / TypeScript</a></li>
+<li><a href="#curl">cURL</a></li>
+<li><a href="#workflow-local-file--image-to-video">Workflow: Local File → Image-to-Video</a></li>
+</ul>
+<hr />
+<h2>Python</h2>
+<pre><code class="language-python">import requests
+import os
+
+ATLAS_API_KEY = os.environ.get(&quot;ATLASCLOUD_API_KEY&quot;)
+BASE_URL = &quot;https://api.atlascloud.ai/api/v1&quot;
+
+
+def upload_media(file_path: str) -&gt; dict:
+    &quot;&quot;&quot;
+    Upload a local file to Atlas Cloud and get a public URL.
+
+    Args:
+        file_path: Absolute path to the local file
+
+    Returns:
+        dict with download_url, filename, and size
+    &quot;&quot;&quot;
+    with open(file_path, &quot;rb&quot;) as f:
+        files = {&quot;file&quot;: (os.path.basename(file_path), f)}
+        resp = requests.post(
+            f&quot;{BASE_URL}/model/uploadMedia&quot;,
+            headers={&quot;Authorization&quot;: f&quot;Bearer {ATLAS_API_KEY}&quot;},
+            files=files,
+            timeout=60,
+        )
+    resp.raise_for_status()
+    data = resp.json()[&quot;data&quot;]
+    print(f&quot;Uploaded: {data['download_url']}&quot;)
+    print(f&quot;Filename: {data['filename']}, Size: {data['size']} bytes&quot;)
+    return data
+
+
+# Usage
+if __name__ == &quot;__main__&quot;:
+    result = upload_media(&quot;/path/to/local/photo.jpg&quot;)
+    print(f&quot;Public URL: {result['download_url']}&quot;)
+</code></pre>
+<hr />
+<h2>Node.js / TypeScript</h2>
+<pre><code class="language-typescript">import { readFile } from 'fs/promises';
+import { basename } from 'path';
+
+const ATLAS_API_KEY = process.env.ATLASCLOUD_API_KEY;
+const BASE_URL = 'https://api.atlascloud.ai/api/v1';
+
+interface UploadResult {
+  download_url: string;
+  filename: string;
+  size: number;
+}
+
+async function uploadMedia(filePath: string): Promise&lt;UploadResult&gt; {
+  const fileBuffer = await readFile(filePath);
+  const fileName = basename(filePath);
+
+  const formData = new FormData();
+  formData.append('file', new Blob([fileBuffer]), fileName);
+
+  const resp = await fetch(`${BASE_URL}/model/uploadMedia`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${ATLAS_API_KEY}`,
+    },
+    body: formData,
+    signal: AbortSignal.timeout(60000),
+  });
+
+  if (!resp.ok) {
+    throw new Error(`Upload failed: ${resp.status} ${await resp.text()}`);
+  }
+
+  const data: UploadResult = (await resp.json()).data;
+  console.log(`Uploaded: ${data.download_url}`);
+  console.log(`Filename: ${data.filename}, Size: ${data.size} bytes`);
+  return data;
+}
+
+// Usage
+const result = await uploadMedia('/path/to/local/photo.jpg');
+console.log(`Public URL: ${result.download_url}`);
+</code></pre>
+<hr />
+<h2>cURL</h2>
+<pre><code class="language-bash"># Upload a local file
+RESULT=$(curl -s -X POST &quot;https://api.atlascloud.ai/api/v1/model/uploadMedia&quot; \
+  -H &quot;Authorization: Bearer $ATLASCLOUD_API_KEY&quot; \
+  -F &quot;file=@/path/to/local/photo.jpg&quot;)
+
+echo &quot;Download URL:&quot;
+echo &quot;$RESULT&quot; | jq -r '.data.download_url'
+
+echo &quot;Filename:&quot;
+echo &quot;$RESULT&quot; | jq -r '.data.filename'
+
+echo &quot;Size:&quot;
+echo &quot;$RESULT&quot; | jq -r '.data.size'
+</code></pre>
+<hr />
+<h2>Workflow: Local File → Image-to-Video</h2>
+<h3>Python</h3>
+<pre><code class="language-python">import requests
+import time
+import os
+
+ATLAS_API_KEY = os.environ.get(&quot;ATLASCLOUD_API_KEY&quot;)
+BASE_URL = &quot;https://api.atlascloud.ai/api/v1&quot;
+HEADERS = {
+    &quot;Authorization&quot;: f&quot;Bearer {ATLAS_API_KEY}&quot;,
+    &quot;Content-Type&quot;: &quot;application/json&quot;,
+}
+
+
+def upload_media(file_path: str) -&gt; str:
+    &quot;&quot;&quot;Upload a local file and return the public URL.&quot;&quot;&quot;
+    with open(file_path, &quot;rb&quot;) as f:
+        files = {&quot;file&quot;: (os.path.basename(file_path), f)}
+        resp = requests.post(
+            f&quot;{BASE_URL}/model/uploadMedia&quot;,
+            headers={&quot;Authorization&quot;: f&quot;Bearer {ATLAS_API_KEY}&quot;},
+            files=files,
+            timeout=60,
+        )
+    resp.raise_for_status()
+    return resp.json()[&quot;data&quot;][&quot;download_url&quot;]
+
+
+def generate_video(model: str, prompt: str, **kwargs) -&gt; str:
+    &quot;&quot;&quot;Submit a video generation task and poll for result.&quot;&quot;&quot;
+    payload = {&quot;model&quot;: model, &quot;prompt&quot;: prompt, **kwargs}
+    resp = requests.post(f&quot;{BASE_URL}/model/generateVideo&quot;, json=payload, headers=HEADERS, timeout=50)
+    resp.raise_for_status()
+    prediction_id = resp.json()[&quot;data&quot;][&quot;id&quot;]
+    print(f&quot;Video generation submitted. Prediction ID: {prediction_id}&quot;)
+
+    for _ in range(200):
+        time.sleep(3)
+        result = requests.get(f&quot;{BASE_URL}/model/prediction/{prediction_id}&quot;, headers=HEADERS, timeout=30)
+        result.raise_for_status()
+        result_data = result.json()[&quot;data&quot;]
+        status = result_data.get(&quot;status&quot;, &quot;unknown&quot;)
+        if status in (&quot;completed&quot;, &quot;succeeded&quot;):
+            outputs = result_data.get(&quot;outputs&quot;) or result_data.get(&quot;output&quot;, [])
+            if isinstance(outputs, str):
+                outputs = [outputs]
+            return outputs[0]
+        elif status == &quot;failed&quot;:
+            raise RuntimeError(f&quot;Generation failed: {result_data.get('error')}&quot;)
+        print(f&quot;Status: {status}...&quot;)
+
+    raise TimeoutError(&quot;Generation timed out&quot;)
+
+
+# Complete workflow: local image → upload → image-to-video
+if __name__ == &quot;__main__&quot;:
+    # Step 1: Upload local image
+    image_url = upload_media(&quot;/path/to/local/photo.jpg&quot;)
+    print(f&quot;Uploaded image URL: {image_url}&quot;)
+
+    # Step 2: Generate video from the uploaded image
+    video_url = generate_video(
+        model=&quot;kwaivgi/kling-v3.0-std/image-to-video&quot;,
+        prompt=&quot;Camera slowly zooms in, cinematic lighting&quot;,
+        image_url=image_url,
+        duration=5,
+        aspect_ratio=&quot;16:9&quot;,
+    )
+    print(f&quot;Video URL: {video_url}&quot;)
+</code></pre>
+<h3>cURL</h3>
+<pre><code class="language-bash"># Step 1: Upload local image
+IMAGE_URL=$(curl -s -X POST &quot;https://api.atlascloud.ai/api/v1/model/uploadMedia&quot; \
+  -H &quot;Authorization: Bearer $ATLASCLOUD_API_KEY&quot; \
+  -F &quot;file=@/path/to/local/photo.jpg&quot; | jq -r '.data.download_url')
+
+echo &quot;Uploaded image URL: $IMAGE_URL&quot;
+
+# Step 2: Generate video from uploaded image
+PREDICTION_ID=$(curl -s -X POST &quot;https://api.atlascloud.ai/api/v1/model/generateVideo&quot; \
+  -H &quot;Authorization: Bearer $ATLASCLOUD_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &quot;{
+    \&quot;model\&quot;: \&quot;kwaivgi/kling-v3.0-std/image-to-video\&quot;,
+    \&quot;prompt\&quot;: \&quot;Camera slowly zooms in, cinematic lighting\&quot;,
+    \&quot;image_url\&quot;: \&quot;$IMAGE_URL\&quot;,
+    \&quot;duration\&quot;: 5,
+    \&quot;aspect_ratio\&quot;: \&quot;16:9\&quot;
+  }&quot; | jq -r '.data.id')
+
+echo &quot;Prediction ID: $PREDICTION_ID&quot;
+
+# Step 3: Poll for result
+while true; do
+  sleep 3
+  RESULT=$(curl -s &quot;https://api.atlascloud.ai/api/v1/model/prediction/$PREDICTION_ID&quot; \
+    -H &quot;Authorization: Bearer $ATLASCLOUD_API_KEY&quot;)
+
+  STATUS=$(echo &quot;$RESULT&quot; | jq -r '.data.status')
+
+  if [ &quot;$STATUS&quot; = &quot;completed&quot; ] || [ &quot;$STATUS&quot; = &quot;succeeded&quot; ]; then
+    echo &quot;Video URL:&quot;
+    echo &quot;$RESULT&quot; | jq -r '.data.outputs[0]'
+    break
+  elif [ &quot;$STATUS&quot; = &quot;failed&quot; ]; then
+    echo &quot;Failed:&quot;
+    echo &quot;$RESULT&quot; | jq -r '.data.error'
+    break
+  else
+    echo &quot;Status: $STATUS...&quot;
+  fi
+done
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>transitions · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/seedance-2-5-skill/references/transitions.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Transitions</h1>
+<p>Two decisions, in this order:</p>
+<ol>
+<li><strong>Should the model generate this transition at all,</strong> or should the edit own it?</li>
+<li>If the model, <strong>name the type at the cut point.</strong></li>
+</ol>
+<h2>First: does this belong in the edit?</h2>
+<p>A generation costs money and gives you less control than a timeline. Several
+common transitions are two seconds of work in any editor:</p>
+<table>
+<thead>
+<tr>
+<th>Transition</th>
+<th>Where it belongs</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Straight cut</td>
+<td>Edit</td>
+<td>Nothing to generate</td>
+</tr>
+<tr>
+<td>Fade to/from black or white</td>
+<td>Edit</td>
+<td>Exact, adjustable, free</td>
+</tr>
+<tr>
+<td>Cross dissolve</td>
+<td>Edit</td>
+<td>Same, and easier to time</td>
+</tr>
+<tr>
+<td>Flash frame (white/black)</td>
+<td>Edit</td>
+<td>Frame-accurate there, approximate here</td>
+</tr>
+<tr>
+<td>Wipe / slide</td>
+<td>Edit</td>
+<td>A geometric effect, not a photographed event</td>
+</tr>
+</tbody>
+</table>
+<p>Generate the transitions that are <strong>photographed events</strong> — things an editor
+cannot fabricate from two finished clips:</p>
+<table>
+<thead>
+<tr>
+<th>Transition</th>
+<th>What it is</th>
+<th>Suits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Occlusion</strong></td>
+<td>Camera moves until an object fills frame; the next shot pulls out of it</td>
+<td>Space and time jumps</td>
+</tr>
+<tr>
+<td><strong>Match object</strong></td>
+<td>The outgoing frame's shape, outline, or colour becomes the incoming one</td>
+<td>Montage, conceptual links</td>
+</tr>
+<tr>
+<td><strong>Motion / whip</strong></td>
+<td>Rapid camera movement blurs out and resolves in the next scene</td>
+<td>Speed, action, travel</td>
+</tr>
+<tr>
+<td><strong>Action relay</strong></td>
+<td>A subject's movement carries across: they leave frame one way and enter the next continuing it</td>
+<td>Outfit changes, location hops</td>
+</tr>
+<tr>
+<td><strong>Push / pull through</strong></td>
+<td>A detail is magnified until it becomes the next scene, or the reverse</td>
+<td>Scale shifts, worlds-within-worlds</td>
+</tr>
+<tr>
+<td><strong>Material spread</strong></td>
+<td>A medium — ink, smoke, light — spreads across frame and the next scene emerges from it</td>
+<td>Stylised and culturally specific work</td>
+</tr>
+</tbody>
+</table>
+<p>These need generation because the camera and the subject have to <em>do</em> something
+during the transition. That is also why they read as craft rather than as effects.</p>
+<h2>Second: name it at the cut point</h2>
+<p>The skeleton is one line:</p>
+<pre><code class="language-text">Use a &lt;transition type&gt; at the cut.
+</code></pre>
+<p>Then, if the transition needs staging, describe the mechanics — what triggers it,
+which direction things move, and what the next shot opens on:</p>
+<pre><code class="language-text">Use an occlusion transition at the cut. The camera pushes forward until a person's
+back fills the frame and the image goes dark; the next shot pulls out of the
+darkness onto the gallery interior.
+</code></pre>
+<p>For the trickier types, state: <strong>trigger action → camera movement → the visual
+transformation → the arrival state.</strong> Arrival state is the one people skip, and it
+is what stops the incoming shot from drifting after the transition completes.</p>
+<h2>Do not attach "no hard cut" by default</h2>
+<p><code>no hard cut</code> and <code>nothing appears from nowhere</code> are <strong>extension and continuation
+defaults</strong>. In that context they are correct: a broken seam and objects
+materialising are the two characteristic failures of continuing existing footage.</p>
+<p>Everywhere else, a hard cut or a sudden appearance is a <strong>technique</strong> — teleports,
+jump scares, magic reveals, comedic timing. Attaching those constraints globally
+removes tools you may want.</p>
+<p>Enable them as a scoped preset:</p>
+<ul>
+<li>Extending or chaining a continuous action → <strong>on</strong></li>
+<li>Deliberate discontinuity → <strong>off</strong></li>
+<li>Everything else → decide per piece</li>
+</ul>
+<p>The general rule this instantiates: a default that is correct in one scope is not
+a global rule. The same mistake shows up as "every beat must end on a camera move"
+— true in a piece where camera movement <em>is</em> the premise, wrong as a universal.</p>
+<h2>Letting the model choose</h2>
+<p>When the piece has a consistent style but no specific transition requirement, a
+constrained menu works better than either silence or a hard pick:</p>
+<pre><code class="language-text">At each cut, choose whichever suits this piece from: occlusion, match object,
+motion, or material spread.
+</code></pre>
+<p>Silence gets you an arbitrary transition; a hard pick may fight the material. A
+menu keeps the choice inside a set you have already approved.</p>
+<h2>Multi-shot support is model-dependent</h2>
+<p>All of this assumes the model can produce ordered shots with cuts in one
+generation. Some models always bridge shots with movement instead. Verify before
+building a spec around cuts — see <a href="model-profile.html">model profile</a> and
+<a href="capabilities.html">capabilities</a>.</p>
+<p>When multi-shot is unavailable, generate one shot per request and assemble the
+cuts in the edit. That also moves the five edit-owned transitions above back where
+they belong.</p>
+<h2>Related</h2>
+<ul>
+<li><a href="editing-and-extension.html">editing and extension</a> — where the seam defaults apply</li>
+<li><a href="cinematography.html">cinematography</a> — camera vocabulary</li>
+<li><a href="troubleshooting.html">troubleshooting</a> — seams that jump or feel arbitrary</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

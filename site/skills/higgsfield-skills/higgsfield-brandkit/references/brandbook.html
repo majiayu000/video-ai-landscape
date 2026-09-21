@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>brandbook · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-brandkit/references/brandbook.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Brandbook</h1>
+<p>Create the canonical Brandbook only after logo, palette, and typography are each approved. Never ask for an additional combined Essential Kit approval.</p>
+<h2>Required inputs</h2>
+<p>Read the approved kit from the durable local state file:</p>
+<pre><code class="language-bash">python3 &quot;$SKILL_ROOT/scripts/brandkit.py&quot; state \
+  --state-file &quot;$BRANDKIT_STATE&quot; --action get_essential_kit
+</code></pre>
+<p>Require:</p>
+<ul>
+<li>approved logo SVG</li>
+<li>approved palette</li>
+<li>approved display/body typography</li>
+<li>approved brand concept/summary copy supplied by the user</li>
+<li>optional approved mockups</li>
+</ul>
+<p>Do not invent mission, values, claims, product variants, prices, statistics, or brand-story copy.</p>
+<h2>Canonical template</h2>
+<p>The bundled builder owns this fixed PPTX source and its versioned layout contract:</p>
+<pre><code class="language-text">https://docs.google.com/presentation/d/1rAfUJ-PbZ4S-h3puYSUHpE5UIcdKyRw1/export/pptx
+</code></pre>
+<p>Do not inspect, recreate, or edit the template manually. The build requires network access to that URL plus any approved public font or asset URLs.</p>
+<h2>Build</h2>
+<p>First read <a href="prerequisites.html">prerequisites</a>. Check the complete Brandbook toolchain and ask before installing anything missing.</p>
+<p>Write this JSON under <code>"$BRANDKIT_WORKDIR"</code>, replacing values but preserving keys and nesting:</p>
+<pre><code class="language-json">{
+  &quot;brand_name&quot;: &quot;Northline&quot;,
+  &quot;concept_summary&quot;: &quot;A precise identity built around directional movement and calm technical confidence.&quot;,
+  &quot;palette_summary&quot;: &quot;Ink and Paper establish clarity while Signal Blue marks moments of action.&quot;,
+  &quot;secondary_logo_url&quot;: &quot;&quot;,
+  &quot;mockups&quot;: [
+    {
+      &quot;path&quot;: &quot;/absolute/path/to/approved-mockup.png&quot;
+    }
+  ],
+  &quot;revision&quot;: 1
+}
+</code></pre>
+<p>Run once in the foreground:</p>
+<pre><code class="language-bash">python3 &quot;$SKILL_ROOT/scripts/brandkit.py&quot; brandbook-build \
+  --state-file &quot;$BRANDKIT_STATE&quot; \
+  --input &quot;$BRANDKIT_WORKDIR/brandbook.json&quot; \
+  --output-dir &quot;$BRANDKIT_WORKDIR/brandbook&quot;
+</code></pre>
+<p>The builder reads the separately approved slots from state, downloads only the fixed template, resolves the exact approved fonts, creates the PPTX, converts those exact bytes with LibreOffice, and verifies the PDF fonts with Fontconfig and Poppler. Do not duplicate foundation slots in the input. Do not substitute ReportLab, a custom slide generator, or a different template after failure.</p>
+<h2>Fixed seven-slide structure</h2>
+<p>Preserve the template's slide size, masters, layout, margins, grids, text positions, image zones, hierarchy, font sizes, spacing, crop, rotation, and stacking order except for these conditional rules.</p>
+<ol>
+<li><strong>Cover</strong> — “Brand Guidelines” and the real brand/product name.</li>
+<li><strong>Branding concept</strong> — approved concept summary and palette rationale.</li>
+<li><strong>Primary logo</strong> — exact approved SVG.</li>
+<li><strong>Logo system</strong> — primary plus an approved secondary/reverse variant only when supplied or requested. Remove the unused secondary slot and label; never invent one.</li>
+<li><strong>Primary palette</strong> — approved swatches, names, RGB, hex, independent readable label contrast, and no decorative redesign.</li>
+<li><strong>Typography</strong> — approved display/body fonts rendered at equal specimen sizes and aligned positions, with neither clipped nor substituted.</li>
+<li><strong>Mockups</strong> — two approved mockups per slide.</li>
+</ol>
+<p>Mockup conditions:</p>
+<ul>
+<li>no approved mockups: remove slide 7</li>
+<li>one: keep the first zone and remove the second</li>
+<li>two: keep one mockup slide</li>
+<li>more than two: duplicate the exact mockup slide for each additional pair</li>
+</ul>
+<p>Never place generated-but-unapproved work in the Brandbook.</p>
+<h2>Brand-specific styling</h2>
+<ul>
+<li>Replace template colors and fonts with approved values.</li>
+<li>Keep every slide title on one line in the approved display font and at least 3:1 contrast against its background.</li>
+<li>Keep body copy in the approved body font without auto-shrinking.</li>
+<li>Preserve the approved logo geometry; never stretch or redraw it.</li>
+<li>Crop mockups into template slots without independent width/height stretching.</li>
+<li>Use approved copy only and add no new decorative sections.</li>
+</ul>
+<h2>QA</h2>
+<p>Before delivery:</p>
+<ol>
+<li>Render every slide.</li>
+<li>Check clipping, overflow, font substitution, crops, contrast, and alignment.</li>
+<li>Verify logo geometry, palette values, and absence of placeholder text.</li>
+<li>Confirm the PDF visually matches the PPTX.</li>
+</ol>
+<p>Use stable names:</p>
+<pre><code class="language-text">&lt;brand&gt;-brand-guidelines-v&lt;revision&gt;.pptx
+&lt;brand&gt;-brand-guidelines-v&lt;revision&gt;.pdf
+</code></pre>
+<p>If the template, font, or conversion contract fails, report the concrete error and stop. Do not retry a deterministic mismatch or offer an improvised fallback. The editable PPTX still requires the approved fonts on the recipient's machine even after PDF verification passes.</p>
+<h2>Delivery and approval</h2>
+<p>Return only:</p>
+<ol>
+<li>one clickable local PPTX link</li>
+<li>one clickable local PDF link</li>
+<li>one concise warning naming the display/body fonts the user must install, with official links when known</li>
+</ol>
+<p>Do not show page cards, contact sheets, or QA screenshots. Wait for explicit approval, then save the Brandbook element with <code>required_slots</code> equal to <code>["logo", "palette", "typography"]</code>.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

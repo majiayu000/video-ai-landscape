@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>README · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/typescript/claude-api/README.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Claude API - TypeScript</h1>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Namespace</th>
+<th>Key types / call</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>User profiles</td>
+<td>beta</td>
+<td><code>client.beta.userProfiles.create(...)</code> / <code>.retrieve(id)</code> / <code>.list()</code>. Pass the returned profile id on <code>client.beta.messages.create</code>. Requires a beta header - check the SDK's beta-headers reference for the current flag.</td>
+</tr>
+</tbody>
+</table>
+<h2>Installation</h2>
+<pre><code class="language-bash">npm install @anthropic-ai/sdk
+</code></pre>
+<blockquote>
+<p><strong>Reading local files (ESM):</strong> <code>__dirname</code> and <code>__filename</code> are <strong>undefined</strong> in ES modules - using either throws <code>ReferenceError: __dirname is not defined</code> at runtime. For cwd-relative reads, pass the bare relative path (<code>fs.readFileSync("./sample.png")</code>). For script-relative paths, derive the directory from <code>import.meta.url</code>: <code>const here = path.dirname(fileURLToPath(import.meta.url))</code>. Never write <code>path.join(__dirname, ...)</code> in an ESM <code>.ts</code> file.</p>
+</blockquote>
+<h2>Client Initialization</h2>
+<pre><code class="language-typescript">import Anthropic from &quot;@anthropic-ai/sdk&quot;;
+
+// Default - resolves credentials from the environment:
+// ANTHROPIC_API_KEY, or ANTHROPIC_AUTH_TOKEN, or an `ant auth login` profile.
+// Prefer this for local dev; don't hardcode a key.
+const client = new Anthropic();
+
+// Explicit API key (only when you must inject a specific key)
+const client = new Anthropic({ apiKey: &quot;your-api-key&quot; });
+</code></pre>
+<hr />
+<h2>Basic Message Request</h2>
+<pre><code class="language-typescript">const response = await client.messages.create({
+  model: &quot;claude-opus-5&quot;,
+  max_tokens: 16000,
+  messages: [{ role: &quot;user&quot;, content: &quot;What is the capital of France?&quot; }],
+});
+// response.content is ContentBlock[] - a discriminated union. Narrow by .type
+// before accessing .text (TypeScript will error on content[0].text without this).
+for (const block of response.content) {
+  if (block.type === &quot;text&quot;) {
+    console.log(block.text);
+  }
+}
+</code></pre>
+<hr />
+<h2>System Prompts</h2>
+<pre><code class="language-typescript">const response = await client.messages.create({
+  model: &quot;claude-opus-5&quot;,
+  max_tokens: 16000,
+  system:
+    &quot;You are a helpful coding assistant. Always provide examples in Python.&quot;,
+  messages: [{ role: &quot;user&quot;, content: &quot;How do I read a JSON file?&quot; }],
+});
+</code></pre>
+<h3>Mid-conversation system messages (model-gated)</h3>
+<p>For operator instructions that arrive mid-conversation (mode switches, injected state), append <code>{role: "system", ...}</code> to <code>messages</code> instead of editing top-level <code>system</code> - this preserves the cached prefix and carries operator authority. Must follow a user message (or an <code>assistant</code> message ending in server-tool use), and must be either the last entry in <code>messages</code> or be followed by an <code>assistant</code> turn; cannot be <code>messages[0]</code>. Unsupported models return a 400 (<code>role 'system' is not supported on this model</code>). See <code>shared/prompt-caching.md</code> for when to use this vs. top-level <code>system</code>.</p>
+<pre><code class="language-typescript">// No beta header needed - use regular client.messages.create.
+const response = await client.messages.create({
+  model: MODEL_ID, // must support mid-conversation system messages
+  max_tokens: 16000,
+  system: [
+    { type: &quot;text&quot;, text: STABLE_SYSTEM, cache_control: { type: &quot;ephemeral&quot; } },
+  ],
+  messages: [
+    ...history,
+    { role: &quot;user&quot;, content: userMessage },
+    { role: &quot;system&quot;, content: &quot;Terse mode enabled - keep responses under 40 words.&quot; },
+  ],
+});
+</code></pre>
+<hr />
+<h2>Vision (Images)</h2>
+<h3>URL</h3>
+<pre><code class="language-typescript">const response = await client.messages.create({
+  model: &quot;claude-opus-5&quot;,
+  max_tokens: 16000,
+  messages: [
+    {
+      role: &quot;user&quot;,
+      content: [
+        {
+          type: &quot;image&quot;,
+          source: { type: &quot;url&quot;, url: &quot;https://example.com/image.png&quot; },
+        },
+        { type: &quot;text&quot;, text: &quot;Describe this image&quot; },
+      ],
+    },
+  ],
+});
+</code></pre>
+<h3>Base64</h3>
+<pre><code class="language-typescript">import fs from &quot;fs&quot;;
+
+const imageData = fs.readFileSync(&quot;image.png&quot;).toString(&quot;base64&quot;);
+
+const response = await client.messages.create({
+  model: &quot;claude-opus-5&quot;,
+  max_tokens: 16000,
+  messages: [
+    {
+      role: &quot;user&quot;,
+      content: [
+        {
+          type: &quot;image&quot;,
+          source: { type: &quot;base64&quot;, media_type: &quot;image/png&quot;, data: imageData },
+        },
+        { type: &quot;text&quot;, text: &quot;What's in this image?&quot; },
+      ],
+    },
+  ],
+});
+</code></pre>
+<hr />
+<h2>Prompt Caching</h2>
+<p><strong>Caching is a prefix match</strong> - any byte change anywhere in the prefix invalidates everything after it. For placement patterns, architectural guidance (frozen system prompt, deterministic tool order, where to put volatile content), and the silent-invalidator audit checklist, read <code>shared/prompt-caching.md</code>.</p>
+<h3>Automatic Caching (Recommended)</h3>
+<p>Use top-level <code>cache_control</code> to automatically cache the last cacheable block in the request:</p>
+<pre><code class="language-typescript">const response = await client.messages.create({
+  model: &quot;claude-opus-5&quot;,
+  max_tokens: 16000,
+  cache_control: { type: &quot;ephemeral&quot; }, // auto-caches the last cacheable block
+  system: &quot;You are an expert on this large document...&quot;,
+  messages: [{ role: &quot;user&quot;, content: &quot;Summarize the key points&quot; }],
+});
+</code></pre>
+<h3>Manual Cache Control</h3>
+<p>For fine-grained control, add <code>cache_control</code> to specific content blocks:</p>
+<pre><code class="language-typescript">const response = await client.messages.create({
+  model: &quot;claude-opus-5&quot;,
+  max_tokens: 16000,
+  system: [
+    {
+      type: &quot;text&quot;,
+      text: &quot;You are an expert on this large document...&quot;,
+      cache_control: { type: &quot;ephemeral&quot; }, // default TTL is 5 minutes
+    },
+  ],
+  messages: [{ role: &quot;user&quot;, content: &quot;Summarize the key points&quot; }],
+});
+
+// With explicit TTL (time-to-live)
+const response2 = await client.messages.create({
+  model: &quot;claude-opus-5&quot;,
+  max_tokens: 16000,
+  system: [
+    {
+      type: &quot;text&quot;,
+      text: &quot;You are an expert on this large document...&quot;,
+      cache_control: { type: &quot;ephemeral&quot;, ttl: &quot;1h&quot; }, // 1 hour TTL
+    },
+  ],
+  messages: [{ role: &quot;user&quot;, content: &quot;Summarize the key points&quot; }],
+});
+</code></pre>
+<h3>Verifying Cache Hits</h3>
+<pre><code class="language-typescript">console.log(response.usage.cache_creation_input_tokens); // tokens written to cache (~1.25x cost)
+console.log(response.usage.cache_read_input_tokens);     // tokens served from cache (~0.1x cost)
+console.log(response.usage.input_tokens);                // uncached tokens (full cost)
+</code></pre>
+<p>If <code>cache_read_input_tokens</code> is zero across repeated identical-prefix requests, a silent invalidator is at work - <code>Date.now()</code> or a UUID in the system prompt, non-deterministic key ordering, or a varying tool set. See <code>shared/prompt-caching.md</code> for the full audit table.</p>
+<hr />
+<h2>Extended Thinking</h2>
+<blockquote>
+<p><strong>Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking. <code>budget_tokens</code> is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<strong>Claude Opus 5:</strong> thinking is on by default - omitting <code>thinking</code> runs adaptive (<code>{ type: "adaptive" }</code> is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. <code>{ type: "disabled" }</code> is accepted only at effort <code>high</code> or lower; pairing it with <code>xhigh</code>/<code>max</code> returns a 400.
+<strong>Older models:</strong> Use <code>thinking: {type: "enabled", budget_tokens: N}</code> (must be &lt; <code>max_tokens</code>, min 1024).</p>
+</blockquote>
+<pre><code class="language-typescript">// Fable 5 / Claude Opus 5 / Opus 4.8 / 4.7 / 4.6: adaptive thinking (recommended)
+const response = await client.messages.create({
+  model: &quot;claude-opus-5&quot;,
+  max_tokens: 16000,
+  thinking: { type: &quot;adaptive&quot;, display: &quot;summarized&quot; }, // display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Claude Opus 5 / Opus 4.8 / 4.7
+  output_config: { effort: &quot;high&quot; }, // low | medium | high | xhigh | max
+  messages: [
+    { role: &quot;user&quot;, content: &quot;Solve this math problem step by step...&quot; },
+  ],
+});
+
+for (const block of response.content) {
+  if (block.type === &quot;thinking&quot;) {
+    console.log(&quot;Thinking:&quot;, block.thinking);
+  } else if (block.type === &quot;text&quot;) {
+    console.log(&quot;Response:&quot;, block.text);
+  }
+}
+</code></pre>
+<hr />
+<h2>Error Handling</h2>
+<p>Use the SDK's typed exception classes - never check error messages with string matching:</p>
+<pre><code class="language-typescript">import Anthropic from &quot;@anthropic-ai/sdk&quot;;
+
+try {
+  const response = await client.messages.create({...});
+} catch (error) {
+  if (error instanceof Anthropic.BadRequestError) {
+    console.error(&quot;Bad request:&quot;, error.message);
+  } else if (error instanceof Anthropic.AuthenticationError) {
+    console.error(&quot;Invalid API key&quot;);
+  } else if (error instanceof Anthropic.RateLimitError) {
+    console.error(&quot;Rate limited - retry later&quot;);
+  } else if (error instanceof Anthropic.APIError) {
+    console.error(`API error ${error.status}:`, error.message);
+  }
+}
+</code></pre>
+<p>All classes extend <code>Anthropic.APIError</code> with a typed <code>status</code> field. Check from most specific to least specific. See <a href="../../shared/error-codes.html">shared/error-codes.md</a> for the full error code reference.</p>
+<hr />
+<h2>Multi-Turn Conversations</h2>
+<p>The API is stateless - send the full conversation history each time. Use <code>Anthropic.MessageParam[]</code> to type the messages array:</p>
+<pre><code class="language-typescript">const messages: Anthropic.MessageParam[] = [
+  { role: &quot;user&quot;, content: &quot;My name is Alice.&quot; },
+  { role: &quot;assistant&quot;, content: &quot;Hello Alice! Nice to meet you.&quot; },
+  { role: &quot;user&quot;, content: &quot;What's my name?&quot; },
+];
+
+const response = await client.messages.create({
+  model: &quot;claude-opus-5&quot;,
+  max_tokens: 16000,
+  messages: messages,
+});
+</code></pre>
+<p><strong>Rules:</strong></p>
+<ul>
+<li>Consecutive same-role messages are allowed - the API combines them into a single turn</li>
+<li>First message must be <code>user</code></li>
+<li>Use SDK types (<code>Anthropic.MessageParam</code>, <code>Anthropic.Message</code>, <code>Anthropic.Tool</code>, etc.) for all API data structures - don't redefine equivalent interfaces</li>
+</ul>
+<hr />
+<h3>Compaction (long conversations)</h3>
+<blockquote>
+<p><strong>Beta, Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6.</strong> When conversations approach the 200K context window, compaction automatically summarizes earlier context server-side. The API returns a <code>compaction</code> block; you must pass it back on subsequent requests - append <code>response.content</code>, not just the text.</p>
+</blockquote>
+<pre><code class="language-typescript">import Anthropic from &quot;@anthropic-ai/sdk&quot;;
+
+const client = new Anthropic();
+const messages: Anthropic.Beta.BetaMessageParam[] = [];
+
+async function chat(userMessage: string): Promise&lt;string&gt; {
+  messages.push({ role: &quot;user&quot;, content: userMessage });
+
+  const response = await client.beta.messages.create({
+    betas: [&quot;compact-2026-01-12&quot;],
+    model: &quot;claude-opus-5&quot;,
+    max_tokens: 16000,
+    messages,
+    context_management: {
+      edits: [{ type: &quot;compact_20260112&quot; }],
+    },
+  });
+
+  // Append full content - compaction blocks must be preserved
+  messages.push({ role: &quot;assistant&quot;, content: response.content });
+
+  const textBlock = response.content.find(
+    (b): b is Anthropic.Beta.BetaTextBlock =&gt; b.type === &quot;text&quot;,
+  );
+  return textBlock?.text ?? &quot;&quot;;
+}
+
+// Compaction triggers automatically when context grows large
+console.log(await chat(&quot;Help me build a Python web scraper&quot;));
+console.log(await chat(&quot;Add support for JavaScript-rendered pages&quot;));
+console.log(await chat(&quot;Now add rate limiting and error handling&quot;));
+</code></pre>
+<hr />
+<h2>Stop Reasons</h2>
+<p>The <code>stop_reason</code> field in the response indicates why the model stopped generating:</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>end_turn</code></td>
+<td>Claude finished its response naturally</td>
+</tr>
+<tr>
+<td><code>max_tokens</code></td>
+<td>Hit the <code>max_tokens</code> limit - increase it or use streaming</td>
+</tr>
+<tr>
+<td><code>stop_sequence</code></td>
+<td>Hit a custom stop sequence</td>
+</tr>
+<tr>
+<td><code>tool_use</code></td>
+<td>Claude wants to call a tool - execute it and continue</td>
+</tr>
+<tr>
+<td><code>pause_turn</code></td>
+<td>Model paused and can be resumed (agentic flows)</td>
+</tr>
+<tr>
+<td><code>refusal</code></td>
+<td>Claude refused for safety reasons - check <code>stop_details</code></td>
+</tr>
+</tbody>
+</table>
+<h3>Structured Stop Details</h3>
+<p>When <code>stop_reason</code> is <code>"refusal"</code>, the response includes a <code>stop_details</code> object with structured information about the refusal:</p>
+<pre><code class="language-typescript">if (response.stop_reason === &quot;refusal&quot; &amp;&amp; response.stop_details) {
+  console.log(`Category: ${response.stop_details.category}`); // e.g. &quot;cyber&quot;, &quot;bio&quot;, &quot;reasoning_extraction&quot;, &quot;frontier_llm&quot;, or null - see docs for the full set
+  console.log(`Explanation: ${response.stop_details.explanation}`);
+}
+</code></pre>
+<h3>Refusal Fallbacks (Claude Fable 5.1) - opt in by default</h3>
+<p>Fallbacks are <strong>opt-in</strong>: without them a refused request simply stops. Include the server-side <code>fallbacks</code> parameter in <code>claude-fable-5-1</code> code by default - on a policy decline the API re-runs the same request on the fallback model inside the same call. A decline before any output isn't billed (a mid-stream decline bills the streamed partial); the rescue bills at the fallback model's own rates, with cache repricing applied automatically.</p>
+<pre><code class="language-typescript">const response = await client.beta.messages.create({
+  model: &quot;claude-fable-5-1&quot;,
+  max_tokens: 16000,
+  betas: [&quot;server-side-fallback-2026-06-01&quot;],
+  fallbacks: [{ model: &quot;claude-opus-4-8&quot; }],
+  messages: [{ role: &quot;user&quot;, content: &quot;...&quot; }],
+});
+
+// Switch points: one fallback block per model that ran and declined this turn
+for (const block of response.content) {
+  if (block.type === &quot;fallback&quot;) {
+    console.log(`${block.from.model} declined; ${block.to.model} continued`);
+  }
+}
+
+// Served-by signal - covers sticky turns, which carry no fallback block.
+// Pair with stop_reason: the fallback model can itself refuse.
+const fallbackRan = (response.usage.iterations ?? []).some(
+  (entry) =&gt; entry.type === &quot;fallback_message&quot;,
+);
+if (fallbackRan &amp;&amp; response.stop_reason !== &quot;refusal&quot;) {
+  console.log(`Served by ${response.model}`);
+}
+</code></pre>
+<p>A <code>stop_reason: "refusal"</code> on the final response means the whole chain refused. The header must be exactly <code>server-side-fallback-2026-06-01</code> <strong>for this array form</strong>; the newer <code>fallbacks: "default"</code> scalar form uses <code>server-side-fallback-2026-07-01</code> instead (see <code>shared/model-migration.md</code> -&gt; Migrating to Claude Opus 5 -&gt; New API features), and pairing either header with the other form returns a 400. The parameter is rejected on the Batches API and unavailable on Amazon Bedrock, Vertex AI, and Microsoft Foundry - register the client-side <code>betaRefusalFallbackMiddleware</code> on the client there instead. Full semantics (sticky routing, billing, streaming, echoing fallback turns back): <code>shared/model-migration.md</code> -&gt; Migrating to Claude Fable 5.1 -&gt; <code>refusal</code> stop reason.</p>
+<hr />
+<h2>Cost Optimization Strategies</h2>
+<h3>1. Use Prompt Caching for Repeated Context</h3>
+<pre><code class="language-typescript">// Automatic caching (simplest - caches the last cacheable block)
+const response = await client.messages.create({
+  model: &quot;claude-opus-5&quot;,
+  max_tokens: 16000,
+  cache_control: { type: &quot;ephemeral&quot; },
+  system: largeDocumentText, // e.g., 50KB of context
+  messages: [{ role: &quot;user&quot;, content: &quot;Summarize the key points&quot; }],
+});
+
+// First request: full cost
+// Subsequent requests: ~90% cheaper for cached portion
+</code></pre>
+<h3>2. Use Token Counting Before Requests</h3>
+<pre><code class="language-typescript">const countResponse = await client.messages.countTokens({
+  model: &quot;claude-opus-5&quot;,
+  messages: messages,
+  system: system,
+});
+
+const estimatedInputCost = countResponse.input_tokens * 0.000005; // $5/1M tokens
+console.log(`Estimated input cost: $${estimatedInputCost.toFixed(4)}`);
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

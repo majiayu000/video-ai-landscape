@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>scroll-scrub-asset-react · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/scroll-scrub-asset-react.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Scroll scrub React asset</h1>
+<p>Read <code>references/scroll-scrub.md</code> first. Copy the fenced source into
+<code>app/src/components/scroll-scrub/scroll-scrub.tsx</code>, then adapt scene data and
+composition without weakening the runtime invariants.</p>
+<pre><code class="language-tsx">/* Scroll scrub React/TanStack reference implementation. */
+
+import { useEffect, useMemo, useRef, useState } from &quot;react&quot;;
+import type { CSSProperties, ReactNode } from &quot;react&quot;;
+
+import &quot;./scroll-scrub.css&quot;;
+
+export interface ScrollScrubScene {
+  id: string;
+  label: string;
+  /** Exact first frame of the deployed desktop clip. */
+  poster: string;
+  /** Exact first frame of mobileClip; provide whenever mobileClip is set. */
+  mobilePoster?: string;
+  clip: string;
+  mobileClip?: string;
+  title: string;
+  body: string;
+  kicker?: string;
+  tags?: string[];
+  actions?: ReactNode;
+  align?: &quot;left&quot; | &quot;right&quot;;
+  /** Viewport-heights assigned to this scene. More distance means slower scrub. */
+  scroll?: number;
+  /** 0..0.6. Slow the middle of the clip without changing either seam frame. */
+  linger?: number;
+  objectPosition?: string;
+  mobileObjectPosition?: string;
+}
+
+export interface ScrollScrubConnector {
+  /** Exact first frame of this connector clip; never substitute a scene still. */
+  poster: string;
+  /** Exact first frame of mobileClip; provide whenever mobileClip is set. */
+  mobilePoster?: string;
+  clip: string;
+  mobileClip?: string;
+  scroll?: number;
+}
+
+export interface ScrollScrubTheme {
+  background: string;
+  ink: string;
+  muted: string;
+  accent: string;
+}
+
+export interface ScrollScrubProps {
+  scenes: ScrollScrubScene[];
+  /** Leave empty for continuous-forward architecture A. */
+  connectors?: (ScrollScrubConnector | null)[];
+  theme: ScrollScrubTheme;
+  className?: string;
+  onActiveSectionChange?: (index: number) =&gt; void;
+}
+
+interface Segment {
+  key: string;
+  kind: &quot;scene&quot; | &quot;connector&quot;;
+  sectionIndex: number;
+  nextSectionIndex: number;
+  poster: string;
+  mobilePoster?: string;
+  clip: string;
+  mobileClip?: string;
+  weight: number;
+  linger: number;
+  objectPosition: string;
+  mobileObjectPosition: string;
+  scene?: ScrollScrubScene;
+}
+
+interface RuntimeSegment extends Segment {
+  band: HTMLElement;
+  layer: HTMLElement;
+  start: number;
+  end: number;
+  current: number;
+  target: number;
+  visible: boolean;
+  loading: boolean;
+  ready: boolean;
+  failed: boolean;
+  loadedSource?: string;
+  video?: HTMLVideoElement;
+  objectUrl?: string;
+  abort?: AbortController;
+}
+
+interface Controller {
+  jumpToSection: (index: number) =&gt; void;
+}
+
+type ThemeStyle = CSSProperties &amp; Record&lt;`--ss-${string}`, string | number&gt;;
+
+const clamp = (value: number, min = 0, max = 1) =&gt;
+  Math.min(max, Math.max(min, value));
+
+const smoothstep = (value: number) =&gt; {
+  const x = clamp(value);
+  return x * x * (3 - 2 * x);
+};
+
+const lingerEase = (value: number, amount: number) =&gt; {
+  const x = clamp(value);
+  const linger = clamp(amount, 0, 0.6);
+  const centered = x - 0.5;
+  return (1 - linger) * x + linger * (4 * centered ** 3 + 0.5);
+};
+
+function buildSegments(
+  scenes: ScrollScrubScene[],
+  connectors: (ScrollScrubConnector | null)[]
+): Segment[] {
+  const result: Segment[] = [];
+
+  for (const [index, scene] of scenes.entries()) {
+    if (scene.mobileClip &amp;&amp; !scene.mobilePoster) {
+      throw new Error(`Scene ${scene.id} needs mobilePoster for mobileClip`);
+    }
+    result.push({
+      clip: scene.clip,
+      key: `scene:${scene.id}`,
+      kind: &quot;scene&quot;,
+      linger: scene.linger ?? 0,
+      mobileClip: scene.mobileClip,
+      mobilePoster: scene.mobilePoster,
+      mobileObjectPosition:
+        scene.mobileObjectPosition ?? scene.objectPosition ?? &quot;50% 50%&quot;,
+      nextSectionIndex: index,
+      objectPosition: scene.objectPosition ?? &quot;50% 50%&quot;,
+      poster: scene.poster,
+      scene,
+      sectionIndex: index,
+      weight: scene.scroll ?? 1.4,
+    });
+
+    const connector = connectors[index];
+    if (index &lt; scenes.length - 1 &amp;&amp; connector?.clip) {
+      if (connector.mobileClip &amp;&amp; !connector.mobilePoster) {
+        throw new Error(
+          `Connector after ${scene.id} needs mobilePoster for mobileClip`
+        );
+      }
+      const nextScene = scenes[index + 1];
+      result.push({
+        clip: connector.clip,
+        key: `connector:${scene.id}:${nextScene.id}`,
+        kind: &quot;connector&quot;,
+        linger: 0,
+        mobileClip: connector.mobileClip,
+        mobilePoster: connector.mobilePoster,
+        mobileObjectPosition:
+          nextScene.mobileObjectPosition ??
+          nextScene.objectPosition ??
+          &quot;50% 50%&quot;,
+        nextSectionIndex: index + 1,
+        objectPosition: nextScene.objectPosition ?? &quot;50% 50%&quot;,
+        poster: connector.poster,
+        sectionIndex: index,
+        weight: connector.scroll ?? 0.8,
+      });
+    }
+  }
+
+  return result;
+}
+
+export function ScrollScrub({
+  scenes,
+  connectors,
+  theme,
+  className,
+  onActiveSectionChange,
+}: ScrollScrubProps) {
+  const rootRef = useRef&lt;HTMLElement&gt;(null);
+  const controllerRef = useRef&lt;Controller | null&gt;(null);
+  const onActiveRef = useRef(onActiveSectionChange);
+  const [activeSection, setActiveSection] = useState(0);
+  const segments = useMemo(
+    () =&gt; buildSegments(scenes, connectors ?? []),
+    [connectors, scenes]
+  );
+
+  onActiveRef.current = onActiveSectionChange;
+
+  useEffect(() =&gt; {
+    const root = rootRef.current;
+    if (!root || segments.length === 0) {
+      return;
+    }
+
+    const layerNodes = [
+      ...root.querySelectorAll&lt;HTMLElement&gt;(&quot;[data-scroll-scrub-layer]&quot;),
+    ];
+    const bandNodes = [
+      ...root.querySelectorAll&lt;HTMLElement&gt;(&quot;[data-scroll-scrub-band]&quot;),
+    ];
+    if (
+      layerNodes.length !== segments.length ||
+      bandNodes.length !== segments.length
+    ) {
+      throw new Error(&quot;ScrollScrub segment markup is out of sync&quot;);
+    }
+
+    const reduceMotion = window.matchMedia(
+      &quot;(prefers-reduced-motion: reduce)&quot;
+    ).matches;
+    const coarsePointer = window.matchMedia(
+      &quot;(hover: none) and (pointer: coarse)&quot;
+    ).matches;
+    const smallViewport = window.matchMedia(&quot;(max-width: 860px)&quot;);
+    const isMobile = () =&gt; coarsePointer || smallViewport.matches;
+    const sourceFor = (segment: RuntimeSegment) =&gt;
+      isMobile() &amp;&amp; segment.mobileClip ? segment.mobileClip : segment.clip;
+    const runtime: RuntimeSegment[] = segments.map((segment, index) =&gt; ({
+      ...segment,
+      band: bandNodes[index],
+      current: 0,
+      end: 0,
+      failed: false,
+      layer: layerNodes[index],
+      loading: false,
+      ready: false,
+      start: 0,
+      target: 0,
+      visible: index === 0,
+    }));
+
+    let active = -1;
+    let destroyed = false;
+    let dirty = true;
+    let frame = 0;
+    let rootTop = 0;
+    let total = 1;
+    let viewportHeight = window.innerHeight;
+    let layoutWidth = window.innerWidth;
+    let userReady = false;
+
+    const unloadClip = (segment: RuntimeSegment) =&gt; {
+      segment.abort?.abort();
+      segment.video?.remove();
+      if (segment.objectUrl) {
+        URL.revokeObjectURL(segment.objectUrl);
+      }
+      delete segment.abort;
+      delete segment.video;
+      delete segment.objectUrl;
+      delete segment.loadedSource;
+      segment.loading = false;
+      segment.ready = false;
+      segment.failed = false;
+      segment.current = segment.target;
+      delete segment.layer.dataset.videoPainted;
+      delete segment.layer.dataset.videoFailed;
+    };
+
+    const layout = () =&gt; {
+      const pageY = window.scrollY || window.pageYOffset;
+      rootTop = root.getBoundingClientRect().top + pageY;
+      viewportHeight = window.innerHeight;
+      layoutWidth = window.innerWidth;
+
+      for (const segment of runtime) {
+        if (
+          segment.loadedSource &amp;&amp;
+          segment.loadedSource !== sourceFor(segment)
+        ) {
+          unloadClip(segment);
+        }
+        const rect = segment.band.getBoundingClientRect();
+        segment.start = rect.top + pageY - rootTop;
+        segment.end = segment.start + rect.height;
+      }
+      total = Math.max(runtime.at(-1)?.end ?? viewportHeight, viewportHeight);
+      dirty = true;
+    };
+
+    const primeVideo = async (video?: HTMLVideoElement) =&gt; {
+      if (!video || !isMobile()) {
+        return;
+      }
+      try {
+        await video.play();
+        video.pause();
+      } catch {
+        // Keep the poster; a later user gesture/seek can retry naturally.
+      }
+    };
+
+    const loadClip = async (segment: RuntimeSegment) =&gt; {
+      const source = sourceFor(segment);
+      if (
+        reduceMotion ||
+        destroyed ||
+        segment.loading ||
+        segment.ready ||
+        segment.failed ||
+        !source
+      ) {
+        return;
+      }
+
+      segment.loading = true;
+      segment.loadedSource = source;
+      segment.abort = new AbortController();
+      const request = segment.abort;
+
+      try {
+        const response = await fetch(source, {
+          signal: request.signal,
+        });
+        if (!response.ok) {
+          throw new Error(`Clip failed: ${response.status}`);
+        }
+        const blob = await response.blob();
+        if (
+          destroyed ||
+          request.signal.aborted ||
+          segment.loadedSource !== source
+        ) {
+          return;
+        }
+
+        const objectUrl = URL.createObjectURL(blob);
+        const video = document.createElement(&quot;video&quot;);
+        video.className = &quot;scroll-scrub__video&quot;;
+        video.muted = true;
+        video.playsInline = true;
+        video.preload = &quot;auto&quot;;
+        video.setAttribute(&quot;muted&quot;, &quot;&quot;);
+        video.setAttribute(&quot;playsinline&quot;, &quot;&quot;);
+        video.src = objectUrl;
+
+        video.addEventListener(
+          &quot;loadedmetadata&quot;,
+          () =&gt; {
+            if (segment.video !== video || segment.loadedSource !== source) {
+              return;
+            }
+            segment.ready = true;
+            segment.loading = false;
+            dirty = true;
+          },
+          { once: true }
+        );
+        video.addEventListener(
+          &quot;loadeddata&quot;,
+          () =&gt; {
+            if (
+              userReady &amp;&amp;
+              segment.video === video &amp;&amp;
+              segment.loadedSource === source
+            ) {
+              void primeVideo(video);
+            }
+          },
+          { once: true }
+        );
+        video.addEventListener(
+          &quot;error&quot;,
+          () =&gt; {
+            if (segment.video !== video) {
+              return;
+            }
+            video.remove();
+            URL.revokeObjectURL(objectUrl);
+            delete segment.video;
+            delete segment.objectUrl;
+            segment.failed = true;
+            segment.loading = false;
+            segment.ready = false;
+            delete segment.layer.dataset.videoPainted;
+            segment.layer.dataset.videoFailed = &quot;true&quot;;
+          },
+          { once: true }
+        );
+        video.addEventListener(
+          &quot;seeked&quot;,
+          () =&gt; {
+            if (segment.video === video &amp;&amp; segment.loadedSource === source) {
+              segment.layer.dataset.videoPainted = &quot;true&quot;;
+            }
+          },
+          { once: true }
+        );
+
+        segment.layer.append(video);
+        segment.objectUrl = objectUrl;
+        segment.video = video;
+      } catch (error) {
+        if (
+          request.signal.aborted ||
+          (error instanceof Error &amp;&amp; error.name === &quot;AbortError&quot;) ||
+          segment.loadedSource !== source
+        ) {
+          return;
+        }
+        segment.layer.dataset.videoFailed = &quot;true&quot;;
+        segment.failed = true;
+        segment.loading = false;
+      }
+    };
+
+    const readScroll = () =&gt; {
+      const pageY = window.scrollY || window.pageYOffset;
+      const y = clamp(pageY - rootTop, 0, total);
+      const crossfade = 0.1 * viewportHeight;
+      let currentIndex = 0;
+
+      for (const [index, segment] of runtime.entries()) {
+        if (y &gt;= segment.start) {
+          currentIndex = index;
+        }
+
+        const length = Math.max(segment.end - segment.start, 1);
+        const local = clamp((y - segment.start) / length);
+        segment.target = segment.linger
+          ? lingerEase(local, segment.linger)
+          : local;
+
+        let outside = 0;
+        if (y &lt; segment.start) {
+          outside = segment.start - y;
+        }
+        if (y &gt; segment.end) {
+          outside = y - segment.end;
+        }
+        let opacity = smoothstep(1 - outside / Math.max(crossfade, 1));
+        if (reduceMotion) {
+          opacity = outside === 0 ? 1 : 0;
+        }
+
+        segment.visible = opacity &gt; 0.001;
+        segment.layer.style.opacity = String(opacity);
+        segment.layer.style.zIndex = index === currentIndex ? &quot;2&quot; : &quot;1&quot;;
+
+        if (
+          y &gt; segment.start - 1.5 * viewportHeight &amp;&amp;
+          y &lt; segment.end + 1.5 * viewportHeight
+        ) {
+          void loadClip(segment);
+        }
+      }
+
+      const current = runtime[currentIndex];
+      const currentLength = Math.max(current.end - current.start, 1);
+      const currentProgress = clamp((y - current.start) / currentLength);
+      const nextActive =
+        current.kind === &quot;connector&quot; &amp;&amp; currentProgress &gt;= 0.5
+          ? current.nextSectionIndex
+          : current.sectionIndex;
+
+      if (nextActive !== active) {
+        active = nextActive;
+        root.dataset.activeSection = String(active);
+        setActiveSection(active);
+        onActiveRef.current?.(active);
+      }
+
+      root.style.setProperty(&quot;--ss-progress&quot;, String(clamp(y / total)));
+    };
+
+    const updateVideos = () =&gt; {
+      for (const segment of runtime) {
+        const { video } = segment;
+        if (!video || !segment.ready || video.seeking) {
+          continue;
+        }
+        if (
+          !segment.visible &amp;&amp;
+          Math.abs(segment.current - segment.target) &lt; 0.002
+        ) {
+          continue;
+        }
+
+        segment.current += (segment.target - segment.current) * 0.2;
+        const targetTime =
+          clamp(segment.current, 0, 0.999) * (video.duration || 1);
+        const epsilon = isMobile() ? 0.02 : 0.008;
+        if (Math.abs(video.currentTime - targetTime) &gt; epsilon) {
+          try {
+            video.currentTime = targetTime;
+          } catch {
+            // Keep the last painted frame while the browser catches up.
+          }
+        }
+      }
+    };
+
+    const tick = () =&gt; {
+      if (destroyed) {
+        return;
+      }
+      if (dirty) {
+        dirty = false;
+        readScroll();
+      }
+      updateVideos();
+      frame = window.requestAnimationFrame(tick);
+    };
+
+    const onScroll = () =&gt; {
+      dirty = true;
+    };
+    const onResize = () =&gt; {
+      if (coarsePointer &amp;&amp; window.innerWidth === layoutWidth) {
+        return;
+      }
+      layout();
+    };
+    const onFirstGesture = () =&gt; {
+      if (userReady) {
+        return;
+      }
+      userReady = true;
+      for (const segment of runtime) {
+        void primeVideo(segment.video);
+      }
+    };
+
+    controllerRef.current = {
+      jumpToSection(index) {
+        const segment = runtime.find(
+          (candidate) =&gt;
+            candidate.kind === &quot;scene&quot; &amp;&amp; candidate.sectionIndex === index
+        );
+        if (!segment) {
+          return;
+        }
+        const top =
+          rootTop + segment.start + 0.15 * (segment.end - segment.start);
+        window.scrollTo({
+          behavior: reduceMotion ? &quot;auto&quot; : &quot;smooth&quot;,
+          top,
+        });
+      },
+    };
+
+    window.addEventListener(&quot;scroll&quot;, onScroll, { passive: true });
+    window.addEventListener(&quot;resize&quot;, onResize);
+    window.addEventListener(&quot;orientationchange&quot;, layout);
+    window.addEventListener(&quot;pointerdown&quot;, onFirstGesture, {
+      once: true,
+      passive: true,
+    });
+    window.addEventListener(&quot;touchstart&quot;, onFirstGesture, {
+      once: true,
+      passive: true,
+    });
+
+    layout();
+    frame = window.requestAnimationFrame(tick);
+
+    return () =&gt; {
+      destroyed = true;
+      controllerRef.current = null;
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener(&quot;scroll&quot;, onScroll);
+      window.removeEventListener(&quot;resize&quot;, onResize);
+      window.removeEventListener(&quot;orientationchange&quot;, layout);
+      window.removeEventListener(&quot;pointerdown&quot;, onFirstGesture);
+      window.removeEventListener(&quot;touchstart&quot;, onFirstGesture);
+      root.style.removeProperty(&quot;--ss-progress&quot;);
+      delete root.dataset.activeSection;
+
+      for (const segment of runtime) {
+        unloadClip(segment);
+        segment.layer.style.removeProperty(&quot;opacity&quot;);
+        segment.layer.style.removeProperty(&quot;z-index&quot;);
+      }
+    };
+  }, [segments]);
+
+  if (scenes.length === 0) {
+    return null;
+  }
+
+  const themeStyle: ThemeStyle = {
+    &quot;--ss-accent&quot;: theme.accent,
+    &quot;--ss-bg&quot;: theme.background,
+    &quot;--ss-ink&quot;: theme.ink,
+    &quot;--ss-muted&quot;: theme.muted,
+  };
+
+  return (
+    &lt;section
+      className={[&quot;scroll-scrub&quot;, className].filter(Boolean).join(&quot; &quot;)}
+      ref={rootRef}
+      style={themeStyle}
+    &gt;
+      &lt;div className=&quot;scroll-scrub__stage&quot;&gt;
+        &lt;div aria-hidden=&quot;true&quot; className=&quot;scroll-scrub__media&quot;&gt;
+          {segments.map((segment, index) =&gt; {
+            const layerStyle: ThemeStyle = {
+              &quot;--ss-mobile-position&quot;: segment.mobileObjectPosition,
+              &quot;--ss-object-position&quot;: segment.objectPosition,
+            };
+            return (
+              &lt;figure
+                className={`scroll-scrub__layer scroll-scrub__layer--${segment.kind}`}
+                data-scroll-scrub-layer=&quot;&quot;
+                key={segment.key}
+                style={layerStyle}
+              &gt;
+                &lt;picture className=&quot;scroll-scrub__picture&quot;&gt;
+                  {segment.mobilePoster ? (
+                    &lt;source
+                      media=&quot;(hover: none) and (pointer: coarse), (max-width: 860px)&quot;
+                      srcSet={segment.mobilePoster}
+                    /&gt;
+                  ) : null}
+                  &lt;img
+                    alt=&quot;&quot;
+                    className=&quot;scroll-scrub__poster&quot;
+                    decoding=&quot;async&quot;
+                    fetchPriority={index === 0 ? &quot;high&quot; : &quot;auto&quot;}
+                    loading={index === 0 ? &quot;eager&quot; : &quot;lazy&quot;}
+                    src={segment.poster}
+                  /&gt;
+                &lt;/picture&gt;
+              &lt;/figure&gt;
+            );
+          })}
+        &lt;/div&gt;
+
+        &lt;div aria-hidden=&quot;true&quot; className=&quot;scroll-scrub__progress&quot;&gt;
+          &lt;span /&gt;
+        &lt;/div&gt;
+
+        &lt;nav aria-label=&quot;Scroll chapters&quot; className=&quot;scroll-scrub__route&quot;&gt;
+          {scenes.map((scene, index) =&gt; (
+            &lt;button
+              aria-current={activeSection === index ? &quot;step&quot; : undefined}
+              className=&quot;scroll-scrub__route-button&quot;
+              key={scene.id}
+              onClick={() =&gt; controllerRef.current?.jumpToSection(index)}
+              type=&quot;button&quot;
+            &gt;
+              &lt;span&gt;{scene.label}&lt;/span&gt;
+            &lt;/button&gt;
+          ))}
+        &lt;/nav&gt;
+      &lt;/div&gt;
+
+      &lt;div className=&quot;scroll-scrub__story&quot;&gt;
+        {segments.map((segment) =&gt; {
+          const bandStyle: CSSProperties = {
+            minHeight: `${Math.max(segment.weight, 0.2) * 100}dvh`,
+          };
+
+          if (segment.kind === &quot;connector&quot;) {
+            return (
+              &lt;div
+                aria-hidden=&quot;true&quot;
+                className=&quot;scroll-scrub__connector-band&quot;
+                data-scroll-scrub-band=&quot;&quot;
+                key={segment.key}
+                style={bandStyle}
+              /&gt;
+            );
+          }
+
+          const { scene } = segment;
+          if (!scene) {
+            return null;
+          }
+          const Heading = segment.sectionIndex === 0 ? &quot;h1&quot; : &quot;h2&quot;;
+
+          return (
+            &lt;article
+              className=&quot;scroll-scrub__chapter&quot;
+              data-align={scene.align ?? &quot;left&quot;}
+              data-scroll-scrub-band=&quot;&quot;
+              id={scene.id}
+              key={segment.key}
+              style={bandStyle}
+            &gt;
+              &lt;div className=&quot;scroll-scrub__chapter-pin&quot;&gt;
+                &lt;div className=&quot;scroll-scrub__copy&quot;&gt;
+                  {scene.kicker ? (
+                    &lt;p className=&quot;scroll-scrub__kicker&quot;&gt;{scene.kicker}&lt;/p&gt;
+                  ) : null}
+                  &lt;Heading className=&quot;scroll-scrub__title&quot;&gt;
+                    {scene.title}
+                  &lt;/Heading&gt;
+                  &lt;p className=&quot;scroll-scrub__body&quot;&gt;{scene.body}&lt;/p&gt;
+                  {scene.tags?.length ? (
+                    &lt;ul className=&quot;scroll-scrub__tags&quot;&gt;
+                      {scene.tags.map((tag) =&gt; (
+                        &lt;li key={tag}&gt;{tag}&lt;/li&gt;
+                      ))}
+                    &lt;/ul&gt;
+                  ) : null}
+                  {scene.actions ? (
+                    &lt;div className=&quot;scroll-scrub__actions&quot;&gt;{scene.actions}&lt;/div&gt;
+                  ) : null}
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/article&gt;
+          );
+        })}
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

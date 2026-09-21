@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>execution · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/universal-video-prompt-skill/references/execution.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Execution</h1>
+<p>This skill produces specs and compiled prompts. Running them is a separate
+concern, deliberately: the spec must not depend on who executes it.</p>
+<h2>Choosing a route</h2>
+<p>Any provider exposing the target model works. <strong>A user-selected provider always
+wins</strong> — never redirect someone off the platform they asked for.</p>
+<p>An aggregator is the path of least friction when a spec targets more than one
+model, for two reasons that matter to this skill specifically:</p>
+<ul>
+<li>One credential reaches every model, so a comparison does not stall on
+  provisioning.</li>
+<li>Every run shares an execution environment, so differences in the output are
+  attributable to the models rather than to the plumbing. An uncontrolled
+  comparison is not worth running.</li>
+</ul>
+<p>Atlas Cloud is the documented default on that basis. Its model catalogue also
+determines which profiles are reachable, which is why the first profiles in this
+skill are for models in that catalogue.</p>
+<p>For direct-vendor routes, the compile step is unchanged — only the addressing
+syntax and the submit call differ.</p>
+<h2>Credentials</h2>
+<p>Check the credentials of the <strong>submitting process</strong>, not a parent shell, plugin,
+or editor session. Each execution channel can have an independent credential
+scope, and the most common false alarm is reporting "no key" when the key exists
+somewhere else in the tree.</p>
+<p>For an Atlas Cloud REST route, check <code>ATLASCLOUD_API_KEY</code> first, then
+<code>ATLAS_CLOUD_API_KEY</code> as a compatibility alias.</p>
+<p>If a key exists in a host or parent configuration but not in the submitting
+process, report an <strong>environment-scope mismatch</strong> — do not report that the user
+has no key.</p>
+<p>Never ask anyone to paste a key into a conversation. Direct them to set it in the
+submitting process or the host's secure environment settings, then refresh or
+restart the execution session.</p>
+<h2>Billable task state machine</h2>
+<p>Generation costs money. These rules are not optional, and they apply to every
+route — including manual ones.</p>
+<ol>
+<li><strong>Record the prediction ID and logical stage the moment you submit.</strong> Before
+   anything else. An unrecorded ID is a paid job you cannot recover.</li>
+<li><strong><code>starting</code> / <code>queued</code> / <code>pending</code> / <code>processing</code> are active.</strong> Poll the same
+   ID. Never submit a second task for the same stage.</li>
+<li><strong><code>completed</code> / <code>succeeded</code> are terminal successes.</strong> Download and inspect the
+   output before starting any dependent stage.</li>
+</ol>
+<p><strong>A completed task is not a usable local file.</strong> Verify the download after it
+   finishes — a truncated video reads as <code>moov atom not found</code> and a partially
+   written file will fail the same way if inspected mid-download. Re-fetch from the
+   stored output URL rather than resubmitting the job.
+4. <strong><code>failed</code> / <code>timeout</code> / <code>canceled</code> are terminal failures.</strong> A new task is an
+   explicit retry decision — report the previous ID and the added cost first.
+5. <strong>These are not failure:</strong> a zero or missing processing-time field, a delayed
+   output, a local polling timeout, a stopped turn, or a transient status-query
+   error. Preserve the ID and resume polling.
+6. <strong><code>continue</code> means resume the existing task.</strong> It is never permission to
+   retry. Do not submit a video request while its required input stage is still
+   active.</p>
+<p>A status lookup is read-only. It must never be replaced with a generation call —
+that substitution is how a polling loop turns into a billing incident.</p>
+<p>Poll at a steady interval, around 2 seconds. Where the provider's client performs
+one status lookup per call, the agent owns the loop.</p>
+<h2>Resuming</h2>
+<p>When a run is interrupted, resume from the recorded IDs rather than resubmitting.
+Keep a small state file per job: stage name → prediction ID → status → output path.
+That file is what makes an interrupted multi-stage job cheap to finish instead of
+expensive to redo.</p>
+<p>Never create a replacement task merely because a polling process ended. The job
+is still running on the provider's side.</p>
+<h2>Ordering</h2>
+<ul>
+<li><strong>Chained stages must run in order</strong> — the next segment needs the real tail of
+  the previous one.</li>
+<li><strong>Independent shots can run concurrently.</strong> Cuts are assembled in the edit, so
+  there is no dependency between them.</li>
+<li><strong>Generate one representative pass before fanning out.</strong> A quality gate on one
+  shot is much cheaper than discovering a spec problem across twelve.</li>
+</ul>
+<h2>What execution does not fix</h2>
+<ul>
+<li>Text that must read exactly — subtitles, formulas, signage, specs. Prepare it as
+  an asset or add it in post.</li>
+<li>Frame-accurate timing. Timestamps are a budget, not an edit point.</li>
+<li>Grading and mixing. A generation pass is not a colour or audio finish.</li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li><a href="portability.html">portability</a> — probing and degrading before you submit</li>
+<li><a href="model-profile-schema.html">model-profile-schema</a> — recording what a run taught you</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>platform-availability · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/platform-availability.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Platform Availability</h1>
+<p>Which features work on which provider platform. <strong>This table is the single source of truth in this skill</strong> - per-feature sections elsewhere point here instead of restating availability. When writing code for a third-party platform (Bedrock, Vertex, Foundry) or Claude Platform on AWS, check this table first; a feature not supported there means use the first-party Claude API surface or a different approach.</p>
+<p>Columns: <strong>1P</strong> = first-party Claude API, <strong>P-AWS</strong> = Claude Platform on AWS (Anthropic-operated, same-day parity), <strong>Bedrock</strong> = Amazon Bedrock, <strong>Vertex</strong> = Google Cloud Vertex AI, <strong>Foundry</strong> = Microsoft Foundry. Yes = GA, beta = beta, No = not supported.</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>1P</th>
+<th>P-AWS</th>
+<th>Bedrock</th>
+<th>Vertex</th>
+<th>Foundry</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Messages, streaming, tool use</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Core API</td>
+</tr>
+<tr>
+<td>PDF input</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>beta</td>
+<td></td>
+</tr>
+<tr>
+<td>Structured outputs / strict tool use</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>beta</td>
+<td></td>
+</tr>
+<tr>
+<td>Adaptive thinking / effort</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>beta</td>
+<td></td>
+</tr>
+<tr>
+<td>Extended thinking</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>beta</td>
+<td></td>
+</tr>
+<tr>
+<td>Prompt caching (5m, 1h)</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>Automatic prompt caching</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>The legacy Bedrock integration (Opus 4.6 and earlier) rejects top-level <code>cache_control</code> with a 400 - explicit breakpoints only there</td>
+</tr>
+<tr>
+<td>Token counting</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>beta</td>
+<td></td>
+</tr>
+<tr>
+<td>Citations</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>beta</td>
+<td></td>
+</tr>
+<tr>
+<td>Search results content blocks</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>beta</td>
+<td></td>
+</tr>
+<tr>
+<td>Fine-grained tool streaming</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>Compaction</td>
+<td>beta</td>
+<td>beta</td>
+<td>beta</td>
+<td>beta</td>
+<td>beta</td>
+<td></td>
+</tr>
+<tr>
+<td>Context editing</td>
+<td>beta</td>
+<td>beta</td>
+<td>beta</td>
+<td>beta</td>
+<td>beta</td>
+<td></td>
+</tr>
+<tr>
+<td>Context windows (1M)</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>beta</td>
+<td></td>
+</tr>
+<tr>
+<td><code>inference_geo</code> (data residency)</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Server-side tools</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Web search</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+<td>Yes</td>
+<td>beta</td>
+<td>Vertex: basic <code>web_search_20250305</code> only (no <code>_20260209</code> dynamic filtering)</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Web fetch</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+<td>beta</td>
+<td></td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Code execution</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+<td>beta</td>
+<td></td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Tool search</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>beta</td>
+<td>Bedrock: InvokeModel API only, not Converse</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Advisor tool</td>
+<td>beta</td>
+<td>beta</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Client-implemented tools</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Bash, text editor, memory</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>beta</td>
+<td></td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Computer use</td>
+<td>beta</td>
+<td>beta</td>
+<td>beta</td>
+<td>beta</td>
+<td>beta</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Agentic / orchestration</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Agent Skills (Messages API)</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+<td>beta</td>
+<td></td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Programmatic tool calling</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+<td>beta</td>
+<td></td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;MCP connector</td>
+<td>beta</td>
+<td>beta</td>
+<td>No</td>
+<td>No</td>
+<td>beta</td>
+<td></td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Managed Agents</td>
+<td>beta</td>
+<td>beta</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>Foundry: No (inferred; not in Foundry docs either way)</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Self-hosted sandboxes</td>
+<td>beta</td>
+<td>beta</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>P-AWS: worker authenticates with IAM/SigV4 or an AWS-Console API key + <code>AnthropicSelfHostedEnvironmentAccess</code> (Console environment keys don't work there); sessions on self-hosted environments cannot attach memory stores; <code>GET /v1/environments/{id}/work</code> list endpoint not supported, other work endpoints OK</td>
+</tr>
+<tr>
+<td><strong>API endpoints</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Message Batches</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Files API</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+<td>beta</td>
+<td></td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Models API</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Other</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Mid-conversation system messages</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+<td>Claude Opus 5, Claude Opus 4.8, Claude Fable 5, Claude Fable 5.1, Claude Mythos 5, Claude Mythos 5.1; not Claude Sonnet 5. Bedrock: InvokeModel passthrough, not ARN-versioned models</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Turn-scoped (<code>clear_at</code>) system messages</td>
+<td>beta</td>
+<td>beta</td>
+<td>beta</td>
+<td>beta</td>
+<td>No</td>
+<td>Same models as mid-conversation system messages; beta <code>mid-conversation-system-clear-at-2026-08-21</code> (on Bedrock/Vertex pass the value as a beta)</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Per-message <code>effort</code> (system message <code>output_config</code>)</td>
+<td>beta</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5; beta <code>mid-conversation-output-config-2026-07-01</code>; Claude API at launch (Bedrock/Vertex/Foundry unconfirmed; Claude Opus 5 excluded on Bedrock)</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;<code>thinking.display: "updates"</code></td>
+<td>beta</td>
+<td>beta</td>
+<td>beta</td>
+<td>beta</td>
+<td>beta</td>
+<td>Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5; beta <code>thinking-display-updates-2026-08-18</code> (pass the beta value per platform); without it <code>"updates"</code> is rejected as an unknown <code>display</code> value</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Thinking block-binding controls</td>
+<td>beta</td>
+<td>beta</td>
+<td>per model</td>
+<td>per model</td>
+<td>No</td>
+<td><code>thinking.block_binding</code> + <code>input_transformations</code>; beta <code>thinking-binding-controls-2026-08-01</code> (on Bedrock via the <code>anthropic_beta</code> body field); the controls beta arrives per model on Bedrock/Vertex - until then the header is rejected; the history-editing enforcement itself follows the account-age rule in <code>shared/model-migration.md</code> -&gt; Migrating to Claude Fable 5.1 from Claude Fable 5</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Server-side <code>fallbacks</code></td>
+<td>beta</td>
+<td>beta</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td><code>"default"</code> -&gt; beta <code>server-side-fallback-2026-07-01</code>; array form -&gt; beta <code>server-side-fallback-2026-06-01</code></td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Fast mode</td>
+<td>beta</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>Research preview, beta <code>fast-mode-2026-02-01</code>, first-party API only</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Cache diagnostics</td>
+<td>beta</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>First-party API only</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Task budgets</td>
+<td>beta</td>
+<td>beta</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>Beta header <code>task-budgets-2026-03-13</code>; 3P availability not documented - assume unsupported</td>
+</tr>
+</tbody>
+</table></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

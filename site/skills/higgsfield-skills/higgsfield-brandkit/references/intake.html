@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>intake · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-brandkit/references/intake.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Brandkit intake</h1>
+<p>Parse the user's first message, supplied files, local paths, and approved state before asking anything. Treat this as a gap checklist, not a mandatory questionnaire.</p>
+<p>Ask one compact ordinary chat message containing only unanswered fields that materially block the requested output. Never repeat known information. If there are no blocking gaps, skip intake.</p>
+<h2>Core gaps</h2>
+<ol>
+<li><strong>Name</strong> — “What is the name of your brand or product?”</li>
+<li><strong>Context</strong> — “What does it offer, who is it for, and what positioning or values must it communicate?”</li>
+<li><strong>Identity route</strong> — “Are we creating a new identity or preserving and extending existing assets?”</li>
+<li><strong>Preferences</strong> — “What colors, fonts, mood, references, or avoid rules should guide it?”</li>
+</ol>
+<p>The three optional visual axes are:</p>
+<ul>
+<li>Restrained ↔ Expressive</li>
+<li>Geometric ↔ Organic</li>
+<li>Familiar ↔ Experimental</li>
+</ul>
+<p>Accept natural language such as “mostly expressive and organic.” Do not force numeric ratings.</p>
+<h2>Existing or partial identity</h2>
+<p>When needed official assets were not supplied, ask the user to attach them or give readable local paths. Keep these roles distinct:</p>
+<ul>
+<li>official logos and marks — SVG preferred; PNG, JPG, WebP, or PDF accepted</li>
+<li>official fonts — TTF, OTF, WOFF, or WOFF2</li>
+<li>palette and guidelines — PDF, PPTX, CSS, JSON, SVG, or images</li>
+<li>other official materials — packaging, templates, graphics, or application examples</li>
+<li>inspiration references — visually useful but never authoritative</li>
+</ul>
+<p>Ask only for the categories needed by the requested output. Do not mix inspiration with official assets. For a new identity, invite inspiration only when it would materially help.</p>
+<p>After analysis, immediately save every user-declared official foundation element with the matching action:</p>
+<ul>
+<li><code>lock_authoritative_logo</code></li>
+<li><code>lock_authoritative_palette</code></li>
+<li><code>lock_authoritative_typography</code></li>
+</ul>
+<p>Do not wait for combined Essential Kit approval to lock supplied assets.</p>
+<h2>Parse the answer</h2>
+<p>Build this internal brief:</p>
+<pre><code class="language-text">name:
+offering:
+industry/category:
+audience:
+positioning/key values:
+identity route:
+visual preferences:
+visual_axes:
+  restrained_expressive:
+  geometric_organic:
+  familiar_experimental:
+official logo assets:
+official font assets:
+official palette/guideline assets:
+other official assets:
+inspiration:
+requested deliverables:
+</code></pre>
+<p>Normalize each visual axis to 0–100:</p>
+<ul>
+<li>strongly first = 0</li>
+<li>mostly first = 25</li>
+<li>balanced or unspecified = 50</li>
+<li>mostly second = 75</li>
+<li>strongly second = 100</li>
+</ul>
+<p>Persist the normalized values through <code>set_visual_axes</code> using the exact wrapper from <a href="state-payloads.html">state payloads</a>. Do not pass the axes as the top-level object.</p>
+<p>Do not interrogate the user about every reference. If they give no explanation, use its overall character as a taste signal without copying its logo, artwork, layout, or distinctive device.</p>
+<h2>Route</h2>
+<ul>
+<li><strong>New identity</strong> — create only the foundation slots needed by the deliverables in the first request.</li>
+<li><strong>Existing/partial identity</strong> — analyze and independently lock supplied official elements, then identify only missing required slots.</li>
+<li>Existing-assets route with no assets — ask once for the files or local paths that must be preserved.</li>
+</ul>
+<p>Describe missing elements naturally. Keep first-message deliverables in scope and continue them as soon as their required slots are approved.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

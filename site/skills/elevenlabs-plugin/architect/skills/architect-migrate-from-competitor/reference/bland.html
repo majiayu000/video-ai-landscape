@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>bland · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">architect/skills/architect-migrate-from-competitor/reference/bland.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Bland → ElevenLabs</h1>
+<h2>How far to trust this file</h2>
+<p>The mappings below are drawn from Bland's current public documentation, so they are reliable about
+what a Bland construct <strong>is</strong> and what it maps to. They do not describe serialized shape — which
+fields a real export actually carries, how they nest, or what a typical pathway looks like.</p>
+<p>So treat this as <strong>mapping rules</strong>, and read the customer's export for shape. Where the export
+disagrees with anything here about shape, the export wins; say so rather than forcing it to match.
+Do not write example Bland JSON — you would be inventing a shape and presenting it as observed.</p>
+<h2>Bland has six node types</h2>
+<p>Bland's documentation states there are currently six: <strong>Default</strong>, <strong>Webhook</strong>, <strong>Knowledge Base</strong>,
+<strong>End Call</strong>, <strong>Transfer Call</strong>, and <strong>Wait for Response</strong>.</p>
+<p>Two node types that appear in circulating mapping tables <strong>do not exist</strong>: there is no "Dialogue
+Node" (the conversational one is <code>Default</code>) and no "Route Node" (branching lives on the edge between
+nodes; "Route" is only a label in Bland's own call logs). If a customer or a document refers to
+either, clarify what they actually mean before converting anything.</p>
+<h2>Construct mapping</h2>
+<table>
+<thead>
+<tr>
+<th>Bland</th>
+<th>ElevenLabs</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Web agent</td>
+<td>Agent</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Inbound phone agent</td>
+<td>Agent + imported phone number</td>
+<td>Bland configures the prompt or pathway <strong>on the number record</strong>; EL imports a number and assigns an agent to it.</td>
+</tr>
+<tr>
+<td>Prompt</td>
+<td>agent prompt</td>
+<td>The field name differs by surface: <code>task</code> on the call endpoint, <code>prompt</code> on inbound numbers and web agents.</td>
+</tr>
+<tr>
+<td>First sentence</td>
+<td><code>first_message</code></td>
+<td>EL also supports an empty first message, meaning the agent waits for the caller — no documented Bland analogue.</td>
+</tr>
+<tr>
+<td>Pathway</td>
+<td>workflow</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Default node</td>
+<td><code>override_agent</code> node</td>
+<td>The conversational node. Shown as an agent node in the dashboard.</td>
+</tr>
+<tr>
+<td>Edge label / condition</td>
+<td>edge <code>forward_condition</code> / <code>backward_condition</code></td>
+<td>EL edges are keyed on the unordered node pair and carry both directions on one object.</td>
+</tr>
+<tr>
+<td>Webhook node (in-call)</td>
+<td>webhook tool, or a <code>tool</code> node</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Call-level <code>webhook</code> param (post-call)</td>
+<td>post-call webhook</td>
+<td><strong>Not</strong> the same thing as the webhook node. Mapping both to "a webhook tool" loses the post-call path.</td>
+</tr>
+<tr>
+<td>Knowledge Base node</td>
+<td><code>override_agent</code> node with <code>additional_knowledge_base</code></td>
+<td>Must be <code>override_agent</code>; a <code>say</code> node accepts the write and ignores it.</td>
+</tr>
+<tr>
+<td>End Call node</td>
+<td><code>end</code> node</td>
+<td>The only genuinely terminal EL node type.</td>
+</tr>
+<tr>
+<td>Transfer Call node</td>
+<td><code>phone_number</code> node</td>
+<td><strong>Not</strong> one-way — see below.</td>
+</tr>
+<tr>
+<td>Cold transfer</td>
+<td><code>blind</code> transfer</td>
+<td>EL's default is <code>conference</code>, so blind must be set explicitly.</td>
+</tr>
+<tr>
+<td>Warm transfer</td>
+<td><code>conference</code> transfer</td>
+<td>Enterprise-gated on Bland, so a non-Enterprise source will not contain one.</td>
+</tr>
+<tr>
+<td>Wait for Response node</td>
+<td><code>entry_behavior: "wait_for_user"</code> on the target node</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Tools (visual builder)</td>
+<td>webhook / client / code / MCP tools</td>
+<td>Bland's older "Custom Tools" are legacy; current product is the visual Tools builder.</td>
+</tr>
+<tr>
+<td><code>dynamic_data</code></td>
+<td>conversation-initiation webhook + webhook tool</td>
+<td>Bland's per-call <code>cache</code> flag has no EL equivalent.</td>
+</tr>
+<tr>
+<td><code>request_data</code></td>
+<td>dynamic variables via the initiation payload</td>
+<td>See the unanswered-call trap below.</td>
+</tr>
+<tr>
+<td>Citations / post-call analysis</td>
+<td>data collection + evaluation criteria</td>
+<td>Route to <code>architect-post-call-data</code>.</td>
+</tr>
+<tr>
+<td>BYO Twilio (<code>encrypted_key</code>)</td>
+<td>imported Twilio number (SID + auth token)</td>
+<td>See gaps — the credential does not transfer.</td>
+</tr>
+</tbody>
+</table>
+<h2>Traps specific to a Bland import</h2>
+<ul>
+<li><strong>A Transfer Call node is not a dead end in ElevenLabs.</strong> Bland's documentation describes its
+  transfer node as ending the dialogue at that node. EL's <code>phone_number</code> node stops only on a
+  <em>successful</em> transfer; on failure it evaluates its outgoing edges. So the migration should <em>add</em> a
+  failure edge that the source never had. This is an improvement available for free, and it is the
+  single most commonly mis-stated fact about EL transfers.</li>
+<li><strong><code>request_data</code> is not populated on unanswered calls.</strong> Anything the source reads from it assumes
+  the call was answered. If a migrated flow depends on those values, it needs the same assumption made
+  explicit, or a fallback.</li>
+<li><strong>The prompt field name depends on which Bland surface produced the config.</strong> Do not assume <code>prompt</code>.</li>
+<li><strong>Warm transfer and SIP are entitlement-gated on Bland.</strong> Their absence from an export does not mean
+  the customer does not use them; ask.</li>
+</ul>
+<h2>Where the real gaps are</h2>
+<p>Treat any "Bland has X and ElevenLabs does not" claim as wrong until you have searched and failed to
+find the feature. Nearly all of them are. ElevenLabs has guardrails, a categorised native integration
+library covering the major CRMs and calendars, code tools, per-agent retention and zero-retention
+mode, branches and versions with diff previews, workflow analytics, per-node background sound,
+simulation-test generation from a real conversation, node layout coordinates, and native SIP trunk
+configuration — every one of which has been claimed as missing.</p>
+<p>Only two gaps hold up:</p>
+<ul>
+<li><strong>Bland's built-in <code>{{prevNodePrompt}}</code> and <code>{{lastUserMessage}}</code> have no ElevenLabs equivalent.</strong>
+  EL's system variables are a fixed set — agent id, caller id, called number, call duration,
+  conversation id, call SID, time, timezone — and neither of Bland's is among them. This matters
+  because a common Bland idiom is to quote the previous node's goal or the caller's last utterance
+  inside a node prompt. Rebuild that intent explicitly: write the value into a dynamic variable with
+  an <code>update_state</code> node, or restate the context in the node's own prompt.</li>
+<li><strong>A BYO Twilio <code>encrypted_key</code> cannot be migrated.</strong> It is an opaque Bland-side handle over the
+  customer's Twilio SID and auth token, and Bland shows it only once. ElevenLabs needs the raw SID and
+  auth token to import the number. The customer must retrieve those from Twilio directly — a lost
+  <code>encrypted_key</code> cannot be reversed into them.</li>
+</ul>
+<p>Two more are narrower than usually claimed rather than absent: EL's guardrails exist but have no
+transfer-on-trigger or jump-to-node action, and voice multiplicity exists — the genuine gap is
+random per-call voice rotation.</p>
+<h2>What to ask for before you start</h2>
+<p>Get both a Persona export and a pathway export. A Persona bundles identity, voice, language,
+background noise, modalities, prompt, routing, knowledge base, analysis and versions, with tools
+attached separately — so a Persona alone does not show you the conversation graph, and a pathway alone
+does not show you the agent's configuration. You need both to convert either faithfully.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

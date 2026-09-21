@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>logo-prompt-enhancer · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-brandkit/references/logo-prompt-enhancer.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Brandkit Recraft logo prompt enhancer</h1>
+<p>The final prompt-construction layer between Brandkit Design Brain and Recraft V4.1 vector generation. There is no server-side enhancer tool in this environment: <strong>you apply this contract yourself</strong>, exactly once per Design Brain candidate, converting one structured logo-candidate specification into one precise Recraft prompt with the highest possible first-pass success rate.</p>
+<p>Design Brain has already made the creative decisions. Do not replace, reinterpret, broaden, or add a second concept. Do not narrate this step to the user.</p>
+<h2>Input contract</h2>
+<p>Assemble one structured candidate specification per mechanism before writing its prompt:</p>
+<pre><code class="language-json">{
+  &quot;brand_context&quot;: {
+    &quot;name&quot;: &quot;context only; never render it&quot;,
+    &quot;offering&quot;: &quot;...&quot;,
+    &quot;industry&quot;: &quot;...&quot;,
+    &quot;positioning&quot;: &quot;...&quot;,
+    &quot;audience&quot;: &quot;...&quot;,
+    &quot;values&quot;: [&quot;...&quot;]
+  },
+  &quot;visual_axes&quot;: {
+    &quot;restrained_expressive&quot;: 50,
+    &quot;geometric_organic&quot;: 50,
+    &quot;familiar_experimental&quot;: 50
+  },
+  &quot;candidate&quot;: {
+    &quot;mark_type&quot;: &quot;lettermark_monogram | pictorial | abstract | mascot | emblem&quot;,
+    &quot;central_idea&quot;: &quot;...&quot;,
+    &quot;visual_mechanism&quot;: &quot;...&quot;,
+    &quot;distinctive_element&quot;: &quot;specific silhouette, negative-space device, motif treatment, or unexpected locked color pairing&quot;,
+    &quot;shape_logic&quot;: &quot;...&quot;,
+    &quot;treatment&quot;: &quot;flat_vector | monoline | vector_gradient | hand_drawn_vector&quot;,
+    &quot;style_register&quot;: &quot;...&quot;,
+    &quot;user_style_directive&quot;: &quot;explicit user-requested style, or null&quot;,
+    &quot;composition&quot;: &quot;...&quot;
+  },
+  &quot;palette&quot;: {
+    &quot;count&quot;: &quot;1, 2, or 3 as required by the locked concept; greater only when user_requested_more_than_three is true&quot;,
+    &quot;user_requested_more_than_three&quot;: false,
+    &quot;roles&quot;: [&quot;primary&quot;, &quot;accent&quot;, &quot;background&quot;]
+  },
+  &quot;reference_signals&quot;: [&quot;formal qualities only&quot;],
+  &quot;forbidden_elements&quot;: [&quot;...&quot;]
+}
+</code></pre>
+<p>Treat supplied creative decisions as authoritative. If a nonessential detail is missing, infer the smallest sensible default without changing the central idea.</p>
+<h2>Output contract</h2>
+<p>The result of this step is exactly one continuous enhanced Recraft prompt string per candidate — no bullet points inside the prompt, no explanation, no debug text.</p>
+<p>The prompt must follow this order:</p>
+<p>mark type → central subject/mechanism → shape logic → style register → palette behavior → composition → constraint tail</p>
+<p>Every clause must materially affect the drawing.</p>
+<p>The central subject/mechanism portion must state exactly one visual idea in one clause. Do not add a second metaphor, alternative, “and/or” construction, or hybrid concept.</p>
+<h2>Stage boundary — symbol only</h2>
+<p>This flow creates a symbol/mark before typography selection.</p>
+<p>Never include:</p>
+<ul>
+<li>brand name</li>
+<li>wordmark</li>
+<li>tagline</li>
+<li>descriptor</li>
+<li>invented letters</li>
+<li>any other readable words</li>
+</ul>
+<p>The only exception is a lettermark/monogram candidate: the explicitly supplied initials inside <code>candidate.visual_mechanism</code> are permitted. For lettermarks and monograms, “no text” means no additional words, taglines, descriptors, or unrelated lettering.</p>
+<p>Every candidate constraint tail must include the exact phrase “no text.” It does not need to be the final phrase.</p>
+<h2>Mark type</h2>
+<p>Preserve <code>candidate.mark_type</code> exactly.</p>
+<p>Allowed types:</p>
+<ul>
+<li>lettermark_monogram — explicitly supplied initials or interwoven letterforms</li>
+<li>pictorial — one recognizable literal object</li>
+<li>abstract — a concept rendered as nonrepresentational geometry</li>
+<li>mascot — one character/creature with a clear scalable expression</li>
+<li>emblem — a text-free symbol contained within a badge/seal boundary</li>
+</ul>
+<p>If <code>mark_type</code> is unexpectedly missing, infer it from <code>visual_mechanism</code>. Default to abstract, never wordmark or combination mark.</p>
+<h2>Treatment</h2>
+<p>Preserve <code>candidate.treatment</code> exactly.</p>
+<p>Preserve <code>candidate.style_register</code> and <code>candidate.user_style_directive</code>. When the user supplied a particular style, name that formal style directly in the prompt and translate it into compatible drawing decisions. Do not dilute it into a generic “modern,” “minimal,” or “premium” treatment. Live brand/designer references remain subject to REFERENCE SAFETY below.</p>
+<ul>
+<li><strong>flat_vector:</strong> Solid fills, clean SVG paths, no surface effects.</li>
+<li><strong>monoline:</strong> Uniform stroke weight, rounded caps, no fills.</li>
+<li><strong>vector_gradient:</strong> Vector-safe linear, radial, or duotone gradient with the locked stop count.</li>
+<li><strong>hand_drawn_vector:</strong> Allowed only when supplied explicitly. Preserve intentional stroke variation and a clear silhouette. Do not promise minimal anchor points.</li>
+</ul>
+<p>Dimensional/3D treatment is forbidden.</p>
+<h2>Structural priorities</h2>
+<p>Define:</p>
+<ol>
+<li>one dominant unified silhouette</li>
+<li>concrete geometric or organic construction logic</li>
+<li>symmetry or intentional asymmetry</li>
+<li>positive and negative-space behavior</li>
+<li>stroke/fill behavior</li>
+<li>internal detail limit</li>
+<li>small-size scalability</li>
+<li>centered isolated presentation</li>
+</ol>
+<p>Prefer one coherent mechanism over several decorative ideas.</p>
+<h2>Distinctiveness and complexity floor</h2>
+<p>Every enhanced prompt must contain at least one concrete distinctive element:</p>
+<ul>
+<li>a specifically described silhouette</li>
+<li>a specific negative-space device</li>
+<li>a particular motif treatment</li>
+<li>an unexpected but locked color-role pairing</li>
+</ul>
+<p>Generic adjectives do not satisfy this requirement. “Simple,” “clean,” and “minimal” are allowed only when the prompt also defines an ownable construction decision. Never return a generic swoosh, blob, orbit, shield, spark, leaf, letter-in-circle, or interchangeable startup symbol without a brief-specific mechanism.</p>
+<p>Describe the distinctive element concretely enough that another designer could sketch its structure without guessing.</p>
+<p>Preserve <code>candidate.distinctive_element</code> and make it explicit in the prompt.</p>
+<h2>One concept per logo</h2>
+<p>The prompt must express one central visual idea only. Never physically merge, morph, or fuse two metaphors (for example, cloud + mountain, leaf + flame, or letter + animal) unless the user's own request explicitly describes that exact fusion. A single motif may use negative space or geometric transformation; that does not authorize adding a second symbolic subject.</p>
+<h2>Visual axes</h2>
+<p>Translate axes into drawing decisions:</p>
+<ul>
+<li><code>restrained_expressive</code> controls intensity, contrast, and detail density</li>
+<li><code>geometric_organic</code> controls construction, curves, and regularity</li>
+<li><code>familiar_experimental</code> controls category recognition and novelty</li>
+</ul>
+<p>Do not print values or mention axes in the output.</p>
+<h2>Palette</h2>
+<p>The palette is locked. Do not invent, replace, expand, or reinterpret it.</p>
+<p>Use one, two, or three colors according to the locked concept; three is a maximum, not a target or default. Never add colors merely to reach three. Count the background when it participates visually. More than three are allowed only when <code>palette.user_requested_more_than_three</code> is true. Never infer that exception from a colorful reference or industry convention.</p>
+<p>Exact hex values are passed separately through the Recraft request's <code>colors</code> and <code>background_color</code> params. Never put hex, RGB, Pantone, or other color codes in the prompt.</p>
+<p>State:</p>
+<ul>
+<li>strict color count</li>
+<li>role relationships</li>
+<li>solid or gradient behavior</li>
+<li>background relationship</li>
+</ul>
+<p>Use role language such as “locked primary tone,” “locked accent,” and “locked background.” Do not invent color names that were not supplied.</p>
+<h2>Reference safety</h2>
+<p>Never output a live brand, studio, artist, or designer name.</p>
+<p>Translate <code>reference_signals</code> into formal qualities only: geometry, contrast, density, rhythm, form register, material impression, energy.</p>
+<p>Never reproduce a reference’s logo mechanism, distinctive shape, composition, or artwork.</p>
+<h2>Vector language</h2>
+<p>For flat_vector, monoline, and vector_gradient, never use: lens, camera, lighting, depth of field, photorealistic, cinematic, material rendering, grain, paper texture, shadows, mockup, scene.</p>
+<p>Define drawing logic, not presentation photography.</p>
+<h2>Constraint tails</h2>
+<ul>
+<li><strong>flat_vector:</strong> Flat vector design, clean lines, no shadows, no texture, no text. Clean editable vector paths, SVG-friendly, minimal anchor points.</li>
+<li><strong>monoline:</strong> Monoline vector design, uniform stroke weight, rounded line caps, no fills, no shadows, no texture, no text. Clean editable vector paths, SVG-friendly, minimal anchor points.</li>
+<li><strong>vector_gradient:</strong> Flat vector design with the specified locked vector gradient, no shadows, no texture, no text. Clean editable vector paths, SVG-friendly, minimal anchor points.</li>
+<li><strong>hand_drawn_vector:</strong> Intentional hand-drawn vector strokes, approved surface variation, clear scalable silhouette, no shadows, no text.</li>
+</ul>
+<h2>Forbidden elements</h2>
+<p>Honor every <code>forbidden_elements</code> entry literally. Never replace one forbidden cliché with another generic symbol.</p>
+<h2>Silent validation</h2>
+<p>Before submitting each Recraft request, silently verify:</p>
+<ul>
+<li>prompt follows the supplied <code>central_idea</code> and <code>visual_mechanism</code></li>
+<li>central mechanism is one visual idea stated in one clause</li>
+<li>no metaphors are fused unless the user explicitly requested that exact fusion</li>
+<li><code>mark_type</code> and <code>treatment</code> are unchanged</li>
+<li>explicit user style is present and not generalized away</li>
+<li>there is one coherent mechanism</li>
+<li>at least one concrete distinctive element clears the complexity floor</li>
+<li>no brand/designer names appear</li>
+<li>no words appear except explicitly permitted monogram initials</li>
+<li>exact phrase “no text” appears in the constraint tail</li>
+<li>palette uses at most three colors unless the explicit user override is true</li>
+<li>palette is not padded with unnecessary colors</li>
+<li>palette count and role behavior are strict</li>
+<li>geometry is practical for SVG generation</li>
+<li>forbidden elements are absent</li>
+<li>no camera or unsupported texture language appears</li>
+</ul>
+<p>If any check fails, rewrite the prompt before submitting it.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

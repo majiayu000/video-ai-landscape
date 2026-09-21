@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>managed-agents-onboarding · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/managed-agents-onboarding.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Managed Agents - Onboarding Flow</h1>
+<blockquote>
+<p><strong>Invoked via <code>/claude-api managed-agents-onboard</code>?</strong> You're in the right place. Run the interview below - don't summarize it back to the user, ask the questions.</p>
+</blockquote>
+<p>Claude Managed Agents is a hosted agent: Anthropic runs the agent loop and provisions a sandboxed container per session where the agent's tools execute (or your own worker, with a <code>self_hosted</code> environment - see <code>shared/managed-agents-self-hosted-sandboxes.md</code>). You supply an <strong>agent config</strong> (tools, skills, model, system prompt - reusable, versioned) and an <strong>environment config</strong> (the sandbox - reusable across agents). Each run is a <strong>session</strong>.</p>
+<p>The flow is four beats - <strong>describe -&gt; agent -&gt; environment -&gt; session</strong> - the same arc as the Console quickstart, and the same philosophy: <strong>value before credentials</strong>. The user goes from idea to a runnable session before any auth ask; each credential is <em>flagged</em> at the moment the design makes it relevant (§2) and <em>collected</em> once, at session setup (§4), where it binds (<code>sessions.create()</code>) and gets exercised (smoke-test). Read <code>shared/managed-agents-core.md</code> alongside this - it has full detail for each knob; this doc is the interview script.</p>
+<hr />
+<h2>1. Describe the task</h2>
+<p><strong>Open with a one-breath signpost and a single open prompt - don't guess, don't questionnaire.</strong> In your own words:</p>
+<blockquote>
+<p>Managed Agents is hosted - Anthropic runs the agent loop, the sandbox, and the infrastructure; you just define the agent. We'll do this in three moves: the agent, the environment it runs in, then a live test session. So: describe the agent you want - what should it do, and what kicks it off (a person, an event, a schedule)?</p>
+</blockquote>
+<p>Let them answer in full before configuring anything.</p>
+<h2>2. Configure the agent - propose, don't interrogate</h2>
+<p>Their description does the interview's work. Draft the agent config from it and <strong>present it as a proposal with your suggestions inline</strong> - the user reacts to a concrete config instead of answering a question list. At most one batched follow-up for true gaps. Suggest where the description gives you an opening:</p>
+<ul>
+<li><strong>Tools</strong> - enable the full prebuilt toolset by default (<code>agent_toolset_20260401</code>: <code>bash</code>, <code>read</code>, <code>write</code>, <code>edit</code>, <code>glob</code>, <code>grep</code>, <code>web_fetch</code>, <code>web_search</code>). <strong>Suggest MCP servers</strong> for any third-party service the job names (GitHub, Linear, Slack, ...) - and flag the credential each one implies as you suggest it ("Linear MCP -&gt; you'll need a Linear API token at kickoff"), so §4's auth step is a formality, not a surprise. Collection itself waits for §4. Custom tools only if the user's own app must answer calls (name, description, input schema - their handler code is theirs; don't generate it).</li>
+<li><strong>Skills</strong> - <strong>suggest</strong> prebuilt <code>xlsx</code>/<code>docx</code>/<code>pptx</code>/<code>pdf</code> when the job produces those artifacts; custom by <code>skill_id</code> (max 20 total per agent, prebuilt + custom combined).</li>
+<li><strong>Outcome</strong> - if the description implies checkable "done" criteria (or you can elicit them in the follow-up: not "a good report" but "a CSV with a numeric <code>price</code> column per SKU"), <strong>suggest an Outcome kickoff</strong> - the harness grades and iterates against a rubric (<code>shared/managed-agents-outcomes.md</code>).</li>
+<li><strong>On-hand resources</strong> - repos on disk (<code>github_repository</code>: URL, optional <code>mount_path</code>/<code>checkout</code>; token comes in §4), files to seed (Files API upload -&gt; <code>{type: "file", file_id, mount_path}</code>; read-only), if the job references them.</li>
+<li><strong>Model</strong> - default <code>claude-opus-5</code>; <code>claude-fable-5-1</code> for the hardest long-horizon work (<code>shared/model-migration.md</code> -&gt; Migrating to Claude Fable 5.1).</li>
+</ul>
+<blockquote>
+<p>Important: <strong>PR creation needs the GitHub MCP server too</strong> - a <code>github_repository</code> mount is filesystem-only. Edit in the mount -&gt; push branch via <code>bash</code> -&gt; open the PR via the MCP <code>create_pull_request</code> tool.</p>
+</blockquote>
+<p>Full detail per knob: <code>shared/managed-agents-tools.md</code> (toolset, MCP, custom tools, skills), <code>shared/managed-agents-environments.md</code> (repos, files).</p>
+<h2>3. Environment</h2>
+<p>Usually zero or one question:</p>
+<ul>
+<li><strong>Reuse or create?</strong> Environments are shared across agents - check for an existing one first.</li>
+<li><strong>Networking</strong> - default unrestricted egress. Switch to <code>limited</code> only if the user wants egress control - then set <code>allow_mcp_servers: true</code> or list every MCP server domain in <code>allowed_hosts</code>, or those tools fail silently.</li>
+<li><strong>Suggest <code>self_hosted</code></strong> when the signals are there: tools must run on their own infra, secrets can't leave it, or they need binaries/data the cloud container won't have (<code>shared/managed-agents-self-hosted-sandboxes.md</code>; on Claude Platform on AWS the worker authenticates with IAM instead of an environment key and sessions there can't attach memory stores). Otherwise <code>cloud</code> - don't raise it unprompted for simple jobs.</li>
+</ul>
+<h2>4. Session - auth, then test run</h2>
+<p><strong>Auth happens here - collect the credentials flagged in §2, now that the config is settled:</strong> a vault (existing or <code>vaults.create()</code>) + <code>vaults.credentials.create()</code> for each MCP server declared in §2, <code>environment_variable</code> credentials for API keys the job uses (substituted at egress; the sandbox sees a placeholder), and the <code>authorization_token</code> for each repo mount. Credentials are write-only; MCP credentials match servers by URL and auto-refresh. See <code>shared/managed-agents-tools.md</code> -&gt; Vaults.</p>
+<p><strong>Silent viability gate - run this yourself before emitting anything; surface only the gaps.</strong> Walk the job clause by clause: every verb maps to an enabled tool or MCP server ("open a PR" -&gt; GitHub MCP, not just the mount); every MCP server and repo mount has its credential from the auth step; every external host is reachable under the networking choice; every file/repo/dataset the job references is mounted; "done" is checkable. If something's missing, say so and resolve it - don't emit a config you already know is under-resourced.</p>
+<p><strong>Kickoff - pick one, never both:</strong>
+- <code>user.message</code> - conversational.
+- <code>user.define_outcome</code> + rubric - when §2 settled on an Outcome; the harness iterates and grades until the rubric passes.
+- <strong>Scheduled shape?</strong> Skip per-session kickoff entirely - create a <strong>deployment</strong> (<code>deployments.create()</code> with <code>schedule</code> + <code>initial_events</code>); each firing creates the session autonomously. See <code>shared/managed-agents-scheduled-deployments.md</code>.</p>
+<p>Mechanics to bake into the runtime code: session creation resolves resources (a bad mount surfaces there, before tokens) but does not itself provision the sandbox; open the event stream <em>before</em> sending the kickoff; break on <code>session.status_terminated</code>, or <code>session.status_idle</code> with any non-<code>requires_action</code> <code>stop_reason</code> - terminal, or <code>budget_reached</code>, which is not terminal (only a budget change/removal resumes it) (<code>shared/managed-agents-client-patterns.md</code> Pattern 5); usage lands on <code>span.model_request_end</code>; artifacts land in <code>/mnt/session/outputs/</code> (<code>files.list({scope_id: session.id, ...})</code>).</p>
+<h2>5. Integrate - emit the code</h2>
+<p>Go straight from the last answer to the code - no preamble, no lecture about setup-vs-runtime; the two-block structure shows it. Generate <strong>two clearly-separated blocks</strong>:</p>
+<p><strong>Block 1 - Setup (run once, store the IDs).</strong> Prefer <strong>YAML files + <code>ant</code> CLI</strong> - agents and environments are version-controlled definitions users should check in and apply from CI:</p>
+<ol>
+<li><code>&lt;name&gt;.agent.yaml</code> (flat: <code>name</code>, <code>model</code>, <code>system</code>, <code>tools</code>, <code>mcp_servers</code>, <code>skills</code>) and <code>&lt;name&gt;.environment.yaml</code></li>
+<li><code>sh
+   AGENT_ID=$(ant beta:agents create &lt; &lt;name&gt;.agent.yaml --transform id -r)
+   ENV_ID=$(ant beta:environments create &lt; &lt;name&gt;.environment.yaml --transform id -r)
+   # CI sync: ant beta:agents update --agent-id "$AGENT_ID" --version N &lt; &lt;name&gt;.agent.yaml</code></li>
+</ol>
+<p>SDK fallback if the user asks - and <strong>required on Claude Platform on AWS</strong>, where auth is SigV4 and the <code>ant</code> CLI has no SigV4 mode (use the platform client from <code>shared/claude-platform-on-aws.md</code>): label it <code># ONE-TIME SETUP - run once, save the IDs</code> and call <code>environments.create()</code> -&gt; <code>agents.create()</code>.</p>
+<blockquote>
+<p>Warning: <strong>Deployments are newer than the rest of the MA surface.</strong> Before emitting <code>ant beta:deployments ...</code> or <code>client.beta.deployments</code> / <code>client.beta.deployment_runs</code> calls, verify the user's installed CLI/SDK exposes them (<code>ant beta:deployments --help</code>; <code>hasattr(client.beta, "deployments")</code>). If not, emit raw HTTP against <code>POST /v1/deployments</code> with the <code>managed-agents-2026-04-01</code> beta header (plus <code>oauth-2025-04-20</code> when authenticating with a Bearer token from <code>ant auth print-credentials</code>), and leave an upgrade note marking what simplifies to SDK calls.</p>
+</blockquote>
+<p><strong>Scheduled shape? The deployment is setup, not runtime.</strong> Create it in Block 1, after the agent/environment IDs exist (<code>deployments.create()</code> with <code>schedule</code> + <code>initial_events</code>). Block 2 is then <strong>not</strong> a session loop - there is no per-run kickoff to send. Emit instead: a manual-run trigger (<code>POST /v1/deployments/{id}/run</code>) so the user can test now rather than wait for the first firing - the manual run doubles as the smoke test - plus a fetch helper (latest <code>deployment_runs</code> entry -&gt; <code>session_id</code> -&gt; Console URL + <code>files.list(scope_id=session_id)</code> for the artifacts).</p>
+<p><strong>Block 2 - Runtime (every invocation; conversational and Outcome shapes).</strong> SDK code in the detected language (Python/TS/cURL - SKILL.md -&gt; Language Detection); don't emit shell loops here:</p>
+<ol>
+<li>Load <code>agent_id</code> + <code>env_id</code> from config/env</li>
+<li><code>sessions.create(agent=AGENT_ID, environment_id=ENV_ID, resources=[...], vault_ids=[...])</code>, then print the Console URL so the user can watch live: <code>https://platform.claude.com/workspaces/default/sessions/{session.id}</code> (swap <code>default</code> for their workspace slug)</li>
+<li><strong>Smoke-test when the job depends on MCP servers, credentials, or locked-down hosts</strong> - those failures don't surface at <code>sessions.create()</code>, only on first use. One cheap probe turn ("Confirm you can reach <service> and list 1-2 items; don't start the task"), verify, then send the real kickoff. Skip when there are no external dependencies.</li>
+<li>Open stream -&gt; send the §4 kickoff -&gt; loop with the terminal gate from §4.</li>
+</ol>
+<blockquote>
+<p>Warning: <strong>Never emit <code>agents.create()</code> and <code>sessions.create()</code> in the same unguarded block</strong> - that teaches creating a new agent per run, the #1 anti-pattern. Single-script requests: wrap creation in <code>if not os.getenv("AGENT_ID"):</code>.</p>
+</blockquote>
+<p>Pull exact syntax from <code>{lang}/managed-agents/README.md</code> for your detected language (cURL and C#: use <code>curl/managed-agents.md</code> as the wire-level reference). Don't invent field names.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>managed-agents-outcomes · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/managed-agents-outcomes.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Managed Agents - Outcomes</h1>
+<p>An <strong>outcome</strong> elevates a session from <em>conversation</em> to <em>work</em>: you state what "done" looks like, and the harness runs an iterate -&gt; grade -&gt; revise loop until the artifact meets the rubric, hits <code>max_iterations</code>, or is interrupted. A separate <strong>grader</strong> (independent context window) scores each iteration against your rubric and feeds per-criterion gaps back to the agent.</p>
+<p>The SDK sets the <code>managed-agents-2026-04-01</code> beta header automatically on all <code>client.beta.sessions.*</code> calls; no additional header is required for outcomes.</p>
+<hr />
+<h2>The <code>user.define_outcome</code> event</h2>
+<p>Outcomes are not a field on <code>sessions.create()</code>. You create a normal session, then send a <code>user.define_outcome</code> event. The agent starts working on receipt - <strong>do not also send a <code>user.message</code></strong> to kick it off.</p>
+<p>You can collapse both calls into one by passing a single <code>user.define_outcome</code> in the session's <code>initial_events</code> array - same event, same rules, one round trip (see <code>shared/managed-agents-core.md</code> -&gt; Seeding a session with <code>initial_events</code>). More than one <code>user.define_outcome</code> in that array, or one without a <code>rubric</code>, rejects the whole create with a 400.</p>
+<pre><code class="language-python">session = client.beta.sessions.create(
+    agent=AGENT_ID,
+    environment_id=ENVIRONMENT_ID,
+    title=&quot;Financial analysis on Costco&quot;,
+)
+
+client.beta.sessions.events.send(
+    session_id=session.id,
+    events=[
+        {
+            &quot;type&quot;: &quot;user.define_outcome&quot;,
+            &quot;description&quot;: &quot;Build a DCF model for Costco in .xlsx&quot;,
+            &quot;rubric&quot;: {&quot;type&quot;: &quot;text&quot;, &quot;content&quot;: RUBRIC_MD},
+            # or: &quot;rubric&quot;: {&quot;type&quot;: &quot;file&quot;, &quot;file_id&quot;: rubric.id}
+            &quot;max_iterations&quot;: 5,  # optional; default 3, max 20
+        }
+    ],
+)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type</code></td>
+<td><code>"user.define_outcome"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>string</td>
+<td>The task. This is what the agent works toward - no separate <code>user.message</code> needed.</td>
+</tr>
+<tr>
+<td><code>rubric</code></td>
+<td><code>{type: "text", content}</code> | <code>{type: "file", file_id}</code></td>
+<td><strong>Required.</strong> Markdown with explicit, independently gradeable criteria. Upload once via <code>client.beta.files.upload(...)</code> (beta <code>files-api-2025-04-14</code>) to reuse across sessions.</td>
+</tr>
+<tr>
+<td><code>max_iterations</code></td>
+<td>int</td>
+<td>Optional. Default <strong>3</strong>, max <strong>20</strong>.</td>
+</tr>
+</tbody>
+</table>
+<p>The event is echoed back on the stream with a server-assigned <code>outcome_id</code> and <code>processed_at</code>.</p>
+<blockquote>
+<p><strong>Writing rubrics.</strong> Use explicit, gradeable criteria ("CSV has a numeric <code>price</code> column"), not vibes ("data looks good") - the grader scores each criterion independently, so vague criteria produce noisy loops. If you don't have a rubric, have Claude analyze a known-good artifact and turn that analysis into one.</p>
+</blockquote>
+<hr />
+<h2>Outcome-specific events</h2>
+<p>These appear on the standard event stream (<code>sessions.events.stream</code> / <code>.list</code>) alongside the usual <code>agent.*</code> / <code>session.*</code> events.</p>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Payload highlights</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>span.outcome_evaluation_start</code></td>
+<td><code>outcome_id</code>, <code>iteration</code> (0-indexed)</td>
+<td>Grader began scoring iteration <em>N</em>.</td>
+</tr>
+<tr>
+<td><code>span.outcome_evaluation_ongoing</code></td>
+<td><code>outcome_id</code></td>
+<td>Heartbeat while the grader runs. Grader reasoning is opaque - you see <em>that</em> it's working, not <em>what</em> it's thinking.</td>
+</tr>
+<tr>
+<td><code>span.outcome_evaluation_end</code></td>
+<td><code>outcome_evaluation_start_id</code>, <code>outcome_id</code>, <code>iteration</code>, <code>result</code>, <code>explanation</code>, <code>usage</code></td>
+<td>Grader finished one iteration. <code>result</code> drives what happens next (table below).</td>
+</tr>
+</tbody>
+</table>
+<h3><code>span.outcome_evaluation_end.result</code></h3>
+<table>
+<thead>
+<tr>
+<th><code>result</code></th>
+<th>Next</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>satisfied</code></td>
+<td>Session -&gt; <code>idle</code>. Terminal for this outcome.</td>
+</tr>
+<tr>
+<td><code>needs_revision</code></td>
+<td>Agent starts another iteration.</td>
+</tr>
+<tr>
+<td><code>max_iterations_reached</code></td>
+<td>No further grader cycles. Agent may run one final revision, then session -&gt; <code>idle</code>.</td>
+</tr>
+<tr>
+<td><code>failed</code></td>
+<td>Session -&gt; <code>idle</code>. Rubric fundamentally doesn't match the task (e.g. description and rubric contradict).</td>
+</tr>
+<tr>
+<td><code>interrupted</code></td>
+<td>Emitted whenever a <code>user.interrupt</code> arrives while an outcome is active - <strong>even if evaluation hadn't started</strong>. In that case <code>outcome_evaluation_start_id</code> is an empty string rather than an event ID, so don't use it as a lookup key without checking. (Except an interrupt sent while paused at the session budget, which is accepted and ignored - see <code>shared/managed-agents-events.md</code> § Reaching a session budget.)</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;span.outcome_evaluation_end&quot;,
+  &quot;id&quot;: &quot;sevt_01jkl...&quot;,
+  &quot;outcome_evaluation_start_id&quot;: &quot;sevt_01def...&quot;,
+  &quot;outcome_id&quot;: &quot;outc_01a...&quot;,
+  &quot;result&quot;: &quot;satisfied&quot;,
+  &quot;explanation&quot;: &quot;All 12 criteria met: revenue projections use 5 years of historical data, ...&quot;,
+  &quot;iteration&quot;: 0,
+  &quot;usage&quot;: { &quot;input_tokens&quot;: 2400, &quot;output_tokens&quot;: 350, &quot;cache_creation_input_tokens&quot;: 0, &quot;cache_read_input_tokens&quot;: 1800 },
+  &quot;processed_at&quot;: &quot;2026-03-25T14:03:00Z&quot;
+}
+</code></pre>
+<hr />
+<h2>Checking status &amp; retrieving deliverables</h2>
+<p><strong>Status</strong> - either watch the stream for <code>span.outcome_evaluation_end</code>, or poll the session and read <code>outcome_evaluations</code>:</p>
+<pre><code class="language-python">session = client.beta.sessions.retrieve(session.id)
+for ev in session.outcome_evaluations:
+    print(f&quot;{ev.outcome_id}: {ev.result}&quot;)  # outc_01a...: satisfied
+</code></pre>
+<p><strong>Deliverables</strong> - the agent writes to <code>/mnt/session/outputs/</code>. Once idle, fetch via the Files API with <code>scope_id=session.id</code>. This is the same session-outputs mechanism documented in <code>shared/managed-agents-environments.md</code> -&gt; Session outputs (including the dual-beta-header requirement on <code>files.list</code>).</p>
+<hr />
+<h2>Interaction rules &amp; pitfalls</h2>
+<ul>
+<li><strong>One outcome at a time.</strong> Chain by sending the next <code>user.define_outcome</code> only after the previous one's terminal <code>span.outcome_evaluation_end</code> (<code>satisfied</code> / <code>max_iterations_reached</code> / <code>failed</code> / <code>interrupted</code>). The session retains history across chained outcomes.</li>
+<li><strong>Steering is allowed but optional.</strong> You <em>may</em> send <code>user.message</code> events mid-outcome to nudge direction, but the agent already knows to keep working until terminal - don't send "keep going" prompts. (Exception: a session paused at its budget (<code>stop_reason: budget_reached</code>) accepts only settle events - a steering <code>user.message</code>, or a chained <code>user.define_outcome</code>, is a 400 there; see <code>shared/managed-agents-events.md</code> § Reaching a session budget.)</li>
+<li><strong><code>user.interrupt</code> pauses the current outcome</strong> - it marks <code>result: "interrupted"</code> and leaves the session <code>idle</code>, ready for a new outcome or conversational turn. (Exception: sent while paused at the session budget, the interrupt is accepted and ignored and the outcome stays active - see <code>shared/managed-agents-events.md</code> § Reaching a session budget.)</li>
+<li><strong>After terminal, the session is reusable</strong> - continue conversationally or define a new outcome.</li>
+<li><strong>Outcome != session-create field.</strong> Don't put <code>outcome</code>, <code>rubric</code>, or <code>description</code> on <code>sessions.create()</code> - outcomes are always sent as a <code>user.define_outcome</code> event.</li>
+<li><strong>Idle-break gate is unchanged.</strong> In your drain loop, keep using <code>event.type === 'session.status_idle' &amp;&amp; event.stop_reason?.type !== 'requires_action'</code> - do <strong>not</strong> gate on <code>span.outcome_evaluation_end</code> alone (on <code>needs_revision</code> the session keeps running). See <code>shared/managed-agents-client-patterns.md</code> Pattern 5.</li>
+</ul>
+<p>For the raw HTTP shapes and per-language SDK bindings beyond Python, WebFetch <code>https://platform.claude.com/docs/en/managed-agents/define-outcomes.md</code> (see <code>shared/live-sources.md</code>).</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

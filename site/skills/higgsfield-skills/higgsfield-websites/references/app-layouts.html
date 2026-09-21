@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>app-layouts · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/app-layouts.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>app-layouts — the standard Higgsfield app layouts (<code>type: "app"</code> builds ONLY)</h1>
+<p>A <code>type: "app"</code> product must look and feel like a Higgsfield product, so you do
+NOT invent app chrome. The template ships the standard layouts and the UI they
+are built from as <strong>real code</strong> — you build by copying/composing those, not by
+reproducing a screenshot.</p>
+<p>Two hard rules, no exceptions:</p>
+<ol>
+<li><strong>Start from one of the six shipped layouts — Studio, Preset, App detail, AI
+   Stylist, Skin Enhancer, or Shots.</strong> Match the app to whichever is closest
+   (<code>app/src/layouts/*.tsx</code>) and adapt it; an unusual request still maps to the
+   nearest one — adapt within it, never invent a different app shell. A fully
+   custom layout is fine only when the user asks for something none covers.</li>
+<li><strong>Read the code, then build.</strong> After <code>higgsfield website repo-access</code> + clone, read
+   <code>app/src/layouts/AGENTS.md</code> (the layout catalog — anatomy + rules for each)
+   AND <code>app/src/components/AGENTS.md</code> (the MANDATORY component contract, with
+   copy-paste wiring), then open the layout/component files you'll use. They are
+   the source of truth for structure; build from them, not from memory.</li>
+</ol>
+<p>Everything is code in the repo — there are no external reference images to open.</p>
+<h2>The six layouts (<code>app/src/layouts/</code>)</h2>
+<p>Copy the closest one into your route and adapt freely. Full anatomy per layout
+is in <code>app/src/layouts/AGENTS.md</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Layout</th>
+<th>When to pick</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>studio.tsx</code> (<code>StudioTemplate</code>)</td>
+<td>A full creative workspace: projects-first <code>Sidebar</code> + hero + a floating prompt dock (<code>@/components/prompt-box</code> — mode toggle, inline setting pills, lime GENERATE) over an edge-to-edge generations feed. The richest shell — for multi-project generation tools.</td>
+</tr>
+<tr>
+<td><code>preset.tsx</code> (<code>PresetTemplate</code>)</td>
+<td><strong>Pick-a-style-then-generate</strong>: a persistent left creation rail (<code>@/components/composer</code> + <code>@/components/setting-trigger</code> rows + costed Generate) beside a browsable preset gallery (Presets/History/How-it-works tabs + search). Tiles are horizontal (default) or vertical/portrait via <code>presetOrientation</code> — pick to match the output (vertical for 9:16 apps).</td>
+</tr>
+<tr>
+<td><code>app-detail.tsx</code> (<code>AppDetailTemplate</code>)</td>
+<td>A single tool's <strong>public landing page</strong> (the "simple app"): a centered <code>max-w-7xl</code> scroll page with a two-column generator hero (<code>@/components/dropzone</code> inputs on the left, a large <code>Media</code> preview on the right) and a "how it works in 3 steps" explainer. For a marketing/detail page around one tool, not a full workspace.</td>
+</tr>
+<tr>
+<td><code>ai-stylist.tsx</code> (<code>AiStylistTemplate</code>)</td>
+<td><strong>Configure-then-generate workspace</strong>: a persistent creation rail (<code>@/components/upload-field</code> uploads → <code>AssetLibraryModal</code>, <code>TemplateModal</code> preset picker, <code>Select</code>/<code>SettingTrigger</code> rows, costed Generate) beside a segmented <code>Tabs</code> workspace (options / live Results canvas / <code>HistoryGrid</code> / How-it-works). For a tool where the user uploads inputs, picks options, and iterates (try-on, restyle, character).</td>
+</tr>
+<tr>
+<td><code>skin-enhancer.tsx</code> (<code>SkinEnhancerTemplate</code>)</td>
+<td><strong>Before/after enhance tool</strong>: a centered single-tool page built around a draggable before/after compare slider (<code>@/components/before-after-compare</code>) — upload → enhance → compare original vs result, plus How-it-works and a personal <code>HistoryGrid</code>. For enhance / retouch / restore / upscale tools whose payoff is a comparison.</td>
+</tr>
+<tr>
+<td><code>shots.tsx</code> (<code>ShotsTemplate</code>)</td>
+<td><strong>Step-by-step wizard</strong> (<code>@/components/step-rail</code>): step 1 upload one input → step 2 generate a grid of variations (<code>GenerationCard</code>) and favorite the best → step 3 upscale/refine (with a <code>BeforeAfterCompare</code>). For a linear generate → select → refine flow.</td>
+</tr>
+</tbody>
+</table>
+<p>Map any request to the closest of the six; only build a fully custom shell when
+the user asks for something none covers.</p>
+<h2>Reusable UI components (<code>app/src/components/</code>)</h2>
+<p>Build the moving parts from these instead of hand-rolling them — they are the
+cross-app contract (<code>app/src/components/AGENTS.md</code> is the full, mandatory
+reference with wiring examples). Never fork, copy, or hand-roll a replacement;
+if one lacks a prop, extend it there.</p>
+<ul>
+<li><code>prompt-box/</code> — the studio prompt dock (mode rail, inline setting pills, upload tiles, GENERATE).</li>
+<li><code>composer/</code> — a simpler side-rail prompt pane (caption + textarea + footer action pills).</li>
+<li><code>setting-trigger/</code> — a compact labelled picker row (label + value + chevron).</li>
+<li><code>upload-field/</code> — THE rail-style upload field for creation rails (opens <code>AssetLibraryModal</code>); use it, never a hand-rolled rail upload field.</li>
+<li><code>dropzone/</code> — the bordered upload/select tile (<code>Dropzone</code> + <code>DropzonePreview</code>) for the app-detail generator hero; also an <code>AssetLibraryModal</code> trigger.</li>
+<li><code>rail-footer/</code> — the pinned Generate CTA footer for a creation rail (<code>sticky bottom-0</code> + gradient scrim) so the costed CTA stays reachable when the rail overflows.</li>
+<li><code>asset-library.tsx</code> — THE assets modal; every "+"/upload/attach/add-media action opens it (<code>trigger</code> + <code>onSelect</code>). Never build a custom picker/upload modal.</li>
+<li><code>template-modal/</code> — the generic "choose one option" modal (grid of tiles); <code>template-picker.tsx</code> — the tabbed, searchable Studio-style gallery.</li>
+<li><code>generation-card/</code> — the generation tile: <code>state="generating"</code> (pulsing brand glow) or ready (media + title). <code>generation-detail.tsx</code> — the fullscreen detail view.</li>
+<li><code>history-grid.tsx</code> — THE History section (the current user's OWN generations, personal — never a public feed), a batch-grouped <code>generation-card</code> grid.</li>
+<li><code>media-card/</code> — a cover/preview card (title + action); <code>ratio</code> picks landscape vs portrait.</li>
+<li><code>before-after-compare/</code> — the draggable before↔after slider (Skin Enhancer / refine steps).</li>
+<li><code>step-rail/</code> — the numbered multi-step wizard indicator (Shots).</li>
+<li><code>icon-tile/</code> — a small gradient icon tile for sidebars/nav rows.</li>
+</ul>
+<p>Anything these don't cover, build your own component from Quanta primitives
+(<code>references/quanta-design.md</code> rule 5) — never a third-party UI library.</p>
+<h2>Invariants (every layout)</h2>
+<ul>
+<li><strong>Compact panels — progressive disclosure (EVERY layout).</strong> A settings /
+  creation panel shows only its PRIMARY inputs plus the costed Generate CTA by
+  default. <strong>If it would expose more than ~6 controls, keep the primary few
+  visible and move the rest behind an "Additional settings" disclosure</strong> — use
+  the Quanta <code>Accordion</code> (<code>import { Accordion } from '@higgsfield/quanta/accordion'</code>,
+  <code>multiple={false}</code> so only one section opens at a time), never a flat
+  always-open list and never a hand-rolled collapsible. The creation rail (tall
+  left input panel) has a field budget: at most <strong>3 large fields</strong> (<code>UploadField</code>
+  / cover <code>MediaCard</code> / <code>Dropzone</code>) and <strong>4 compact fields</strong> (<code>SettingTrigger</code> /
+  <code>Select</code>) visible at once in the default/collapsed state; make the rail a
+  scroll container and pin the Generate CTA with <code>RailFooter</code>.</li>
+<li><strong>Simple app → the right side always shows an example output.</strong> For a
+  single-tool ("simple") app — the App detail hero especially — the large right
+  panel is NEVER an empty frame in the default state: seed it with a
+  representative example of the generation output (a real generated sample, or
+  the first result once produced) so the user sees what the tool makes before
+  they run it.</li>
+<li><strong>No app header/top bar</strong> — apps render INSIDE Higgsfield, whose chrome
+  provides the global header, credits/balance, and account controls. Never add
+  a brand/logo row, top nav bar, breadcrumb crumb row, or sign-out/credits UI.
+  In-app navigation is a Quanta <code>Sidebar</code> (studio) or inline controls (tabs,
+  step indicators); a page title is just a heading inside the content area.</li>
+<li><strong>Permanently DARK</strong> — <code>data-theme="default-dark"</code> is pinned on <code>&lt;html&gt;</code> in
+  the template. No theme toggle, no light mode, no <code>dark:</code> variants.</li>
+<li><strong>Container width</strong> — <code>mx-auto w-full max-w-7xl</code> on the shell (the body
+  background fills the viewport). The exception is the studio layout — a
+  full-bleed workspace (sidebar + edge-to-edge feed under the composer).</li>
+<li><strong>Buttons</strong> — the GENERATE action is always Quanta <code>variant="marketingPrimary"</code>
+  (the 3D lime CTA) with the credit cost INSIDE the button as
+  <code>{label} {sparkles icon} {credits}</code> — the sparkle is the branded asset
+  <code>@/assets/icon-sparkles-soft.svg?react</code> at 14px, and the credits number
+  inherits the button label's font (never smaller/other). Quanta variant colors
+  do NOT follow the names: <code>primary</code> = flat LIME, <code>secondary</code> = solid WHITE,
+  <code>tertiary</code> = dark white/10 glass. Ordinary/nav actions use the dark
+  <code>tertiary</code>/<code>ghost</code>; <code>secondary</code> (white) only where the real product shows a
+  white button. <strong>Default button <code>size="md"</code></strong> — Quanta's own default is <code>sm</code>
+  (too small for app surfaces), so pass <code>md</code> explicitly; use <code>sm</code>/<code>xs</code> only in
+  dense toolbars/pills. <strong>Default button <code>size="md"</code></strong> — Quanta's own default is <code>sm</code>
+  (too small for app surfaces), so pass <code>md</code> explicitly; use <code>sm</code>/<code>xs</code> only in
+  dense toolbars/pills.</li>
+<li><strong>Quanta first</strong> — <code>Button</code>, <code>Input</code>, <code>Textarea</code>, <code>Dropdown</code>, <code>Select</code>,
+  <code>Modal</code>, <code>Tabs</code>, <code>Sidebar</code>, <code>Accordion</code>, <code>Avatar</code>, <code>Badge</code>, <code>Tooltip</code>,
+  <code>sonner</code> toasts, <code>Loader</code>, <code>Media</code>, <code>Grid</code>, plus the app components above.
+  Spacing = native Tailwind (<code>p-4</code>, <code>gap-3</code>); semantics = <code>q-</code> utilities
+  (<code>bg-q-background-primary</code>, <code>text-q-body-md-regular</code>). For anything Quanta
+  lacks, build your own component from Quanta primitives — never a third-party
+  UI library.</li>
+<li><strong>Real end-to-end app</strong> — Higgsfield auth (<code>references/auth.md</code>), server-side
+  generation submit + poll, and the app's own product state in D1
+  (saved/favorited, collections, presets, history). The signed-out state, auth
+  guards, <code>/api/user</code>, cost preview, submit/poll routes, and D1 persistence are
+  MANDATORY — see the checklist in <code>references/fnf-sdk.md</code>.</li>
+</ul>
+<h2>Cross-template acceptance outcomes (after clone)</h2>
+<p>The cloned repo's layout and component guides remain the source of truth for
+implementation mechanics. Regardless of the chosen template, enforce these
+outcomes:</p>
+<ul>
+<li><strong>Accepted generation becomes visible immediately.</strong> Once confirmation is
+  accepted and submit returns queued/running generations, add those real
+  generations to the visible result set and move focus to it. <code>preset</code> must
+  activate History/Results instead of leaving the user on the preset gallery;
+  inline-feed layouts scroll or focus the new card. Render the pending state
+  immediately and poll it in place. Validation errors and confirmation cancel
+  stay on the current form; a post-submit failure remains on Results as a
+  failed card with retry. Preserve the chosen preset and composer state.</li>
+<li><strong>Generated-media galleries are responsive and uncropped.</strong> Every generated
+  output gallery — including Simple app output, History, and Results — adapts
+  to its container and to mixed media geometry. Derive each pending/ready
+  card's aspect ratio from result dimensions or the canonical submitted
+  <code>aspectRatio</code>, and preserve the complete image/video with contain or natural
+  sizing. Never force 1:1, 4:3, 16:9, and 9:16 outputs into one crop. Fixed
+  crops are only for curated preset or marketing thumbnails.</li>
+<li><strong>Settings stay usable at every viewport.</strong> Keep primary controls visible and
+  put secondary settings behind progressive disclosure. A tall settings panel
+  must be a real <code>min-h-0 overflow-y-auto overscroll-contain</code> region with a
+  visible scrollbar or edge-fade/“more settings” cue; hidden, non-obvious
+  scrolling is a bug. A pinned Generate action must not cover the final field
+  and must respect mobile safe areas. Below desktop, stack settings above the
+  result or move them into the repo-prescribed mobile sheet instead of
+  squeezing the desktop rail. Verify expanded settings at 375px, tablet, and
+  desktop with keyboard and touch access.</li>
+<li><strong>History stays inspectable in place.</strong> Every ready History card opens the
+  repo's detail view without leaving History. Detail provides Previous/Next
+  plus Left/Right arrow keys over the current filtered/sorted results. Closing
+  returns to the same History tab, filters, sort, and scroll position; never
+  require the user to exit History and reopen generations one by one.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

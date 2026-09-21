@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>asset-analysis · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-brandkit/references/asset-analysis.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Precise asset analysis</h1>
+<p>Analyze supplied assets before concepting or generation. The goal is a usable visual specification, not an impressionistic description.</p>
+<h2>1. Inventory and assign roles</h2>
+<p>Inspect every attachment and local path supplied in the conversation. If the user asks to reuse prior Higgsfield uploads, run <code>higgsfield upload list --json</code>. Build an inventory with:</p>
+<pre><code class="language-text">id | filename/source | format | dimensions/pages | likely role | authority
+</code></pre>
+<p>Use one role per asset:</p>
+<ul>
+<li><code>official-logo</code></li>
+<li><code>logo-variant</code></li>
+<li><code>font-file</code></li>
+<li><code>palette</code></li>
+<li><code>brandbook</code></li>
+<li><code>template</code></li>
+<li><code>representative-visual</code></li>
+<li><code>style-reference</code></li>
+<li><code>content-only</code></li>
+<li><code>unknown</code></li>
+</ul>
+<p>Ask the user only when confusing two roles would change the output—for example, an official logo versus a visual reference. Never treat inspiration as an official asset without confirmation.</p>
+<p>After confirming authority, immediately persist each official Essential Kit slot with <code>lock_authoritative_logo</code>, <code>lock_authoritative_palette</code>, or <code>lock_authoritative_typography</code>. Preserve the exact local path, URL, upload ID, or job ID plus the source summary and <code>user_supplied</code> origin. Do not wait for generated missing elements.</p>
+<h3>Inspirational references</h3>
+<p>For every <code>style-reference</code> or <code>representative-visual</code>, separate reusable taste signals from protected/distinctive design:</p>
+<pre><code class="language-text">Reference:
+User specifically likes:
+Palette behavior:
+Typography character:
+Composition/grid:
+Shape/material language:
+Overall mood:
+Do not copy:
+</code></pre>
+<p>Ask what specifically inspires the user when they have not said. Offer palette, typography, composition, shape language, material, and overall aesthetic plus a free-text option.</p>
+<p>If they do not answer, use the overall aesthetic/design-system character as a taste signal. Do not reproduce the reference's logo, distinctive layout, illustration, pattern, or artwork, and do not pass it into logo generation.</p>
+<h2>2. Evidence labels</h2>
+<p>Attach one evidence label to every extracted rule:</p>
+<ul>
+<li><strong>source-declared</strong> — explicit in SVG/CSS/PPTX/PDF/font metadata or written brand guidelines.</li>
+<li><strong>measured</strong> — deterministically calculated from source pixels or geometry.</li>
+<li><strong>visually-observed</strong> — clear to visual analysis but not available as source data.</li>
+<li><strong>inferred</strong> — a plausible interpretation or recommendation.</li>
+</ul>
+<p>Keep exact values and inferred matches separate. Never call an inferred font, radius, grid, or color role exact.</p>
+<h2>3. Source precedence</h2>
+<p>Resolve conflicts in this order:</p>
+<ol>
+<li>User's explicit correction</li>
+<li>Official editable source or font file</li>
+<li>Written brandbook rule</li>
+<li>Repeated value across multiple official assets</li>
+<li>Deterministic measurement</li>
+<li>Visual observation</li>
+<li>Inference</li>
+</ol>
+<p>Record conflicts instead of averaging them away. A social campaign may intentionally use a different treatment from the core identity.</p>
+<h2>4. Raster image analysis</h2>
+<p>Read images semantically and compositionally yourself when your client shows them; analyze several related images together to detect repeated rules, chunking large sets into manageable groups.</p>
+<p>For deterministic measurement, use the local file directly or download the user-authorized hosted asset into <code>"$BRANDKIT_WORKDIR/assets"</code>. Use the installed tooling (ImageMagick, Python/Pillow) to measure:</p>
+<ul>
+<li>Pixel dimensions, color mode, alpha, and resolution metadata</li>
+<li>Dominant and repeated colors, with exact sampled hex values</li>
+<li>Background versus foreground color candidates</li>
+<li>Logo bounding box and clear-space ratios</li>
+<li>Margins, gutters, column alignment, and repeated spacing</li>
+<li>Border thickness and approximate corner radius</li>
+<li>Text-block positions, alignment, scale relationships, and line counts</li>
+<li>Repeated motif size, density, and rotation</li>
+<li>Image crop, focal point, balance, and negative-space distribution</li>
+</ul>
+<p>Download only the user's own Higgsfield media URLs or user-supplied public URLs; never fetch unrelated third-party content. Document URLs use the dedicated document route below.</p>
+<p>For anti-aliased pixels, cluster near-identical colors rather than reporting hundreds of false palette entries. Ignore photographic colors when extracting the graphic palette unless the image clearly uses them as deliberate overlays or surfaces.</p>
+<p>Font recognition from pixels is never exact. Describe anatomy first (grotesk/humanist/geometric/serif, width, contrast, terminals, x-height, weight), then list possible matches with confidence.</p>
+<h2>5. SVG, CSS, and token files</h2>
+<p>Parse source directly before rendering:</p>
+<ul>
+<li><code>viewBox</code>, width, height, and aspect ratio</li>
+<li>Fill/stroke colors and opacity</li>
+<li>Stroke widths, line caps, and joins</li>
+<li>Paths, groups, transforms, masks, and clipping</li>
+<li>Repeated geometry and spacing</li>
+<li><code>font-family</code>, weight, style, letter spacing, and text anchors</li>
+<li>CSS variables and semantic token names</li>
+<li>Corner radii, shadows, borders, and gradients</li>
+</ul>
+<p>Render a preview and compare it with the source parse. Preserve the original file as the authoritative logo whenever possible; do not regenerate it.</p>
+<h2>6. PDF and PPTX</h2>
+<p>Analyze documents locally. Use a supplied local path directly, or download a user-authorized document URL into <code>"$BRANDKIT_WORKDIR/assets"</code>, then inspect it with installed tooling.</p>
+<p>For <code>.pptx</code>:</p>
+<ul>
+<li>Unpack the OOXML (<code>unzip</code>) when exact theme/font/shape data matters</li>
+<li>Render slide thumbnails with headless LibreOffice (<code>soffice --headless --convert-to pdf</code>, then <code>pdftoppm</code>) for visual reading</li>
+</ul>
+<p>Capture slide size, master/layout structure, theme colors, font families, weights, positions, shape geometry, borders, fills, radii, image crops, alignment, and recurring page types.</p>
+<p>For PDF, use the Poppler tools:</p>
+<ul>
+<li><code>pdftotext</code> for declared rules/copy</li>
+<li><code>pdffonts</code> for embedded font families</li>
+<li><code>pdftoppm</code>/<code>pdfimages</code> for page/image evidence of visual hierarchy, palette, spacing, and composition; inspect the rendered pages locally</li>
+</ul>
+<p>If the document cannot be parsed locally (corrupt, encrypted, or scanned without OCR value), report that and ask for page images or source files instead of hanging or improvising.</p>
+<p>PDF geometry may be flattened or outlined. Mark recovered text/font data as source-declared only when the file exposes it; otherwise use measured or visually-observed.</p>
+<h2>7. Font files</h2>
+<p>For <code>.otf</code>, <code>.ttf</code>, <code>.woff</code>, or <code>.woff2</code>, inspect with available font metadata tools such as <code>fc-scan</code> or FontTools:</p>
+<ul>
+<li>Family and style names</li>
+<li>Weight and width classes</li>
+<li>Italic/oblique status</li>
+<li>Variable axes</li>
+<li>Character/language coverage</li>
+<li>License/name table metadata when present</li>
+</ul>
+<p>Do not make a legal conclusion from metadata. Do not redistribute the file. For editable outputs, note that the recipient must install the font; PPTX does not reliably embed custom fonts.</p>
+<h2>8. Analyze the system, not only individual assets</h2>
+<p>After per-asset analysis, build a consistency matrix:</p>
+<pre><code class="language-text">Property | Core/official rule | Repeated variants | Exceptions | Confidence
+</code></pre>
+<p>Cover:</p>
+<ul>
+<li>Logo usage and exclusion zone</li>
+<li>Palette and role frequency</li>
+<li>Type roles and hierarchy</li>
+<li>Grid, margins, gutters, and alignment</li>
+<li>Border, corner-radius, and shadow language</li>
+<li>Composition and focal hierarchy</li>
+<li>Shapes, motifs, patterns, and textures</li>
+<li>Photography/render treatment only when it appears in supplied materials</li>
+<li>Format-specific exceptions</li>
+</ul>
+<h2>9. Output contract</h2>
+<p>Return analysis in this order:</p>
+<ol>
+<li><strong>Authoritative assets</strong></li>
+<li><strong>Measured visual tokens</strong></li>
+<li><strong>Typography findings</strong></li>
+<li><strong>Layout and composition rules</strong></li>
+<li><strong>Graphic devices</strong></li>
+<li><strong>Format-specific exceptions</strong></li>
+<li><strong>Unknowns/conflicts</strong></li>
+<li><strong>Safe extension rules</strong></li>
+</ol>
+<p>Feed these findings into <code>references/brand-lock.md</code>. Do not generate until the lock distinguishes what must be preserved from what may be proposed.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

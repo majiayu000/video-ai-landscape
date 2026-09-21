@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>text-overlay-bake · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-youtube-thumbnail/references/text-overlay-bake.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>MrBeast text overlay &amp; bake (HTML/CSS + canvas)</h1>
+<p>How to lay a MrBeast-style headline over the image and "bake" it into a flat PNG.
+Two layers: (1) a <strong>live HTML/CSS preview</strong> to tune the text in a browser, (2) a
+<strong>canvas bake</strong> — the same look re-rendered to pixels at the image's native resolution.</p>
+<p>This is the implementation of the 5 overlay styles named in the skill's Text policy. The
+overlay is the DEFAULT delivery for headline text (zero generation credits, always legible);
+baking text INTO the generation is the fallback, only on an explicit ask.</p>
+<h2>What makes text "MrBeast-y"</h2>
+<p>Not one trick but a stack of six — remove any one and it falls apart.</p>
+<table>
+<thead>
+<tr>
+<th>Trait</th>
+<th>Value</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Font</td>
+<td><strong>Anton</strong> (or Anton SC), one weight, reads <code>900</code>-heavy</td>
+<td>fat condensed grotesk — the signature</td>
+</tr>
+<tr>
+<td>Case</td>
+<td><strong>ALL CAPS</strong></td>
+<td>maximum density and aggression</td>
+</tr>
+<tr>
+<td>Stroke</td>
+<td>manual, <strong>thick</strong> (8–14% of cap size), drawn UNDER the fill</td>
+<td>separates letters from any background</td>
+</tr>
+<tr>
+<td>Shadow</td>
+<td>hard, dark, offset down, blur shifted</td>
+<td>"sticker" depth</td>
+</tr>
+<tr>
+<td>Color</td>
+<td>white / yellow→orange→red gradient / acid lime <code>#D4FF3F</code></td>
+<td>punchy contrast, reads in the feed</td>
+</tr>
+<tr>
+<td>Tracking</td>
+<td>tight (<code>-0.01…-0.02em</code>), line-height <code>0.9</code></td>
+<td>letters lock together like a logo</td>
+</tr>
+</tbody>
+</table>
+<p>Placement rules:
+- <strong>2–4 words max.</strong> A headline, not a sentence.
+- <strong>Not on the face.</strong> Text in a free quarter (bottom / corner / side).
+- <strong>Large.</strong> Cap height 12–18% of frame height. When in doubt, bigger.
+- <strong>Margins:</strong> keep text within the frame with comfortable padding, off the extreme edges.</p>
+<h2>Layer 1 — live HTML/CSS preview</h2>
+<p>Feed the background into <code>--bg</code>, put the text in <code>&lt;h1&gt;</code>, tune it in a browser.</p>
+<pre><code class="language-html">&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Anton&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;style&gt;
+  :root {
+    --bg: url('photo.jpg');   /* local path or image URL */
+    --W: 1280px;              /* frame size (16:9 = 1280×720) */
+    --H: 720px;
+  }
+  * { margin: 0; box-sizing: border-box; }
+  #poster {
+    position: relative;
+    width: var(--W); height: var(--H);
+    background: var(--bg) center/cover no-repeat;
+    overflow: hidden;
+    font-family: 'Anton', sans-serif;
+  }
+  /* text block — bottom-center, comfortable margin */
+  #headline {
+    position: absolute;
+    left: 50%; bottom: 6%;
+    transform: translateX(-50%);
+    text-align: center;
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    white-space: pre-line;         /* line breaks via \n in the text */
+  }
+  #headline .line {
+    font-size: 120px;              /* ≈16% of 720 */
+    color: #fff;
+    /* CRITICAL: paint-order draws the stroke UNDER the fill — otherwise it eats the letters */
+    -webkit-text-stroke: 14px #000;
+    paint-order: stroke fill;
+    /* hard &quot;sticker&quot; shadow */
+    text-shadow: 0 8px 0 rgba(0,0,0,.35), 0 14px 24px rgba(0,0,0,.55);
+  }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div id=&quot;poster&quot;&gt;
+    &lt;div id=&quot;headline&quot;&gt;
+      &lt;div class=&quot;line&quot;&gt;I SPENT&lt;/div&gt;
+      &lt;div class=&quot;line&quot; style=&quot;color:#D4FF3F&quot;&gt;100 DAYS&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<blockquote>
+<p><code>paint-order: stroke fill</code> is critical. Without it the stroke paints ON TOP and "eats" half
+the letter — the #1 bug in 90% of home-made MrBeast text.</p>
+</blockquote>
+<h2>5 proven presets (swap the <code>.line</code> block) — same 5 as the skill's Text policy</h2>
+<h3>Beast — white + thick black stroke (default)</h3>
+<pre><code class="language-css">.line { color:#fff; -webkit-text-stroke:14px #000; paint-order:stroke fill;
+        text-shadow:0 8px 0 rgba(0,0,0,.35), 0 14px 24px rgba(0,0,0,.55); }
+</code></pre>
+<h3>Fire — yellow→orange→red gradient</h3>
+<pre><code class="language-css">.line { -webkit-text-stroke:14px #1a0a00; paint-order:stroke fill;
+        background:linear-gradient(#FFE24B 0%, #FF9A1F 45%, #FF2E2E 100%);
+        -webkit-background-clip:text; background-clip:text; color:transparent;
+        filter:drop-shadow(0 0 22px rgba(255,120,0,.55)) drop-shadow(0 10px 0 rgba(0,0,0,.4)); }
+</code></pre>
+<h3>Neon Lime — acid lime + glow</h3>
+<pre><code class="language-css">.line { color:#D4FF3F; -webkit-text-stroke:12px #0a1400; paint-order:stroke fill;
+        text-shadow:0 0 26px rgba(180,255,40,.7), 0 10px 0 rgba(0,0,0,.4); }
+</code></pre>
+<h3>Clean Glass — Inter 800 on a frosted pill</h3>
+<pre><code class="language-css">#headline { font-family:'Inter',sans-serif; }
+.line { font-weight:800; color:#fff; letter-spacing:-0.02em;
+        background:rgba(20,20,25,.45); backdrop-filter:blur(16px);
+        padding:.12em .5em; border-radius:.2em;
+        box-shadow:0 20px 60px rgba(0,0,0,.5); }
+</code></pre>
+<h3>Marker — black Anton on lime line-boxes</h3>
+<pre><code class="language-css">.line { color:#0a0a0a; background:#D4FF3F; box-decoration-break:clone;
+        padding:0 .18em; box-shadow:0 8px 0 rgba(0,0,0,.5); }
+</code></pre>
+<h2>Layer 2 — bake to PNG (canvas)</h2>
+<p>The same look, re-rendered in canvas at native resolution — a clean PNG, zero dependencies.
+<strong>Important: wait for the font to load (<code>document.fonts.load</code>) BEFORE the first draw, or it
+bakes the system font.</strong></p>
+<pre><code class="language-html">&lt;canvas id=&quot;c&quot;&gt;&lt;/canvas&gt;
+&lt;script&gt;
+async function bake({ src, lines, W, H, out='baked.png' }) {
+  // 1) load Anton BEFORE drawing
+  const fontLink = document.createElement('link');
+  fontLink.rel = 'stylesheet';
+  fontLink.href = 'https://fonts.googleapis.com/css2?family=Anton&amp;display=swap';
+  document.head.appendChild(fontLink);
+  await document.fonts.load('120px &quot;Anton&quot;');
+  await document.fonts.ready;
+
+  // 2) background
+  const img = new Image();
+  img.crossOrigin = 'anonymous';        // else toDataURL fails on CORS (for URLs)
+  await new Promise((res, rej) =&gt; { img.onload = res; img.onerror = rej; img.src = src; });
+
+  const cv = document.getElementById('c');
+  cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+  // cover-fit the image
+  const s = Math.max(W / img.width, H / img.height);
+  const dw = img.width * s, dh = img.height * s;
+  ctx.drawImage(img, (W - dw) / 2, (H - dh) / 2, dw, dh);
+
+  // 3) text
+  const fontPx = Math.round(H * 0.16);   // ≈16% of frame height
+  const lineH  = fontPx * 0.9;
+  const stroke = Math.round(fontPx * 0.11);
+  ctx.font = `${fontPx}px &quot;Anton&quot;`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  ctx.letterSpacing = '-2px';            // tight tracking (Chrome/Edge)
+
+  const cx = W / 2;
+  const totalH = lines.length * lineH;
+  let y = H * 0.94 - totalH + lineH;     // block pinned to the bottom, comfortable margin
+
+  for (const ln of lines) {
+    // hard shadow
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,.55)';
+    ctx.shadowBlur = 24; ctx.shadowOffsetY = 14;
+    // paint-order: stroke FIRST
+    ctx.lineWidth = stroke;
+    ctx.strokeStyle = '#000';
+    ctx.lineJoin = 'round';               // no sharp spikes on thick-stroke corners
+    ctx.miterLimit = 2;
+    ctx.strokeText(ln.text, cx, y);
+    ctx.restore();
+
+    // fill on top (white / gradient)
+    if (ln.gradient) {
+      const g = ctx.createLinearGradient(0, y - fontPx, 0, y);
+      ln.gradient.forEach(([stop, col]) =&gt; g.addColorStop(stop, col));
+      ctx.fillStyle = g;
+    } else {
+      ctx.fillStyle = ln.color || '#fff';
+    }
+    ctx.fillText(ln.text, cx, y);
+    y += lineH;
+  }
+
+  // 4) export
+  cv.toBlob(b =&gt; {
+    const a = document.createElement('a');
+    a.download = out; a.href = URL.createObjectURL(b); a.click();
+  }, 'image/png');
+}
+
+// example call
+bake({
+  src: 'photo.jpg',
+  W: 1280, H: 720,
+  lines: [
+    { text: 'I SPENT', color: '#fff' },
+    { text: '100 DAYS', gradient: [[0,'#FFE24B'],[0.5,'#FF9A1F'],[1,'#FF2E2E']] },
+  ],
+});
+&lt;/script&gt;
+</code></pre>
+<p>Mechanics that are easy to forget:
+- <strong><code>strokeText</code> before <code>fillText</code></strong> — stroke under fill (the equivalent of <code>paint-order: stroke fill</code>).
+- <strong><code>document.fonts.load(...)</code> + <code>await document.fonts.ready</code></strong> before the first draw — else the first frame bakes the system font.
+- <strong><code>lineJoin='round'</code></strong> — removes sharp artifacts on the corners of a thick stroke.
+- <strong><code>img.crossOrigin='anonymous'</code></strong> only when the background is a URL; for a local file
+  (<code>&lt;input type=file&gt;</code> → <code>URL.createObjectURL</code>) it isn't needed and CORS doesn't block.
+- Draw the shadow inside <code>save()/restore()</code>, else <code>shadowBlur</code> bleeds onto the fill and smears the color.</p>
+<h2>4K / retina export</h2>
+<p>For a sharp PNG larger than the preview, compute everything from the image's NATIVE size,
+not from the preview viewport:</p>
+<pre><code class="language-js">bake({ src: '4k_render.png', W: 3840, H: 2160, lines: [...] });
+</code></pre>
+<p>Cap size, stroke and margins are all tied to <code>H</code> (in percent), so at 2160px everything scales itself.</p>
+<h2>Font menu (Anton is the default — these are the overrides)</h2>
+<p>If the user asks for a different font, pick from this menu (all on Google Fonts, so they
+load through the same mechanism as Anton). Named font → use it; "something else / not Anton"
+→ pick the closest fit below and say which you chose.</p>
+<p><strong>A — Top 3 on YouTube (punchy display, the Anton alternates)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Font</th>
+<th>Google Fonts weight</th>
+<th>Vibe / use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bebas Neue</td>
+<td>400 (reads bold)</td>
+<td>tall narrow ALL-CAPS — the #1 Anton alternative, maximum cap height</td>
+</tr>
+<tr>
+<td>Oswald</td>
+<td>600–700</td>
+<td>condensed grotesk, a touch softer than Anton</td>
+</tr>
+<tr>
+<td>Archivo Black</td>
+<td>400 (ultra-bold)</td>
+<td>blocky, wide, very loud headline</td>
+</tr>
+</tbody>
+</table>
+<p><strong>B — 5 most-used bold workhorses</strong></p>
+<table>
+<thead>
+<tr>
+<th>Font</th>
+<th>Weight</th>
+<th>Vibe / use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Montserrat</td>
+<td>900 (Black)</td>
+<td>clean geometric sans, modern headline</td>
+</tr>
+<tr>
+<td>Poppins</td>
+<td>800 (ExtraBold)</td>
+<td>rounded geometric, friendly</td>
+</tr>
+<tr>
+<td>Roboto Condensed</td>
+<td>700 (Bold)</td>
+<td>neutral condensed workhorse</td>
+</tr>
+<tr>
+<td>Inter</td>
+<td>800</td>
+<td>modern UI sans (same face as the Clean Glass preset)</td>
+</tr>
+<tr>
+<td>Barlow Condensed</td>
+<td>800 (ExtraBold)</td>
+<td>condensed, energetic</td>
+</tr>
+</tbody>
+</table>
+<p><strong>C — 5 aesthetic (girls' vlogs / soft-elegant)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Font</th>
+<th>Weight</th>
+<th>Vibe / use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Playfair Display</td>
+<td>700–900</td>
+<td>elegant high-contrast serif — classic "aesthetic" title</td>
+</tr>
+<tr>
+<td>Cormorant Garamond</td>
+<td>600–700</td>
+<td>delicate refined serif, editorial feel</td>
+</tr>
+<tr>
+<td>DM Serif Display</td>
+<td>400</td>
+<td>high-end display serif</td>
+</tr>
+<tr>
+<td>Fraunces</td>
+<td>600–900</td>
+<td>soft "old-style" serif, trendy</td>
+</tr>
+<tr>
+<td>Sacramento</td>
+<td>400 (script)</td>
+<td>handwritten script — ACCENT / secondary line only, never the hero word (a script fails the ~120px legibility test as the main headline)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>How to swap (keep everything else):</strong>
+- HTML/CSS: <code>#headline { font-family: '&lt;Family&gt;', sans-serif; }</code> and set <code>.line { font-weight: &lt;w&gt;; }</code>; update the Google-Fonts <code>&lt;link&gt;</code> to that family.
+- Canvas: <code>await document.fonts.load('120px "&lt;Family&gt;"')</code> and <code>ctx.font = \</code><weight> ${fontPx}px "<Family>"`<code>.
+- Stroke / shadow /</code>paint-order` / tracking stay as in the presets — only the family (and weight) change.</p>
+<p><strong>Stroke caveat by font class:</strong> heavy condensed faces (Anton, Bebas Neue, Oswald, Archivo Black)
+take the full 8–14% stroke. The delicate serifs and the script (Playfair, Cormorant, DM Serif,
+Fraunces, Sacramento) CLOG with a thick stroke — drop it to 3–6% (or none) and lean on a soft
+drop-shadow for separation instead. Sacramento (and any script) is an accent line, not the punch word.</p>
+<h2>Quick check before baking</h2>
+<ul>
+<li>[ ] Font <strong>Anton</strong>, ALL CAPS, 2–4 words.</li>
+<li>[ ] Stroke manual and <strong>thick</strong>, drawn under the fill (<code>paint-order</code> / <code>strokeText</code> first).</li>
+<li>[ ] Text does <strong>not</strong> cover the face; sits in a free quarter.</li>
+<li>[ ] Text within the frame, off the extreme edges (comfortable padding).</li>
+<li>[ ] One punchy color: white / fire gradient / lime — one per headline.</li>
+<li>[ ] Waited for the font to load before <code>fillText</code>.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

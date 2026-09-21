@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>fnf-sdk · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/fnf-sdk.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Skill: FNF SDK</h1>
+<p>Use this when the task touches <code>@higgsfield/fnf</code>: generation jobs, media upload,
+profile/workspace data, adapters, observability, or server-side job submission.</p>
+<p>Before coding, read:</p>
+<ul>
+<li><code>app/packages/fnf/ai/AGENTS.md</code></li>
+<li><code>references/auth.md</code></li>
+</ul>
+<h2>Template Rules</h2>
+<ul>
+<li>Adapter location: <code>@higgsfield/fnf</code> ships the SDK core, the backend ports,
+  and exactly ONE bundled adapter — <code>createWorkflowPlatformAdapter</code>, at the
+  <code>@higgsfield/fnf/workflow-platform</code> subpath (implementation:
+  <code>app/packages/fnf/src/workflow-platform/</code>). That is the only adapter
+  generated websites use, so the vendored <code>fnf</code> package is self-sufficient.
+  The old <code>@higgsfield/fnf/adapters</code> subpath NO LONGER EXISTS — importing it
+  is a build error. All other adapters (fnf-web, dev, apps-marketplace,
+  memory) live in the separate <code>@higgsfield/fnf-adapters</code> package, which
+  generated websites must not use.</li>
+<li>Keep fnf API calls server-side: <code>createServerFn</code> or <code>*.server.ts</code>.</li>
+<li>Do not call fnf from browser components.</li>
+<li>An SDK website is a real END-TO-END product, never a mock. It MUST have a real
+  backend (server functions/routes) AND real persistence: opt into D1
+  (<code>"db": true</code> in <code>app/app.manifest.json</code>) and store the app's own product
+  state — saved/favorited generations, collections, projects, prompt presets,
+  share records, in-app user data. fnf stays the source of truth for the
+  generations themselves; D1 is your product layer on top of it. In-memory
+  arrays, module-level state, <code>localStorage</code>-as-database, hardcoded fixtures, and
+  memory/mock adapters shipped as the product are NOT a backend — they are bugs.</li>
+<li>A real generation website is never "just a form." If the prompt mentions using a
+  Higgsfield model, SDK, generation, media upload, or model settings, the website
+  must include auth, profile/credits/workspace display, submit/cost/media server
+  operations, and a generation feed/history by default.</li>
+<li>If the website has any real SDK-backed generation/media/profile/credits feature,
+  it must require auth. Implement <code>/api/user</code>, signed-out UI, login/logout, and
+  a server-side auth check before each SDK operation.</li>
+<li>Do not use app-local/in-app auth as the guard for Higgsfield SDK operations.
+  In-app auth can coexist for product users, but SDK submit/upload/profile/
+  credits/feed routes must still be protected by Higgsfield auth through
+  <code>/api/user</code> and server-side <code>https://fnf.internal/user</code>.</li>
+<li>Browser auth/user UI calls <code>/api/user</code>; that route proxies
+  <code>https://fnf.internal/user</code> server-side. Do not call <code>fnf.internal</code> from the
+  browser.</li>
+<li>Generated websites must use <code>createWorkflowPlatformAdapter</code> with
+  <code>baseUrl: 'https://fnf.internal'</code> from server code. Do not use
+  env-controlled backend URL selectors, public fnf URLs, dev fnf URLs,
+  apps-marketplace, or direct product routes in generated websites.</li>
+<li>This strict rule is for Supercomputer/template-generated websites. If the user
+  explicitly asks for a separate SDK consumer with another approved endpoint,
+  use that host's adapter or custom SDK backend ports instead of forcing
+  <code>fnf.internal</code>.</li>
+<li>Do not expose service secrets, dev user ids, bearer tokens, media upload URLs,
+  prompts, or raw backend bodies to the client.</li>
+<li>Register only the job models the website uses.</li>
+<li>Upload/resolve media before submit.</li>
+<li>Display credits are already normalized when using <code>client.cost(input).credits</code>
+  or <code>profile.getCredits()</code>. Raw wallet fields from <code>getWallet()</code> are
+  credit-cents; divide by 100 or use <code>getCredits()</code> for UI.</li>
+<li>Observability is safe metadata only. Never emit prompts, params, headers,
+  tokens, URLs, filenames, emails, workspace names, or raw bodies.</li>
+</ul>
+<h2>Mandatory Generation Website Checklist</h2>
+<p>For prompts like "create a Nano Banana generation app", "build a Seedance form",
+"make an image/video generator", or anything equivalent, deliver all of this:</p>
+<ul>
+<li><code>GET /api/user</code> route that proxies <code>https://fnf.internal/user</code> server-side.</li>
+<li>Signed-out state with a Quanta sign-in button to
+  <code>/__auth/login?return=&lt;current path&gt;</code>.</li>
+<li>Logout action to <code>/__auth/logout?return=/</code>.</li>
+<li>Server-side auth guard before every SDK submit, upload, cost, feed, profile,
+  credits, workspace, Elements, character-training, realtime edit/finalize,
+  and saved-style operation.</li>
+<li>Profile tab/panel showing safe user fields, current workspace, and display
+  credits from profile APIs.</li>
+<li>Model form with validated settings for the requested model.</li>
+<li>Cost preview using the SDK cost path when supported by the chosen model.</li>
+<li>Submission confirmation gate: a browser confirmation modal (model, settings
+  summary, cost preview) BEFORE calling the generate route, plus the adapter
+  <code>confirm</code> option wired server-side (see "Submission Confirmation Gate"
+  below). A declined confirmation surfaces as the typed
+  <code>confirmation_rejected</code> error and renders as a cancelled state, not a
+  failure.</li>
+<li>Media upload route using multipart <code>FormData</code> when the model accepts media.</li>
+<li>Submit route/server function using <code>createJobClient</code> and registered jobs.</li>
+<li>Feed/history panel using SDK list/get/getSet data so the user can see queued,
+  running, completed, and failed generations after submit.</li>
+<li>Real persistence in D1 for the app's own product state (e.g. saved/favorited
+  generations, collections, projects, prompt presets, share records):
+  <code>"db": true</code> in <code>app/app.manifest.json</code> plus an additive
+  <code>app/migrations/000N_*.sql</code>. Do not fake persistence with in-memory or
+  <code>localStorage</code> state.</li>
+<li>Poll submitted generations until terminal status; do not stop after the
+  submit response if jobs are still queued/running.</li>
+<li>Render actual SDK result media in the feed/history. Use
+  <code>HiggsfieldGenerationCard</code> and <code>selectGenerationMedia</code>, or equivalent logic
+  using SDK selectors (<code>getPreviewUrl</code>, <code>getRawUrl</code>, <code>getMediaType</code>,
+  <code>getJobPhase</code>, <code>hasResult</code>, <code>isTerminalJobStatus</code>).</li>
+<li>Show prompt, model, status, created time, and failure reason where available.
+  Do not render completed jobs as blank cards with only status/id text.</li>
+<li>Keep one truthful export-format contract for every media type. Preserve and
+  label provider-native output, or carry a supported model format field through
+  preview, confirmation, submit, and download. Never fake PNG/JPEG/WebP
+  consistency by renaming a URL or filename.</li>
+<li>Request/debug logs on server SDK routes: method, logical operation/path,
+  response status, SDK error code/status/message. Never log prompts, raw params,
+  headers, tokens, cookies, upload URLs, filenames, emails, workspace names, or
+  file bytes.</li>
+</ul>
+<p>Omission is a bug. The ONLY exception is when the user EXPLICITLY asks for an
+offline/mock demo (memory adapters, no network) — never choose a mock as the
+default; the default is a real, end-to-end app with a real backend and D1.</p>
+<h2>Output and download format contract</h2>
+<p>Choose the app's public export behavior once and apply it to every submit and
+download path:</p>
+<ul>
+<li>If the registered model's documented schema exposes an output-format field,
+  offer only its supported values, choose one app default, and carry that field
+  in the same canonical SDK input used by <code>getWirePreview</code>, confirmation, and
+  submit. Do not invent a universal <code>outputFormat</code> key; use the exact current
+  job-schema field.</li>
+<li>Treat optimized previews as display derivatives only. <code>getPreviewUrl()</code> may
+  legitimately resolve to WebP or another optimized encoding even when the
+  raw/export asset is PNG or JPEG. Use <code>getRawUrl()</code> for open/download, or the
+  URL of bytes the app genuinely transcoded server-side.</li>
+<li>Make bytes, MIME type, and filename agree. Derive the extension and
+  <code>Content-Type</code> from trusted result metadata or the fetched raw response; a
+  download proxy must forward/set matching <code>Content-Type</code> and
+  <code>Content-Disposition</code>. Never save WebP bytes under <code>.png</code>, or infer format
+  from the preview URL's suffix.</li>
+<li>If the product promises a fixed format that the model cannot guarantee,
+  transcode the raw bytes in a real server-side path that supports the codec
+  (a container when Worker-native capabilities are insufficient). If that path
+  is not built, label and preserve the provider-native format instead of
+  advertising a false fixed format.</li>
+</ul>
+<p>For protected app-local downloads inside the Higgsfield iframe, also follow
+<code>references/auth.md</code> → "Authenticated File Downloads". A direct raw link is
+valid only when it is public or a self-contained signed URL requiring no
+session.</p>
+<h2>Elements and custom-reference character training</h2>
+<p>Use these capabilities when an app needs reusable user assets or a consistent
+trained subject. Keep the concepts distinct:</p>
+<ul>
+<li><strong>Elements</strong> are the signed-in user's reusable asset library. A Character is
+  one kind of Element. Browse Elements with <code>createReferenceClient</code> from
+  <code>@higgsfield/fnf/references</code>; do not call them all characters and do not
+  invent app-local copies of the library.</li>
+<li><strong>Character training</strong> is a separate multi-image custom-reference operation.
+  Use <code>createCharacterClient</code> from <code>@higgsfield/fnf/characters</code>. Training
+  creates a processing Character Element and returns a custom-reference id.</li>
+<li><strong>Generation</strong> uses that custom-reference id as
+  <code>settings.customReferenceId</code> on a compatible Soul job. Presets are not part
+  of this flow.</li>
+</ul>
+<p>All calls stay server-side after the Higgsfield auth guard and reuse the same
+<code>createWorkflowPlatformAdapter({ baseUrl: 'https://fnf.internal' })</code>:</p>
+<pre><code class="language-ts">import { createCharacterClient } from '@higgsfield/fnf/characters'
+import { createJobClient } from '@higgsfield/fnf/client'
+import { soulV2Image } from '@higgsfield/fnf/jobs'
+import { createReferenceClient } from '@higgsfield/fnf/references'
+import { createWorkflowPlatformAdapter } from '@higgsfield/fnf/workflow-platform'
+
+const adapter = createWorkflowPlatformAdapter({
+  baseUrl: 'https://fnf.internal',
+  confirm: async () =&gt; confirmationToken,
+})
+
+const elements = createReferenceClient({ adapter })
+const characters = createCharacterClient({ adapter })
+const jobs = createJobClient({ adapter, jobs: [soulV2Image] })
+
+const library = await elements.list({ category: 'character', size: 50 })
+
+// images are MediaRef values returned by media.upload(...) or compatible
+// image job refs. Upload browser Files with multipart FormData first.
+const pending = await characters.create({
+  name: 'My character',
+  type: 'soul_2',
+  images,
+})
+const character = await characters.wait(pending)
+if (character.status === 'failed')
+  throw new Error(character.failReason ?? 'Character training failed')
+
+const result = await jobs.submit({
+  model: 'text2image_soul_v2',
+  prompt: { instruction: 'Candid flash photo at a late-night diner' },
+  settings: {
+    customReferenceId: character.id,
+    aspectRatio: '3:4',
+    batchSize: 4,
+  },
+})
+</code></pre>
+<p>Character contract:</p>
+<ul>
+<li>Supported training types are <code>soul</code>, <code>soul_2</code> (default), and
+  <code>soul_cinematic</code>. Expose the requested types; do not hard-code a
+  <code>/soul-v2</code> transport or reimplement one backend variant.</li>
+<li>Training accepts 1–100 image references. <code>soul</code> accepts uploaded
+  <code>media_input</code> refs only; <code>soul_2</code> and <code>soul_cinematic</code> also accept
+  compatible image job refs whose type ends in <code>_job</code>.</li>
+<li>Poll <code>characters.get(id)</code> or <code>characters.wait(character)</code> until
+  <code>completed</code> or <code>failed</code>. On completion, refresh the Elements list; the
+  result may also expose <code>elementId</code>.</li>
+<li>Existing Character Elements expose <code>reference.characterId</code>; use that value
+  as <code>customReferenceId</code>. The Element id and custom-reference character id
+  are different ids.</li>
+<li><code>references.list({ cursor, size, category })</code>,
+  <code>references.get(elementId)</code>, <code>characters.create(...)</code>, and
+  <code>characters.get(characterId)</code> are the public SDK operations. Never
+  hand-write <code>/reference-elements</code> or <code>/custom-references</code> fetches.</li>
+<li>Do not add a custom per-image/per-job approval workaround around character
+  training. Reuse platform auth, upload, submission, and approval
+  infrastructure; the normal confirmation gate still applies to the Soul
+  generation submission.</li>
+</ul>
+<p>A complete Elements-and-character flow includes auth/profile/credits, an
+existing Elements picker, multipart multi-image upload, create + poll character
+states, Elements refresh, Soul generation using <code>customReferenceId</code>, the
+normal confirmation/cost flow, generation polling, and history/result
+rendering.</p>
+<h2>Stateful realtime image editing and saved custom styles</h2>
+<p>Use the realtime client when an app needs successive image edits in one chain or
+user-level saved styles:</p>
+<pre><code class="language-ts">import {
+  buildRealtimeChainEditRequest,
+  createRealtimeClient,
+  type RealtimeChainEditInput,
+} from '@higgsfield/fnf/realtime'
+import { createWorkflowPlatformAdapter } from '@higgsfield/fnf/workflow-platform'
+
+const adapter = createWorkflowPlatformAdapter({ baseUrl: 'https://fnf.internal' })
+const realtime = createRealtimeClient({ adapter, jobAdapter: adapter })
+
+const input: RealtimeChainEditInput = {
+  params: {
+    prompt: 'Turn this into a candid editorial portrait',
+    resolution: '1k',
+    aspectRatio: '1:1',
+    images, // explicit MediaRef/image-job refs; at most four
+  },
+}
+const cost = await realtime.estimateChainCost({
+  resolution: input.params.resolution,
+  aspectRatio: input.params.aspectRatio,
+})
+// Browser: request approval for the exact validated wire.
+const wire = buildRealtimeChainEditRequest(input)
+const confirmationToken = await window.hf.requestGeneration(
+  'flux_klein_realtime',
+  wire,
+  { credits: cost.credits },
+)
+// Authenticated server function: submit the same input with its opaque token.
+const edit = await realtime.editChain(input, { confirmationToken })
+const generation = await realtime.pollEditJob(edit.jobId)
+
+// Continue by passing edit.chainId and a new explicit image set.
+await realtime.finalizeChain({ chainId: edit.chainId })
+</code></pre>
+<p>The confirmation call runs in the browser through
+<code>window.hf.requestGeneration</code>; the client creation, edit, polling, finalize,
+and style calls stay behind authenticated server functions. Send the opaque
+token and the exact same input to the server; never log it. If one action
+launches several independent edits, build every wire request first and use the
+existing batch confirmation form, matching returned tokens by index. Every
+<code>editChain</code> call is billable and intentionally not retried.</p>
+<p>Realtime contract:</p>
+<ul>
+<li>Omit <code>chainId</code> to start; pass the returned <code>chainId</code> to continue. Previous
+  outputs are not appended automatically: every attempt supplies its own
+  <code>images</code> array of up to four uploaded <code>media_input</code> or image-job refs.</li>
+<li>Provide exactly one of <code>prompt</code> or structured <code>settings</code>. Structured
+  settings may select a saved style with <code>style: 'custom'</code> and
+  <code>customStyleId</code>.</li>
+<li>Use <code>getEditJob</code> / <code>pollEditJob</code> and normal <code>Generation</code> selectors to
+  render the result. Call <code>finalizeChain</code> when the editing session ends.</li>
+<li>Saved styles are authenticated user-level data. Manage them only through
+  <code>listCustomStyles</code>, <code>createCustomStyle</code>, <code>updateCustomStyle</code>, and
+  <code>deleteCustomStyle</code>. A style reference <code>mediaId</code> must be an upload or job
+  the user/app may access; a listed Element's metadata is not a raw-media
+  picker.</li>
+<li>Never hand-write <code>/realtime/*</code> requests or invent a separate approval
+  mechanism. Reuse the platform adapter, auth guard, multipart upload path, and
+  confirmation infrastructure.</li>
+</ul>
+<h2>Common Imports</h2>
+<pre><code class="language-ts">import { createJobClient } from '@higgsfield/fnf/client'
+import { createMediaClient } from '@higgsfield/fnf/media'
+import { createProfileClient } from '@higgsfield/fnf/profile'
+import { createWorkflowPlatformAdapter } from '@higgsfield/fnf/workflow-platform'
+import { nanoBanana2, seedance2_0 } from '@higgsfield/fnf/jobs'
+</code></pre>
+<h2>Server Pattern</h2>
+<p>Create the adapter inside server-only code after auth has been checked.</p>
+<pre><code class="language-ts">const auth = await requireCurrentUser()
+if (!auth.ok) {
+  return new Response(JSON.stringify(auth.body), {
+    status: auth.status,
+    headers: { 'content-type': 'application/json' },
+  })
+}
+</code></pre>
+<p>Then create SDK clients with the fnf.internal logical-operation adapter:</p>
+<pre><code class="language-ts">const FNF_INTERNAL_BASE_URL = 'https://fnf.internal'
+
+const adapter = createWorkflowPlatformAdapter({
+  baseUrl: FNF_INTERNAL_BASE_URL,
+  observability,
+})
+
+const jobs = createJobClient({ adapter, jobs: [seedance2_0, nanoBanana2] })
+const media = createMediaClient({ mediaAdapter: adapter })
+const profile = createProfileClient({ profileAdapter: adapter })
+</code></pre>
+<p>Generated websites use fnf.internal only:</p>
+<pre><code class="language-ts">const adapter = createWorkflowPlatformAdapter({
+  baseUrl: 'https://fnf.internal',
+  observability,
+})
+</code></pre>
+<p>Do not pass <code>getToken</code>. Do not send <code>Authorization</code>. The platform attaches
+identity automatically for server-side calls to <code>https://fnf.internal</code>.</p>
+<p>This adapter sends SDK operations only under the fnf.internal logical route
+families <code>/user</code>, <code>/workspaces/*</code>, and <code>/jobs/*</code>. The platform behind
+fnf.internal decides final internal routing.</p>
+<p>Do not add model-specific route logic in website code. The SDK builds validated wire
+params, fnf.internal resolves final endpoints, and the website handles only safe
+request/response state.</p>
+<p>Generated websites must never use:</p>
+<pre><code class="language-ts">process.env.FNF_BASE_URL
+const backendUrl = process.env.SOME_BACKEND_URL
+createWorkflowPlatformAdapter({ baseUrl: backendUrl })
+createFnfWebAdapter({ baseUrl: '...' })
+createDevFnfWebAdapter(...)
+createAppsMarketplaceAdapter(...)
+fetch('https://fnf.internal/jobs') // hand-written request; use the SDK adapter
+</code></pre>
+<h2>fnf.internal Method Contract</h2>
+<p>Generated websites must not decide fnf.internal HTTP methods themselves. Use SDK
+clients, and let <code>createWorkflowPlatformAdapter</code> send the correct operation:</p>
+<table>
+<thead>
+<tr>
+<th>SDK operation</th>
+<th>fnf.internal method/path</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>job submit</td>
+<td><code>POST /jobs/submit</code></td>
+</tr>
+<tr>
+<td>job cost</td>
+<td><code>POST /jobs/cost</code></td>
+</tr>
+<tr>
+<td>job cancel</td>
+<td><code>POST /jobs/{id}/cancel</code></td>
+</tr>
+<tr>
+<td>media presign</td>
+<td><code>POST /jobs/media/presign</code></td>
+</tr>
+<tr>
+<td>media confirm</td>
+<td><code>POST /jobs/media/{id}/confirm</code></td>
+</tr>
+<tr>
+<td>job get</td>
+<td><code>GET /jobs/{id}</code></td>
+</tr>
+<tr>
+<td>job set get</td>
+<td><code>GET /jobs/sets/{id}</code></td>
+</tr>
+<tr>
+<td>job list/feed</td>
+<td><code>GET /jobs?gen_type=...&amp;size=...</code></td>
+</tr>
+<tr>
+<td>media get/list</td>
+<td><code>GET /jobs/media/{id}</code> / <code>GET /jobs/media?...</code></td>
+</tr>
+<tr>
+<td>Element get/list</td>
+<td><code>GET /reference-elements/{id}</code> / <code>GET /reference-elements?...</code></td>
+</tr>
+<tr>
+<td>character train/read</td>
+<td><code>POST /custom-references</code> / <code>GET /custom-references/{id}</code></td>
+</tr>
+<tr>
+<td>realtime edit/cost/finalize</td>
+<td><code>POST /realtime/chain/edit</code> / <code>POST /realtime/chain/cost</code> / <code>POST /realtime/chain/finalize</code></td>
+</tr>
+<tr>
+<td>saved style list/create</td>
+<td><code>GET /realtime/custom-styles</code> / <code>POST /realtime/custom-styles</code></td>
+</tr>
+<tr>
+<td>saved style update/delete</td>
+<td><code>PATCH /realtime/custom-styles/{id}</code> / <code>DELETE /realtime/custom-styles/{id}</code></td>
+</tr>
+<tr>
+<td>profile user</td>
+<td><code>GET /user</code></td>
+</tr>
+<tr>
+<td>workspace list/current/wallet</td>
+<td><code>GET /workspaces</code>, <code>/workspaces/current</code>, <code>/workspaces/wallet</code></td>
+</tr>
+<tr>
+<td>workspace switch</td>
+<td><code>POST /workspaces/switch</code></td>
+</tr>
+</tbody>
+</table>
+<p>If the browser calls an app-local route for generation, that app route must be a
+mutation route such as <code>POST /api/generate</code>; it must not be <code>GET</code>. The route
+then checks auth server-side and calls <code>jobs.submit(...)</code>. Do not forward browser
+requests directly to <code>fnf.internal</code>, <code>/jobs</code>, <code>/jobs/v2/*</code>, or <code>/api/user</code>.</p>
+<p>For TanStack server functions, use <code>createServerFn({ method: "POST" })</code> for
+submit, cost, media upload, workspace switch, and other write-like SDK
+operations. Use GET only for pure read functions. A 405 / "Method Not Allowed"
+on generation almost always means the generated website used a GET route/function
+for a submit/cost/media operation, or tried to call a fnf.internal write
+operation through a query string instead of letting the SDK use the static POST
+route.</p>
+<h2>Strict Media Upload Contract</h2>
+<p>Binary files must never cross a JSON server-function boundary. Do not pass
+<code>File</code>, <code>Blob</code>, <code>ArrayBuffer</code>, <code>Uint8Array</code>, base64 strings, or arrays of bytes
+inside <code>createServerFn</code> input or JSON request bodies. This causes stack overflows,
+huge payloads, broken serialization, or unusable object-shaped bytes.</p>
+<p>Use one of these two patterns:</p>
+<ol>
+<li>Browser uploads to an app-local <code>POST /api/media/upload</code> route with
+   <code>FormData</code>.</li>
+<li>Browser uses <code>useAttachments</code> only when the provided media client has a safe
+   browser-capable upload path. For server-only fnf.internal/auth flows, prefer
+   the <code>FormData</code> route.</li>
+</ol>
+<p>Then generation submits only the returned <code>MediaRef</code>:</p>
+<pre><code class="language-txt">File in browser
+  -&gt; POST multipart FormData /api/media/upload
+  -&gt; server auth guard
+  -&gt; media.upload({ source: bytes, ... })
+  -&gt; returns MediaRef
+  -&gt; POST JSON /api/generate with prompt/settings/MediaRef only
+  -&gt; server auth guard
+  -&gt; jobs.submit(...)
+</code></pre>
+<p>Client upload example:</p>
+<pre><code class="language-ts">const form = new FormData()
+form.append('file', file)
+
+const response = await fetch('/api/media/upload', {
+  method: 'POST',
+  body: form,
+})
+
+const upload = await response.json()
+if (!upload.ok)
+  throw new Error(upload.error?.code ?? 'upload_failed')
+</code></pre>
+<p>Do not set the <code>content-type</code> header manually for <code>FormData</code>; the browser must
+add the multipart boundary.</p>
+<p>Server upload route example:</p>
+<pre><code class="language-ts">import { createFileRoute } from '@tanstack/react-router'
+import { createMediaClient } from '@higgsfield/fnf/media'
+
+export const Route = createFileRoute('/api/media/upload')({
+  server: {
+    handlers: {
+      POST: async ({ request }) =&gt; {
+        const auth = await requireCurrentUser()
+        if (!auth.ok) {
+          return Response.json(
+            { ok: false, error: { code: 'unauthorized', status: auth.status } },
+            { status: auth.status },
+          )
+        }
+
+        const form = await request.formData()
+        const file = form.get('file')
+        if (!(file instanceof File)) {
+          return Response.json(
+            { ok: false, error: { code: 'missing_file' } },
+            { status: 400 },
+          )
+        }
+
+        console.info('[api/media/upload] file', {
+          contentType: file.type,
+          size: file.size,
+        })
+
+        const bytes = new Uint8Array(await file.arrayBuffer())
+        const media = createMediaClient({ mediaAdapter: adapter })
+        const result = await media.upload({
+          source: bytes,
+          filename: 'upload',
+          contentType: file.type,
+          type: 'image',
+          forceIpCheck: true,
+        })
+
+        return Response.json({ ok: true, ref: result.ref })
+      },
+    },
+  },
+})
+</code></pre>
+<p>Generation route input must look like this:</p>
+<pre><code class="language-ts">{
+  prompt: string
+  settings: { aspectRatio: '3:4', resolution: '1k', batchSize: 1 }
+  media?: { image?: MediaRef }
+}
+</code></pre>
+<p>Do not include <code>file</code>, <code>blob</code>, <code>bytes</code>, <code>arrayBuffer</code>, <code>base64</code>, or raw
+<code>data:image/...</code> values in generation input. If upload fails with
+<code>Maximum call stack size exceeded</code>, the website almost certainly tried to serialize
+binary through JSON or used <code>String.fromCharCode(...bytes)</code> on a large file.</p>
+<h2>Job Client Pattern</h2>
+<p>Only call the job client after the server auth guard succeeds.</p>
+<p>Register exactly the models the website exposes:</p>
+<pre><code class="language-ts">const jobs = createJobClient({
+  adapter,
+  jobs: [seedance2_0, nanoBanana2],
+})
+</code></pre>
+<p>Use public camelCase settings:</p>
+<pre><code class="language-ts">await jobs.submit({
+  model: 'seedance_2_0',
+  prompt: { instruction: prompt },
+  settings: {
+    mode: 'std',
+    duration: 5,
+    aspectRatio: '16:9',
+    resolution: '720p',
+    batchSize: 1,
+  },
+})
+</code></pre>
+<p>Never send snake_case settings from UI code. The SDK maps <code>aspectRatio</code> to
+<code>aspect_ratio</code>, <code>batchSize</code> to <code>batch_size</code>, and similar wire fields through
+job schemas.</p>
+<p>Server-function submit example:</p>
+<pre><code class="language-ts">import { createServerFn } from '@tanstack/react-start'
+import { z } from 'zod'
+import { createJobClient } from '@higgsfield/fnf/client'
+import { createWorkflowPlatformAdapter } from '@higgsfield/fnf/workflow-platform'
+import { nanoBanana2 } from '@higgsfield/fnf/jobs'
+
+export const generate = createServerFn({ method: 'POST' })
+  .inputValidator(z.object({
+    prompt: z.string().min(1),
+    // set by the browser confirmation modal — see &quot;Submission Confirmation Gate&quot;
+    confirmed: z.literal(true),
+  }))
+  .handler(async ({ data }) =&gt; {
+    const auth = await requireCurrentUser()
+    if (!auth.ok) {
+      return {
+        ok: false as const,
+        code: 'unauthorized',
+        status: auth.status,
+      }
+    }
+
+    const adapter = createWorkflowPlatformAdapter({
+      baseUrl: 'https://fnf.internal',
+      confirm: async () =&gt; {
+        if (!data.confirmed)
+          throw new Error('user did not confirm the submission')
+      },
+    })
+
+    const jobs = createJobClient({ adapter, jobs: [nanoBanana2] })
+    const result = await jobs.submit({
+      model: 'nano_banana_2',
+      prompt: { instruction: data.prompt },
+      settings: { aspectRatio: '3:4', resolution: '1k', batchSize: 1 },
+    })
+
+    return { ok: true as const, result }
+  })
+</code></pre>
+<p>Do not use <code>createServerFn({ method: "GET" })</code> or a <code>GET</code> server route for
+generation. Generation is a mutation even when the form has no uploaded file.</p>
+<h2>LLM chat / text — <code>createLlmClient</code> (NOT a job)</h2>
+<p>Chat/text generation is separate from the media jobs registry. Worker-side
+ONLY, zero-token (no <code>getToken</code>/<code>userId</code> — the platform attaches the visitor's
+identity and bills their credits):</p>
+<pre><code class="language-ts">import { createLlmClient } from '@higgsfield/fnf'
+const llm = createLlmClient({ baseUrl: 'https://fnf.internal/llm' })
+
+const [model] = await llm.listModels()
+if (!model) throw new Error('No LLM models are currently available')
+
+const res = await llm.complete({
+  model,
+  messages: [{ role: 'user', content: '…' }],
+})
+// llm.stream(...) yields OpenAI-shape SSE deltas; tool-calling supported
+// (LlmToolDef / LlmToolCall). In React: FnfProvider's `llm` prop + useFnfLlmClient().
+</code></pre>
+<p>Model availability is runtime gateway configuration. Never hardcode a catalog
+or claim that one model is always available. Call <code>listModels()</code> server-side,
+use the exact returned id, and handle an empty list. Model pickers may receive
+those ids through an authenticated app-local server function or route; if a
+previously selected id disappears, refresh the list and show that it is no
+longer available instead of silently substituting another model.</p>
+<p><strong>App-only.</strong> Text generation is generation → <code>type: "app"</code> (Sign in with
+Higgsfield, visitor credits). NEVER on a <code>type: "website"</code> build, and never a
+"bring your own LLM key" path.</p>
+<h2>Submission Confirmation Gate</h2>
+<p>The SDK requires hosts that submit generations on behalf of a user to
+implement a confirmation gate. Every generation adapter factory accepts a
+<code>confirm</code> option (<code>ConfirmSubmit</code> from <code>@higgsfield/fnf</code>); <code>jobs.submit</code> calls
+it once per submission — after validation, before any network call. Resolve to
+proceed (a resolved string rides the create request as <code>confirmation_token</code>);
+reject/throw to abort with the typed <code>confirmation_rejected</code> error.</p>
+<p>In a generated website the submit runs server-side, so split the gate across
+the boundary:</p>
+<ol>
+<li>Browser: before calling the generate server function, show a Quanta
+   confirmation modal with the model, a settings summary, and the cost preview.
+   Only call the generate function after the user confirms; send
+   <code>confirmed: true</code> (or an app-minted confirmation token) in the JSON input.</li>
+<li>Server: wire the adapter's <code>confirm</code> to that input — resolve when the
+   browser confirmed, throw when it did not:</li>
+</ol>
+<pre><code class="language-ts">const adapter = createWorkflowPlatformAdapter({
+  baseUrl: 'https://fnf.internal',
+  // Runs during jobs.submit, after validation, before any network call.
+  confirm: async () =&gt; {
+    if (!data.confirmed)
+      throw new Error('user did not confirm the submission')
+    return data.confirmationToken // optional; sent as confirmation_token
+  },
+})
+</code></pre>
+<p>Rules:</p>
+<ul>
+<li>Never auto-confirm (<code>confirm: async () =&gt; {}</code> with no browser modal defeats
+  the gate). The modal is mandatory for real generation websites.</li>
+<li>Branch on <code>error.code === 'confirmation_rejected'</code> and render it as a
+  user-cancelled state (quiet), not an error toast.</li>
+<li>The confirmation token is a token: never log it or emit it through
+  observability.</li>
+</ul>
+<h2>Generation Result Rendering Contract</h2>
+<p>Every real generation website must show submitted and historical generations with
+real media previews. Use the template helpers by default:</p>
+<pre><code class="language-tsx">import { HiggsfieldGenerationCard } from &quot;@/components/higgsfield-generation-card&quot;
+import { selectGenerationMedia } from &quot;@/lib/higgsfield-generation-results&quot;
+</code></pre>
+<p>The helper uses the SDK read model:</p>
+<ul>
+<li>image cards render <code>getPreviewUrl(generation)</code> for the optimized preview and
+  <code>getRawUrl(generation)</code> for open/download.</li>
+<li>video cards render <code>getRawUrl(generation)</code> as the playable <code>&lt;video src&gt;</code> and
+  <code>generation.results.thumbnailUrl</code> / <code>getPreviewUrl(generation)</code> as the poster
+  when the preview is an image.</li>
+<li>pending/queued/in-progress/ip-detect states render progress UI.</li>
+<li>failed/nsfw/canceled/ip-detected states render the status/failure reason.</li>
+<li>completed jobs with no result URL render "Preview unavailable" and keep a
+  refresh/get action available.</li>
+</ul>
+<p>When writing custom cards, keep the same selector contract:</p>
+<pre><code class="language-ts">import {
+  getJobPhase,
+  getMediaType,
+  getPreviewUrl,
+  getRawUrl,
+  hasResult,
+  isTerminalJobStatus,
+} from &quot;@higgsfield/fnf/client&quot;
+</code></pre>
+<p>Never inspect raw backend <code>results.raw.url</code> objects in website UI. The SDK adapter
+normalizes product/WFP responses into <code>Generation.results</code>; render that model.
+Never log prompts or raw media URLs. Displaying the signed-in user's prompt in
+their own UI is allowed.</p>
+<h2>Model Catalog Snapshot</h2>
+<p>Use the package guide as source of truth, but common generated-website choices are:</p>
+<ul>
+<li>Images: <code>soulV2Image</code>, <code>soulCinemaImage</code>, <code>gptImage2</code>, <code>seedreamV4_5</code>,
+  <code>nanoBanana2</code>, <code>nanoBananaFlash</code>, <code>recraftV41Image</code>.</li>
+<li>Video: <code>seedance2_0</code>, <code>kling3_0</code>, <code>kling3MotionControl</code>, <code>happyHorse</code>,
+  <code>grokImagine</code>, <code>grokImagineV15</code>, <code>veo3_1Lite</code>, <code>wan27</code>.</li>
+<li>Upscale: <code>topazImageUpscale</code>, <code>topazImageGenerativeUpscale</code>,
+  <code>nanoBanana2Upscale</code>, <code>topazVideoUpscale</code>, <code>higgsfieldVideoUpscale</code>,
+  <code>soraEnhanceVideo</code>, <code>bytedanceVideoUpscale</code>.</li>
+</ul>
+<p>Import only the entries the screen needs. The <code>jobs: [...]</code> array is the source
+of model autocomplete and media-role narrowing.</p>
+<h2>Media Pattern</h2>
+<p>Use <code>createMediaClient({ mediaAdapter: adapter })</code> server-side after auth, or
+behind a safe client boundary that still reaches a server auth guard. Upload
+first, then submit the returned <code>MediaRef</code>:</p>
+<pre><code class="language-ts">const upload = await media.upload({
+  source: fileBytes,
+  filename: 'input.png',
+  type: 'image',
+  forceIpCheck: true,
+})
+
+await jobs.submit({
+  model: 'nano_banana_2',
+  media: { image: upload.ref },
+  prompt: { instruction: prompt },
+})
+</code></pre>
+<p>Attach/resolve media metadata before submit when local validation depends on
+dimensions or duration. Unknown metadata is allowed locally; backend remains
+authoritative.</p>
+<p>Allowed <code>media.upload({ source })</code> values are only <code>Blob</code>, <code>ArrayBuffer</code>,
+<code>Uint8Array</code>, or <code>{ read: async () =&gt; Blob | ArrayBuffer | Uint8Array }</code>. The SDK
+throws <code>invalid_media_source</code> for JSON-shaped objects so broken upload plumbing
+fails clearly before presign/transfer.</p>
+<h2>Profile And Workspace</h2>
+<p>Use the profile domain for account/workspace panels:</p>
+<pre><code class="language-ts">const snapshot = await profile.getSnapshot()
+const credits = await profile.getCredits({ includeOnDemand: true })
+await profile.switchWorkspace({ workspaceId })
+</code></pre>
+<p>Workspace switching updates backend context only. The website still owns routing,
+session metadata, adapter header state, and cache invalidation.</p>
+<p>Do not use <code>profile.getUser()</code> directly in browser components for auth gating.
+For browser UI, use <code>/api/user</code> from <code>references/auth.md</code>. Use the SDK profile
+client server-side when the website is already performing SDK-backed account,
+workspace, wallet, or credit operations.</p>
+<p>Credit display rule:</p>
+<ul>
+<li><code>profile.getWallet()</code> returns raw backend credit-cent values.</li>
+<li><code>profile.getCredits()</code> returns display credits.</li>
+<li><code>profile.getCredits()</code> returns a <code>ProfileCredits</code> object, not a number. Use
+  <code>credits?.totalAvailableCredits</code>, <code>credits?.availableCredits</code>, or
+  <code>snapshot.credits?.totalAvailableCredits</code> in UI.</li>
+<li><code>jobs.cost(input).credits</code> returns display credits.</li>
+<li>Do not show raw wallet values directly in UI.</li>
+</ul>
+<h2>Marketplace / Service Adapters Are Not For Generated Websites</h2>
+<p>Some fnf snapshots include <code>createAppsMarketplaceAdapter</code>. It is server-side
+only, defaults to the dev apps-marketplace backend for now, and is for SDK smoke
+tests or trusted service experiments only. Generated websites must not use it.
+Generated websites use
+<code>createWorkflowPlatformAdapter({ baseUrl: 'https://fnf.internal' })</code>
+exclusively.</p>
+<h2>Job UI Pattern</h2>
+<p>For a generated website UI:</p>
+<ol>
+<li>Build the form with Quanta components.</li>
+<li>Load <code>/api/user</code> before enabling SDK-backed controls.</li>
+<li>If signed out, show sign-in UI and disable/hide generation, upload, cost,
+   feed/history, profile, workspace, and credit actions.</li>
+<li>Confirm before submit: show the confirmation modal (model + cost) and call
+   the generate function only after the user confirms; wire the adapter
+   <code>confirm</code> option server-side (see "Submission Confirmation Gate").</li>
+<li>Keep submit/cost/profile/media calls in server functions or safe app-local
+   server-only modules.</li>
+<li>Re-check auth inside each server function before calling SDK clients.</li>
+<li>Return only safe data to the browser: generation ids, statuses, display
+   credits, and sanitized errors.</li>
+<li>Use <code>safeSubmit</code>/typed error codes when crossing worker/iframe boundaries.</li>
+<li>Show validation, cost, upload state, running state, terminal state,
+   cancelled-confirmation state (<code>confirmation_rejected</code>), and typed errors as
+   real UI states.</li>
+</ol>
+<p>Do not build anonymous real generation. The only allowed anonymous SDK-looking
+flow is a mock/offline demo the user EXPLICITLY asked for (memory adapters, no
+network requests) — never the default.</p>
+<h2>Troubleshooting Generation 405</h2>
+<p>If sign-in works but generation fails with <code>Method Not Allowed</code>:</p>
+<ol>
+<li>Confirm the app-local generation function/route is <code>POST</code>, not <code>GET</code>.</li>
+<li>Confirm the code calls <code>jobs.submit(...)</code> or <code>jobs.cost(...)</code> through the SDK,
+   not hand-written <code>fetch('/jobs?...')</code>.</li>
+<li>Confirm <code>createWorkflowPlatformAdapter({ baseUrl })</code> uses exactly
+   <code>https://fnf.internal</code>, not the deployed website URL, <code>/api/user</code>, a public fnf
+   URL, a dev fnf URL, or a model-specific fnf route.</li>
+<li>Confirm the server handler re-checks <code>https://fnf.internal/user</code> before SDK
+   calls, then creates the adapter/client inside the server handler.</li>
+<li>Confirm reads use SDK-backed GET routes such as <code>/jobs</code>, <code>/jobs/{id}</code>, or
+   <code>/jobs/sets/{id}</code>, while submit/cost/cancel/media writes use SDK-backed POST
+   routes such as <code>/jobs/submit</code>, <code>/jobs/cost</code>, and <code>/jobs/media/presign</code>. Do
+   not send submit/cost/media operations through GET query parameters.</li>
+</ol>
+<p>If upload fails with <code>Maximum call stack size exceeded</code>:</p>
+<ol>
+<li>Search for <code>String.fromCharCode(...</code>, base64 conversion, <code>JSON.stringify(file)</code>,
+   <code>Array.from(bytes)</code>, or passing <code>File</code>/<code>Blob</code>/<code>ArrayBuffer</code> to
+   <code>createServerFn</code> input.</li>
+<li>Replace that flow with <code>FormData</code> POST to <code>/api/media/upload</code>.</li>
+<li>Return only <code>{ ref: MediaRef }</code> from upload.</li>
+<li>Send only that <code>MediaRef</code> in generation JSON.</li>
+<li>Add logs for file <code>size</code> and <code>contentType</code>, but never file bytes, upload URL,
+   token, raw prompt, or raw backend body.</li>
+</ol>
+<h2>Observability</h2>
+<p>SDK observability is a safe metadata callback. It is not product analytics by
+default and it must not leak prompts, params, headers, tokens, URLs, filenames,
+emails, workspace names, or raw bodies.</p>
+<p>Allowed metadata examples: model id, operation, status, duration, safe job id,
+safe media id, media type, credit estimate, and error code.</p>
+<p>Pass observability to the adapter as well as clients when debugging transport
+problems:</p>
+<pre><code class="language-ts">const adapter = createWorkflowPlatformAdapter({
+  baseUrl: 'https://fnf.internal',
+  observability,
+})
+
+const jobs = createJobClient({ adapter, jobs: [nanoBanana2], observability })
+const media = createMediaClient({ mediaAdapter: adapter, observability })
+</code></pre>
+<p>Without adapter observability you may see <code>fnf.job.submit</code> fail but not the
+underlying <code>fnf.transport.request</code> method/path/status.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

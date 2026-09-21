@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>website-flow · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/website-flow.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Website flow — <code>type: "website"</code> (independent brand, phased pipeline)</h1>
+<p>You are building ONE per-website Cloudflare Worker: a <strong>React 19 + TanStack
+Start</strong> app that is <strong>server-rendered (SSR)</strong> and deploys as a single Worker
+served at the website's own subdomain. A <code>type: "website"</code> product is a
+STANDALONE brand — no Higgsfield integration, no Quanta, no fnf SDK; the
+user's brand is the only brand on the page. If mid-build the request turns
+out to need Higgsfield generation, sign-in, or credits, that is a
+<code>type: "app"</code> — switch to <code>references/app-flow.md</code>.</p>
+<p><strong>Higgsfield as the asset engine — EVERY build.</strong> All visual assets on every
+website are generated with the Higgsfield CLI generation commands per
+<code>references/asset-system.md</code>. (Internal use of Higgsfield generation is
+invisible to visitors and always fine.)</p>
+<p><strong>Scope: build the real, full app.</strong> This stack ships complete, production-grade
+applications: real frontend AND backend, database (D1), file storage (R2), auth,
+third-party API integrations, background work. When the user describes an app,
+tool, site, or web product, BUILD IT with the website builder — it is the default
+for any web target. Never ask the user to confirm the platform, never downgrade to
+a "demo"/mockup as the safe option, and don't stall on scope questions beyond the
+single intake round defined below. Take the fullest reasonable interpretation
+and ship a working site.</p>
+<p><strong>Repo layout.</strong> The website project lives in <strong><code>app/</code></strong> — its own <code>package.json</code>,
+<code>src/</code>, <code>packages/</code>, <code>migrations/</code>, build config, and the deploy inputs
+(<code>app.manifest.json</code>, <code>wrangler.jsonc</code>). Run every <code>bun</code>/build command from there.</p>
+<hr />
+<h2>THE PIPELINE — phases in order, artifacts + gates, no skipping</h2>
+<p>Every NEW build runs this machine. Each phase produces a named artifact the next
+phase consumes. Do not reorder, merge, or skip phases — "simple" briefs are where
+generic output happens. (Follow-up edits to an existing site do NOT restart the
+pipeline — see "Small edits" at the bottom.)</p>
+<h3>Before Phase 0 — intake (ONE batched round of questions, then never again)</h3>
+<p>The <code>type</code> is already resolved (the main skill also asks, in that first round,
+whether to publish to the community feed when ready — remember that for Phase
+6). This single intake round carries the two website-specific questions worth
+asking; put both in the ONE batched round and never ask a second round.</p>
+<ol>
+<li><strong>Animation — MANDATORY, ALWAYS ask on every <code>--type website</code> build.</strong> This
+   question is NEVER skipped — ask it even when the request seems to imply a
+   choice ("an animated site", "a plain static page"), even for a "simple" or
+   "quick" site, even when you think you already know the answer. The user must
+   make this call, not you. Offer exactly two options:
+   - <strong>Animated (recommended)</strong> → sets <code>Animation mode: animated-website</code> — the
+     scroll-scrub camera journey (the product default; mark it Recommended).
+   - <strong>Non-animated</strong> → sets <code>Animation mode: non-animated</code> — a well-crafted site
+     with lighter/optional motion, no mandatory camera journey.</li>
+</ol>
+<p>If the request already leans one way, still ask — just point the Recommended
+   marker at the implied option. Record the picked value on the brief's
+   <code>Animation mode</code> line (Phase 0). ONLY if the user is genuinely unreachable /
+   never answers do you proceed on the default (<strong>Animated</strong>) and say so in one
+   line — never as a shortcut to avoid asking.
+2. <strong>Brand constraints</strong> — an existing brand to honor (ask for
+   colors/fonts/logo/photos/links) vs. free rein ("design the brand for me").
+   Whatever they don't have, you generate: the full identity kit plus the
+   personalization ladder in <code>references/asset-system.md</code> (logo family, icon set,
+   patterns, illustrations, state artwork, product universe). Free rein is the
+   richer path, not the degraded one.</p>
+<p>The Animation question (1) is always asked — never skip the round to avoid it.
+You may drop only question 2 when the brief already answers the brand question. If
+the user skips or is unreachable, default to <strong>Animated</strong> and say so in one line.
+Never ask a second round.</p>
+<h3>Phase 0 — Concept (<code>app/design-brief.md</code>, committed, BEFORE any code)</h3>
+<p>Write the brief (~40 lines). Every section mandatory; a generic line ("modern and
+clean", "Inter", "blue accent") means the brief is not done:</p>
+<ul>
+<li><strong>Design read</strong> — one sentence: who is this for, what emotional register.</li>
+<li><strong>Concept spine</strong> — a nameable narrative idea threading the whole page (e.g.
+  "the site is a calibration instrument", "an archive dossier", "a stage").
+  Pick from <code>references/reference-boards.md</code>'s spine list or invent better.</li>
+<li><strong>Delivery tier</strong> — <code>cinema</code> (<strong>default</strong>: Lenis+GSAP, Tier-1 hero, scroll
+  chapters — carries the animated website) · <code>spectacle</code> (briefs saying
+  awwwards/webgl/3d/immersive: cinema + WebGL/3D/scrub + custom cursor + a
+  second beat) · <code>editorial</code> (calm/minimal/B2B: typography + imagery + bespoke
+  chrome, micro-motion only). The animated website is the default Tier-1
+  experience regardless of tier, so cinema/spectacle is the normal home for it.
+  <code>editorial</code> drops the scroll-scrub journey to micro-motion — treat choosing it
+  as one of the "user explicitly asked for something other than an animated
+  website" cases, not a default an ordinary B2B/minimal brief falls into on its
+  own.</li>
+<li><strong>Locked palette</strong> — exact hexes + a one-line defense. Hard bans (mechanical,
+  gate-checked): (1) graphite/near-black + orange/amber/ember accent, (2)
+  near-black + neon cyan/blue/green accent, (3) beige/cream + brass/clay/
+  oxblood, (4) AI purple/violet glow, (5) the palette family of your previous
+  build in this chat. Overridable only by the user's explicit brand colors.
+  See <code>references/reference-boards.md</code> for what to reach for instead.</li>
+<li><strong>Locked type</strong> — pairing from the recipe's tables; serif only with a written
+  brand justification.</li>
+<li><strong><code>Animation mode</code> — MANDATORY explicit state, set from the intake answer.
+  HARD STOP.</strong> The brief MUST contain a literal line <code>Animation mode: &lt;value&gt;</code>
+  (the value the user picked at intake — see "Before Phase 0"; default Animated
+  if they skipped) and you may not leave Phase 0 without it. Only two values are
+  legal:</li>
+<li><strong><code>animated-website</code></strong> (the recommended default — from "Animated" at intake):
+    the seam-locked scroll-scrub camera journey (<strong>A4</strong>), where the visitor's
+    scroll flies the page through several connected generated scenes. This value
+    OBLIGATES you to also write the journey block into the brief NOW, before
+    boards or generation: read <strong><code>references/scroll-scrub.md</code></strong> and add its
+    <strong>Journey</strong> (4–7 named scenes), <strong>Camera architecture</strong> (A or B), <strong>seam
+    direction</strong>, and <strong>mobile framing</strong>, plus one sentence on how the journey
+    enacts the concept spine. <code>Animation mode: animated-website</code> with no journey
+    block is an INCOMPLETE brief — a hard stop, not a proceed-anyway. On this
+    value, do NOT shop the wow-catalog — the animated website IS the technique;
+    the anti-convergence "no repeat" rule does NOT force you off it (differ on the
+    OTHER five axes instead: world/subject, journey shape, palette, type, CTA
+    garments, corner language).</li>
+<li><strong><code>non-animated</code></strong> (from "Non-animated" at intake, or a request that clearly
+    asked for it): a well-crafted site with lighter/optional motion and NO
+    mandatory camera journey. Legal ONLY as the user's own choice — append the
+    reason on the line, e.g. <code>non-animated — user picked Non-animated at intake</code>
+    or <code>non-animated — "&lt;verbatim request&gt;"</code>. Your own taste, "calm/minimal/B2B",
+    or "it's just a simple landing page" is NOT a reason to pick this — when in
+    doubt it is <code>animated-website</code>. On this value the site still clears the
+    <code>wow-maker.md</code> craft floor (bespoke assets, motivated micro-motion, real
+    typography); reach into <strong><code>references/wow-catalog.md</code></strong> for a lighter Tier-1
+    technique (named with its catalog ID) or run the editorial tier. Never ship a
+    dead flat page.</li>
+</ul>
+<p>Either way, a passive autoplay loop is never the Tier-1 mechanic.
+- <strong>Section plan</strong> — ordered, one layout family per section, no consecutive
+  repeats, ≥4 families for 6+ sections, eyebrow budget ceil(sections/3).
+- <strong>Asset plan</strong> — the full kit per <code>references/asset-system.md</code> (hero visual,
+  section plates, content imagery, custom icon set, logo/monogram, OG; + video
+  loop for cinema, + GLB for spectacle).
+- <strong>CTA inventory</strong> — every CTA named with its OWN interaction identity (no
+  shared button style — see bespoke-chrome in <code>references/image-to-code.md</code>).</p>
+<p>The brief is a contract: later phases may not silently contradict it — edit the
+brief first and say why.</p>
+<h3>Phase 1 — Reference boards (design the page as IMAGES)</h3>
+<p>Read <strong><code>references/reference-boards.md</code></strong> and execute it: ONE horizontal design
+reference image PER SECTION via <code>higgsfield generate create</code> (image models
+<code>gpt_image_2</code> / <code>nano_banana_pro</code>), one committed
+combinatorial pick (theme paradigm, background character, typography character,
+hero architecture, section system, 4 signature components, narrative spine,
+second-read moment), composition anchor VARYING per board, palette locked across
+all boards. <strong>Look at every board</strong> and re-roll any that reads template-y
+(budget 2 re-rolls). Boards land in <code>refs/</code> in the repo. The boards ARE the
+design — do not start Phase 3 with a generic board in the set.</p>
+<h3>Phase 2 — Asset system (submit everything, then build while it renders)</h3>
+<p>Read <strong><code>references/asset-system.md</code></strong> and submit the ENTIRE kit as async jobs
+right after the boards are chosen: hero visual (2 candidates + interaction
+pair), section plates, all content imagery, the custom generated icon set, the
+logo/monogram + favicon, the OG card — plus video loop (cinema) / GLB
+(spectacle). Poll between build steps; download into <code>app/public/assets/</code>;
+verify kit coherence when it lands (re-generate anything whose grade fights the
+boards). Never idle waiting on renders; never fall back to stock/picsum/CSS-only.
+For the animated website (A4, the default), follow <code>references/scroll-scrub.md</code>'s
+specialized scene/clip chain: independent stills/dives may batch, but exact-frame
+forward legs are intentionally sequential. The normal "submit everything up
+front" rule never overrides a real rendered-frame dependency.</p>
+<h3>Phase 3 — Build to the boards, section by section</h3>
+<p>Read <strong><code>references/image-to-code.md</code></strong> and follow its discipline per section:
+re-read the board at build time, extract text/type-scale/spacing/color/
+component logic, implement faithfully, anti-drift (when your habit disagrees
+with the board, the board wins). The craft floor in
+<strong><code>references/design-recipe.md</code></strong> still applies everywhere (hero discipline,
+layout bans, copy rules, zero em-dashes). Bespoke chrome: every CTA designed in
+its own component with its own interaction identity; no site-wide button
+utility classes. Registry components (<code>references/wow-maker.md</code> §5) remain
+available as raw material — restyled to the boards, never default-skinned.
+Build static-but-complete; motion is the next phase.</p>
+<p><strong>HARD STOP for <code>Animation mode: animated-website</code> — build the journey as the
+spine, not an afterthought.</strong> The scroll-scrub scene media (Phase 2) and the
+scroll-scrub component (<code>app/src/components/scroll-scrub/scroll-scrub.tsx</code> +
+<code>.css</code>, per <code>references/scroll-scrub.md</code> Phase 3) ARE the page — the semantic
+chapters are the page structure, not decoration added later. Materialize the
+scroll-scrub component and wire the real scene data in THIS phase. Do NOT build a
+generic static page of sections and plan to "add the camera journey later" — that
+is the exact failure this flow guards against, and it is caught by the Phase 5
+gate. If the scene MP4 chain is still rendering, build the scroll-scrub component
+against its posters and swap the clips in when they land — never substitute a
+plain static layout for the animated website.</p>
+<h3>Phase 4 — Motion pass (tier-mandated, one focused pass)</h3>
+<ul>
+<li><strong>cinema/spectacle:</strong> Lenis smooth scroll bridged to GSAP ScrollTrigger
+  (<code>autoRaf: false</code> + <code>gsap.ticker</code> — without the bridge, scrub stutters).</li>
+<li>The <strong>Tier-1 hero mechanic</strong> from the brief, fully executed — a half-wired
+  version fails review. The hero is the wow carrier and it must respond to
+  the USER'S INPUT (scroll plays the movie), never a passive autoplay loop.
+  Passive motion the user can't influence does not count as the Tier-1 mechanic.</li>
+<li><strong>Animated website (default):</strong> the full-site seam-locked MP4 chain from
+  <code>references/scroll-scrub.md</code> IS the hero mechanic — it replaces the ordinary
+  single hero frame sequence. Let its controller own scroll-to-video time; keep
+  the Lenis/GSAP bridge for surrounding motion, and never drive the same media
+  with a second ScrollTrigger timeline. Only when the user explicitly asked for
+  a non-animated-website treatment do you instead wire the chosen catalog
+  technique — e.g. the single scroll-scrubbed hero film per <code>asset-system.md</code> §7.</li>
+<li>Scroll-chapter reveals: staggered headline builds (<code>split-type</code> + GSAP or
+  registry text components), per-section distinct timing; work rows / cards
+  with hover reveals; magnetic nav/CTA physics via <code>useMotionValue</code>, never
+  <code>useState</code>.</li>
+<li><strong>Screenshot-safe reveals (hard rule):</strong> nothing waits at <code>opacity: 0</code> for an
+  IntersectionObserver. The safe recipe: headline/text builds fire ON MOUNT
+  (not viewport-gated); scroll-linked effects animate transform/scale/clip
+  ONLY, never opacity-to-zero; hover states may use opacity freely. Ignore
+  any <code>whileInView</code> fade-in examples in the ingredient libraries — they fail
+  this gate. A full-page headless screenshot must show every section.</li>
+<li><strong>Pin-spacer trap:</strong> a GSAP pinned hero injects a spacer that reads as a
+  large blank band in full-page screenshots (guaranteed review failure).
+  Use <code>pinSpacing: false</code> with the following content sliding over the pinned
+  layer, or otherwise verify the full-page shot has no dead band after the
+  hero.</li>
+<li>EVERYTHING <code>prefers-reduced-motion</code>-gated with static fallbacks; <code>[C]</code>/<code>[W]</code>
+  components behind the SSR pattern (wow-maker §6). A top-level <code>window</code>
+  reference crashes SSR — the #1 recurring build failure.</li>
+<li>spectacle only: custom cursor + WebGL/3D/scrub second beat.</li>
+</ul>
+<h3>Phase 5 — Mechanical gate (before first deploy; every item fixed)</h3>
+<p>Run the grep checklist in
+<strong><code>references/review-rubric.md</code> §A</strong>: placeholders; em/en-dashes; banned palette
+families in tokens; eyebrow ration; unreferenced generated assets (every kit
+file used); <code>h-screen</code>; SSR safety; reduced-motion coverage; <strong>repeated CTA
+classes</strong> (bespoke-chrome violation); <strong>opacity-0 + whileInView</strong> combinations;
+section plan honored; copy self-audit. This is a completion gate — do not
+deploy with a failing item.</p>
+<h3>Phase 6 — Deploy</h3>
+<ol start="0">
+<li><code>bun run typecheck</code> once, from <code>app/</code> — ~15s locally vs a failed deploy
+   round-trip plus a fix-and-redeploy loop. Fix what it finds, then deploy.
+   This is the ONE pre-deploy local check; do not also run <code>bun run build</code>
+   unless typecheck passed and the deploy still failed.</li>
+<li><code>higgsfield website deploy &lt;website_id&gt;</code> — this ships the live public site
+   immediately; there is no preview stage.</li>
+<li>Report: live URL (from <code>higgsfield website status</code>) — "Your site is live:
+   <url>" — + one-line concept statement + anything honestly skipped. Speak in
+   product terms — no repo/commit/deploy jargon (see the SKILL.md "Talking to
+   the user" rule).</li>
+</ol>
+<p>Do NOT navigate to, screenshot, or run image analysis on the deployed site —
+the mechanical gate (the grep checklist in <code>references/review-rubric.md</code> §A) is
+the only verification.</p>
+<ol start="3">
+<li><strong>Publish.</strong> If the user opted in at intake, publish automatically now that
+   the site is deployed with its cover + metadata filled — run
+   <code>higgsfield website publish &lt;website_id&gt;</code> (don't wait to be asked) and share
+   the community-feed listing URL it reports. Otherwise publish only when the
+   user asks. (The $100k contest is for <code>--type app</code> products — don't pitch it
+   for a plain website.)</li>
+</ol>
+<hr />
+<h2>Design references — read order</h2>
+<h2>Design references — read order</h2>
+<ol>
+<li><strong><code>references/design-recipe.md</code></strong> — craft floor (ALWAYS read; short).</li>
+<li><strong><code>references/scroll-scrub.md</code></strong> — the <strong>animated website</strong>, which is the
+   DEFAULT Tier-1 experience for every website: read it in Phase 0. It owns the
+   specialized boards/assets/runtime sequence and bundled Markdown code
+   references for that build. Only read <strong><code>references/wow-catalog.md</code></strong> (Tier-1
+   technique menu + anti-convergence ledger + Phase 4 implementation contracts)
+   when the user explicitly asked for something other than an animated website.</li>
+<li><strong><code>references/reference-boards.md</code></strong> — Phase 1: per-section design boards.</li>
+<li><strong><code>references/asset-system.md</code></strong> — Phase 2: the Higgsfield asset kit.</li>
+<li><strong><code>references/image-to-code.md</code></strong> — Phase 3: faithful implementation +
+   bespoke chrome + the CTA garment catalog.</li>
+<li><strong><code>references/review-rubric.md</code></strong> — Phase 5: the mechanical gate.</li>
+<li><code>references/wow-maker.md</code> — ingredient directory: motion/3D libs (§4),
+   component registries (§5), signature effect patterns (§2), SSR pattern (§6).
+   Only listed free/permissive sources may be used.</li>
+<li><code>references/design-taste-frontend.md</code> — the full deep-dive playbook behind
+   the recipe; consult for specific situations, not required start-to-end.</li>
+<li><code>references/app-cover.md</code> — the branded 3:2 launch cover + OG image
+   (stadium-capsule mask via the inlined compose script; hosted style refs).
+   REQUIRED before every publish (<code>og_image_url</code> + <code>marketplace_cover_url</code> are
+   mandatory feed-card fields — never run <code>higgsfield website publish</code> while
+   they are empty), and whenever the user asks for a cover/OG image directly.</li>
+</ol>
+<p>Do NOT search the skill library for other design guidance — everything is here.</p>
+<p>Then route to the FUNCTIONAL reference for the task:</p>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Read</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Any website (the DEFAULT — animated website)</strong> / scrollable world / continuous camera journey / diorama fly-through / browse-through-an-industry site</td>
+<td><code>references/scroll-scrub.md</code> — seam-locked media pipeline + React/CSS Markdown assets + mobile/QA contract</td>
+</tr>
+<tr>
+<td>TanStack Start routes, SSR, server functions, Cloudflare Worker runtime</td>
+<td><code>references/runtime-and-infra.md</code></td>
+</tr>
+<tr>
+<td>Cover / OG image ("cover", "обложка", "OG image", publish prep)</td>
+<td><code>references/app-cover.md</code> — branded 3:2 cover + capsule OG mask</td>
+</tr>
+<tr>
+<td>SEO: meta tags, OG/Twitter cards, robots/sitemap, JSON-LD, entity, GEO, audit</td>
+<td><code>references/seo.md</code></td>
+</tr>
+<tr>
+<td>Security: Worker hardening, OWASP audit, threat modeling</td>
+<td><code>references/security.md</code></td>
+</tr>
+</tbody>
+</table>
+<h2>Stack</h2>
+<ul>
+<li><strong>TanStack Start</strong> (file-based routing under <code>app/src/routes/</code>, SSR via
+  <code>app/src/server.ts</code> → a Worker <code>export default { fetch }</code>). No Next/Remix/Astro
+  conventions, no <code>app/src/pages</code>.</li>
+<li><strong>Vite 7 + bun</strong>. Build emits <code>dist/server/server.js</code> (the Worker) +
+  <code>dist/client</code> (hashed static assets). Tailwind v4 is wired in <code>app/src/styles.css</code>
+  (it also imports Quanta's Tailwind entry for the template
+  bundle — leave that wiring alone even though websites use neither). Legacy
+  shadcn/ui files may exist from the scaffold. Websites use custom
+  Tailwind/CSS only — never import <code>@higgsfield/quanta/*</code>.</li>
+<li><strong>No separate Hono/Express backend.</strong> Server logic is TanStack <strong>server
+  functions</strong> (<code>createServerFn</code>) and <strong>server routes</strong>. App-local API routes are
+  allowed when a platform contract requires them (for example a webhook
+  receiver or a JSON endpoint the site's own client fetches).</li>
+</ul>
+<h2>Hard rules</h2>
+<h3>0a. Vendored packages and template modules</h3>
+<p>The <code>app/packages/</code> directory contains managed snapshots vendored from the
+upstream Higgsfield web app (<code>@higgsfield/fnf</code>, <code>@higgsfield/fnf-react</code>,
+<code>@higgsfield/quanta</code>). Websites never use them, but do NOT edit or delete
+them. Template-owned infrastructure lives in <code>app/src/module/**</code>.</p>
+<h3>0b. Supercomputer Design mode inspector</h3>
+<p>Generated websites support a Higgsfield design inspector bridge for editing in
+Supercomputer Design mode. The split is strict:</p>
+<ul>
+<li>The Higgsfield editor (parent window) owns the iframe UI, hover overlay,
+  edit popover, origin/session checks, and edit prompt submission.</li>
+<li>This template owns the child iframe runtime through
+  <code>app/src/module/design-inspector</code>.</li>
+<li>Agents never manually implement inspector code, refs, source markers, or
+  <code>data-hf-*</code> attributes.</li>
+</ul>
+<p>Local scripts (LOCAL work only — the deploy build is owned by CI):</p>
+<ul>
+<li><code>bun run build</code> is inspector-free by default: no inspector runtime and no
+  source metadata. Setting <code>HF_DESIGN_INSPECTOR=1</code> in the env turns the same
+  build into the inspector-enabled one (this is what platform CI does on
+  every deploy).</li>
+<li><code>bun run dev:design</code> is local dev with the inspector enabled.</li>
+</ul>
+<p>The platform CI sets <code>HF_DESIGN_INSPECTOR=1</code> on every deploy build, so the live
+deployed site always carries the inspector and IS the surface Supercomputer
+Design mode opens. Exact source metadata is attached with inspector-only
+callback refs and a <code>WeakMap</code>, not DOM attributes. Keep the guarded
+dynamic install in <code>app/src/routes/__root.tsx</code> and the Vite integration in
+<code>app/vite.config.ts</code> wired to <code>app/src/module/design-inspector/vite</code>.</p>
+<p>For every Supercomputer website-builder task there is ONE deploy —
+<code>higgsfield website deploy &lt;website_id&gt;</code> — and it ships the live public site
+immediately; there is no preview stage or environment choice. Publishing/listing on
+the community feed is separate: do NOT run <code>higgsfield website publish</code> unless
+the user explicitly asks to publish, list, or share the site. Never hard-code
+<code>HF_DESIGN_INSPECTOR=1</code> into the <code>build</code> script and never hand-edit the build
+script to toggle it — the deploy build is CI-owned.</p>
+<h3>1. SSR-safe rendering</h3>
+<p>Every route renders on the server per request. NEVER touch browser-only globals
+(<code>window</code>, <code>document</code>, <code>localStorage</code>, <code>navigator</code>) at module top level or during
+render — only inside <code>useEffect</code>/event handlers, or guarded with
+<code>typeof window !== "undefined"</code>. A top-level <code>window</code> reference crashes SSR.</p>
+<h3>2. Server-only code stays server-only</h3>
+<p>Put server logic in <code>createServerFn(...).handler(...)</code> or a <code>*.server.ts</code> module
+(the <code>.server.ts</code> suffix keeps it out of the client bundle). Secrets and
+bindings are read <strong>server-side, per request</strong> — never shipped to the browser.</p>
+<h3>3. No Higgsfield integration — but a REAL backend of the site's own</h3>
+<p>A <code>type: "website"</code> product never calls <code>https://fnf.internal/*</code>, never shows
+"Sign in with Higgsfield", and never imports the fnf SDK. It still gets a real
+backend wherever the product needs one: server functions (<code>createServerFn</code>),
+app-local API routes, sessions, business logic, and real persistence (D1) —
+never in-memory arrays, <code>localStorage</code>-as-database, or fixture data. In-app
+auth for the site's OWN users (accounts, teams, dashboards) is built with the
+website's own routes/storage. If the request needs generation or Higgsfield
+accounts, it is a <code>type: "app"</code> — switch to <code>references/app-flow.md</code>.</p>
+<h3>4. Cloudflare bindings via <code>cloudflare:workers</code></h3>
+<p>Any infra you opt into (D1 <code>DB</code>, R2 <code>STORAGE</code>, KV <code>KV</code>) is read server-side
+through <code>app/src/lib/bindings.server.ts</code> (<code>import { env } from "cloudflare:workers"</code>).
+Each binding is present ONLY if declared in <code>app/app.manifest.json</code>, so the typed
+accessors are optional — guard before use. Do not thread <code>env</code> through React
+props or read it at module top level.</p>
+<h3>5. Opted-in storage is LIVE — one deploy, one database</h3>
+<p>If you opt into D1, R2, or KV, each is a SINGLE instance backing the ONE live
+deploy. There is no staging copy: every migration and data change hits <strong>live
+production data</strong> directly.
+- <code>env.HF_ENV</code> is always <code>"production"</code> on deployed builds; there is no
+  separate database/bucket to test against.
+- A destructive migration you run "just to test" destroys <strong>production data</strong>.
+  Prefer additive migrations (<code>CREATE TABLE IF NOT EXISTS</code>, <code>ADD COLUMN</code>), and
+  get explicit user approval before any destructive change.</p>
+<h3>6. <code>app/app.manifest.json</code> declares infra — NOTHING is provisioned by default</h3>
+<p>A new website gets <strong>no D1, no R2, no KV, no Durable Object</strong>. Opt in only when
+the website actually needs it:
+- <code>"db": true</code> → a D1 database, bound <code>env.DB</code>
+- <code>"r2": true</code> → an R2 bucket, bound <code>env.STORAGE</code>
+- <code>"kv": true</code> → a KV namespace, bound <code>env.KV</code>
+- <code>"durableObject": "ClassName"</code> → a Durable Object, bound <code>env.ROOMS</code>
+- <code>"container": true</code> (or <code>{ "instanceType", "port", "sleepAfter" }</code>) → a Docker
+  container for heavy/long-running work, bound <code>env.CONTAINER</code> — see
+  <code>references/containers.md</code></p>
+<p>Counts are capped (≤1 each) by the platform, which PROVISIONS the resource and
+binds it at deploy. The committed <code>app/wrangler.jsonc</code> is build/dev input only;
+the platform OVERWRITES its <code>name</code> + bindings at deploy — declare infra in
+<code>app/app.manifest.json</code>.</p>
+<p><strong>KV is eventually consistent</strong> (NOT Redis): config, feature flags, cached reads
+— NOT counters, locks, or read-after-write. Use a Durable Object for strong
+consistency.</p>
+<p>For a <strong>Durable Object</strong> you must ALSO <code>export class ClassName extends
+DurableObject {…}</code> from <code>app/src/server.ts</code> (alongside the default <code>{ fetch }</code>
+export).</p>
+<p>For a <strong>container</strong> — heavy or long-running work a Worker can't do: set
+<code>"container"</code> in the manifest and follow <strong><code>references/containers.md</code></strong> (exact
+Dockerfile, the platform-fixed <code>AppContainer</code> class, keep-alive + 3-hour-deadline
+pattern, fnf via container token). Containers are <strong>off by default</strong>.</p>
+<h2>Editing map</h2>
+<ul>
+<li>Pages / routing → <code>app/src/routes/**</code> (file-based; <code>__root.tsx</code> is the shell).</li>
+<li>Server logic → <code>createServerFn</code> (see <code>app/src/lib/api/example.functions.ts</code>) or
+  <code>*.server.ts</code>.</li>
+<li>Bindings access → <code>app/src/lib/bindings.server.ts</code>.</li>
+<li>Infra declaration → <code>app/app.manifest.json</code>; <code>app/wrangler.jsonc</code> = build/dev input.</li>
+<li>Durable Object class → exported from <code>app/src/server.ts</code>.</li>
+<li>Components → custom components per the boards; app-local files in
+  <code>app/src/components/**</code>. Do not start from <code>app/src/components/ui/*</code> unless
+  migrating a legacy shadcn piece.</li>
+<li>Styles / theme → <code>app/src/styles.css</code> wires Tailwind v4. Websites: a custom
+  token layer from the design brief — no q-prefixed utilities, no site-wide
+  CTA utility classes.</li>
+<li>D1 schema → <code>app/migrations/000N_*.sql</code> (additive; see rule 5).</li>
+<li>Pipeline artifacts → <code>app/design-brief.md</code> (Phase 0) + <code>refs/*.png</code> (Phase 1);
+  commit both.</li>
+</ul>
+<h2>Verify + deploy</h2>
+<p>The trusted platform CI builds the website on <strong>every deploy</strong> (always with
+<code>HF_DESIGN_INSPECTOR=1</code> and <code>HF_ENV="production"</code> — the live site carries the
+design inspector), so a deploy already gives you the authoritative type +
+build result. Do NOT reflexively <code>bun install</code> +
+<code>bun run build</code> just to check your work. The sandbox cannot deploy/migrate (no
+Cloudflare token); the trusted platform CI does that.</p>
+<p><strong>Default: run the pipeline, pass the Phase 5 gate, deploy</strong>
+(<code>higgsfield website deploy &lt;website_id&gt;</code> — this ships the live site
+immediately). Never publish/list on the community feed unless the user
+explicitly asked to publish.</p>
+<p><strong>Publishing ("show in feed").</strong> When the user asks to publish / share / put the
+site on the feed, run <code>higgsfield website publish &lt;website_id&gt;</code> — it lists the
+site on the Higgsfield community feed. <strong>Publishing no longer deploys</strong>: it
+lists whatever is already live, so run <code>higgsfield website deploy &lt;website_id&gt;</code>
+FIRST — and after ANY later change, deploy again to ship it (re-publishing does
+not re-deploy and won't pick up un-deployed changes).</p>
+<p><strong>HARD GATE — the cover is NOT optional. Running <code>higgsfield website publish</code> while
+<code>og_image_url</code> or <code>marketplace_cover_url</code> is empty is a BROKEN publish</strong> (the
+feed card renders ONLY from <code>app/src/app-meta.json</code>; an empty <code>og_title</code> makes
+the listing INVISIBLE, an empty cover makes it a blank card). The publish
+sequence is: (a) READ <code>app/src/app-meta.json</code>; (b) if <code>og_image_url</code> or
+<code>marketplace_cover_url</code> is empty → STOP, read <code>references/app-cover.md</code> and
+generate + upload the cover NOW — do not skip this because the user "only asked
+to publish", the cover IS part of publishing; (c) fill ALL fields below with
+real values (never placeholders); (d) commit + push; (e) run
+<code>higgsfield website deploy &lt;website_id&gt;</code> to ship the pushed changes (publish no
+longer deploys — it lists what's already live); (f) only then run
+<code>higgsfield website publish</code>:</p>
+<ol>
+<li><code>og_title</code> — the card's title (also the browser tab title).</li>
+<li><code>og_description</code> — the card's one-liner.</li>
+<li><code>og_image_url</code> — REQUIRED: the cover image, generated per
+   <code>references/app-cover.md</code> (the branded 3:2 cover + stadium-capsule OG
+   mask) if none exists yet; upload the OG file with <code>higgsfield upload create</code>
+   and set the returned durable URL.</li>
+<li><code>marketplace_cover_url</code> — REQUIRED: the plain (unmasked) cover, the same
+   generation's <code>&lt;name&gt;_cover.png</code> from <code>references/app-cover.md</code>, uploaded
+   with <code>higgsfield upload create</code>. One generation fills both this and
+   <code>og_image_url</code> — there is never a reason to have one without the other.</li>
+<li><code>favicon_url</code> — the card's logo/icon (generate one if none exists yet).</li>
+<li><code>og_video_url</code> — the <strong>cover video</strong>, OPTIONAL and permission-gated: OFFER
+   it to the user ("want a short cover video for the feed card?") and ASK
+   PERMISSION FIRST — generating a video costs credits; never generate it
+   unprompted. If they say yes, follow "Cover video" in <code>references/seo.md</code>.</li>
+</ol>
+<p>(1–5 are generated without asking — they are part of the publish, not a
+separate credit decision; only the cover VIDEO (6) needs permission.)</p>
+<p><code>higgsfield website deploy &lt;website_id&gt;</code> remains the way to ship the live site
+WITHOUT a feed listing.</p>
+<p><strong>Run the local checks only when you actually need them</strong> — from <code>app/</code>:</p>
+<pre><code class="language-bash">cd app
+bun install          # only when you changed dependencies / package.json
+bun run typecheck    # tsc --noEmit — only to chase a type error on deploy
+bun run build        # local build — only to chase a build error on deploy
+</code></pre>
+<p>Run them when: you changed dependencies or build/runtime config, you're debugging
+a build/type error, or a command genuinely needs <code>node_modules</code>.</p>
+<p><strong>Small edits to an existing site</strong> (copy tweak, one component, styling fix): the
+pipeline does not restart. Make the edit, deploy.</p>
+<p><strong>Before claiming a build done / deploying, no placeholders may remain</strong> — no
+<code>&lt;...&gt;</code>-style tokens, <code>lorem ipsum</code>, or scaffold blank-page markers
+(<code>REMOVE_THIS</code> / <code>blank-app-v1</code>). This is covered by the mechanical gate (the
+grep checklist in <code>references/review-rubric.md</code> §A).</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

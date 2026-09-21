@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>verifiability.zh-CN · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/universal-video-prompt-skill/references/verifiability.zh-CN.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>可验证性</h1>
+<p>底层只有一条规则：<strong>在成片上检查不了的指令，出问题时也调不了。</strong> 把意图改写成可观察的结果。</p>
+<p>这不是要你写得更啰嗦。可观察的写法通常<strong>比它替换掉的形容词堆更短</strong>，因为它承诺了一种读法，而不是在几种之间含糊。</p>
+<h2>末态</h2>
+<p>全套方法里杠杆最大的一条。不要要求「保持一致」，直接写这一段结束时<strong>可见的</strong>状态。</p>
+<pre><code class="language-text">弱：  两个人继续弄那束花
+强：  末态：花艺师左手持花束；剪刀回到工作台右侧
+</code></pre>
+<p>末态必须<strong>看得见</strong>。「她感到释然」不是末态；「她的肩膀落下、皱起的眉松开」是。</p>
+<h3>同一件事的三种形态</h3>
+<p>末态不只是文字手法，每种输入模态都有它的对应形式，而且可以组合：</p>
+<table>
+<thead>
+<tr>
+<th>形态</th>
+<th>载体</th>
+<th>什么时候用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>分段末态</td>
+<td>文字</td>
+<td>默认。多事件片子</td>
+</tr>
+<tr>
+<td>关键帧序列</td>
+<td>图像——每张图<strong>就是</strong>某一段的末态</td>
+<td>你能画出或生成这些阶段</td>
+</tr>
+<tr>
+<td>边界帧</td>
+<td>视频——源片与延长段的接缝</td>
+<td>延长或续写已有素材</td>
+</tr>
+</tbody>
+</table>
+<p>关键帧序列要<strong>明写顺序</strong>，每张图一个角色：</p>
+<pre><code class="language-text">按顺序使用 @image1 到 @image4 作为关键帧。
+@image1 是首帧：&lt;开场构图与主体状态&gt;。
+@image2 是第二个关键帧：&lt;第一段的可见末态&gt;。
+@image3 是第三个关键帧：&lt;第二段的可见末态&gt;。
+@image4 是尾帧：&lt;收束构图与主体状态&gt;。
+视频按顺序经过这些状态，各段之间用连续动作过渡。
+</code></pre>
+<p>分开的图比几段拼进一张网格更容易对齐。关键帧控的是<strong>阶段顺序与关键状态</strong>，不是逐帧复刻。</p>
+<h3>延长的边界要写在正确的一侧</h3>
+<p><strong>向前延长</strong>（接在源片之后）：先写源片<strong>尾帧</strong>的延续状态，再写接下来发生什么。</p>
+<p><strong>向后延长</strong>（接在源片之前）：先写新内容，再把源片的<strong>首帧写成你正在生成这一段的明确末态</strong>。只写「然后接上源视频」是已知的翻车写法——它会让后段才出现的角色和效果提前露面，或者画面到达目标状态之后继续变。</p>
+<p>还要写明什么<strong>不许提前出现</strong>：<code>属于源片开始之后的素材，不得在向后延长段中提前出现</code>。</p>
+<h2>情绪要落到可观察线索</h2>
+<p>情绪词只给方向，表演层面是敞开的。把它钉住：</p>
+<pre><code class="language-text">弱：  她不愿意让他走
+强：  她的视线从他脸上移开，落到他身旁的空处；眼睑垂下；
+      嘴角短暂上扬又落回；胸口起伏一次，被压住
+</code></pre>
+<p><strong>一次情绪转折，2–4 个线索就够。</strong> 把每个面部细节都列出来不会增加控制力，线索之间会互相打架。可选：视线方向与移动、眉的张力、嘴部动作、呼吸、喉部、手、体态。</p>
+<p>多次转折时，用<strong>事件</strong>触发而不是时间点：</p>
+<pre><code class="language-text">当&lt;第一个事件&gt;发生，&lt;第一个可观察反应&gt;。
+当&lt;第二个事件&gt;发生，&lt;视线、呼吸或表情的变化&gt;。
+在确认&lt;关键信息&gt;之后，&lt;主体&gt;一直压着的情绪通过&lt;可观察行为&gt;显露出来。
+</code></pre>
+<p>事件触发比时间触发更能跨模型存活，因为它不依赖时序遵循度。</p>
+<h2>挑那条真正承载概念的属性</h2>
+<p>让一行字变得可检查是必要的，但不够。<strong>一条锁可以被完全满足、同时完全失效。</strong></p>
+<p>实例。一条手绘 VFX 片子需要它的手绘层保持手绘感，于是锁写成：</p>
+<pre><code class="language-text">手绘形体保持平面图形，绝不渲染成写实生物
+</code></pre>
+<p>可检查、毫不含糊，而且<strong>两个不同的模型都严格照做了</strong>——给出的是光滑的矢量霓虹描边加均匀填充。平面？是的。手绘？完全不是。锁测的是<strong>平面性</strong>，但真正让这个概念成立的属性是<strong>看得见工具痕迹</strong>。改成命名工具就对了：</p>
+<pre><code class="language-text">蜡笔、粉笔、彩铅、粗笔刷；看得见排线方向、涂色不均、毛边
+</code></pre>
+<p>信任一条锁之前先问：<strong>模型能不能满足这句话、同时把我要的东西丢掉？</strong> 能，那这条锁瞄的是副作用而不是成因。</p>
+<p>这类失败有明显特征：<strong>输出逐条对得上 spec，但懂参考的人一眼就知道不对。</strong> 遇到这种别加更多锁，去找那条真正承载概念的属性，用具体的词命名它。</p>
+<h2>写明机制，不只写效果</h2>
+<p>一个主观效果通常有不止一条物理实现路径。只写效果，模型会自己挑一条——往往不是你要的那条。</p>
+<p>实例。末段需要一张巨大的手绘嘴显出压迫感。两个版本：</p>
+<pre><code class="language-text">A：张开的上下颚横跨整片天顶
+B：头颅在大厅正中浮现，正面朝向摄影机，上下颚大张，獠牙从画面上下两侧逼近
+</code></pre>
+<p>B 听起来更凶，结果<strong>更差</strong>：手绘的嘴变成了写实立体头骨。删掉 <code>横跨整片天顶</code> 等于删掉画面里唯一的<strong>尺度参照</strong>，模型只能改走另一条通向压迫感的路——<strong>体积</strong>，而体积需要实体感，于是把整条片子依赖的平面手绘锁撞碎了。</p>
+<p>同一个效果，两种机制：</p>
+<table>
+<thead>
+<tr>
+<th>想要的效果</th>
+<th>机制 A</th>
+<th>机制 B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>压迫感</td>
+<td><strong>尺度</strong>：占满画面／横跨某个已知结构</td>
+<td><strong>体积</strong>：立体、朝你逼近</td>
+</tr>
+<tr>
+<td>宏大</td>
+<td>主体小 vs 已知参照物</td>
+<td>广角、高机位</td>
+</tr>
+<tr>
+<td>亲密</td>
+<td>紧构图</td>
+<td>浅景深、柔光</td>
+</tr>
+<tr>
+<td>速度</td>
+<td>运动模糊、物体掠过画面</td>
+<td>镜头晃动、剪辑节奏</td>
+</tr>
+</tbody>
+</table>
+<p>写效果词之前问：<strong>这个效果有几种实现方式？</strong> 超过一种、且其中一种会跟别处的锁冲突，就必须写明用哪一种。</p>
+<p><strong>⚠️ 机制依赖的参照结构必须真的存在于场景里。</strong> 同一句 <code>横跨整片天顶</code>，在模型给了圆形穹顶的场景里生效，在给了方形吊顶的场景里落空——它会自动切到次优路径。锚点要么写进全局场景设定，要么别指望它。</p>
+<p>这类失败的特征很特别：<strong>一条锁悄悄取消了另一条锁。</strong> 片子满足了效果、违反了别处的约束，而那两行字面上毫无关系——尺度与体积那次，末段一句话的改写破掉了三段之后才写的质感规则。</p>
+<h2>用画面写，规格定义作保险</h2>
+<p>上面三节共有一个底层原因，值得直接说，因为它决定每一行字怎么措辞。</p>
+<p><strong>模型的训练数据是被描述的画面，不是被规定的需求。</strong> 读起来像镜头描述的句子能落地；读起来像规格书的句子，模型得先把它翻译成画面，而翻译过程就是出错的地方。</p>
+<table>
+<thead>
+<tr>
+<th>写成画面——能落地</th>
+<th>写成规格——需要翻译</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>蜡笔、彩铅，看得见排线方向、毛边</code></td>
+<td><code>保持平面图形质感</code></td>
+</tr>
+<tr>
+<td><code>穹顶被画成一只巨大的手绘恐龙头颅轮廓</code></td>
+<td><code>贴在穹顶上的平面图形，不是有体积的立体头骨</code></td>
+</tr>
+<tr>
+<td><code>白色三角獠牙沿着穹顶边缘一排排展开</code></td>
+<td><code>宽度横跨整片天顶，几乎和穹顶一样大</code></td>
+</tr>
+<tr>
+<td><code>她的视线移开，落到他身旁的空处</code></td>
+<td><code>传达出不情愿</code></td>
+</tr>
+</tbody>
+</table>
+<p>左栏承载的是同一份信息，只是被装在<strong>一个被描述的画面里</strong>，模型直接读得懂。</p>
+<h3>但规格定义没有被禁止——它是保险</h3>
+<p>别把上面读成「永远不要写定义」。那个末段最强的版本<strong>两者都用了</strong>：</p>
+<pre><code class="language-text">穹顶被画成一只巨大的手绘恐龙头颅轮廓，张开的上下颚横跨整片天顶，白色三角獠牙
+沿着穹顶边缘一排排展开。……嘴的线条保持蜡笔的毛边和逐帧抖动，始终是贴在穹顶上
+画出来的平面图形，不是一个有体积的立体头骨。
+</code></pre>
+<p>画面把镜头立起来，规格定义钉住那条绝不能滑的属性。三种写法实测过：</p>
+<table>
+<thead>
+<tr>
+<th>写法</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>只有规格定义，没有画面锚点</td>
+<td>写实立体头骨——失败</td>
+</tr>
+<tr>
+<td>规格定义为主，画面锚点缺失</td>
+<td>对了，但话很长</td>
+</tr>
+<tr>
+<td><strong>画面先行，规格定义追加</strong></td>
+<td><strong>所有版本里最好的质感</strong></td>
+</tr>
+</tbody>
+</table>
+<p>所以这是<strong>优先顺序，不是排除</strong>：<strong>默认描述画面；当某个效果必须保住、且单靠描述可能被误读时，追加一句显式定义。</strong></p>
+<h3>一行字该不该留，只有一条判据</h3>
+<p><strong>这句话是加了一个新约束，还是在陈述已有约束的推论？</strong> 只有后者是噪音。</p>
+<pre><code class="language-text">留：  骨架缝隙之间钻出好几只白色的小手绘恐龙
+删：  ……衬得大骨架格外巨大
+</code></pre>
+<p>尺度对比是「小生物在大骨架上」的必然结果，写出来只增加长度、不增加约束。实测：删掉之后毫无变化——那几只小恐龙照样分布在肋骨、脚爪、地面。</p>
+<p><strong>这就是为什么「越短越好」是错的总结。</strong> 同一条片子里有三处恰恰是<strong>因为写长了才成立</strong>：按工具命名的媒介、救回某个模型质感的逐段复述、明写的「开放式展台、没有玻璃罩」。<strong>噪音不是长度，噪音是重述。</strong></p>
+<h3>什么该留给模型</h3>
+<table>
+<thead>
+<tr>
+<th>你自己定</th>
+<th>留给模型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>媒介、配色、尺度锚点、主体姿态、每段发生什么</td>
+<td>宿主结构长什么形状、次要元素具体落在哪、在既定意图内怎么构图</td>
+</tr>
+</tbody>
+</table>
+<p>指定实现细节会压掉让模型变好的先验。把化石展板写成「竖立的长方形」，效果<strong>不如</strong>不写形状——模型自己读成拱门形壁龛，跟建筑结构呼应得更好。跟「喂故事板网格不如纯文字 staging」是同一个机制：<strong>交出「要什么」，别交「怎么做」。</strong></p>
+<h2>手艺术语：保留术语，追加描述</h2>
+<p>任何识别度不确定的术语——冷僻词、行业用法不统一的词、以电影／导演／平台风潮命名的词——都写两遍：</p>
+<pre><code class="language-text">&lt;术语&gt; + &lt;目标主体&gt; + &lt;可见变化&gt; + &lt;前后景关系&gt; + &lt;方向或速度&gt;
+</code></pre>
+<pre><code class="language-text">rack focus：焦点从前景的叶片移到它身后的人。叶片转虚，人脸由虚转实。
+bullet time：冻结球棒击中球的瞬间；镜头顺时针绕接触点环绕，碎屑悬在空中。
+</code></pre>
+<p>认识术语的模型走捷径，不认识的走描述。一份提示词通吃，这也是它优于维护逐模型词表的原因。</p>
+<p><strong>通常可以不加限定的</strong>：景别、基础运镜（推、拉、摇、跟、环绕、手持）、基础机位（低角度、俯拍、第一人称）。</p>
+<p><strong>通常需要加描述的</strong>：dolly zoom、bullet time、speed ramp、bounce ramp、rack focus、whip-pan 转场、match cut。</p>
+<p>光圈、焦段、快门值可以写，但<strong>说明想要的可见结果通常比单给数值更可控</strong>。</p>
+<h2>参考素材：永远写两半</h2>
+<p>一条素材角色说明，不写"不许拿什么"就是不完整的：</p>
+<pre><code class="language-text">@image1 控角色的脸、发型和外套。不要用它的背景或构图。
+@video1 控运动路径、走位和切点。不要用它的外观、材质或场景。
+@audio1 控旁白的音色。不要继承它的房间声。
+</code></pre>
+<p>当参考视频已经准确定义了运动，<strong>只写要继承哪些属性</strong>。在文字里把同一段运动再描述一遍，会跟参考素材打架。</p>
+<h2>反模式</h2>
+<table>
+<thead>
+<tr>
+<th>别写</th>
+<th>为什么失败</th>
+<th>改写成</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>保持一致</code></td>
+<td>没有可检查的东西</td>
+<td>可见的末态</td>
+</tr>
+<tr>
+<td><code>电影感</code>、<code>高质量</code>、<code>杰作</code></td>
+<td>没有视觉承诺</td>
+<td>具体的光、配色、质感</td>
+</tr>
+<tr>
+<td><code>她看起来很难过</code></td>
+<td>表演没有约束</td>
+<td>2–4 个可观察线索</td>
+</tr>
+<tr>
+<td><code>@image1 到 @image4 分别定义四个角色</code></td>
+<td>等于没说映射</td>
+<td>一个主体一行绑定</td>
+</tr>
+<tr>
+<td><code>做出史诗感</code></td>
+<td>无法falsify</td>
+<td>尺度线索：画面里有什么，主体在它旁边有多小</td>
+</tr>
+<tr>
+<td><code>完美唇形同步</code></td>
+<td>不是指令</td>
+<td>提供音频，写明说话人</td>
+</tr>
+<tr>
+<td><code>不要坏手、不要伪影、不要模糊……</code></td>
+<td>抄来的黑名单，跟这条片子无关</td>
+<td>这条片子真正有的两三个风险</td>
+</tr>
+<tr>
+<td><code>一秒内完成三个动作</code></td>
+<td>不可能的节奏要求</td>
+<td>每个动作各占一段</td>
+</tr>
+</tbody>
+</table>
+<h2>该诚实说明的限制</h2>
+<p>可验证的写法提高命中概率，但不会让生成变成确定性的。</p>
+<ul>
+<li>时间戳分配的是<strong>时间预算</strong>，<strong>不是</strong>帧精确的剪辑点，动作可能落在边界前后</li>
+<li>边界帧在视觉上衔接，不是逐像素的剪辑拼接</li>
+<li>多素材创作是为每个时刻<strong>选对素材并组合</strong>，不是让每份素材同时出现</li>
+<li>必须完全准确的内容——字幕、公式、招牌、产品规格、帧级时序——应当来自准备好的素材加后期，而不是提示词文字</li>
+</ul>
+<h2>关联</h2>
+<ul>
+<li><a href="spec-format.zh-CN.html">spec-format.zh-CN.md</a> — 每一行该放在哪个桶</li>
+<li><a href="portability.zh-CN.html">portability.zh-CN.md</a> — 哪些写法能跨模型存活</li>
+<li><a href="checklist.zh-CN.html">checklist.zh-CN.md</a> — 提交前检查</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

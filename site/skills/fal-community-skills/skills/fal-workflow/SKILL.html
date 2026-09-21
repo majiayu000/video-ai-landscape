@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>fal-workflow · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/fal-workflow/SKILL.md</span><button onclick="t()">🌓</button></nav>
+<main><div class="meta"><div class="m-name">fal-workflow</div><div class="m-desc">Author and execute multi-step media pipelines on fal.ai. Two modes: (A) declarative workflow JSON files for the fal.ai workflow runtime (&quot;create workflow&quot;, &quot;chain models&quot;, &quot;image to video pipeline&quot;); (B) imperative genmedia CLI orchestration when scripting locally (&quot;design pipeline&quot;, &quot;fan-out generation&quot;, &quot;frame bridging&quot;, &quot;narrated video&quot;, &quot;dataset generation&quot;).</div><div class="m-src">源文件：<a href="https://github.com/fal-ai-community/skills/blob/main/skills/fal-workflow/SKILL.md" target="_blank" rel="noopener">fal-ai-community/skills/skills/fal-workflow/SKILL.md</a></div></div><h1>fal.ai Workflows: Two Modes</h1>
+<blockquote>
+<p><strong>Runtime:</strong> Two modes. Mode A authors <code>.json</code> files for the fal.ai workflow runtime (executed in the cloud, no local CLI needed). Mode B drives the <a href="https://github.com/fal-ai-community/genmedia-cli">genmedia CLI</a> for local orchestration. See the <code>genmedia</code> skill for Mode B command syntax; run <code>genmedia init</code> once if not yet installed.</p>
+</blockquote>
+<p>This skill covers two complementary ways to build multi-step media pipelines on fal.ai. They share endpoints and concepts but differ in deliverable.</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Deliverable</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A. Workflow JSON</strong></td>
+<td>A portable <code>.json</code> file the fal.ai workflow runtime executes</td>
+<td>The user wants a reusable, shareable workflow asset; the pipeline graph is fixed at design time</td>
+</tr>
+<tr>
+<td><strong>B. genmedia CLI orchestration</strong></td>
+<td>A sequence of <code>genmedia run / status / upload</code> calls (often scripted)</td>
+<td>Local scripting, exploratory pipelines, dataset jobs, branching logic, or pipelines that need conditional steps</td>
+</tr>
+</tbody>
+</table>
+<p>If unsure: prefer Mode A when the result is a deliverable for someone else to run; Mode B when you are running it yourself or steps need runtime decisions.</p>
+<hr />
+<h2>Mode A: Workflow JSON authoring</h2>
+<p>Generate <strong>100% working, production-ready fal.ai workflow JSON files</strong>. Workflows chain multiple AI models together via a declarative graph.</p>
+<p><strong>JSON-mode references:</strong>
+- <a href="references/MODELS.html">MODELS.md</a>, model configurations for JSON nodes
+- <a href="references/PATTERNS.html">PATTERNS.md</a>, reusable JSON workflow patterns
+- <a href="references/EXAMPLES.html">EXAMPLES.md</a>, code snippets and partial examples
+- <a href="references/WORKFLOWS.html">WORKFLOWS.md</a>, full JSON workflows (debugging reference; use only when user reports errors)</p>
+<h2>Mode B: genmedia CLI orchestration</h2>
+<p>Plan and execute a sequence of <code>genmedia</code> calls with clear inputs, outputs, dependencies, and quality checks. Use this when a single model call is not enough and the orchestration happens in your shell, not on fal.ai.</p>
+<p><strong>CLI-mode references:</strong>
+- <a href="references/pipeline-patterns.html">pipeline-patterns.md</a>, fan-out, sequential composition, frame bridging, multi-modal assembly, variation matrices
+- <a href="references/node-rules.html">node-rules.md</a>, per-role rules (planner / generator / editor / utility / QA / manifest)
+- <a href="references/utility-endpoints.html">utility-endpoints.md</a>, utility endpoint catalog (resize, composite, mask, audio, subtitle, etc.)
+- <a href="references/recipes.html">recipes.md</a>, end-to-end recipes (cinematic video, product campaign, character continuity, narrated documentary, dataset, social batch)</p>
+<p>For default endpoint choices in Mode B, consult <code>fal-models-catalog</code>. Always run <code>genmedia schema &lt;endpoint_id&gt; --json</code> before executing and <code>genmedia pricing &lt;endpoint_id&gt; --json</code> when cost matters.</p>
+<hr />
+<h1>Mode A: Workflow JSON authoring (continued)</h1>
+<h2>Core Architecture</h2>
+<h3>Valid Node Types</h3>
+<p>⚠️ <strong>ONLY TWO VALID NODE TYPES EXIST:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>"run"</code></td>
+<td>Execute a model/app</td>
+</tr>
+<tr>
+<td><code>"display"</code></td>
+<td>Output results to user</td>
+</tr>
+</tbody>
+</table>
+<p><strong>❌ INVALID:</strong> <code>type: "input"</code> - This does NOT exist! Input is defined ONLY in <code>schema.input</code>.</p>
+<h3>Minimal Working Example</h3>
+<pre><code class="language-json">{
+ &quot;name&quot;: &quot;my-workflow&quot;,
+ &quot;title&quot;: &quot;My Workflow&quot;,
+ &quot;contents&quot;: {
+ &quot;name&quot;: &quot;workflow&quot;,
+ &quot;nodes&quot;: {
+ &quot;output&quot;: {
+ &quot;type&quot;: &quot;display&quot;,
+ &quot;id&quot;: &quot;output&quot;,
+ &quot;depends&quot;: [&quot;node-image&quot;],
+ &quot;input&quot;: {},
+ &quot;fields&quot;: { &quot;image&quot;: &quot;$node-image.images.0.url&quot; }
+ },
+ &quot;node-image&quot;: {
+ &quot;type&quot;: &quot;run&quot;,
+ &quot;id&quot;: &quot;node-image&quot;,
+ &quot;depends&quot;: [&quot;input&quot;],
+ &quot;app&quot;: &quot;fal-ai/flux/dev&quot;,
+ &quot;input&quot;: { &quot;prompt&quot;: &quot;$input.prompt&quot; }
+ }
+ },
+ &quot;output&quot;: { &quot;image&quot;: &quot;$node-image.images.0.url&quot; },
+ &quot;schema&quot;: {
+ &quot;input&quot;: {
+ &quot;prompt&quot;: {
+ &quot;name&quot;: &quot;prompt&quot;,
+ &quot;label&quot;: &quot;Prompt&quot;,
+ &quot;type&quot;: &quot;string&quot;,
+ &quot;required&quot;: true,
+ &quot;modelId&quot;: &quot;node-image&quot;
+ }
+ },
+ &quot;output&quot;: {
+ &quot;image&quot;: { &quot;name&quot;: &quot;image&quot;, &quot;label&quot;: &quot;Generated Image&quot;, &quot;type&quot;: &quot;string&quot; }
+ }
+ },
+ &quot;version&quot;: &quot;1&quot;,
+ &quot;metadata&quot;: {
+ &quot;input&quot;: { &quot;position&quot;: { &quot;x&quot;: 0, &quot;y&quot;: 0 } },
+ &quot;description&quot;: &quot;Simple text to image workflow&quot;
+ }
+ },
+ &quot;is_public&quot;: true,
+ &quot;user_id&quot;: &quot;&quot;,
+ &quot;user_nickname&quot;: &quot;&quot;,
+ &quot;created_at&quot;: &quot;&quot;
+}
+</code></pre>
+<h3>Reference Syntax</h3>
+<table>
+<thead>
+<tr>
+<th>Reference</th>
+<th>Use Case</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$input.field</code></td>
+<td>Input value</td>
+<td><code>$input.prompt</code></td>
+</tr>
+<tr>
+<td><code>$node.output</code></td>
+<td>LLM text output</td>
+<td><code>$node-llm.output</code></td>
+</tr>
+<tr>
+<td><code>$node.images.0.url</code></td>
+<td>First image URL</td>
+<td><code>$node-img.images.0.url</code></td>
+</tr>
+<tr>
+<td><code>$node.image.url</code></td>
+<td>Single image URL</td>
+<td><code>$node-upscale.image.url</code></td>
+</tr>
+<tr>
+<td><code>$node.video.url</code></td>
+<td>Video URL</td>
+<td><code>$node-vid.video.url</code></td>
+</tr>
+<tr>
+<td><code>$node.audio_file.url</code></td>
+<td>Audio URL</td>
+<td><code>$node-music.audio_file.url</code></td>
+</tr>
+<tr>
+<td><code>$node.frame.url</code></td>
+<td>Extracted frame</td>
+<td><code>$node-extract.frame.url</code></td>
+</tr>
+</tbody>
+</table>
+<h3>CRITICAL: No String Interpolation</h3>
+<p><strong>⚠️ NEVER mix text with variables! Variable MUST be the ENTIRE value.</strong></p>
+<pre><code class="language-json">// ❌ WRONG - WILL BREAK
+&quot;prompt&quot;: &quot;Create image of $input.subject in $input.style&quot;
+
+// ✅ CORRECT - Variable is the ENTIRE value
+&quot;prompt&quot;: &quot;$input.prompt&quot;
+&quot;prompt&quot;: &quot;$node-llm.output&quot;
+</code></pre>
+<p><strong>To combine values:</strong> Use <code>fal-ai/text-concat</code> or <code>fal-ai/workflow-utilities/merge-text</code>. See <a href="references/MODELS.html#text-utilities-critical-for-combining-values">Model Reference</a>.</p>
+<hr />
+<h2>Critical Rules</h2>
+<h3>C1: Dependencies Must Match References</h3>
+<pre><code class="language-json">// ❌ WRONG
+&quot;node-b&quot;: {
+ &quot;depends&quot;: [],
+ &quot;input&quot;: { &quot;data&quot;: &quot;$node-a.output&quot; }
+}
+
+// ✅ CORRECT
+&quot;node-b&quot;: {
+ &quot;depends&quot;: [&quot;node-a&quot;],
+ &quot;input&quot;: { &quot;data&quot;: &quot;$node-a.output&quot; }
+}
+</code></pre>
+<h3>C2: ID Must Match Object Key</h3>
+<pre><code class="language-json">// ❌ WRONG
+&quot;my-node&quot;: { &quot;id&quot;: &quot;different-id&quot; }
+
+// ✅ CORRECT
+&quot;my-node&quot;: { &quot;id&quot;: &quot;my-node&quot; }
+</code></pre>
+<h3>C3: Use Correct LLM Type</h3>
+<ul>
+<li><code>openrouter/router</code> → Text only, no image_urls</li>
+<li><code>openrouter/router/vision</code> → ONLY when analyzing images</li>
+</ul>
+<h3>C4: Schema modelId Required</h3>
+<pre><code class="language-json">&quot;schema&quot;: {
+ &quot;input&quot;: {
+ &quot;field&quot;: { &quot;modelId&quot;: &quot;first-consuming-node&quot; }
+ }
+}
+</code></pre>
+<h3>C5: Output Depends on All Referenced Nodes</h3>
+<pre><code class="language-json">&quot;output&quot;: {
+ &quot;depends&quot;: [&quot;node-a&quot;, &quot;node-b&quot;, &quot;node-c&quot;],
+ &quot;fields&quot;: {
+ &quot;a&quot;: &quot;$node-a.video&quot;,
+ &quot;b&quot;: &quot;$node-b.images.0.url&quot;
+ }
+}
+</code></pre>
+<hr />
+<hr />
+<h2>Quick Reference Card</h2>
+<h3>Output References</h3>
+<table>
+<thead>
+<tr>
+<th>Model Type</th>
+<th>Output Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LLM</td>
+<td><code>$node.output</code></td>
+</tr>
+<tr>
+<td>Text Concat</td>
+<td><code>$node.results</code></td>
+</tr>
+<tr>
+<td>Merge Text</td>
+<td><code>$node.text</code></td>
+</tr>
+<tr>
+<td>Image Gen (array)</td>
+<td><code>$node.images.0.url</code></td>
+</tr>
+<tr>
+<td>Image Process (single)</td>
+<td><code>$node.image.url</code></td>
+</tr>
+<tr>
+<td>Video</td>
+<td><code>$node.video.url</code></td>
+</tr>
+<tr>
+<td>Music</td>
+<td><code>$node.audio_file.url</code></td>
+</tr>
+<tr>
+<td>Frame Extract</td>
+<td><code>$node.frame.url</code></td>
+</tr>
+</tbody>
+</table>
+<p>Use <code>genmedia models "&lt;query&gt;" --json</code> or <code>genmedia models --category &lt;cat&gt; --json</code> to discover current models. See <code>references/MODELS.md</code> for workflow code templates.</p>
+<hr />
+<h2>Input Schema</h2>
+<pre><code class="language-json">&quot;schema&quot;: {
+ &quot;input&quot;: {
+ &quot;text_field&quot;: {
+ &quot;name&quot;: &quot;text_field&quot;,
+ &quot;label&quot;: &quot;Display Label&quot;,
+ &quot;type&quot;: &quot;string&quot;,
+ &quot;description&quot;: &quot;Help text&quot;,
+ &quot;required&quot;: true,
+ &quot;modelId&quot;: &quot;consuming-node&quot;
+ },
+ &quot;image_urls&quot;: {
+ &quot;name&quot;: &quot;image_urls&quot;,
+ &quot;type&quot;: { &quot;kind&quot;: &quot;list&quot;, &quot;elementType&quot;: &quot;string&quot; },
+ &quot;required&quot;: true,
+ &quot;modelId&quot;: &quot;node-id&quot;
+ }
+ }
+}
+</code></pre>
+<hr />
+<h2>Pre-Output Checklist</h2>
+<p>Before outputting any workflow, verify:</p>
+<ul>
+<li>[ ] <strong>⚠️ All nodes have <code>type: "run"</code> or <code>type: "display"</code> ONLY (NO <code>type: "input"</code>!)</strong></li>
+<li>[ ] <strong>⚠️ No string interpolation - variable MUST be ENTIRE value</strong></li>
+<li>[ ] Every <code>$node.xxx</code> has matching <code>depends</code> entry</li>
+<li>[ ] Every node <code>id</code> matches object key</li>
+<li>[ ] Input schema has <code>modelId</code> for each field</li>
+<li>[ ] Output depends on ALL referenced nodes</li>
+<li>[ ] Correct LLM type (router vs router/vision)</li>
+</ul>
+<hr />
+<h2>Authoring a workflow JSON</h2>
+<p>Author the JSON file by hand following the structure shown above. There is no script wrapper; the agent writes the file directly. Validate before delivery:</p>
+<ol>
+<li>Every node id matches its object key.</li>
+<li>Every <code>$node.xxx</code> reference appears in <code>depends</code>.</li>
+<li>No string interpolation; variables are entire values.</li>
+<li>Schema input has <code>modelId</code> for each field.</li>
+<li>Output node <code>depends</code> includes every node it references.</li>
+</ol>
+<p>For each model used, inspect the schema first:</p>
+<pre><code class="language-bash">genmedia schema &lt;endpoint_id&gt; --json
+</code></pre>
+<p>Then write the corresponding <code>input</code> block in the workflow JSON.</p>
+<hr />
+<h2>Troubleshooting</h2>
+<h3>Invalid Node Type Error (MOST COMMON)</h3>
+<pre><code>Error: unexpected value; permitted: 'run', 'display', field required
+</code></pre>
+<p><strong>Cause:</strong> You created a node with <code>type: "input"</code> which does NOT exist.
+<strong>Solution:</strong> Remove ANY node with <code>type: "input"</code>. Define input fields ONLY in <code>schema.input</code>.</p>
+<h3>Dependency Error</h3>
+<pre><code>Error: Node references $node-x but doesn't depend on it
+</code></pre>
+<p><strong>Solution:</strong> Add the referenced node to the <code>depends</code> array.</p>
+<h3>ID Mismatch Error</h3>
+<pre><code>Error: Node key &quot;my-node&quot; doesn't match id &quot;different-id&quot;
+</code></pre>
+<p><strong>Solution:</strong> Ensure the object key matches the <code>id</code> field exactly.</p>
+<h3>LLM Vision Error</h3>
+<pre><code>Error: image_urls provided but using text-only router
+</code></pre>
+<p><strong>Solution:</strong> Switch to <code>openrouter/router/vision</code> when analyzing images.</p>
+<hr />
+<h2>Finding Model Schemas</h2>
+<p>Every model's input/output schema:</p>
+<pre><code>https://fal.ai/api/openapi/queue/openapi.json?endpoint_id=[endpoint_id]
+</code></pre>
+<p>Example:</p>
+<pre><code>https://fal.ai/api/openapi/queue/openapi.json?endpoint_id=fal-ai/nano-banana-pro
+</code></pre>
+<hr />
+<h1>Mode B: genmedia CLI orchestration</h1>
+<p>When the deliverable is local execution rather than a portable JSON file, plan a pipeline of <code>genmedia</code> calls.</p>
+<h2>Inputs to collect</h2>
+<p>Ask only for missing information that changes the pipeline:</p>
+<ul>
+<li>Final deliverable: image set, video, clips, audio, subtitles, dataset, social batch, product campaign, storyboard, style exploration.</li>
+<li>Source assets: product images, character references, first frames, video, audio, logo, transcript, brand guide.</li>
+<li>Runtime limits: quality target, cost sensitivity, number of variants, duration, aspect ratios, deadline.</li>
+<li>Continuity requirements: product identity, character face, scene layout, voice, color grade.</li>
+<li>Model preference: ask only when quality/speed/cost tradeoffs are not clear from the brief.</li>
+</ul>
+<h2>Core CLI workflow</h2>
+<ol>
+<li>Write a short pipeline graph before running anything.</li>
+</ol>
+<p><code>text
+ input assets -&gt; planner -&gt; generation nodes -&gt; utility nodes -&gt; QA -&gt; final outputs</code></p>
+<ol start="2">
+<li>Resolve endpoints for each role. Check known endpoint IDs first via <code>fal-models-catalog</code>.</li>
+</ol>
+<p><code>bash
+ genmedia models --endpoint_id &lt;endpoint_id&gt; --json</code></p>
+<p>Use text search only as fallback discovery for roles not covered:</p>
+<p><code>bash
+ genmedia models "image generation product photography" --json
+ genmedia docs "fal.ai workflow utility endpoints" --json</code></p>
+<ol start="3">
+<li>Inspect every endpoint before use.</li>
+</ol>
+<p><code>bash
+ genmedia schema &lt;endpoint_id&gt; --json
+ genmedia pricing &lt;endpoint_id&gt; --json</code></p>
+<ol start="4">
+<li>Upload local files once and reuse returned URLs.</li>
+</ol>
+<p><code>bash
+ genmedia upload ./input.png --json</code></p>
+<ol start="5">
+<li>Run each node with JSON output. Use <code>--async</code> for slow generation; poll with <code>genmedia status</code>.</li>
+</ol>
+<p><code>bash
+ genmedia run &lt;endpoint_id&gt; --&lt;field&gt; "&lt;value&gt;" --json
+ genmedia run &lt;endpoint_id&gt; --&lt;field&gt; "&lt;value&gt;" --async --json
+ genmedia status &lt;endpoint_id&gt; &lt;request_id&gt; --download "./outputs/workflow/{request_id}_{index}.{ext}" --json</code></p>
+<ol start="6">
+<li>
+<p>For downstream nodes, pass the media URL from the previous result. Only upload local intermediate files when no URL is available.</p>
+</li>
+<li>
+<p>Download final assets with templates that cannot collide:</p>
+</li>
+</ol>
+<p><code>bash
+ --download "./outputs/workflow/{request_id}_{index}.{ext}"</code></p>
+<ol start="8">
+<li>Return a compact manifest (see <a href="references/node-rules.html">node-rules.md</a> for the manifest schema).</li>
+</ol>
+<h2>CLI pipeline rules</h2>
+<ul>
+<li>One node, one transformation.</li>
+<li>Fan out independent generation / crop / upscale / subtitle / variation lanes.</li>
+<li>Sequential chains only when node B genuinely needs node A output.</li>
+<li>Prefer reference / edit / image-to-video over independent text-only generations when continuity matters.</li>
+<li>Use utility endpoints for deterministic work (crop, resize, grid, composite, audio merge, subtitle, speed change, compression).</li>
+<li>Record endpoint, schema-relevant parameters, request ID, and output path for every node.</li>
+<li>On 422 errors: read <code>validation_errors</code>, re-inspect schema, fix the exact field.</li>
+</ul>
+<h2>CLI quality gate</h2>
+<p>Before returning, verify:</p>
+<ul>
+<li>The pipeline graph matches the requested deliverable.</li>
+<li>No generation model was chosen from memory alone.</li>
+<li>All local source files were uploaded before use.</li>
+<li>Final files were saved through <code>--download</code>.</li>
+<li>Utility endpoints used exact schema fields.</li>
+<li>Continuity anchors were repeated where identity or product fidelity matters.</li>
+<li>Each node output is either accepted, retried, or marked with a defect.</li>
+</ul>
+<p>If the workflow becomes too complex, stop expanding and ask the user to choose between faster iteration, higher fidelity, or broader variation.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>README · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">README.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>ElevenLabs Plugin</h1>
+<p>Voice AI capabilities for your coding agent — powered by <a href="https://elevenlabs.io">ElevenLabs</a>. Works with <strong>Cursor</strong>, <strong>Claude Code</strong>, and <strong>OpenAI Codex</strong>.</p>
+<h2>What's included</h2>
+<h3>Skills</h3>
+<p>Skills live in three trees:</p>
+<ul>
+<li><strong><a href="skills/general/">skills/general/</a></strong> — general ElevenLabs product skills, copied from the official <a href="https://github.com/elevenlabs/skills">elevenlabs/skills</a> repository. Don't edit these here; contribute upstream instead.</li>
+<li><strong><a href="skills/mcp/">skills/mcp/</a></strong> — plugin-native skills that teach agents how to drive the bundled ElevenLabs MCP server.</li>
+<li><strong><a href="architect/skills/">architect/skills/</a></strong> — Architect skills: opinionated workflows for building and iterating on ElevenLabs agents, mirrored from the internal Architect plugin. Shared payload examples live in <a href="architect/reference/">architect/reference/</a>.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="skills/general/agents/SKILL.html">agents</a></td>
+<td>Build real-time voice AI agents and assistants</td>
+</tr>
+<tr>
+<td><a href="skills/general/dubbing/SKILL.html">dubbing</a></td>
+<td>Dub audio and video into other languages, preserving the original speakers' voices</td>
+</tr>
+<tr>
+<td><a href="skills/general/music/SKILL.html">music</a></td>
+<td>Generate instrumental tracks, songs with lyrics, background music, and jingles</td>
+</tr>
+<tr>
+<td><a href="skills/general/setup-api-key/SKILL.html">setup-api-key</a></td>
+<td>Guide users through configuring an ElevenLabs API key</td>
+</tr>
+<tr>
+<td><a href="skills/general/sound-effects/SKILL.html">sound-effects</a></td>
+<td>Generate sound effects and audio textures from text descriptions</td>
+</tr>
+<tr>
+<td><a href="skills/general/speech-engine/SKILL.html">speech-engine</a></td>
+<td>Add real-time voice conversations to your own agent runtime</td>
+</tr>
+<tr>
+<td><a href="skills/general/speech-to-text/SKILL.html">speech-to-text</a></td>
+<td>Transcribe audio to text with Scribe v2</td>
+</tr>
+<tr>
+<td><a href="skills/general/text-to-speech/SKILL.html">text-to-speech</a></td>
+<td>Convert text to natural speech in 70+ languages</td>
+</tr>
+<tr>
+<td><a href="skills/general/voice-changer/SKILL.html">voice-changer</a></td>
+<td>Transform a recording into a different voice, preserving emotion and timing</td>
+</tr>
+<tr>
+<td><a href="skills/general/voice-isolator/SKILL.html">voice-isolator</a></td>
+<td>Remove background noise and isolate speech from audio</td>
+</tr>
+</tbody>
+</table>
+<p>MCP skills:</p>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="skills/mcp/agents-platform/SKILL.html">agents-platform</a></td>
+<td>Create, configure, test, and deploy voice agents via the bundled MCP server</td>
+</tr>
+<tr>
+<td><a href="skills/mcp/creative-studio/SKILL.html">creative-studio</a></td>
+<td>Generate speech, images, and video, and transcribe audio via the bundled MCP server</td>
+</tr>
+</tbody>
+</table>
+<p>Architect skills:</p>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="architect/skills/agent-simplification/SKILL.html">agent-simplification</a></td>
+<td>Simplify a complex workflow agent into a leaner architecture, proven equivalent by a test suite</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-agent-memory/SKILL.html">architect-agent-memory</a></td>
+<td>Persist facts an agent should remember, in a durable branch-scoped way</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-branches-versions-merge/SKILL.html">architect-branches-versions-merge</a></td>
+<td>Work with agent branches, versions, drafts, traffic splits, and merges</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-create-client-tool/SKILL.html">architect-create-client-tool</a></td>
+<td>Add a client tool that runs in the caller's browser, app, or SDK</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-create-llm-test/SKILL.html">architect-create-llm-test</a></td>
+<td>Create a single-turn test that checks what the agent says</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-create-simulation-test/SKILL.html">architect-create-simulation-test</a></td>
+<td>Create a multi-turn test where a simulated user talks to the agent</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-create-tool-test/SKILL.html">architect-create-tool-test</a></td>
+<td>Create a test asserting the agent calls, or avoids, a specific tool</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-create-webhook-tool/SKILL.html">architect-create-webhook-tool</a></td>
+<td>Give an agent a new webhook tool that calls an external API</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-edit-existing-tool/SKILL.html">architect-edit-existing-tool</a></td>
+<td>Change an existing tool on an agent safely</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-edit-string-fields/SKILL.html">architect-edit-string-fields</a></td>
+<td>Edit long text fields like system prompts without clobbering the rest</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-edit-workflows/SKILL.html">architect-edit-workflows</a></td>
+<td>Build or change an agent's workflow graph</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-explain-test-runs/SKILL.html">architect-explain-test-runs</a></td>
+<td>Explain why a test or test run passed or failed</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-explore-agent/SKILL.html">architect-explore-agent</a></td>
+<td>Map an agent's current setup before changing it</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-generate-agent/SKILL.html">architect-generate-agent</a></td>
+<td>Generate a new agent from a description</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-get-agent-ci-green/SKILL.html">architect-get-agent-ci-green</a></td>
+<td>Drive a red agent test suite to green</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-llm-selection/SKILL.html">architect-llm-selection</a></td>
+<td>Choose the right LLM for an agent</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-manage-procedures/SKILL.html">architect-manage-procedures</a></td>
+<td>Add, edit, rename, and inspect an agent's procedures</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-migrate-from-competitor/SKILL.html">architect-migrate-from-competitor</a></td>
+<td>Migrate a voice agent from Retell, Vapi, or Bland</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-migrate-to-procedures/SKILL.html">architect-migrate-to-procedures</a></td>
+<td>Move a system-prompt-driven agent to a procedure-driven setup</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-mock-all-tools/SKILL.html">architect-mock-all-tools</a></td>
+<td>Mock every tool call so simulation tests are deterministic</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-post-call-data/SKILL.html">architect-post-call-data</a></td>
+<td>Configure post-call data collection and evaluation criteria</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-review-live-calls/SKILL.html">architect-review-live-calls</a></td>
+<td>Review recent production conversations and route the findings</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-schedule-launch/SKILL.html">architect-schedule-launch</a></td>
+<td>Stage a change on a branch and hold the merge until go-live</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-secure-for-production/SKILL.html">architect-secure-for-production</a></td>
+<td>Make an agent safe, secure, and production-ready</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-structured-procedures/SKILL.html">architect-structured-procedures</a></td>
+<td>Author structured, deterministic procedures</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-troubleshoot-tool-errors/SKILL.html">architect-troubleshoot-tool-errors</a></td>
+<td>Diagnose a misbehaving tool from its exact error</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-turn-taking-latency/SKILL.html">architect-turn-taking-latency</a></td>
+<td>Tune turn taking and agent response latency</td>
+</tr>
+<tr>
+<td><a href="architect/skills/architect-update-config-safely/SKILL.html">architect-update-config-safely</a></td>
+<td>Change agent settings with safe partial patches</td>
+</tr>
+<tr>
+<td><a href="architect/skills/code-tools/SKILL.html">code-tools</a></td>
+<td>Generate JavaScript/TypeScript modules for ElevenLabs code tools</td>
+</tr>
+<tr>
+<td><a href="architect/skills/fix-agent-qa-ticket/SKILL.html">fix-agent-qa-ticket</a></td>
+<td>Fix a QA triage ticket end to end with a verified, branch-scoped fix</td>
+</tr>
+</tbody>
+</table>
+<p>Architect also ships one command: <a href="architect/commands/thermo-nuclear-agent-triage-burndown.html">/thermo-nuclear-agent-triage-burndown</a>, which burns down an agent's whole conversation-triage queue — cluster tickets by root cause, fix each cluster, then comment on and resolve every ticket.</p>
+<h3>MCP Server</h3>
+<p>The <a href="https://api.elevenlabs.io/v1/mcp">ElevenLabs hosted MCP server</a> — no local install, no API key. Your agent authenticates with your ElevenLabs account over OAuth and gets access to agent management (create, update, list, duplicate, delete agents; inspect widget config, links, and knowledge base size; estimate LLM usage) and text-to-speech generation. Configured in <a href="mcp.json">mcp.json</a>.</p>
+<h2>Installation</h2>
+<h3>Cursor</h3>
+<p>Install from the <a href="https://cursor.com/marketplace">Cursor marketplace</a>, or add this repo as a plugin. When Cursor connects to the MCP server, sign in with your ElevenLabs account to complete the OAuth flow.</p>
+<h3>Claude Code</h3>
+<pre><code>/plugin marketplace add elevenlabs/plugin
+/plugin install elevenlabs@elevenlabs
+</code></pre>
+<p>Or install directly for development: <code>claude --plugin-dir /path/to/plugin</code></p>
+<h3>Codex</h3>
+<pre><code>codex plugin marketplace add elevenlabs/plugin
+</code></pre>
+<p>Then install via <code>/plugins</code> in Codex, or invoke skills with <code>$skill-name</code>.</p>
+<h3>Skills only (any agent)</h3>
+<pre><code class="language-bash">npx skills add elevenlabs/skills
+</code></pre>
+<h2>Requirements</h2>
+<ul>
+<li>An <a href="https://elevenlabs.io">ElevenLabs</a> account — you'll sign in via OAuth when your agent connects to the MCP server</li>
+<li>Internet access</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>README · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/python/claude-api/README.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Claude API - Python</h1>
+<h2>Installation</h2>
+<pre><code class="language-bash">pip install anthropic
+</code></pre>
+<h2>Client Initialization</h2>
+<pre><code class="language-python">import anthropic
+
+# Default - resolves credentials from the environment:
+# ANTHROPIC_API_KEY, or ANTHROPIC_AUTH_TOKEN, or an `ant auth login` profile.
+# Prefer this for local dev; don't hardcode a key.
+client = anthropic.Anthropic()
+
+# Explicit API key (only when you must inject a specific key)
+client = anthropic.Anthropic(api_key=&quot;your-api-key&quot;)
+
+# Async client
+async_client = anthropic.AsyncAnthropic()
+</code></pre>
+<hr />
+<h2>Client Configuration</h2>
+<h3>Per-request overrides</h3>
+<p>Use <code>with_options()</code> to override client settings for a single call without mutating the client:</p>
+<pre><code class="language-python">client.with_options(timeout=5.0, max_retries=5).messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=1024,
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Hello&quot;}],
+)
+</code></pre>
+<h3>Timeouts</h3>
+<p>Default request timeout is 10 minutes. Pass a float (seconds) or an <code>anthropic.Timeout</code> for granular control. On timeout the SDK raises <code>anthropic.APITimeoutError</code> (and retries per <code>max_retries</code>).</p>
+<pre><code class="language-python">client = anthropic.Anthropic(timeout=20.0)
+client = anthropic.Anthropic(
+    timeout=anthropic.Timeout(60.0, read=5.0, write=10.0, connect=2.0),
+)
+</code></pre>
+<p><code>anthropic</code> 1.x is built on <a href="https://pypi.org/project/httpx2/"><code>httpx2</code></a>, not <code>httpx</code>. <code>anthropic.Timeout</code> is <code>httpx2.Timeout</code>; if you import the HTTP library yourself, write <code>import httpx2 as httpx</code> - an object from the <code>httpx</code> package (<code>httpx.Timeout</code>, <code>httpx.Client</code>, transports, limits) is rejected or fails at request time. Existing <code>httpx</code>-era code is covered by the <a href="https://github.com/anthropics/anthropic-sdk-python/blob/main/MIGRATION.md">v1 migration guide</a> and <code>/claude-api upgrade python</code>.</p>
+<h3>Retries</h3>
+<p>The SDK auto-retries connection errors, 408, 409, 429, and &gt;=500 with exponential backoff (default 2 retries). Set <code>max_retries</code> on the client or via <code>with_options()</code>; <code>max_retries=0</code> disables.</p>
+<h3>Async performance (aiohttp backend)</h3>
+<p>For high-concurrency async workloads, install <code>anthropic[aiohttp]</code> and pass <code>DefaultAioHttpClient</code> instead of the default httpx2 backend:</p>
+<pre><code class="language-python">from anthropic import AsyncAnthropic, DefaultAioHttpClient
+
+async with AsyncAnthropic(http_client=DefaultAioHttpClient()) as client:
+    ...
+</code></pre>
+<h3>Custom HTTP client (proxy, base URL)</h3>
+<p>Use <code>DefaultHttpxClient</code> / <code>DefaultAsyncHttpxClient</code> - not a raw <code>httpx2.Client</code> (and never a client from the <code>httpx</code> package) - so the SDK's default timeouts and connection limits are preserved:</p>
+<pre><code class="language-python">from anthropic import Anthropic, DefaultHttpxClient
+
+client = Anthropic(
+    base_url=&quot;http://my.test.server.example.com:8083&quot;,  # or ANTHROPIC_BASE_URL env var
+    http_client=DefaultHttpxClient(proxy=&quot;http://my.test.proxy.example.com&quot;),
+)
+</code></pre>
+<h3>Logging</h3>
+<p>Set <code>ANTHROPIC_LOG=debug</code> (or <code>info</code>) to enable SDK logging via the standard <code>logging</code> module.</p>
+<hr />
+<h2>Basic Message Request</h2>
+<pre><code class="language-python">response = client.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is the capital of France?&quot;}
+    ]
+)
+# response.content is a list of content block objects (TextBlock, ThinkingBlock,
+# ToolUseBlock, ...). Check .type before accessing .text.
+for block in response.content:
+    if block.type == &quot;text&quot;:
+        print(block.text)
+</code></pre>
+<hr />
+<h2>System Prompts</h2>
+<pre><code class="language-python">response = client.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    system=&quot;You are a helpful coding assistant. Always provide examples in Python.&quot;,
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;How do I read a JSON file?&quot;}]
+)
+</code></pre>
+<h3>Mid-conversation system messages (model-gated)</h3>
+<p>For operator instructions that arrive mid-conversation (mode switches, injected state), append <code>{"role": "system", ...}</code> to <code>messages</code> instead of editing top-level <code>system</code> - this preserves the cached prefix and carries operator authority. Must follow a user message (or an <code>assistant</code> message ending in server-tool use), and must be either the last entry in <code>messages</code> or be followed by an <code>assistant</code> turn; cannot be <code>messages[0]</code>. Unsupported models return a 400 (<code>role 'system' is not supported on this model</code>). See <code>shared/prompt-caching.md</code> for when to use this vs. top-level <code>system</code>.</p>
+<pre><code class="language-python">response = client.messages.create(
+    model=MODEL_ID,  # must support mid-conversation system messages
+    max_tokens=16000,
+    system=[{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: STABLE_SYSTEM, &quot;cache_control&quot;: {&quot;type&quot;: &quot;ephemeral&quot;}}],
+    messages=history + [
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_message},
+        {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;Terse mode enabled - keep responses under 40 words.&quot;},
+    ],
+)  # No beta header needed - use regular client.messages.create
+</code></pre>
+<hr />
+<h2>Vision (Images)</h2>
+<h3>Base64</h3>
+<pre><code class="language-python">import base64
+
+with open(&quot;image.png&quot;, &quot;rb&quot;) as f:
+    image_data = base64.standard_b64encode(f.read()).decode(&quot;utf-8&quot;)
+
+response = client.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    messages=[{
+        &quot;role&quot;: &quot;user&quot;,
+        &quot;content&quot;: [
+            {
+                &quot;type&quot;: &quot;image&quot;,
+                &quot;source&quot;: {
+                    &quot;type&quot;: &quot;base64&quot;,
+                    &quot;media_type&quot;: &quot;image/png&quot;,
+                    &quot;data&quot;: image_data
+                }
+            },
+            {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;What's in this image?&quot;}
+        ]
+    }]
+)
+</code></pre>
+<h3>URL</h3>
+<pre><code class="language-python">response = client.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    messages=[{
+        &quot;role&quot;: &quot;user&quot;,
+        &quot;content&quot;: [
+            {
+                &quot;type&quot;: &quot;image&quot;,
+                &quot;source&quot;: {
+                    &quot;type&quot;: &quot;url&quot;,
+                    &quot;url&quot;: &quot;https://example.com/image.png&quot;
+                }
+            },
+            {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;Describe this image&quot;}
+        ]
+    }]
+)
+</code></pre>
+<hr />
+<h2>Prompt Caching</h2>
+<p>Cache large context to reduce costs (up to 90% savings). <strong>Caching is a prefix match</strong> - any byte change anywhere in the prefix invalidates everything after it. For placement patterns, architectural guidance (frozen system prompt, deterministic tool order, where to put volatile content), and the silent-invalidator audit checklist, read <code>shared/prompt-caching.md</code>.</p>
+<h3>Automatic Caching (Recommended)</h3>
+<p>Use top-level <code>cache_control</code> to automatically cache the last cacheable block in the request - no need to annotate individual content blocks:</p>
+<pre><code class="language-python">response = client.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    cache_control={&quot;type&quot;: &quot;ephemeral&quot;},  # auto-caches the last cacheable block
+    system=&quot;You are an expert on this large document...&quot;,
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Summarize the key points&quot;}]
+)
+</code></pre>
+<h3>Manual Cache Control</h3>
+<p>For fine-grained control, add <code>cache_control</code> to specific content blocks:</p>
+<pre><code class="language-python">response = client.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    system=[{
+        &quot;type&quot;: &quot;text&quot;,
+        &quot;text&quot;: &quot;You are an expert on this large document...&quot;,
+        &quot;cache_control&quot;: {&quot;type&quot;: &quot;ephemeral&quot;}  # default TTL is 5 minutes
+    }],
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Summarize the key points&quot;}]
+)
+
+# With explicit TTL (time-to-live)
+response = client.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    system=[{
+        &quot;type&quot;: &quot;text&quot;,
+        &quot;text&quot;: &quot;You are an expert on this large document...&quot;,
+        &quot;cache_control&quot;: {&quot;type&quot;: &quot;ephemeral&quot;, &quot;ttl&quot;: &quot;1h&quot;}  # 1 hour TTL
+    }],
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Summarize the key points&quot;}]
+)
+</code></pre>
+<h3>Verifying Cache Hits</h3>
+<pre><code class="language-python">print(response.usage.cache_creation_input_tokens)  # tokens written to cache (~1.25x cost)
+print(response.usage.cache_read_input_tokens)      # tokens served from cache (~0.1x cost)
+print(response.usage.input_tokens)                 # uncached tokens (full cost)
+</code></pre>
+<p>If <code>cache_read_input_tokens</code> is zero across repeated identical-prefix requests, a silent invalidator is at work - <code>datetime.now()</code> or a UUID in the system prompt, unsorted <code>json.dumps()</code>, or a varying tool set. See <code>shared/prompt-caching.md</code> for the full audit table.</p>
+<hr />
+<h2>Extended Thinking</h2>
+<blockquote>
+<p><strong>Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking. <code>budget_tokens</code> is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<strong>Claude Opus 5:</strong> thinking is on by default - omitting <code>thinking</code> runs adaptive (<code>{"type": "adaptive"}</code> is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. <code>{"type": "disabled"}</code> is accepted only at effort <code>high</code> or lower; pairing it with <code>xhigh</code>/<code>max</code> returns a 400.
+<strong>Older models:</strong> Use <code>thinking: {type: "enabled", budget_tokens: N}</code> (must be &lt; <code>max_tokens</code>, min 1024).</p>
+</blockquote>
+<pre><code class="language-python"># Fable 5 / Claude Opus 5 / Opus 4.8 / 4.7 / 4.6: adaptive thinking (recommended)
+response = client.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    thinking={&quot;type&quot;: &quot;adaptive&quot;, &quot;display&quot;: &quot;summarized&quot;},  # display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Claude Opus 5 / Opus 4.8 / 4.7
+    output_config={&quot;effort&quot;: &quot;high&quot;},  # low | medium | high | xhigh | max
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Solve this step by step...&quot;}]
+)
+
+# Access thinking and response
+for block in response.content:
+    if block.type == &quot;thinking&quot;:
+        print(f&quot;Thinking: {block.thinking}&quot;)
+    elif block.type == &quot;text&quot;:
+        print(f&quot;Response: {block.text}&quot;)
+</code></pre>
+<hr />
+<h2>Error Handling</h2>
+<pre><code class="language-python">import anthropic
+
+try:
+    response = client.messages.create(...)
+except anthropic.BadRequestError as e:
+    print(f&quot;Bad request: {e.message}&quot;)
+except anthropic.AuthenticationError:
+    print(&quot;Invalid API key&quot;)
+except anthropic.PermissionDeniedError:
+    print(&quot;API key lacks required permissions&quot;)
+except anthropic.NotFoundError:
+    print(&quot;Invalid model or endpoint&quot;)
+except anthropic.RateLimitError as e:
+    retry_after = int(e.response.headers.get(&quot;retry-after&quot;, &quot;60&quot;))
+    print(f&quot;Rate limited. Retry after {retry_after}s.&quot;)
+except anthropic.APIStatusError as e:
+    if e.status_code &gt;= 500:
+        print(f&quot;Server error ({e.status_code}). Retry later.&quot;)
+    else:
+        print(f&quot;API error: {e.message}&quot;)
+except anthropic.APIConnectionError:
+    print(&quot;Network error. Check internet connection.&quot;)
+</code></pre>
+<hr />
+<h2>Response Helpers</h2>
+<p>Every response object exposes <code>_request_id</code> (populated from the <code>request-id</code> header) - log it when reporting failures to Anthropic. Despite the underscore prefix, this property is public.</p>
+<pre><code class="language-python">message = client.messages.create(...)
+print(message._request_id)       # req_018EeWyXxfu5pfWkrYcMdjWG
+print(message.to_json())          # serialize the Pydantic model
+print(message.to_dict())          # plain dict
+</code></pre>
+<p>To access raw headers or other response metadata, use <code>.with_raw_response</code>:</p>
+<pre><code class="language-python">raw = client.messages.with_raw_response.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=1024,
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Hello&quot;}],
+)
+print(raw.headers.get(&quot;request-id&quot;))
+message = raw.parse()  # the Message object messages.create() would have returned
+</code></pre>
+<hr />
+<h2>Multi-Turn Conversations</h2>
+<p>The API is stateless - send the full conversation history each time.</p>
+<pre><code class="language-python">class ConversationManager:
+    &quot;&quot;&quot;Manage multi-turn conversations with the Claude API.&quot;&quot;&quot;
+
+    def __init__(self, client: anthropic.Anthropic, model: str, system: str = None):
+        self.client = client
+        self.model = model
+        self.system = system
+        self.messages = []
+
+    def send(self, user_message: str, **kwargs) -&gt; str:
+        &quot;&quot;&quot;Send a message and get a response.&quot;&quot;&quot;
+        self.messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_message})
+
+        response = self.client.messages.create(
+            model=self.model,
+            max_tokens=kwargs.get(&quot;max_tokens&quot;, 16000),
+            system=self.system,
+            messages=self.messages,
+            **kwargs
+        )
+
+        assistant_message = next(
+            (b.text for b in response.content if b.type == &quot;text&quot;), &quot;&quot;
+        )
+        self.messages.append({&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: assistant_message})
+
+        return assistant_message
+
+# Usage
+conversation = ConversationManager(
+    client=anthropic.Anthropic(),
+    model=&quot;claude-opus-5&quot;,
+    system=&quot;You are a helpful assistant.&quot;
+)
+
+response1 = conversation.send(&quot;My name is Alice.&quot;)
+response2 = conversation.send(&quot;What's my name?&quot;)  # Claude remembers &quot;Alice&quot;
+</code></pre>
+<p><strong>Rules:</strong></p>
+<ul>
+<li>Consecutive same-role messages are allowed - the API combines them into a single turn</li>
+<li>First message must be <code>user</code></li>
+<li><code>role: "system"</code> messages are allowed mid-conversation on supporting models (no beta header needed) - see § Mid-conversation system messages above</li>
+</ul>
+<hr />
+<h3>Compaction (long conversations)</h3>
+<blockquote>
+<p><strong>Beta, Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6.</strong> When conversations approach the 200K context window, compaction automatically summarizes earlier context server-side. The API returns a <code>compaction</code> block; you must pass it back on subsequent requests - append <code>response.content</code>, not just the text.</p>
+</blockquote>
+<pre><code class="language-python">import anthropic
+
+client = anthropic.Anthropic()
+messages = []
+
+def chat(user_message: str) -&gt; str:
+    messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_message})
+
+    response = client.beta.messages.create(
+        betas=[&quot;compact-2026-01-12&quot;],
+        model=&quot;claude-opus-5&quot;,
+        max_tokens=16000,
+        messages=messages,
+        context_management={
+            &quot;edits&quot;: [{&quot;type&quot;: &quot;compact_20260112&quot;}]
+        }
+    )
+
+    # Append full content - compaction blocks must be preserved
+    messages.append({&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: response.content})
+
+    return next(block.text for block in response.content if block.type == &quot;text&quot;)
+
+# Compaction triggers automatically when context grows large
+print(chat(&quot;Help me build a Python web scraper&quot;))
+print(chat(&quot;Add support for JavaScript-rendered pages&quot;))
+print(chat(&quot;Now add rate limiting and error handling&quot;))
+</code></pre>
+<hr />
+<h2>Stop Reasons</h2>
+<p>The <code>stop_reason</code> field in the response indicates why the model stopped generating:</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>end_turn</code></td>
+<td>Claude finished its response naturally</td>
+</tr>
+<tr>
+<td><code>max_tokens</code></td>
+<td>Hit the <code>max_tokens</code> limit - increase it or use streaming</td>
+</tr>
+<tr>
+<td><code>stop_sequence</code></td>
+<td>Hit a custom stop sequence</td>
+</tr>
+<tr>
+<td><code>tool_use</code></td>
+<td>Claude wants to call a tool - execute it and continue</td>
+</tr>
+<tr>
+<td><code>pause_turn</code></td>
+<td>Model paused and can be resumed (agentic flows)</td>
+</tr>
+<tr>
+<td><code>refusal</code></td>
+<td>Claude refused for safety reasons - check <code>stop_details</code></td>
+</tr>
+</tbody>
+</table>
+<h3>Structured Stop Details</h3>
+<p>When <code>stop_reason</code> is <code>"refusal"</code>, the response includes a <code>stop_details</code> object with structured information about the refusal:</p>
+<pre><code class="language-python">if response.stop_reason == &quot;refusal&quot; and response.stop_details:
+    print(f&quot;Category: {response.stop_details.category}&quot;)   # e.g. &quot;cyber&quot;, &quot;bio&quot;, &quot;reasoning_extraction&quot;, &quot;frontier_llm&quot;, or None - see docs for the full set
+    print(f&quot;Explanation: {response.stop_details.explanation}&quot;)
+</code></pre>
+<h3>Refusal Fallbacks (Claude Fable 5.1) - opt in by default</h3>
+<p>Fallbacks are <strong>opt-in</strong>: without them a refused request simply stops. Include the server-side <code>fallbacks</code> parameter in <code>claude-fable-5-1</code> code by default - on a policy decline the API re-runs the same request on the fallback model inside the same call. A decline before any output isn't billed (a mid-stream decline bills the streamed partial); the rescue bills at the fallback model's own rates, with cache repricing applied automatically.</p>
+<pre><code class="language-python">response = client.beta.messages.create(
+    model=&quot;claude-fable-5-1&quot;,
+    max_tokens=16000,
+    betas=[&quot;server-side-fallback-2026-06-01&quot;],
+    fallbacks=[{&quot;model&quot;: &quot;claude-opus-4-8&quot;}],
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;...&quot;}],
+)
+
+# Switch points: one fallback block per model that ran and declined this turn
+for block in response.content:
+    if block.type == &quot;fallback&quot;:
+        print(f&quot;{block.from_.model} declined; {block.to.model} continued&quot;)
+
+# Served-by signal - covers sticky turns, which carry no fallback block.
+# Pair with stop_reason: the fallback model can itself refuse.
+fallback_ran = any(
+    entry.type == &quot;fallback_message&quot; for entry in response.usage.iterations or []
+)
+if fallback_ran and response.stop_reason != &quot;refusal&quot;:
+    print(f&quot;Served by {response.model}&quot;)
+</code></pre>
+<p>A <code>stop_reason: "refusal"</code> on the final response means the whole chain refused. The header must be exactly <code>server-side-fallback-2026-06-01</code> <strong>for this array form</strong>; the newer <code>fallbacks: "default"</code> scalar form uses <code>server-side-fallback-2026-07-01</code> instead (see <code>shared/model-migration.md</code> -&gt; Migrating to Claude Opus 5 -&gt; New API features), and pairing either header with the other form returns a 400. The parameter is rejected on the Batches API and unavailable on Amazon Bedrock, Vertex AI, and Microsoft Foundry - register the client-side <code>BetaRefusalFallbackMiddleware</code> on the client there instead. Full semantics (sticky routing, billing, streaming, echoing fallback turns back): <code>shared/model-migration.md</code> -&gt; Migrating to Claude Fable 5.1 -&gt; <code>refusal</code> stop reason.</p>
+<hr />
+<h2>Cost Optimization Strategies</h2>
+<h3>1. Use Prompt Caching for Repeated Context</h3>
+<pre><code class="language-python"># Automatic caching (simplest - caches the last cacheable block)
+response = client.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    cache_control={&quot;type&quot;: &quot;ephemeral&quot;},
+    system=large_document_text,  # e.g., 50KB of context
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Summarize the key points&quot;}]
+)
+
+# First request: full cost
+# Subsequent requests: ~90% cheaper for cached portion
+</code></pre>
+<h3>2. Choose the Right Model</h3>
+<pre><code class="language-python"># Default to Opus for most tasks
+response = client.messages.create(
+    model=&quot;claude-opus-5&quot;,  # $5.00/$25.00 per 1M tokens
+    max_tokens=16000,
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Explain quantum computing&quot;}]
+)
+
+# Use Sonnet for high-volume production workloads
+standard_response = client.messages.create(
+    model=&quot;claude-sonnet-5&quot;,  # $2.00/$10.00 per 1M tokens
+    max_tokens=16000,
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Summarize this document&quot;}]
+)
+
+# Use Haiku only for simple, speed-critical tasks
+simple_response = client.messages.create(
+    model=&quot;claude-haiku-4-5&quot;,  # $1.00/$5.00 per 1M tokens
+    max_tokens=256,
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Classify this as positive or negative&quot;}]
+)
+</code></pre>
+<h3>3. Use Token Counting Before Requests</h3>
+<pre><code class="language-python">count_response = client.messages.count_tokens(
+    model=&quot;claude-opus-5&quot;,
+    messages=messages,
+    system=system
+)
+
+estimated_input_cost = count_response.input_tokens * 0.000005  # $5/1M tokens
+print(f&quot;Estimated input cost: ${estimated_input_cost:.4f}&quot;)
+</code></pre>
+<hr />
+<h2>Retry with Exponential Backoff</h2>
+<blockquote>
+<p><strong>Note:</strong> The Anthropic SDK automatically retries rate limit (429) and server errors (5xx) with exponential backoff. You can configure this with <code>max_retries</code> (default: 2). Only implement custom retry logic if you need behavior beyond what the SDK provides.</p>
+</blockquote>
+<pre><code class="language-python">import time
+import random
+import anthropic
+
+def call_with_retry(
+    client: anthropic.Anthropic,
+    max_retries: int = 5,
+    base_delay: float = 1.0,
+    max_delay: float = 60.0,
+    **kwargs
+):
+    &quot;&quot;&quot;Call the API with exponential backoff retry.&quot;&quot;&quot;
+    last_exception = None
+
+    for attempt in range(max_retries):
+        try:
+            return client.messages.create(**kwargs)
+        except anthropic.RateLimitError as e:
+            last_exception = e
+        except anthropic.APIStatusError as e:
+            if e.status_code &gt;= 500:
+                last_exception = e
+            else:
+                raise  # Client errors (4xx except 429) should not be retried
+
+        delay = min(base_delay * (2 ** attempt) + random.uniform(0, 1), max_delay)
+        print(f&quot;Retry {attempt + 1}/{max_retries} after {delay:.1f}s&quot;)
+        time.sleep(delay)
+
+    raise last_exception
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

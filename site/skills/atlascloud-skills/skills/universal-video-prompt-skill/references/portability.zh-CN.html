@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>portability.zh-CN · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/universal-video-prompt-skill/references/portability.zh-CN.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>可移植性</h1>
+<p>spec 可移植，它内部的行不都可移植。把每一行归到三层里，因为每层需要不同的处理——而且只有一层能写一次、到处放心用。</p>
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>是什么</th>
+<th>处理</th>
+<th>存放在</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>语言层</strong></td>
+<td>结构与可观察描述</td>
+<td>照写即可</td>
+<td>spec 里</td>
+</tr>
+<tr>
+<td><strong>偏置层</strong></td>
+<td>用来反掉某个模型默认倾向的词</td>
+<td>逐模型实测</td>
+<td>模型档案里</td>
+</tr>
+<tr>
+<td><strong>能力位层</strong></td>
+<td>接口物理上能接受什么</td>
+<td>先探测，再降级</td>
+<td>模型档案里</td>
+</tr>
+</tbody>
+</table>
+<p>跨模型最常见的错误是<strong>把偏置层的行当成语言层的行</strong>——把在某个模型上有效的反默认后缀，照抄给另一个模型并假设它照样有用。</p>
+<h2>语言层——可移植</h2>
+<ul>
+<li>三桶结构与作用域纪律</li>
+<li>末态，三种形态都算</li>
+<li>可观察的情绪线索</li>
+<li>术语 + 描述双写</li>
+<li>参考素材角色写成「控 X，不许拿 Y」</li>
+<li>事件触发的推进</li>
+</ul>
+<p>这些只依赖模型读得懂语言，别无所求。写一次即可。</p>
+<h2>偏置层——实测，绝不假设</h2>
+<p>每个生成模型都有它会回归的默认值。偏置层的文字存在的意义就是反掉<strong>那个模型的</strong>默认值，所以它不迁移：</p>
+<table>
+<thead>
+<tr>
+<th>写法</th>
+<th>为什么属于偏置层</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>保留真实的微毛孔和皮肤纹理</code></td>
+<td>反的是磨皮／美颜默认值。在本来就渲染粗糙皮肤的模型上会<strong>过冲</strong>，脸会脏</td>
+</tr>
+<tr>
+<td><code>不要字幕、不要 BGM</code></td>
+<td>只在真的会冒出多余字幕和音乐的地方才需要</td>
+</tr>
+<tr>
+<td>具体的转场词汇</td>
+<td>识别度不一，有些词有文化范围</td>
+</tr>
+<tr>
+<td><code>@image1</code> 与 <code>参考图 1</code></td>
+<td>接口寻址语法</td>
+</tr>
+<tr>
+<td>负向清单整体</td>
+<td>各模型的翻车模式不同</td>
+</tr>
+</tbody>
+</table>
+<p>其中两类需要特别处理。</p>
+<h3>反默认后缀：过冲是真实的失败</h3>
+<p>不要在没确认目标模型基线的情况下照搬反默认短语。测试很便宜：同一份 spec，带这句跑一次、不带跑一次。如果<strong>不带</strong>的那版已经达到或超过目标，这句话在这个模型上是反作用的。<strong>两个结果都记进档案</strong>——「无效或过冲」这个字段就是为此存在的。</p>
+<h3>寻址语法：唯一必须翻译的东西</h3>
+<p>这是描述无法替代的常见情形。模型期待某个特定 token 来绑定素材时，那个 token 必须正确输出，否则绑定丢失。把映射存在档案里，编译时翻译，<strong>周围的句子结构不要动</strong>。</p>
+<h2>能力位层——先探测，再降级</h2>
+<p>这些不是理解偏差，是接口能接受什么的硬限制。</p>
+<table>
+<thead>
+<tr>
+<th>能力</th>
+<th>为什么重要</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>素材寻址与数量</td>
+<td>决定多素材 spec 能保住多少</td>
+</tr>
+<tr>
+<td>一次生成能否多镜头</td>
+<td>决定切点写在提示词里还是剪辑台上</td>
+</tr>
+<tr>
+<td>是否支持硬切</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>时长上限</td>
+<td>决定每次请求装几段</td>
+</tr>
+<tr>
+<td>时序遵循度</td>
+<td>决定秒级粒度是否诚实</td>
+</tr>
+<tr>
+<td>音频：原生／参考／无</td>
+<td>决定音频行该不该出现在提示词里</td>
+</tr>
+</tbody>
+</table>
+<h3>探测</h3>
+<p>没有档案就不做假设。跑能解决问题的最小测试，然后记录。按成本从低到高，spec 一旦可满足就停：</p>
+<ol>
+<li><strong>读已发布的规格</strong> —— 素材上限、时长、分辨率。以实际模型页为准而不是文档样例；状态码 200 不算确认，要看页面内容确认模型真的存在。</li>
+</ol>
+<p>⚠️ <strong>已发布的枚举值是假设，不是限制。</strong> 文档写的范围经常比实际能提交的更窄，而且页面自己会打架——实测见过同一页三处写了三个不同的时长范围。<strong>直接提交你真正想要的值，让 API 来回答。</strong> 被拒不创建任务、不花钱，所以试一次严格优于照表设计。</p>
+<p>这个错误是不对称的：信了过窄的文档 → spec 被静默降级 → 运行成功 → 输出里没有任何迹象表明本来能有更好的配置。没人会注意到。</p>
+<ol start="2">
+<li>
+<p><strong>一次最小生成</strong> —— 凡是依赖行为的项都靠它：时序遵循度和多镜头能力读不出来，只能跑出来。</p>
+</li>
+<li>
+<p><strong>立刻记录，包括失败。</strong> 没记录的探测会被下一个人按全价重跑一遍。</p>
+</li>
+</ol>
+<p>时序遵循度最值的一次探测：同一份 spec 分别用 <code>分段</code> 和 <code>秒级</code> 各跑一遍，量请求拍点与实际拍点的偏差。这一次对照就能定下该模型的默认粒度。</p>
+<h3>降级</h3>
+<table>
+<thead>
+<tr>
+<th>缺什么能力</th>
+<th>降级成</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>多素材寻址</td>
+<td>一张图锁身份，其余全部走文字</td>
+</tr>
+<tr>
+<td>一次多镜头</td>
+<td>一镜一次请求，切点在剪辑台上完成</td>
+</tr>
+<tr>
+<td>素材数量不够</td>
+<td>按优先级合并角色：身份 &gt; 关键道具 &gt; 场景 &gt; 风格</td>
+</tr>
+<tr>
+<td>时长不够</td>
+<td>拆成各自成立的段落，再用边界帧接龙</td>
+</tr>
+<tr>
+<td>时序遵循度差</td>
+<td>降到分段 + 末态</td>
+</tr>
+<tr>
+<td>无原生音频</td>
+<td>删掉音频行，另做后期</td>
+</tr>
+<tr>
+<td>只支持单图 I2V</td>
+<td>首帧作为唯一视觉锁，其余走文字</td>
+</tr>
+</tbody>
+</table>
+<p><strong>降级必须报告。</strong> 静默降级的 spec 看起来跟按原样跑完的一样，导致输出无法解释，也会悄悄污染任何建立在它之上的对比。</p>
+<h2>公平对比</h2>
+<p>如果目的是对比而不是交付，降级会毁掉对比本身——你比的会是两份不同的 spec。受控对比要做到：</p>
+<ul>
+<li>spec 落在两个模型能力的<strong>交集</strong>上。不要用 30 素材的 spec 去比一个 30 素材模型和一个 9 素材模型</li>
+<li><strong>只翻译寻址语法</strong>，其余每个字保持一致</li>
+<li>偏置层的行<strong>排除在对比之外</strong>，或者作为独立变量单独跑。为 A 模型调过的反默认后缀，对 B 模型就是让分</li>
+<li>记录你为此收着没写的东西。约束未说明的对比，读起来像普适结论，实际只是个窄结论</li>
+</ul>
+<h2>关联</h2>
+<ul>
+<li><a href="model-profile-schema.zh-CN.html">model-profile-schema.zh-CN.md</a> — 该记哪些字段</li>
+<li><a href="verifiability.zh-CN.html">verifiability.zh-CN.md</a> — 语言层的完整写法</li>
+<li><a href="spec-format.zh-CN.html">spec-format.zh-CN.md</a> — 各层内容在 spec 里的位置</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

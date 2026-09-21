@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>outbound-calls · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/agents/references/outbound-calls.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Outbound Calls</h1>
+<p>Make outbound phone calls using your ElevenLabs agent via Twilio or Exotel integration.</p>
+<h2>Prerequisites</h2>
+<ol>
+<li>A configured ElevenLabs agent</li>
+<li>A Twilio or Exotel phone number linked to your agent (obtain <code>agent_phone_number_id</code> from the ElevenLabs dashboard)</li>
+<li>Your ElevenLabs API key</li>
+</ol>
+<h2>Basic Usage</h2>
+<p>See the <a href="../SKILL.html#outbound-calls">main agents skill</a> for basic Twilio Python, JavaScript, and CLI examples.</p>
+<h2>Request Parameters</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Provider</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agent_id</code></td>
+<td>string</td>
+<td>Twilio, Exotel</td>
+<td>Yes</td>
+<td>The ID of your ElevenLabs agent</td>
+</tr>
+<tr>
+<td><code>agent_phone_number_id</code></td>
+<td>string</td>
+<td>Twilio, Exotel</td>
+<td>Yes</td>
+<td>The ID of the linked phone number</td>
+</tr>
+<tr>
+<td><code>to_number</code></td>
+<td>string</td>
+<td>Twilio, Exotel</td>
+<td>Yes</td>
+<td>The destination phone number in E.164 format</td>
+</tr>
+<tr>
+<td><code>conversation_initiation_client_data</code></td>
+<td>object</td>
+<td>Twilio, Exotel</td>
+<td>No</td>
+<td>Override conversation settings for this call</td>
+</tr>
+<tr>
+<td><code>telephony_call_config</code></td>
+<td>object</td>
+<td>Twilio, Exotel</td>
+<td>No</td>
+<td>Telephony call settings like ringing timeout</td>
+</tr>
+<tr>
+<td><code>call_recording_enabled</code></td>
+<td>boolean</td>
+<td>Twilio</td>
+<td>No</td>
+<td>Whether to let Twilio record the call</td>
+</tr>
+</tbody>
+</table>
+<p><code>conversation_initiation_client_data</code> also accepts <code>branch_id</code> to route the call to a specific
+agent branch and <code>environment</code> to control how environment variables resolve for that call.</p>
+<h2>Response</h2>
+<pre><code class="language-json">{
+  &quot;success&quot;: true,
+  &quot;message&quot;: &quot;Call initiated successfully&quot;,
+  &quot;conversation_id&quot;: &quot;conv_abc123&quot;,
+  &quot;callSid&quot;: &quot;CA1234567890abcdef&quot;
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>success</code></td>
+<td>boolean</td>
+<td>Whether the call was initiated successfully</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td>string</td>
+<td>Status message</td>
+</tr>
+<tr>
+<td><code>conversation_id</code></td>
+<td>string</td>
+<td>ElevenLabs conversation ID for tracking</td>
+</tr>
+<tr>
+<td><code>callSid</code></td>
+<td>string</td>
+<td>Provider call SID for reference</td>
+</tr>
+</tbody>
+</table>
+<h2>Exotel Calls</h2>
+<p>Use the Exotel endpoint when the linked phone number uses the Exotel provider:</p>
+<pre><code class="language-bash">elevenlabs agents exotel outbound_call \
+  --agent-id &quot;your-agent-id&quot; \
+  --agent-phone-number-id &quot;your-phone-number-id&quot; \
+  --to-number &quot;+1234567890&quot;
+</code></pre>
+<h2>Customizing the Call</h2>
+<p>Override agent settings for a specific call using <code>conversation_initiation_client_data</code>:</p>
+<h3>Python</h3>
+<pre><code class="language-python">response = client.conversational_ai.twilio.outbound_call(
+    agent_id=&quot;your-agent-id&quot;,
+    agent_phone_number_id=&quot;your-phone-number-id&quot;,
+    to_number=&quot;+1234567890&quot;,
+    call_recording_enabled=True,
+    conversation_initiation_client_data={
+        &quot;branch_id&quot;: &quot;branch_support_staging&quot;,
+        &quot;environment&quot;: &quot;staging&quot;,
+        &quot;conversation_config_override&quot;: {
+            &quot;agent&quot;: {
+                &quot;first_message&quot;: &quot;Hello! This is a reminder about your appointment tomorrow.&quot;,
+                &quot;language&quot;: &quot;en&quot;
+            },
+            &quot;tts&quot;: {
+                &quot;voice_id&quot;: &quot;JBFqnCBsd6RMkjVDRZzb&quot;
+            }
+        },
+        &quot;dynamic_variables&quot;: {
+            &quot;customer_name&quot;: &quot;John&quot;,
+            &quot;appointment_time&quot;: &quot;2:00 PM&quot;
+        }
+    }
+)
+</code></pre>
+<h3>JavaScript</h3>
+<pre><code class="language-javascript">const response = await client.conversationalAi.twilio.outboundCall({
+  agentId: &quot;your-agent-id&quot;,
+  agentPhoneNumberId: &quot;your-phone-number-id&quot;,
+  toNumber: &quot;+1234567890&quot;,
+  callRecordingEnabled: true,
+  conversationInitiationClientData: {
+    branchId: &quot;branch_support_staging&quot;,
+    environment: &quot;staging&quot;,
+    conversationConfigOverride: {
+      agent: {
+        firstMessage: &quot;Hello! This is a reminder about your appointment tomorrow.&quot;,
+        language: &quot;en&quot;,
+      },
+      tts: {
+        voiceId: &quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+      },
+    },
+    dynamicVariables: {
+      customer_name: &quot;John&quot;,
+      appointment_time: &quot;2:00 PM&quot;,
+    },
+  },
+});
+</code></pre>
+<h2>Configuration Overrides</h2>
+<h3>Agent Settings</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>first_message</code></td>
+<td>string</td>
+<td>Custom greeting for this call</td>
+</tr>
+<tr>
+<td><code>language</code></td>
+<td>string</td>
+<td>Language code (e.g., "en", "es", "fr")</td>
+</tr>
+<tr>
+<td><code>prompt</code></td>
+<td>object</td>
+<td>Override agent prompt and LLM settings</td>
+</tr>
+</tbody>
+</table>
+<h3>TTS Settings</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>voice_id</code></td>
+<td>string</td>
+<td>Voice ID to use for this call</td>
+</tr>
+<tr>
+<td><code>stability</code></td>
+<td>number</td>
+<td>Voice stability (0.0-1.0)</td>
+</tr>
+<tr>
+<td><code>similarity_boost</code></td>
+<td>number</td>
+<td>Voice similarity boost (0.0-1.0)</td>
+</tr>
+<tr>
+<td><code>speed</code></td>
+<td>number</td>
+<td>Speech speed multiplier</td>
+</tr>
+<tr>
+<td><code>pronunciation_dictionary_locators</code></td>
+<td>array</td>
+<td>Pronunciation dictionaries for the call; each locator requires <code>pronunciation_dictionary_id</code> and <code>version_id</code></td>
+</tr>
+</tbody>
+</table>
+<h3>Conversation Settings</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>max_duration_seconds</code></td>
+<td>integer</td>
+<td>Maximum duration of this conversation in seconds</td>
+</tr>
+</tbody>
+</table>
+<h3>Telephony Call Configuration</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ringing_timeout_secs</code></td>
+<td>integer</td>
+<td>How long to ring the recipient before giving up (default: <code>60</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3>Dynamic Variables</h3>
+<p>Pass custom data to your agent's prompt using <code>dynamic_variables</code>. Reference them in your agent's prompt with <code>{{variable_name}}</code> syntax.</p>
+<h3>Branch and Environment Routing</h3>
+<p>Use <code>branch_id</code> inside <code>conversation_initiation_client_data</code> for per-call branch routing on
+Twilio, Exotel, or SIP trunk outbound calls. Use <code>environment</code> alongside it when the call should resolve
+workspace environment variables against a non-default deployment target such as <code>staging</code> or
+<code>production</code>.</p>
+<p>When assigning dynamic variables, you can use the <code>sanitize</code> option to remove sensitive values from tool responses before they are sent to the LLM and transcript, while still allowing variable assignment:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sanitize</code></td>
+<td>boolean</td>
+<td><code>false</code></td>
+<td>If true, the assignment's value is removed from tool responses before sending to LLM/transcript but still processed for variable assignment</td>
+</tr>
+</tbody>
+</table>
+<h2>Complete Example</h2>
+<pre><code class="language-python">from elevenlabs import ElevenLabs
+
+client = ElevenLabs()
+
+# Make personalized outbound calls
+customers = [
+    {&quot;name&quot;: &quot;Alice&quot;, &quot;phone&quot;: &quot;+1234567890&quot;, &quot;balance&quot;: &quot;$150.00&quot;},
+    {&quot;name&quot;: &quot;Bob&quot;, &quot;phone&quot;: &quot;+0987654321&quot;, &quot;balance&quot;: &quot;$75.50&quot;},
+]
+
+for customer in customers:
+    try:
+        response = client.conversational_ai.twilio.outbound_call(
+            agent_id=&quot;payment-reminder-agent&quot;,
+            agent_phone_number_id=&quot;your-phone-number-id&quot;,
+            to_number=customer[&quot;phone&quot;],
+            call_recording_enabled=True,
+            conversation_initiation_client_data={
+                &quot;conversation_config_override&quot;: {
+                    &quot;agent&quot;: {
+                        &quot;first_message&quot;: f&quot;Hello {customer['name']}, this is a friendly reminder about your account.&quot;
+                    }
+                },
+                &quot;dynamic_variables&quot;: {
+                    &quot;customer_name&quot;: customer[&quot;name&quot;],
+                    &quot;balance&quot;: customer[&quot;balance&quot;]
+                }
+            }
+        )
+        print(f&quot;Called {customer['name']}: {response.conversation_id}&quot;)
+    except Exception as e:
+        print(f&quot;Failed to call {customer['name']}: {e}&quot;)
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

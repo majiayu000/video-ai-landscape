@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>retell · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">architect/skills/architect-migrate-from-competitor/reference/retell.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Retell → ElevenLabs</h1>
+<h2>Two export shapes, and how to tell them apart</h2>
+<p>Dispatch on <code>response_engine.type</code>. It is always present.</p>
+<ul>
+<li><strong><code>retell-llm</code></strong> — a prompt-driven agent. Tools live in <code>retellLlmData.general_tools</code> and in
+  per-state <code>tools</code>.</li>
+<li><strong><code>conversation-flow</code></strong> — a node graph. Tools live in <code>conversationFlow.tools</code>.</li>
+</ul>
+<p>Do not dispatch on <code>starting_state</code>; it is frequently absent.</p>
+<p>The two shapes need different work. A <code>retell-llm</code> source is usually one prompt plus tools, so an EL
+agent with a prompt and maybe procedures is the right target. A <code>conversation-flow</code> source has real
+states and usually wants an EL workflow.</p>
+<h2>Construct mapping</h2>
+<table>
+<thead>
+<tr>
+<th>Retell</th>
+<th>ElevenLabs</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Agent</td>
+<td>Agent</td>
+<td>Same concept.</td>
+</tr>
+<tr>
+<td>Conversation node</td>
+<td><code>override_agent</code> node</td>
+<td>The editor calls it an Agent node; the wire type is <code>override_agent</code>.</td>
+</tr>
+<tr>
+<td>Node <code>instruction</code></td>
+<td>node <code>additional_prompt</code></td>
+<td><strong>Append</strong>, not replace. See the prompt-field trap in <code>reference/traps.md</code>.</td>
+</tr>
+<tr>
+<td>Function node</td>
+<td><code>tool</code> node referencing a webhook tool</td>
+<td>The target is a Tool node, not a bare tool.</td>
+</tr>
+<tr>
+<td>Function node with <code>speak_during_execution</code></td>
+<td><strong>one</strong> <code>override_agent</code> node with <code>forced_tool_name</code> + <code>additional_tool_ids</code></td>
+<td>The node speaks, and is forced to make the call. Cleaner than a say-node-then-tool-node pair. <code>pre_tool_speech</code> is an enum (<code>auto</code>/<code>force</code>/<code>off</code>), not filler text, so it cannot carry the line.</td>
+</tr>
+<tr>
+<td>Node <code>instruction</code> as <code>{static_text}</code> or <code>{prompt}</code></td>
+<td><code>say</code> node <code>message</code>, a union of literal text or an LLM prompt</td>
+<td>A clean 1:1 — do not flatten a static line into a generated one.</td>
+</tr>
+<tr>
+<td>Transfer call node</td>
+<td><code>phone_number</code> node</td>
+<td>Give it an outgoing <code>result</code> edge.</td>
+</tr>
+<tr>
+<td>Branch node</td>
+<td>edge conditions on the preceding node</td>
+<td>The branch node itself disappears.</td>
+</tr>
+<tr>
+<td><code>else_edge</code></td>
+<td>the node's single unconditional edge</td>
+<td>At most one unconditional out-edge per node.</td>
+</tr>
+<tr>
+<td><code>transition_condition</code> type <code>prompt</code></td>
+<td>LLM edge condition</td>
+<td>The common case.</td>
+</tr>
+<tr>
+<td><code>transition_condition</code> type <code>equation</code></td>
+<td>expression edge condition</td>
+<td><strong>Type-guard it</strong> — see <code>reference/expressions.md</code>.</td>
+</tr>
+<tr>
+<td>End node</td>
+<td><code>end</code> node</td>
+<td>The only genuinely terminal node type.</td>
+</tr>
+<tr>
+<td><code>begin_message</code></td>
+<td><code>first_message</code></td>
+<td>Present on most <code>retell-llm</code> sources; absent from every <code>conversation-flow</code> source.</td>
+</tr>
+<tr>
+<td><code>global_node_setting</code> + its <code>condition</code></td>
+<td>a Procedure with a <code>trigger</code></td>
+<td>The trigger is the analogue of the node's <code>condition</code>. Read the reachability trap first.</td>
+</tr>
+<tr>
+<td><code>extract_dynamic_variables</code> node</td>
+<td><code>update_state</code> node</td>
+<td><strong>Not</strong> data collection — that is post-call and cannot feed routing.</td>
+</tr>
+<tr>
+<td>Node-scoped <code>knowledge_base_ids</code></td>
+<td><code>additional_knowledge_base</code> on an <code>override_agent</code> node</td>
+<td>Must be <code>override_agent</code>; a <code>say</code> node accepts the write and ignores it.</td>
+</tr>
+<tr>
+<td>Flow-level <code>knowledge_base_ids</code></td>
+<td>the agent's knowledge base</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>skip_response_edge</code></td>
+<td>unconditional edge <strong>plus</strong> <code>entry_behavior: "wait_for_user"</code> on the target</td>
+<td>The edge alone only routes; it does not suppress speech.</td>
+</tr>
+<tr>
+<td>Cold transfer</td>
+<td><code>blind</code> transfer</td>
+<td>Unless it ran over SIP REFER — then <code>sip_refer</code>, which is also the only type accepting a SIP URI destination.</td>
+</tr>
+<tr>
+<td>Warm transfer</td>
+<td><code>conference</code> transfer</td>
+<td>The agent can address both parties.</td>
+</tr>
+<tr>
+<td>Warm-transfer briefing message</td>
+<td><strong>no equivalent</strong> — see gaps</td>
+<td>The field does not exist on either transfer surface.</td>
+</tr>
+<tr>
+<td><code>agent_swap</code> (cross-agent)</td>
+<td><code>standalone_agent</code> node, or the <code>transfer_to_agent</code> system tool</td>
+<td>Plain edges only cover the within-agent case.</td>
+</tr>
+<tr>
+<td><code>agent_swap</code> <code>keep_same_voice</code></td>
+<td><code>preserve_client_tts_overrides</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>Shared/library component</td>
+<td><code>standalone_agent</code> node with a <code>node_id</code> entry, push/pop return</td>
+<td>Referenced by id, so one edit still propagates to every caller.</td>
+</tr>
+<tr>
+<td><code>press_digit</code> tool</td>
+<td><code>play_keypad_touch_tone</code> system tool</td>
+<td>Also <code>post_dial_digits</code> for digits sent on connect.</td>
+</tr>
+<tr>
+<td><code>send_sms</code> tool</td>
+<td>native SMS channel, or a webhook tool</td>
+<td>See the SMS note below.</td>
+</tr>
+<tr>
+<td><code>mcp</code> node / tool</td>
+<td>native MCP server on the agent</td>
+<td>Do <strong>not</strong> re-author MCP tools as webhook tools.</td>
+</tr>
+<tr>
+<td><code>data_storage_setting</code></td>
+<td><code>PrivacyConfig</code></td>
+<td><code>everything_except_pii</code> maps to transcript/PII redaction. Retention is <strong>per agent</strong>. Set the two together — see the deletion-flag trap in <code>reference/traps.md</code>, because a deletion flag sent without a retention window is silently switched off.</td>
+</tr>
+<tr>
+<td><code>data_storage_retention_days</code></td>
+<td><code>retention_days</code></td>
+<td><code>-1</code> means no limit, and it also disables the deletion flags.</td>
+</tr>
+<tr>
+<td><code>ambient_sound</code> / <code>ambient_sound_volume</code></td>
+<td><code>conversation.background_sound</code></td>
+<td>Volume range is 0.01–1.0. Presets do <strong>not</strong> map 1:1 — see below.</td>
+</tr>
+<tr>
+<td><code>voice_model</code> holding an ElevenLabs model id</td>
+<td>the voice/TTS model directly</td>
+<td>Most sources that set this already name an EL model.</td>
+</tr>
+<tr>
+<td>Batch testing</td>
+<td>the agent testing API</td>
+<td>Tests are first-class resources attached to the agent.</td>
+</tr>
+</tbody>
+</table>
+<h2>Retell constructs that are not what a mapping table might suggest</h2>
+<ul>
+<li><strong><code>press_digit</code> and <code>send_sms</code> are tools, never node types.</strong> They appear only in tool definitions.
+  If a mapping table tells you to convert an "SMS node" or a "DTMF node", it is describing something
+  Retell does not have.</li>
+<li><strong><code>conversation-flow</code> sources have no <code>begin_message</code>.</strong> Derive the opening line from
+  <code>start_speaker</code> plus the start node instead. Treating the absence as "this agent has no greeting"
+  produces a silent agent.</li>
+<li><strong><code>equation</code> transitions are the deterministic ones.</strong> They lower to expression conditions.
+  Natural-language <code>prompt</code> transitions lower to LLM conditions. Most edges in a typical flow are the
+  latter, but the former are where the silent-inversion trap lives.</li>
+<li><strong>Ambient sound presets are a closed set on both sides and they do not correspond.</strong> EL's presets
+  are <code>office1</code>, <code>office2</code>, <code>restaurant</code>, <code>city</code>, <code>typing</code>, and <code>elevator1</code>–<code>elevator4</code>. Anything
+  else in the source has to be hand-mapped to the nearest, or dropped and mentioned to the user.
+  <code>background_sound</code> can also be overridden per node, which the source cannot do.</li>
+<li><strong>Response variable paths need rewriting, not copying.</strong> Retell's <code>properties.</code> prefix is its own
+  convention and is not part of the response — for a GraphQL endpoint it becomes <code>data.</code>, and a bare
+  field name needs that prefix added rather than removed. Bracketed indexes (<code>[0]</code>) must become dotted
+  (<code>.0.</code>). See the assignment section of <code>reference/expressions.md</code>; a path that does not resolve leaves
+  the variable unset, which then silently routes every condition reading it down the absent path.</li>
+<li><strong>Voice emotion.</strong> EL v3 expression and mood tags are square-bracketed — <code>[calm]</code>, <code>[warmly]</code>,
+  <code>[excited]</code>, <code>[sigh]</code>. They belong in agent-level prompt text, not in workflow node prompts;
+  describe the intended tone in prose inside a node.</li>
+</ul>
+<h2>Where the real gaps are</h2>
+<p>Treat any "Retell has X and ElevenLabs does not" claim as wrong until you have searched and failed to
+find the feature. The overwhelming majority of them are, including several that circulate widely.
+Before telling a customer to build a workaround, look for the construct — a workaround they do not
+need is worse than an unanswered question. These are the ones that hold up:</p>
+<ul>
+<li><strong>Per-node fine-tuning examples.</strong> No equivalent construct. Put the guidance in the node's
+  <code>additional_prompt</code> instead. This is a real loss of a mechanism, though usually not of behaviour.</li>
+<li><strong>Free-navigation ("flex") mode.</strong> There is no mode switch. Approximate it with broad bidirectional
+  edges — an EL edge carries a forward and a backward condition on the same object — and keep the
+  graph small enough to reason about.</li>
+<li><strong><code>cool_down</code> on a global node.</strong> Retell throttles re-entry — 5, 10, 92 seconds. A procedure trigger
+  has no throttle of any kind, so a global that Retell allowed back in once a minute becomes one that
+  can fire on consecutive turns. This is a behaviour change with no config to soften it: the only lever
+  is the trigger's own wording, so write it to describe a <em>situation the caller is in</em> rather than a
+  topic they mentioned. Say so when a source uses long cool-downs; one export carried six of them.</li>
+<li><strong>Entering a global node on a deterministic test.</strong> A trigger is a plain string of natural language —
+  there is no expression object, so a global whose in-edges gate on <code>{{Party Size}} &gt;= 7</code> cannot be
+  lowered onto a procedure and stay deterministic. Two options, both fine: keep that node in the graph
+  and let the deterministic edges reach it normally, or fold the numeric test onto the edges leaving its
+  predecessors (see <code>traps.md</code> — an edge condition <em>can</em> conjoin a model judgment with a variable test,
+  which is the capability a trigger lacks). Do not lower it and hope the wording holds.</li>
+<li><strong>The warm-transfer briefing message.</strong> Retell can speak a private message to the receiving human
+  before bridging. No such field exists on either ElevenLabs transfer surface — a phone-transfer node
+  takes <code>custom_sip_headers</code>, <code>edge_order</code>, <code>position</code>, <code>post_dial_digits</code>, <code>require_acceptance</code>,
+  <code>transfer_destination</code>, <code>transfer_type</code> and <code>uui</code>, and the transfer-to-number system tool's entries
+  add only <code>condition</code> and <code>phone_number</code>. Names like <code>agent_message</code> or <code>whisper_message</code> are
+  accepted and silently dropped on both, so a config that looks right will simply not brief anyone.
+  Closest workaround: <code>conference</code> transfer lets the agent address both legs, so put the briefing in
+  the prompt. (Agent-to-<strong>agent</strong> transfer is different — that does carry a transfer message.)</li>
+<li><strong>A dedicated transfer-negotiation agent.</strong> The transfer-type set is closed and has no entry for
+  "a separate agent negotiates with the target, then bridges". But most of what customers use it for
+  <em>is</em> covered: <code>require_acceptance</code> screens the receiver and auto-releases the caller if the target
+  never accepts, and <code>agent_message</code> briefs the receiver before bridging. The residual gap is only
+  the separate negotiating agent.</li>
+</ul>
+<p>These were commonly claimed as gaps and are not: DTMF, SMS, reusable components, node-scoped
+knowledge, guardrails, ASR keyword boosting, A/B testing, version pinning, human detection before
+bridging, whisper messages, MCP, mid-call variable capture, and QA scoring. Each has a real EL
+construct — see the mapping table above, or ask the relevant sibling skill.</p>
+<p><strong><code>go_back_conditions</code> is on that list, and the reason is worth knowing</strong>, because it looks like the
+scariest thing about lowering a global node and it is not a gap at all. Retell needs those conditions
+because its global <em>is a node</em> — entering it means leaving the node you were on, so something has to
+decide when to come back. ElevenLabs has no equivalent need, in either direction:</p>
+<ul>
+<li>A <strong>free-form</strong> procedure is injected into your context and moves you nowhere. You never left the
+  node, so there is nothing to return to and no condition to write.</li>
+<li>A <strong>structured</strong> procedure does move you to its own entry node, and the node you came from is
+  recorded at activation and restored when the procedure ends. The return is structural rather than
+  condition-driven, so it cannot fail to fire the way a missing <code>go_back_condition</code> can.</li>
+</ul>
+<p>So do not spend effort porting these, and do not tell a customer they lose the behaviour. What you
+should tell them is the <em>reachability</em> consequence in <code>traps.md</code>: the trigger is offered on every
+turn and the model chooses, so nothing guarantees your authored order. That is the real cost. Note also that
+the closest thing to scoping is per-conversation rather than per-node: the procedure set can be narrowed
+in conversation-initiation client data, where the workspace allows it.</p>
+<p>Two more are narrower than usually stated rather than absent: hold music during a transfer exists but
+is not configurable, and automated QA scoring exists per conversation and per turn, with latency,
+interruption and hallucination scoring genuinely missing.</p>
+<h2>SMS</h2>
+<p>Retell's SMS is a tool. ElevenLabs has a native two-way SMS channel, so an SMS-first agent needs no
+external API — inbound SMS routing is on by default for an imported SMS-capable number. The one case
+that still needs a webhook tool is sending a single SMS from inside a voice call.</p>
+<h2>Sequencing a <code>conversation-flow</code> migration</h2>
+<ol>
+<li>Identify the shape and read the graph. Count nodes by type before deciding anything.</li>
+<li>Handle credentials in every tool definition first (<code>SKILL.md</code>, step 2).</li>
+<li>Decide what to collapse — see the folding trap in <code>reference/traps.md</code> before committing to it, and expect a
+   faithful conversion to be roughly node-count-neutral. Semantic merging of duplicate nodes is a
+   later, test-backed pass.</li>
+<li>Create the agent shell directly, then port the base prompt and derive the first message.</li>
+<li>Create the tools and record the id each returns, keyed by the Retell <code>tool_id</code> — a workflow node
+   references a tool by id, and two Retell tools can share a name. See step 4 in <code>SKILL.md</code>.</li>
+<li>Build nodes, then edges. Order only the conditional edges — unconditional ones are moved last for
+   you.</li>
+<li>Convert each <code>equation</code> transition with a type guard; convert each numeric comparison only after
+   the variable is guaranteed numeric. Compose the guards from <code>reference/expressions.md</code> — most of a
+   real flow's equations need one, and an unguarded <code>neq</code> fires on absent data.</li>
+<li>Give every transfer node its failure edge.</li>
+<li>Run the mocked smoke test (<code>SKILL.md</code> step 5) before reporting anything as done, then route the
+   remaining config and rollout to the sibling skills.</li>
+</ol></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

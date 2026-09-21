@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>security · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/security.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Security</h1>
+<h2>Threat model</h2>
+<h3>When to Load</h3>
+<p>Only when the site has auth, user data, or storage bindings. Load when ANY of these conditions is true:</p>
+<ul>
+<li><code>references/auth.md</code> is loaded for this build</li>
+<li><code>app.manifest.json</code> contains <code>"db": true</code>, <code>"r2": true</code>, or <code>"kv": true</code></li>
+<li>The website has <code>createServerFn</code> calls that write or mutate data</li>
+<li>The website has <code>/api/user</code>, <code>__auth</code>, or session-related routes</li>
+</ul>
+<p><strong>Skip</strong> for static landing pages, portfolios, brochure sites, and websites with no user-submitted data.</p>
+<h4>Detection</h4>
+<pre><code class="language-ts">// Check app.manifest.json
+const manifest = JSON.parse(fs.readFileSync('app.manifest.json', 'utf-8'));
+const hasStorage = manifest.db || manifest.r2 || manifest.kv;
+
+// Check for auth routes
+// Grep for: /api/user, __auth, createServerFn with .bind() or INSERT/UPDATE/DELETE
+</code></pre>
+<hr />
+<h3>Trust Boundaries</h3>
+<p>Map these boundaries for every website with data. Each boundary is a point where input trust level changes.</p>
+<h4>Browser → Worker (untrusted → trusted)</h4>
+<p>All data crossing this boundary is attacker-controlled:
+- URL path and query parameters
+- Request headers (including cookies, but cookies are tamper-resistant if <code>HttpOnly</code>)
+- Form submissions and JSON request bodies
+- File uploads</p>
+<p>Every <code>createServerFn</code>, page loader, and API route handler sits on this boundary. Inputs must be validated.</p>
+<h4>Worker → D1/R2/KV (trusted → trusted)</h4>
+<p>Both run in the same Cloudflare environment. The channel is trusted, but SQL injection is still possible if queries use string concatenation instead of parameterized <code>.bind()</code>. R2 key construction from user input can cause path traversal.</p>
+<h4>Worker → External API (trusted → semi-trusted)</h4>
+<p>Outbound <code>fetch()</code> from server functions. Risks:
+- SSRF if the URL comes from user input
+- Response injection if the external API is compromised
+- Secret leakage if auth headers are sent to the wrong host</p>
+<p>Validate outbound URLs. Validate response shapes before trusting them.</p>
+<h4>Worker → fnf.internal (trusted → trusted)</h4>
+<p>The platform's internal API. Auth is injected by the platform -- website code does not handle fnf tokens. Still validate response shapes; a malformed response should not crash the website or expose internal state.</p>
+<h4>Auth Routes → Public Routes (access control boundary)</h4>
+<p>Routes that require authentication vs. routes that are public. Map which is which. Every protected route must verify session before rendering or returning data. A missing check on one route is the most common access control bug.</p>
+<hr />
+<h3>Entry Point Inventory</h3>
+<p>Enumerate every entry point before analyzing threats. Build this list by scanning the codebase.</p>
+<h4>Page Routes (<code>app/src/routes/**</code>)</h4>
+<p>For each route file, record:
+- Path pattern (e.g., <code>/dashboard</code>, <code>/settings/$userId</code>)
+- Auth required: yes/no
+- Data loaded: what server functions or loaders run
+- Writable: does the page submit forms or call mutation server functions</p>
+<h4>Server Functions (<code>createServerFn</code>)</h4>
+<p>For each server function, record:
+- Name and location
+- HTTP method (GET/POST)
+- Input shape (what data it accepts from the client)
+- Data accessed (which D1 tables, R2 buckets, KV namespaces)
+- Auth check: present/absent</p>
+<h4>API Routes (<code>app/src/routes/api/**</code>)</h4>
+<p>For each API route, record:
+- Path and HTTP methods handled
+- Auth check: present/absent
+- Input sources (body, query params, path params)
+- Response data (what it returns, any sensitive fields)</p>
+<h4>File Upload Surfaces</h4>
+<ul>
+<li>R2 write operations (where file data comes from, size limits, type validation)</li>
+<li>Form file inputs (which pages accept file uploads)</li>
+<li>Filename/key construction (is user input used in R2 keys?)</li>
+</ul>
+<h4>Webhook/Callback Endpoints</h4>
+<ul>
+<li>External services that call back into the website (payment processors, OAuth providers, etc.)</li>
+<li>Signature verification on incoming webhooks</li>
+<li>Idempotency handling (replayed webhooks should not duplicate side effects)</li>
+</ul>
+<hr />
+<h3>Asset Classification</h3>
+<table>
+<thead>
+<tr>
+<th>Asset</th>
+<th>Location</th>
+<th>Sensitivity</th>
+<th>Protection</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>User credentials (passwords)</td>
+<td>D1</td>
+<td>Critical</td>
+<td>Hashed (bcrypt/argon2), never logged, never returned to client</td>
+</tr>
+<tr>
+<td>Session tokens</td>
+<td>Cookie</td>
+<td>Critical</td>
+<td><code>HttpOnly; Secure; SameSite=Strict</code>, rotated on login</td>
+</tr>
+<tr>
+<td>PII (email, name, etc.)</td>
+<td>D1</td>
+<td>High</td>
+<td>Access-controlled by user ID, not in client bundle</td>
+</tr>
+<tr>
+<td>Uploaded files</td>
+<td>R2</td>
+<td>Medium-High</td>
+<td>Access-controlled, validated MIME/size, sanitized filenames</td>
+</tr>
+<tr>
+<td>Application data (posts, etc.)</td>
+<td>D1</td>
+<td>Medium</td>
+<td>Access-controlled per ownership or visibility settings</td>
+</tr>
+<tr>
+<td>R2 objects (public assets)</td>
+<td>R2</td>
+<td>Low</td>
+<td>Public by design, no sensitive content</td>
+</tr>
+<tr>
+<td>KV cache entries</td>
+<td>KV</td>
+<td>Low-Medium</td>
+<td>May contain derived data; TTL-bounded; no secrets as values</td>
+</tr>
+<tr>
+<td>API keys (external services)</td>
+<td>Cloudflare Secrets</td>
+<td>Critical</td>
+<td>Never in code, injected via <code>env</code>, never logged</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>Attacker Model</h3>
+<h4>Anonymous Internet User</h4>
+<p><strong>Capabilities:</strong>
+- Reach all public routes and API endpoints
+- Submit arbitrary form data, JSON bodies, file uploads
+- Craft malicious URLs (XSS payloads in query params, path traversal)
+- Replay and tamper with requests (no CSRF token = no protection on state changes)
+- Enumerate routes and server functions by observing client JavaScript</p>
+<p><strong>Goals:</strong> Access other users' data, inject content, abuse server resources, exfiltrate secrets.</p>
+<h4>Authenticated User</h4>
+<p><strong>Capabilities:</strong>
+- Everything anonymous users can do, plus valid session
+- Access own data and attempt to access other users' data (IDOR)
+- Attempt privilege escalation (modify role claims, access admin routes)
+- Abuse rate-unlimited endpoints (spam, resource exhaustion)</p>
+<p><strong>Goals:</strong> Read/modify other users' data, escalate to admin, abuse platform resources.</p>
+<h4>What Attackers CANNOT Do</h4>
+<p>These are platform guarantees -- do not model threats against them:</p>
+<ul>
+<li><strong>Access Worker internals at runtime.</strong> V8 isolates provide memory isolation between requests and between Workers. An attacker cannot read another request's memory.</li>
+<li><strong>Intercept Worker-to-binding traffic.</strong> D1, R2, KV communication happens in-process or over Cloudflare's internal network. There is no network path for an attacker to intercept.</li>
+<li><strong>Read Cloudflare Secrets.</strong> Secrets are injected at deploy time into the Worker's <code>env</code> object. They are not in the code, not in the git repo, and not accessible via any API the attacker can reach.</li>
+<li><strong>Bypass Cloudflare edge security.</strong> HTTPS termination, DDoS mitigation, and bot management happen before traffic reaches the Worker.</li>
+</ul>
+<hr />
+<h3>Common Threat Patterns for the Stack</h3>
+<h4>1. IDOR via Predictable Resource IDs</h4>
+<p><strong>Attack:</strong> User changes <code>/api/notes/123</code> to <code>/api/notes/124</code> to read another user's note. Sequential integer IDs are trivially enumerable.</p>
+<p><strong>Mitigation:</strong> Always filter by authenticated user ID in D1 queries.</p>
+<pre><code class="language-ts">// VULNERABLE
+db.prepare('SELECT * FROM notes WHERE id = ?').bind(noteId).first();
+
+// SAFE
+db.prepare('SELECT * FROM notes WHERE id = ? AND user_id = ?').bind(noteId, session.userId).first();
+</code></pre>
+<p>Using UUIDs as IDs adds defense-in-depth but does NOT replace access control checks.</p>
+<h4>2. Server Function Input Manipulation</h4>
+<p><strong>Attack:</strong> Client sends unexpected shape to <code>createServerFn</code> -- extra fields, wrong types, oversized strings, negative numbers, SQL fragments.</p>
+<p><strong>Mitigation:</strong> Validate every input field before processing.</p>
+<pre><code class="language-ts">import { z } from 'zod';
+
+const CreateNoteSchema = z.object({
+  title: z.string().min(1).max(200),
+  body: z.string().max(10000),
+});
+
+const createNote = createServerFn({ method: 'POST' })
+  .validator((data: unknown) =&gt; CreateNoteSchema.parse(data))
+  .handler(async ({ data, request }) =&gt; {
+    const session = await getSession(request);
+    if (!session) throw new Error('Unauthorized');
+    await db.prepare('INSERT INTO notes (id, user_id, title, body) VALUES (?, ?, ?, ?)')
+      .bind(crypto.randomUUID(), session.userId, data.title, data.body).run();
+  });
+</code></pre>
+<h4>3. Test Data Contamination (Live D1)</h4>
+<p><strong>Attack:</strong> There is one deploy and one D1 database — the live one. Test data created while building or debugging lands in production data, and destructive "test" queries modify real user data.</p>
+<p><strong>Mitigation:</strong>
+- Never use real user data for testing
+- If you must seed test rows, tag them explicitly (e.g. an <code>is_test</code> column or a reserved prefix) and clean them up
+- Get explicit user approval before destructive migrations, <code>UPDATE</code>s, or backfills</p>
+<h4>4. Privilege Escalation via Client State</h4>
+<p><strong>Attack:</strong> Client stores <code>role: 'admin'</code> in localStorage or sends <code>{ role: 'admin' }</code> in a server function call. Server trusts the client-provided role.</p>
+<p><strong>Mitigation:</strong> Never trust client-sent roles, permissions, or user IDs for authorization decisions.</p>
+<pre><code class="language-ts">// VULNERABLE -- role from client
+const { role } = data;
+if (role === 'admin') return getAdminData();
+
+// SAFE -- role from server session
+const session = await getSession(request);
+const user = await db.prepare('SELECT role FROM users WHERE id = ?').bind(session.userId).first();
+if (user?.role === 'admin') return getAdminData();
+</code></pre>
+<h4>5. SSRF via Server Function</h4>
+<p><strong>Attack:</strong> Server function accepts a URL from the client and fetches it. Attacker provides <code>http://169.254.169.254/latest/meta-data/</code> (cloud metadata), <code>http://localhost:8787/internal-api</code>, or internal network addresses.</p>
+<p><strong>Mitigation:</strong></p>
+<pre><code class="language-ts">const ALLOWED_HOSTS = new Set(['api.example.com', 'cdn.example.com']);
+
+function validateUrl(input: string): URL {
+  const url = new URL(input);
+  if (!['https:'].includes(url.protocol)) throw new Error('HTTPS only');
+  if (!ALLOWED_HOSTS.has(url.hostname)) throw new Error('Host not allowed');
+  // Block private IPs
+  if (/^(127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|169\.254\.)/.test(url.hostname)) {
+    throw new Error('Private IP blocked');
+  }
+  return url;
+}
+</code></pre>
+<h4>6. Webhook Replay / Forgery</h4>
+<p><strong>Attack:</strong> Attacker sends forged webhook payloads to callback endpoints, or replays legitimate webhooks to duplicate side effects (double payment credits, duplicate notifications).</p>
+<p><strong>Mitigation:</strong>
+- Verify webhook signatures using <code>crypto.subtle.timingSafeEqual()</code> (see worker-hardening rule 4)
+- Track processed webhook IDs in D1/KV to enforce idempotency
+- Reject webhooks with timestamps older than 5 minutes</p>
+<hr />
+<h3>Output</h3>
+<p>Present threat model findings inline in chat as a summary table. Do not write to a file.</p>
+<pre><code>## Threat Model Summary
+
+| # | Threat | Severity | Likelihood | Impact | Mitigation Status |
+|---|--------|----------|------------|--------|-------------------|
+| 1 | IDOR on /api/notes/:id | High | High | User data leak | MITIGATED -- queries filter by user_id |
+| 2 | Server function input manipulation | Medium | High | Data corruption | OPEN -- no validation on createNote |
+| 3 | SSRF via /api/proxy | High | Medium | Internal network access | MITIGATED -- allowlist in place |
+| 4 | Privilege escalation | Critical | Low | Full admin access | MITIGATED -- role derived from DB |
+| 5 | Webhook replay | Medium | Medium | Duplicate transactions | OPEN -- no idempotency check |
+
+**Open items: 2 | Mitigated: 3 | Total attack surface: 5 entry points, 3 server functions, 1 webhook**
+</code></pre>
+<p>Severity scale: Critical &gt; High &gt; Medium &gt; Low. Base severity on worst-case impact. Likelihood accounts for how easy the attack is to execute (High = no special tools needed, just a browser).</p>
+<hr />
+<h3>Pitfalls</h3>
+<ol>
+<li>
+<p><strong>Don't threat-model brochure sites.</strong> A static landing page with no auth, no database, and no user input has no meaningful attack surface beyond XSS (covered by web-audit). Skip threat modeling for these.</p>
+</li>
+<li>
+<p><strong>Don't assume D1 is multi-tenant by default.</strong> Each website gets its own D1 database backing its single live deploy. Cross-tenant risk exists only between the website's own users sharing that one database, not between different websites.</p>
+</li>
+<li>
+<p><strong>Don't model attacks against Cloudflare infrastructure.</strong> V8 isolate escapes, edge network compromises, and Cloudflare-internal attacks are outside the website's threat model. The platform is the trust boundary.</p>
+</li>
+<li>
+<p><strong>Don't confuse authentication with authorization.</strong> A user being logged in (authenticated) does not mean they can access any resource (authorized). IDOR is an authorization bug, not an authentication bug. Check both.</p>
+</li>
+<li>
+<p><strong>Don't skip the entry point inventory.</strong> Jumping straight to threat patterns without enumerating entry points misses the routes and server functions unique to the website. The inventory is the foundation; patterns are applied against it.</p>
+</li>
+</ol>
+<h2>Worker hardening</h2>
+<h3>When to Load</h3>
+<p>Every website build. These are hard constraints of the Cloudflare Workers runtime, not optional best practices. Violating them causes data leaks, request cross-contamination, or runtime crashes. Load unconditionally alongside the build skill.</p>
+<hr />
+<h3>Hard Rules</h3>
+<h4>1. No Global Mutable State</h4>
+<p>Module-level variables persist across requests in the same V8 isolate. A <code>let</code> at module scope is shared by every concurrent request hitting that isolate.</p>
+<pre><code class="language-ts">// BAD -- leaks between requests
+let currentUser: User | null = null;
+
+export default {
+  async fetch(request: Request) {
+    currentUser = await getUser(request); // overwrites for ALL concurrent requests
+    return handleRequest();
+  }
+};
+</code></pre>
+<pre><code class="language-ts">// GOOD -- request-scoped data flows through params
+export default {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext) {
+    const user = await getUser(request);
+    return handleRequest(user, env);
+  }
+};
+</code></pre>
+<p>Module-level <code>const</code> for static config (strings, frozen objects) is fine. Any <code>let</code> or mutable object at module scope is a bug. React context resets per SSR render and is safe for per-request data.</p>
+<h4>2. Cryptographic Randomness Only</h4>
+<p><code>Math.random()</code> is not a CSPRNG. In Workers, its output may be predictable across requests in the same isolate.</p>
+<pre><code class="language-ts">// BAD
+const sessionId = `sess_${Math.random().toString(36)}`;
+
+// GOOD
+const sessionId = crypto.randomUUID();
+
+// GOOD -- for raw bytes (tokens, nonces)
+const token = new Uint8Array(32);
+crypto.getRandomValues(token);
+</code></pre>
+<p><code>Math.random()</code> is acceptable only in client-side UI code (animations, layout jitter). Flag any server-side usage.</p>
+<h4>3. No Hardcoded Secrets</h4>
+<p>Never put API keys, tokens, passwords, or connection strings in source code or <code>wrangler.jsonc</code>.</p>
+<pre><code class="language-ts">// BAD
+const API_KEY = &quot;sk-proj-abc123...&quot;;
+
+// GOOD -- store it with `higgsfield website secrets set &lt;website_id&gt; --name … --value …`
+// Access SERVER-SIDE via bindings().API_KEY (add it to AppEnv in bindings.server.ts)
+</code></pre>
+<p>In the Supercomputer builder, the platform injects secrets via the outbound Worker. Website code accesses them through <code>env</code> bindings at runtime. Secrets never appear in the git repo.</p>
+<h4>4. Timing-Safe Secret Comparison</h4>
+<p>String <code>===</code> leaks secret length via timing side-channels. Use <code>crypto.subtle.timingSafeEqual()</code> for any secret, token, or API key comparison.</p>
+<pre><code class="language-ts">async function safeCompare(a: string, b: string): Promise&lt;boolean&gt; {
+  const encoder = new TextEncoder();
+  const aBuf = encoder.encode(a);
+  const bBuf = encoder.encode(b);
+  if (aBuf.byteLength !== bBuf.byteLength) return false;
+  return crypto.subtle.timingSafeEqual(aBuf, bBuf);
+}
+
+// Usage in a webhook handler
+const signature = request.headers.get('X-Webhook-Signature') ?? '';
+if (!(await safeCompare(signature, env.WEBHOOK_SECRET))) {
+  return new Response('Forbidden', { status: 403 });
+}
+</code></pre>
+<h4>5. Stream Large Payloads</h4>
+<p>Workers have a 128 MB memory limit. <code>await response.text()</code> or <code>await response.json()</code> buffers the entire body into memory. On unbounded external responses this causes OOM crashes.</p>
+<pre><code class="language-ts">// BAD -- buffers entire response
+const data = await fetch(externalUrl).then(r =&gt; r.text());
+
+// GOOD -- stream through
+const upstream = await fetch(externalUrl);
+return new Response(upstream.body, {
+  headers: { 'Content-Type': upstream.headers.get('Content-Type') ?? 'application/octet-stream' },
+});
+</code></pre>
+<p>For JSON processing of large payloads, use streaming JSON parsers or paginate the upstream API. Only call <code>.json()</code> when you control the response size (e.g., your own D1 queries).</p>
+<h4>6. Handle Every Promise</h4>
+<p>Every <code>Promise</code> must be <code>await</code>ed, <code>return</code>ed, or passed to <code>ctx.waitUntil()</code>. Floating promises silently swallow errors, may execute after the response is sent, and can leak data into subsequent requests.</p>
+<pre><code class="language-ts">// BAD -- fire-and-forget
+logAnalytics(event); // returns Promise, nobody awaits it
+
+// GOOD -- defer non-critical work
+ctx.waitUntil(logAnalytics(event));
+
+// GOOD -- critical work
+await saveToDatabase(record);
+</code></pre>
+<h4>7. No <code>passThroughOnException()</code></h4>
+<p>This Cloudflare API forwards the original request to origin when the Worker throws, bypassing all security logic (auth checks, rate limiting, header injection).</p>
+<pre><code class="language-ts">// BAD -- security bypass on any error
+export default {
+  async fetch(request, env, ctx) {
+    ctx.passThroughOnException();
+    return handleRequest(request, env);
+  }
+};
+
+// GOOD -- explicit error handling
+export default {
+  async fetch(request, env, ctx) {
+    try {
+      return await handleRequest(request, env);
+    } catch (err) {
+      console.error('Worker error:', err);
+      return new Response('Internal Server Error', { status: 500 });
+    }
+  }
+};
+</code></pre>
+<h4>8. Security Headers on Every Response</h4>
+<p>Security headers are owned by a single canonical helper:
+<code>app/src/lib/security-headers.server.ts</code>. Import <code>applySecurityHeaders()</code> in
+<code>app/src/server.ts</code> and wrap every response leaving the Worker — including
+redirects and error responses. Do not hand-roll a second header function.</p>
+<p>The canonical helper is the drop-in <code>app/src/lib/security-headers.server.ts</code>:</p>
+<pre><code class="language-ts">export function applySecurityHeaders(response: Response): Response {
+  const headers = new Headers(response.headers);
+  // Framing: the Supercomputer Design-mode inspector renders the live app
+  // inside an iframe from a higgsfield.app origin (cross-origin to the app's own
+  // subdomain). `X-Frame-Options` has no cross-origin allowlist, so SAMEORIGIN/
+  // DENY would blank Design mode. We deliberately DO NOT set X-Frame-Options and
+  // control framing via the CSP `frame-ancestors` allowlist below. Reviewer:
+  // confirm/tighten the editor origin for your deployment.
+  headers.set(
+    'Content-Security-Policy',
+    &quot;default-src 'self'; &quot; +
+      &quot;script-src 'self' 'unsafe-inline'; &quot; +
+      &quot;style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; &quot; +
+      &quot;font-src 'self' https://fonts.gstatic.com; &quot; +
+      &quot;img-src 'self' data: https:; media-src 'self' https:; &quot; +
+      &quot;connect-src 'self' https:; &quot; +
+      &quot;frame-ancestors 'self' https://*.higgsfield.app https://higgsfield.app &quot; +
+      &quot;https://*.higgsfield.ai https://fnf-dev.anwar-695.workers.dev &quot; +
+      &quot;https://feat-apps-marketplace-tools-fnf-dev.anwar-695.workers.dev; &quot; +
+      &quot;base-uri 'self'; form-action 'self'&quot;,
+  );
+  headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+  headers.set('X-Content-Type-Options', 'nosniff');
+  headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  headers.set('X-XSS-Protection', '0');
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+</code></pre>
+<p>Adjust CSP directives per website needs (e.g., add specific CDN origins), but keep
+<code>X-Content-Type-Options</code> and keep <code>frame-ancestors</code> as the editor allowlist.
+<strong>Never set <code>X-Frame-Options</code></strong> — it has no cross-origin allowlist, so
+<code>DENY</code>/<code>SAMEORIGIN</code> would blank the Supercomputer Design-mode iframe,
+which loads the live website from a cross-origin <code>higgsfield.app</code> host. Framing is
+controlled exclusively by the CSP <code>frame-ancestors</code> allowlist: it permits the
+Supercomputer hosts while still blocking arbitrary third parties. Keep that
+allowlist — never narrow it to <code>'none'</code> and never remove it.</p>
+<h4>9. Validate Server Function Inputs</h4>
+<p><code>createServerFn</code> code runs server-only, but its inputs arrive from the client over the network. The client can send any shape of data.</p>
+<pre><code class="language-ts">// BAD -- trusts client input shape
+const getUser = createServerFn({ method: 'GET' })
+  .handler(async ({ data }: { data: { userId: string } }) =&gt; {
+    return db.prepare('SELECT * FROM users WHERE id = ?').bind(data.userId).first();
+  });
+
+// GOOD -- validate before use
+const getUser = createServerFn({ method: 'GET' })
+  .validator((data: unknown) =&gt; {
+    if (!data || typeof data !== 'object' || !('userId' in data)) throw new Error('Invalid input');
+    const { userId } = data as { userId: string };
+    if (typeof userId !== 'string' || userId.length &gt; 36) throw new Error('Invalid userId');
+    return { userId };
+  })
+  .handler(async ({ data }) =&gt; {
+    return db.prepare('SELECT * FROM users WHERE id = ?').bind(data.userId).first();
+  });
+</code></pre>
+<p>Use TanStack Start's <code>.validator()</code> chain or manual checks. For complex shapes, use zod.</p>
+<h4>10. No Secrets in React Props</h4>
+<p>React component props serialize into the client HTML during SSR. Any value passed as a prop is visible in the page source.</p>
+<pre><code class="language-ts">// BAD -- API key appears in client HTML
+function Dashboard({ apiKey }: { apiKey: string }) {
+  return &lt;Widget config={{ key: apiKey }} /&gt;;
+}
+
+// GOOD -- fetch server data in a server function, return only safe data
+const getDashboardData = createServerFn({ method: 'GET' })
+  .handler(async () =&gt; {
+    const result = await fetch(API_URL, { headers: { Authorization: `Bearer ${env.API_KEY}` } });
+    return result.json(); // only the response data reaches the client
+  });
+</code></pre>
+<p>This includes <code>env</code> bindings, database results containing sensitive columns, and internal URLs.</p>
+<h4>11. Cookie Security</h4>
+<p>Custom cookies set in server routes or API handlers must use secure attributes.</p>
+<pre><code class="language-ts">// GOOD
+const cookie = `session=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=86400`;
+return new Response(null, {
+  status: 302,
+  headers: {
+    'Set-Cookie': cookie,
+    'Location': '/dashboard',
+  },
+});
+</code></pre>
+<ul>
+<li><code>HttpOnly</code> -- prevents JavaScript access (XSS can't steal it)</li>
+<li><code>Secure</code> -- HTTPS only (always true on Cloudflare)</li>
+<li><code>SameSite=Strict</code> -- blocks cross-site sends (use <code>Lax</code> for OAuth redirect flows)</li>
+</ul>
+<p>The platform handles auth cookies automatically. This rule applies to any additional cookies the website sets.</p>
+<h4>12. CORS Only When Needed</h4>
+<p>Workers don't add CORS headers by default -- this is the secure default. Only add <code>Access-Control-Allow-Origin</code> when the site genuinely serves API responses to a different origin.</p>
+<pre><code class="language-ts">// BAD -- allows any origin with credentials
+headers.set('Access-Control-Allow-Origin', '*');
+headers.set('Access-Control-Allow-Credentials', 'true'); // browser ignores * with credentials, but intent is wrong
+
+// GOOD -- specific origin, only on API routes that need it
+if (request.headers.get('Origin') === 'https://trusted-app.example.com') {
+  headers.set('Access-Control-Allow-Origin', 'https://trusted-app.example.com');
+  headers.set('Access-Control-Allow-Credentials', 'true');
+}
+</code></pre>
+<p>Never add CORS headers to page routes. Only add them to <code>/api/*</code> routes consumed by external clients.</p>
+<hr />
+<h3>Anti-Patterns to Flag</h3>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Risk</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Math.random()</code> for IDs/tokens</td>
+<td>Predictable values, session hijacking</td>
+<td><code>crypto.randomUUID()</code> or <code>crypto.getRandomValues()</code></td>
+</tr>
+<tr>
+<td><code>let x = ...</code> at module scope</td>
+<td>Cross-request data leakage</td>
+<td>Move to function params or request-scoped context</td>
+</tr>
+<tr>
+<td><code>await response.text()</code> on external fetch</td>
+<td>OOM crash on large response</td>
+<td>Stream with <code>Response(upstream.body)</code></td>
+</tr>
+<tr>
+<td>Hardcoded string resembling a key (<code>sk-</code>, <code>ghp_</code>, <code>Bearer</code>)</td>
+<td>Secret in source code / git history</td>
+<td><code>higgsfield website secrets set</code> + <code>bindings().SECRET_NAME</code> server-side</td>
+</tr>
+<tr>
+<td><code>===</code> comparing secrets/tokens</td>
+<td>Timing side-channel leaks secret</td>
+<td><code>crypto.subtle.timingSafeEqual()</code></td>
+</tr>
+<tr>
+<td><code>ctx.passThroughOnException()</code></td>
+<td>Bypasses all Worker security on error</td>
+<td><code>try/catch</code> with explicit error response</td>
+</tr>
+<tr>
+<td>Missing <code>await</code> on async call</td>
+<td>Silent error loss, data leak</td>
+<td><code>await</code>, <code>return</code>, or <code>ctx.waitUntil()</code></td>
+</tr>
+<tr>
+<td>Secret value in JSX prop <code>&lt;Comp token={env.KEY}&gt;</code></td>
+<td>Secret in client HTML source</td>
+<td>Fetch in server function, return only safe data</td>
+</tr>
+<tr>
+<td><code>Access-Control-Allow-Origin: *</code></td>
+<td>Any origin reads responses</td>
+<td>Allowlist specific origins or omit CORS</td>
+</tr>
+<tr>
+<td><code>eval()</code> / <code>new Function()</code></td>
+<td>Arbitrary code execution</td>
+<td>Remove; use static logic or JSON parsing</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>Pitfalls</h3>
+<ol>
+<li>
+<p><strong><code>const</code> objects are still mutable.</strong> <code>const cache = {}</code> at module scope is mutable state -- properties can be added/modified across requests. Use <code>Object.freeze()</code> for true immutability, or scope caches to the request.</p>
+</li>
+<li>
+<p><strong><code>crypto.subtle.timingSafeEqual</code> requires equal-length buffers.</strong> If the two buffers differ in length, it throws. Always check <code>.byteLength</code> equality first and return <code>false</code> on mismatch (do not pad to equal length -- that leaks info about which is shorter).</p>
+</li>
+<li>
+<p><strong><code>ctx.waitUntil()</code> does not extend memory limits.</strong> Deferred work still shares the 128 MB isolate memory. Don't use it to process large payloads after responding.</p>
+</li>
+<li>
+<p><strong>CSP <code>'unsafe-inline'</code> for scripts weakens XSS protection.</strong> It's included above for compatibility with SSR hydration scripts. Prefer hash-based or nonce-based CSP when the framework supports it. Track TanStack Start CSP nonce support.</p>
+</li>
+<li>
+<p><strong>Security headers on redirects matter.</strong> A <code>302 Found</code> response still needs <code>X-Content-Type-Options</code> and <code>Strict-Transport-Security</code>. Apply <code>applySecurityHeaders()</code> to all responses, not just 200s.</p>
+</li>
+</ol>
+<h2>Web audit</h2>
+<h3>When to Load</h3>
+<p>After building any website, before running <code>higgsfield website deploy</code>. Run alongside the SEO audit (<code>references/seo.md#audit</code>) as the security half of the pre-deploy quality gate. This audit applies to every site -- brochure, website, dashboard -- because even static sites can have XSS or misconfiguration.</p>
+<hr />
+<h3>Precedent Rules</h3>
+<p>Internalize these before auditing. They prevent false positives that waste time and erode trust in the audit.</p>
+<ol>
+<li>
+<p><strong>React JSX auto-escapes by default.</strong> <code>&lt;p&gt;{userInput}&lt;/p&gt;</code> is safe. Do NOT flag normal JSX text interpolation <code>{variable}</code> as XSS. React escapes all string values rendered in JSX.</p>
+</li>
+<li>
+<p><strong><code>dangerouslySetInnerHTML</code> IS a real risk.</strong> Flag it unless the content is a hardcoded string literal or sanitized through DOMPurify / a known sanitizer. "It comes from our CMS" is not a defense without sanitization.</p>
+</li>
+<li>
+<p><strong>Environment variables are trusted input.</strong> Do not flag <code>process.env.X</code> or <code>env.VARIABLE</code> as tainted user input. These are set at build/deploy time by the platform.</p>
+</li>
+<li>
+<p><strong>UUIDs are unguessable.</strong> Do not flag UUID-based resource access (<code>/api/items/550e8400-e29b-...</code>) as IDOR. UUIDs have 122 bits of entropy -- brute force is infeasible.</p>
+</li>
+<li>
+<p><strong>Test files are excluded.</strong> Skip <code>*.test.ts</code>, <code>*.test.tsx</code>, <code>__tests__/</code>, <code>*.spec.ts</code>, <code>*.spec.tsx</code>. Test code does not ship to production.</p>
+</li>
+<li>
+<p><strong>Example/template files are excluded.</strong> Skip <code>.example</code>, <code>.sample</code>, <code>.template</code> files. They are not deployed.</p>
+</li>
+<li>
+<p><strong>Dev-only config is excluded.</strong> Skip <code>Dockerfile</code>, <code>docker-compose.yml</code>, <code>.devcontainer/</code>, and local development config that does not deploy to Workers.</p>
+</li>
+<li>
+<p><strong>Missing HTTPS is not a finding.</strong> Cloudflare enforces HTTPS at the edge for all <code>*.higgsfield.app</code> domains. Do not flag HTTP links to the website's own domain.</p>
+</li>
+</ol>
+<hr />
+<h3>OWASP Top 10 Checklist</h3>
+<h4>A01: Broken Access Control</h4>
+<p>Check every <code>createServerFn</code> that reads or writes user data. It must verify authentication before accessing data.</p>
+<pre><code class="language-ts">// FAIL -- no auth check
+const getUserNotes = createServerFn({ method: 'GET' })
+  .handler(async ({ data }) =&gt; {
+    return db.prepare('SELECT * FROM notes WHERE user_id = ?').bind(data.userId).all();
+  });
+
+// PASS -- auth check before data access
+const getUserNotes = createServerFn({ method: 'GET' })
+  .handler(async ({ data, request }) =&gt; {
+    const session = await getSession(request);
+    if (!session?.userId) throw new Error('Unauthorized');
+    return db.prepare('SELECT * FROM notes WHERE user_id = ?').bind(session.userId).all();
+  });
+</code></pre>
+<p>Also check: API routes under <code>app/src/routes/api/</code> must verify auth. Page loaders returning private data must check session. Never rely on client-side route guards alone.</p>
+<h4>A02: Cryptographic Failures</h4>
+<ul>
+<li>No hardcoded secrets in source (grep for <code>sk-</code>, <code>ghp_</code>, <code>Bearer</code>, long base64 strings)</li>
+<li>No <code>Math.random()</code> for security-relevant values (IDs, tokens, nonces)</li>
+<li>No sensitive data (passwords, tokens, PII) in the client bundle -- check props passed from loaders to components</li>
+<li>Cross-reference with the "Worker hardening" section above, rules 2, 3, 4</li>
+</ul>
+<h4>A03: Injection</h4>
+<p><strong>SQL Injection (D1):</strong> Every D1 query must use parameterized binding.</p>
+<pre><code class="language-ts">// FAIL -- string concatenation
+db.prepare(`SELECT * FROM users WHERE name = '${name}'`).all();
+
+// PASS -- parameterized
+db.prepare('SELECT * FROM users WHERE name = ?').bind(name).all();
+</code></pre>
+<p><strong>XSS:</strong> Flag <code>dangerouslySetInnerHTML</code> with non-static content. Flag <code>href={userInput}</code> without protocol validation (see React-Specific Checks below).</p>
+<p><strong>Command Injection:</strong> Flag any use of <code>eval()</code>, <code>new Function()</code>, or template literal construction of executable code in server functions.</p>
+<h4>A04: Insecure Design</h4>
+<p>Check for fail-open defaults on security-critical paths:</p>
+<ul>
+<li><code>|| 'default'</code> fallback on secrets or auth tokens -- should crash, not fall back</li>
+<li>Missing rate limiting on public-facing API routes (POST endpoints, form submissions)</li>
+<li>Admin functionality accessible without role checks</li>
+<li>Password/auth flows without brute-force protection</li>
+</ul>
+<p>If the website has no auth or sensitive operations, mark as N/A.</p>
+<h4>A05: Security Misconfiguration</h4>
+<ul>
+<li>Missing security headers -- check for <code>applySecurityHeaders()</code> or equivalent in <code>server.ts</code> (cross-ref worker-hardening rule 8)</li>
+<li>Overly permissive CORS (<code>Access-Control-Allow-Origin: *</code>)</li>
+<li>Debug info in production responses (<code>stack</code>, <code>trace</code>, internal paths in error bodies)</li>
+<li>Source maps served in production (<code>*.map</code> files accessible)</li>
+<li>Default credentials or placeholder secrets in committed config</li>
+</ul>
+<h4>A06: Vulnerable Components</h4>
+<pre><code class="language-bash"># Run in the app directory
+bun audit 2&gt;/dev/null || npm audit 2&gt;/dev/null || echo &quot;No audit tool available&quot;
+</code></pre>
+<p>Check <code>package.json</code> for:
+- Dependencies with known CVEs
+- Unmaintained packages (no updates in 2+ years for security-relevant deps)
+- Unnecessary dependencies that expand attack surface</p>
+<p>If no audit tool is available, manually check critical deps (auth libraries, crypto, parsers) against known vulnerability databases.</p>
+<h4>A07: Authentication Failures</h4>
+<p>Skip if site has no auth. If auth is present, check:</p>
+<ul>
+<li>Session fixation: session ID must rotate after login</li>
+<li>CSRF: state-changing server functions (POST/PUT/DELETE) must verify origin or use CSRF tokens. TanStack Start server functions include origin checking by default -- verify it's not disabled.</li>
+<li>Session expiry: sessions must have a <code>Max-Age</code> or <code>Expires</code>. Infinite sessions are a finding.</li>
+<li>Password storage: if the website stores passwords, they must be hashed (bcrypt, scrypt, argon2). Never stored in plain text in D1.</li>
+</ul>
+<h4>A08: Data Integrity Failures</h4>
+<p>Skip if site has no file uploads or external data processing. If present, check:</p>
+<ul>
+<li>File upload MIME type validation (don't trust <code>Content-Type</code> header alone; check magic bytes for critical uploads)</li>
+<li>File size limits enforced server-side (Workers have 100 MB request body limit but the website should enforce lower)</li>
+<li>Filename sanitization for R2 keys (strip path traversal: <code>../</code>, null bytes, control characters)</li>
+<li>External data (webhooks, API responses) validated before storage</li>
+</ul>
+<h4>A09: Logging Failures</h4>
+<p>Flag <code>console.log</code> / <code>console.error</code> that prints:
+- Passwords or password hashes
+- API keys, tokens, secrets
+- Full request bodies on auth endpoints
+- Full database rows containing PII</p>
+<p>Check that error responses to clients do not contain:
+- Stack traces (<code>at Object.&lt;anonymous&gt;</code>, file paths)
+- Internal hostnames or IP addresses
+- Database error messages with schema details</p>
+<h4>A10: SSRF</h4>
+<p>Skip if no server functions make outbound HTTP requests. If present, check:</p>
+<pre><code class="language-ts">// FAIL -- fetches arbitrary user-supplied URL
+const proxyFetch = createServerFn({ method: 'POST' })
+  .handler(async ({ data }) =&gt; {
+    const res = await fetch(data.url); // user controls destination
+    return res.json();
+  });
+
+// PASS -- allowlisted domains
+const ALLOWED_HOSTS = ['api.example.com', 'cdn.example.com'];
+const proxyFetch = createServerFn({ method: 'POST' })
+  .handler(async ({ data }) =&gt; {
+    const url = new URL(data.url);
+    if (!ALLOWED_HOSTS.includes(url.hostname)) throw new Error('Blocked');
+    const res = await fetch(url.toString());
+    return res.json();
+  });
+</code></pre>
+<p>Also check for: internal network access (<code>localhost</code>, <code>127.0.0.1</code>, <code>10.*</code>, <code>192.168.*</code>, <code>169.254.169.254</code> -- the metadata endpoint).</p>
+<hr />
+<h3>Insecure Defaults Check</h3>
+<p>Scan the codebase for these fail-open patterns:</p>
+<h4>Fail-Open Patterns</h4>
+<pre><code class="language-ts">// BAD -- falls back to a default secret instead of crashing
+const secret = env.SECRET_KEY || 'default-secret-key';
+const jwtSecret = process.env.JWT_SECRET ?? 'changeme';
+
+// BAD -- verification defaults to disabled
+const verifySignature = options.verify ?? true; // should be ?? false or mandatory
+
+// BAD -- empty catch swallows auth/crypto errors
+try { await verifyToken(token); } catch {} // attacker wins on any error
+</code></pre>
+<h4>Dangerous Zero/Null/Empty Defaults</h4>
+<ul>
+<li><code>timeout: 0</code> -- may mean "no timeout" (infinite wait, DoS vector)</li>
+<li><code>maxRetries: Infinity</code> -- retry storm</li>
+<li>Empty string accepted as password or API key</li>
+<li>Missing validation on optional fields that have security implications (e.g., <code>role</code> field defaults to <code>'admin'</code> if missing)</li>
+</ul>
+<h4>The 5 Rationalizations to Reject</h4>
+<p>When reviewing code, reject these justifications for insecure defaults:</p>
+<ol>
+<li><strong>"It's just for dev"</strong> -- dev config ships to production more often than anyone admits.</li>
+<li><strong>"Prod config overrides it"</strong> -- if it doesn't, the fallback is the live value.</li>
+<li><strong>"We'll fix it later"</strong> -- later never comes; the default becomes the permanent value.</li>
+<li><strong>"It's documented"</strong> -- nobody reads documentation; the default is the behavior.</li>
+<li><strong>"Nobody would do that"</strong> -- attackers do exactly that.</li>
+</ol>
+<hr />
+<h3>React-Specific Checks</h3>
+<h4><code>dangerouslySetInnerHTML</code></h4>
+<pre><code class="language-ts">// FAIL -- unsanitized user content
+&lt;div dangerouslySetInnerHTML={{ __html: userComment }} /&gt;
+
+// PASS -- hardcoded content
+&lt;div dangerouslySetInnerHTML={{ __html: '&lt;strong&gt;Welcome&lt;/strong&gt;' }} /&gt;
+
+// PASS -- sanitized
+import DOMPurify from 'dompurify';
+&lt;div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(userComment) }} /&gt;
+</code></pre>
+<h4><code>href</code> with User Input</h4>
+<pre><code class="language-ts">// FAIL -- javascript: protocol injection
+&lt;a href={userUrl}&gt;Click&lt;/a&gt;
+
+// PASS -- protocol validation
+function safeHref(url: string): string {
+  if (url.startsWith('/') || url.startsWith('#') || url.startsWith('https://')) return url;
+  return '#';
+}
+&lt;a href={safeHref(userUrl)}&gt;Click&lt;/a&gt;
+</code></pre>
+<h4><code>&lt;iframe&gt;</code> with User Input</h4>
+<pre><code class="language-ts">// FAIL -- no sandbox
+&lt;iframe src={userUrl} /&gt;
+
+// PASS -- sandboxed
+&lt;iframe src={userUrl} sandbox=&quot;allow-scripts allow-same-origin&quot; /&gt;
+</code></pre>
+<h4>Client-Side State</h4>
+<ul>
+<li>Never store tokens, secrets, or API keys in <code>localStorage</code>, <code>sessionStorage</code>, or React state</li>
+<li>Auth tokens belong in <code>HttpOnly</code> cookies, not JavaScript-accessible storage</li>
+<li>If the website uses <code>zustand</code>, <code>jotai</code>, or React context for auth state, verify the token source is a server function, not client storage</li>
+</ul>
+<h4><code>eval()</code> / <code>new Function()</code></h4>
+<p>Flag any occurrence in application code. Acceptable only in build tooling (<code>vite.config.ts</code>, bundler plugins) which does not execute at runtime.</p>
+<hr />
+<h3>Output Format</h3>
+<p>Present audit results as a table. One row per check. Same format as the SEO audit (<code>references/seo.md#audit</code>).</p>
+<pre><code>## Security Audit Results
+
+| # | Check | Status | Details |
+|---|-------|--------|---------|
+| 1 | A01 Broken Access Control | PASS | All 4 server functions verify session |
+| 2 | A02 Cryptographic Failures | PASS | No hardcoded secrets found |
+| 3 | A03 Injection | WARN | `dangerouslySetInnerHTML` in BlogPost.tsx -- verify content is sanitized |
+| 4 | A04 Insecure Design | N/A | No auth or sensitive operations |
+| 5 | A05 Security Misconfiguration | FAIL | Missing security headers in server.ts |
+| 6 | A06 Vulnerable Components | PASS | `bun audit` reports 0 vulnerabilities |
+| 7 | A07 Authentication Failures | N/A | No auth |
+| 8 | A08 Data Integrity Failures | N/A | No file uploads |
+| 9 | A09 Logging Failures | PASS | No sensitive data in console output |
+| 10 | A10 SSRF | N/A | No outbound fetches from server functions |
+| 11 | Insecure Defaults | PASS | No fail-open patterns found |
+| 12 | React-Specific | WARN | 1 `dangerouslySetInnerHTML` usage |
+
+**Summary: 5 PASS, 2 WARN, 1 FAIL, 4 N/A**
+</code></pre>
+<p>Status values:
+- <strong>PASS</strong> -- check passed, no issues
+- <strong>FAIL</strong> -- security issue found, must fix before deploy
+- <strong>WARN</strong> -- potential issue, needs manual review
+- <strong>N/A</strong> -- check does not apply to this site</p>
+<p>Any FAIL blocks deploy. WARN items are noted in the deploy message for the user to review.</p>
+<hr />
+<h3>Pitfalls</h3>
+<ol>
+<li>
+<p><strong>Don't flag React JSX interpolation as XSS.</strong> <code>{variable}</code> in JSX is auto-escaped. Only <code>dangerouslySetInnerHTML</code> and <code>href</code>/<code>src</code> attributes with user input are real XSS vectors in React.</p>
+</li>
+<li>
+<p><strong>Don't flag <code>fetch()</code> in server functions as SSRF unless the URL comes from user input.</strong> Server functions that fetch hardcoded API endpoints (e.g., <code>fetch('https://api.stripe.com/...')</code>) are not SSRF.</p>
+</li>
+<li>
+<p><strong>Don't audit <code>node_modules/</code>.</strong> Dependency code is checked by <code>bun audit</code> / <code>npm audit</code>, not by manual code review. Focus on application code in <code>app/src/</code>.</p>
+</li>
+<li>
+<p><strong>Don't confuse build-time env vars with runtime secrets.</strong> <code>VITE_*</code> env vars are intentionally public (bundled into client code). Only flag non-<code>VITE_</code> env vars that appear in client-reachable code.</p>
+</li>
+<li>
+<p><strong>Don't flag missing rate limiting on static/SSR pages.</strong> Rate limiting is relevant for API routes and form-handling server functions, not for page loads. Cloudflare's DDoS protection handles volumetric attacks at the edge.</p>
+</li>
+</ol></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

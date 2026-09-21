@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>managed-agents-environments · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/managed-agents-environments.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Managed Agents - Environments &amp; Resources</h1>
+<h2>Environments</h2>
+<p>Creating a session requires an <code>environment_id</code>. Environments are <strong>reusable configuration templates</strong> for spinning up containers in Anthropic's infrastructure - you might create different environments for different use cases (e.g. data visualization vs web development, with different package sets). Anthropic handles scaling, container lifecycle, and work orchestration.</p>
+<p><strong>Environment names must be unique.</strong> Creating an environment with an existing name returns 409.</p>
+<h3>Networking</h3>
+<table>
+<thead>
+<tr>
+<th>Network Policy</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>unrestricted</code></td>
+<td>Full egress (except legal blocklist)</td>
+</tr>
+<tr>
+<td><code>limited</code></td>
+<td>Deny-by-default; opt in via <code>allowed_hosts</code> / <code>allow_package_managers</code> / <code>allow_mcp_servers</code></td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-json">{
+  &quot;networking&quot;: {
+    &quot;type&quot;: &quot;limited&quot;,
+    &quot;allow_package_managers&quot;: true,
+    &quot;allow_mcp_servers&quot;: true,
+    &quot;allowed_hosts&quot;: [&quot;api.example.com&quot;]
+  }
+}
+</code></pre>
+<p>All three <code>limited</code> fields are optional. <code>allow_package_managers</code> (default <code>false</code>) permits PyPI/npm/etc.; <code>allow_mcp_servers</code> (default <code>false</code>) permits the agent's configured MCP server endpoints without listing them in <code>allowed_hosts</code>.</p>
+<p><strong>MCP caveat:</strong> Under <code>limited</code> networking, either set <code>allow_mcp_servers: true</code> or add each MCP server domain to <code>allowed_hosts</code>. Otherwise the container can't reach them and tools silently fail.</p>
+<p><strong>Packages caveat:</strong> Under <code>limited</code> networking, <code>packages</code> requires <code>allow_package_managers: true</code>; otherwise the request fails with a 400. Listing the registry in <code>allowed_hosts</code> is not enough.</p>
+<p><strong><code>networking</code> does not govern <code>web_search</code> / <code>web_fetch</code>.</strong> Those tools run on Anthropic's servers (in cloud <em>and</em> self-hosted environments), so <code>limited</code> egress and <code>allowed_hosts</code> don't restrict them. To restrict the sites they can reach, set <code>allowed_domains</code> / <code>blocked_domains</code> on the tool's <code>configs</code> entry in the agent toolset - see <code>shared/managed-agents-tools.md</code> § Web search &amp; web fetch settings.</p>
+<h3>Creating an environment</h3>
+<p>The SDK adds <code>managed-agents-2026-04-01</code> automatically. TypeScript:</p>
+<pre><code class="language-ts">const env = await client.beta.environments.create({
+  name: &quot;my_env&quot;,
+  config: {
+    type: &quot;cloud&quot;,
+    networking: { type: &quot;unrestricted&quot; },
+  },
+});
+</code></pre>
+<h3>Self-hosted sandboxes</h3>
+<p>To run tool execution in <strong>your own infrastructure</strong> instead of Anthropic's, set <code>config: {type: "self_hosted"}</code> - the agent loop stays on Anthropic's side, but <code>bash</code> / file ops / code execute in a container you control via an outbound-polling worker. The <code>networking</code> block does not apply (you control egress). Resource mounting (<code>file</code>, <code>github_repository</code>) and memory stores behave differently - see <code>shared/managed-agents-self-hosted-sandboxes.md</code> for the worker, credentials, and cloud-vs-self-hosted comparison.</p>
+<h3>Environment CRUD</h3>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Method</th>
+<th>Path</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Create</td>
+<td><code>POST</code></td>
+<td><code>/v1/environments</code></td>
+<td></td>
+</tr>
+<tr>
+<td>List</td>
+<td><code>GET</code></td>
+<td><code>/v1/environments</code></td>
+<td>Paginated (<code>limit</code>, <code>after_id</code>, <code>before_id</code>)</td>
+</tr>
+<tr>
+<td>Get</td>
+<td><code>GET</code></td>
+<td><code>/v1/environments/{id}</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Update</td>
+<td><code>POST</code></td>
+<td><code>/v1/environments/{id}</code></td>
+<td>Changes apply only to <strong>new</strong> containers; existing sessions keep their original config</td>
+</tr>
+<tr>
+<td>Delete</td>
+<td><code>DELETE</code></td>
+<td><code>/v1/environments/{id}</code></td>
+<td>Returns 204.</td>
+</tr>
+<tr>
+<td>Archive</td>
+<td><code>POST</code></td>
+<td><code>/v1/environments/{id}/archive</code></td>
+<td>Makes it <strong>read-only</strong>; existing sessions continue, new sessions cannot reference it. No unarchive - terminal state.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Resources</h2>
+<p>Attach files, GitHub repositories, and memory stores to a session. Resources are resolved during session creation, so a bad <code>file_id</code> or an unreachable repo surfaces on the create call rather than mid-run. Creating a session does <strong>not</strong> by itself start work or provision the sandbox - without <code>initial_events</code> the session is only registered, and the sandbox comes up when the session first needs it (see <code>shared/managed-agents-core.md</code> -&gt; Seeding a session with <code>initial_events</code>). Max <strong>999 file resources</strong> per session. Multiple GitHub repositories per session are supported. For <code>type: "memory_store"</code> resources (persistent cross-session memory - max 8 per session), see <code>shared/managed-agents-memory.md</code>.</p>
+<h3>File Uploads (input - host -&gt; agent)</h3>
+<p>Upload a file first via the Files API, then reference by <code>file_id</code> + <code>mount_path</code>:</p>
+<pre><code class="language-ts">// 1. Upload
+const file = await client.beta.files.upload({
+  file: fs.createReadStream(&quot;data.csv&quot;),
+  purpose: &quot;agent&quot;,
+});
+
+// 2. Attach as a session resource
+const session = await client.beta.sessions.create({
+  agent: agent.id,
+  environment_id: envId,
+  resources: [
+    { type: &quot;file&quot;, file_id: file.id, mount_path: &quot;/workspace/data.csv&quot; }
+  ],
+});
+</code></pre>
+<p><strong><code>mount_path</code> is required</strong> and must be absolute. Parent directories are created automatically. Agent working directory defaults to <code>/workspace</code>. Files are mounted read-only - the agent writes modified versions to new paths.</p>
+<h3>Session outputs (output - agent -&gt; host)</h3>
+<p>The agent can write files to <code>/mnt/session/outputs/</code> during a session. These are automatically captured by the Files API and can be listed and downloaded afterwards:</p>
+<pre><code class="language-ts">// After the turn completes, list output files scoped to this session:
+for await (const f of client.beta.files.list({
+  scope_id: session.id,
+  betas: [&quot;managed-agents-2026-04-01&quot;],
+})) {
+  console.log(f.filename, f.size_bytes);
+  const resp = await client.beta.files.download(f.id);
+  const text = await resp.text();
+}
+</code></pre>
+<p><strong>Requirements:</strong>
+- The <code>write</code> tool (or <code>bash</code>) must be enabled for the agent to create output files.
+- Session-scoped <code>files.list</code> / <code>files.download</code> captures outputs written to <code>/mnt/session/outputs/</code>.
+- The filter parameter is <strong><code>scope_id</code></strong> (REST query param <code>?scope_id=&lt;session_id&gt;</code>). The SDK's files resource auto-adds only the <code>files-api-2025-04-14</code> header, so pass <code>betas: ["managed-agents-2026-04-01"]</code> explicitly (or both headers on raw HTTP) - without it the API may reject <code>scope_id</code> as an unknown field. Requires <code>@anthropic-ai/sdk</code> &gt;= 0.88.0 / <code>anthropic</code> (Python) &gt;= 0.92.0 - older versions don't type <code>scope_id</code>. The <code>ant</code> CLI does <strong>not</strong> expose this flag yet; use the SDK or curl.
+- Pass the session ID returned by <code>sessions.create()</code> verbatim (e.g. <code>sesn_011CZx...</code>) - the API validates the prefix.
+- There's a brief indexing lag (~1-3s) between <code>session.status_idle</code> and output files appearing in <code>files.list</code>. Retry once or twice if empty.</p>
+<blockquote>
+<p><strong>Fallback when <code>scope_id</code> filtering is unavailable</strong> (older SDK, or endpoint returns an error): send a follow-up <code>user.message</code> asking the agent to <code>read</code> each file under <code>/mnt/session/outputs/</code> and return the contents. The agent streams the file bodies back as <code>agent.message</code> text. This works for text files only and costs output tokens - use it to unblock, not as the primary path.</p>
+</blockquote>
+<p>This gives you a bidirectional file bridge: upload reference data in, download agent artifacts out.</p>
+<h3>GitHub Repositories</h3>
+<p>Clones a GitHub repository into the session container during initialization, before the agent begins execution. The agent can read, edit, commit, and push via <code>bash</code> (<code>git</code>). Multiple repositories per session are supported - add one <code>resources</code> entry per repo. Repositories are cached, so future sessions that use the same repository start faster.</p>
+<p>Mounting a repository also loads any skills stored in its root <code>.claude/skills</code> directory - discovered once per session, from the repository state checked out at session start (cloud sandboxes only). See <code>shared/managed-agents-tools.md</code> -&gt; Skills from a GitHub repository.</p>
+<p>Repositories are attached for the lifetime of the session - to change which repositories are mounted, create a new session. You <strong>can</strong> rotate a repository's <code>authorization_token</code> on a running session via <code>client.beta.sessions.resources.update(resource_id, {session_id, authorization_token})</code>; the resource <code>id</code> is returned at session creation and by <code>resources.list()</code>.</p>
+<p><strong>Fields:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type</code></td>
+<td>Yes</td>
+<td><code>"github_repository"</code></td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td>Yes</td>
+<td>The GitHub repository URL</td>
+</tr>
+<tr>
+<td><code>authorization_token</code></td>
+<td>Yes</td>
+<td>GitHub Personal Access Token with repository access. <strong>Never echoed in API responses.</strong></td>
+</tr>
+<tr>
+<td><code>mount_path</code></td>
+<td>No</td>
+<td>Path where the repository will be cloned. Defaults to <code>/workspace/&lt;repo-name&gt;</code>.</td>
+</tr>
+<tr>
+<td><code>checkout</code></td>
+<td>No</td>
+<td><code>{type: "branch", name: "..."}</code> or <code>{type: "commit", sha: "..."}</code>. Defaults to the repo's default branch.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Token permission levels</strong> (fine-grained PATs):
+- <code>Contents: Read</code> - clone only
+- <code>Contents: Read and write</code> - push changes and create pull requests</p>
+<p><strong>How auth works:</strong> <code>authorization_token</code> is never placed inside the container. <code>git pull</code> / <code>git push</code> and GitHub REST calls against the attached repository are routed through an Anthropic-side git proxy that injects the token after the request leaves the sandbox. Code running in the container - including anything the agent writes - cannot read or exfiltrate it.</p>
+<blockquote>
+<p>Important: <strong>To generate pull requests</strong> you also need GitHub <strong>MCP server</strong> access - the <code>github_repository</code> resource gives filesystem + git access only. See <code>shared/managed-agents-tools.md</code> -&gt; MCP Servers. The PR workflow is: edit files in the mounted repo -&gt; push branch via <code>bash</code> (authenticated via the git proxy using <code>authorization_token</code>) -&gt; create PR via the MCP <code>create_pull_request</code> tool (authenticated via the vault).</p>
+</blockquote>
+<p><strong>TypeScript:</strong></p>
+<pre><code class="language-ts">// 1. Create the agent - declare GitHub MCP (no auth here)
+const agent = await client.beta.agents.create(
+  {
+    name: 'GitHub Agent',
+    model: 'claude-opus-5',
+    mcp_servers: [
+      { type: 'url', name: 'github', url: 'https://api.githubcopilot.com/mcp/' },
+    ],
+    tools: [
+      { type: 'agent_toolset_20260401', default_config: { enabled: true } },
+      { type: 'mcp_toolset', mcp_server_name: 'github' },
+    ],
+  },
+);
+
+// 2. Start a session - attach vault for MCP auth + mount the repo
+const session = await client.beta.sessions.create({
+  agent: agent.id,
+  environment_id: envId,
+  vault_ids: [vaultId],  // vault contains the GitHub MCP OAuth credential
+  resources: [
+    {
+      type: 'github_repository',
+      url: 'https://github.com/owner/repo',
+      authorization_token: process.env.GITHUB_TOKEN,  // repo clone token (!= MCP auth)
+      checkout: { type: 'branch', name: 'main' },
+    },
+  ],
+});
+</code></pre>
+<p><strong>Python:</strong></p>
+<pre><code class="language-python">import os
+
+agent = client.beta.agents.create(
+    name=&quot;GitHub Agent&quot;,
+    model=&quot;claude-opus-5&quot;,
+    mcp_servers=[{
+        &quot;type&quot;: &quot;url&quot;,
+        &quot;name&quot;: &quot;github&quot;,
+        &quot;url&quot;: &quot;https://api.githubcopilot.com/mcp/&quot;,
+    }],
+    tools=[
+        {&quot;type&quot;: &quot;agent_toolset_20260401&quot;, &quot;default_config&quot;: {&quot;enabled&quot;: True}},
+        {&quot;type&quot;: &quot;mcp_toolset&quot;, &quot;mcp_server_name&quot;: &quot;github&quot;},
+    ],
+)
+
+session = client.beta.sessions.create(
+    agent=agent.id,
+    environment_id=env_id,
+    vault_ids=[vault_id],  # vault contains the GitHub MCP OAuth credential
+    resources=[{
+        &quot;type&quot;: &quot;github_repository&quot;,
+        &quot;url&quot;: &quot;https://github.com/owner/repo&quot;,
+        &quot;authorization_token&quot;: os.environ[&quot;GITHUB_TOKEN&quot;],  # repo clone token (!= MCP auth)
+        &quot;checkout&quot;: {&quot;type&quot;: &quot;branch&quot;, &quot;name&quot;: &quot;main&quot;},
+    }],
+)
+</code></pre>
+<hr />
+<h2>Files API</h2>
+<p>Upload and manage files for use as session resources, and download files the agent wrote to <code>/mnt/session/outputs/</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Method</th>
+<th>Path</th>
+<th>SDK</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Upload</td>
+<td><code>POST</code></td>
+<td><code>/v1/files</code></td>
+<td><code>client.beta.files.upload({ file })</code></td>
+</tr>
+<tr>
+<td>List</td>
+<td><code>GET</code></td>
+<td><code>/v1/files?scope_id=...</code></td>
+<td><code>client.beta.files.list({ scope_id, betas: ["managed-agents-2026-04-01"] })</code></td>
+</tr>
+<tr>
+<td>Get Metadata</td>
+<td><code>GET</code></td>
+<td><code>/v1/files/{id}</code></td>
+<td><code>client.beta.files.retrieveMetadata(id)</code></td>
+</tr>
+<tr>
+<td>Download</td>
+<td><code>GET</code></td>
+<td><code>/v1/files/{id}/content</code></td>
+<td><code>client.beta.files.download(id)</code> -&gt; <code>Response</code></td>
+</tr>
+<tr>
+<td>Delete</td>
+<td><code>DELETE</code></td>
+<td><code>/v1/files/{id}</code></td>
+<td><code>client.beta.files.delete(id)</code></td>
+</tr>
+</tbody>
+</table>
+<p>The <code>scope_id</code> filter on List scopes the results to files written to <code>/mnt/session/outputs/</code> by that session. Without the filter, you get all files uploaded to your account.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

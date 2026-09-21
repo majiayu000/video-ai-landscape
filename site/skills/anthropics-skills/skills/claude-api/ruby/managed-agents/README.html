@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>README · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/ruby/managed-agents/README.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Managed Agents - Ruby</h1>
+<blockquote>
+<p><strong>Bindings not shown here:</strong> This README covers the most common managed-agents flows for Ruby. If you need a class, method, namespace, field, or behavior that isn't shown, WebFetch the Ruby SDK repo <strong>or the relevant docs page</strong> from <code>shared/live-sources.md</code> rather than guess. Do not extrapolate from cURL shapes or another language's SDK.</p>
+<p><strong>Agents are persistent - create once, reference by ID.</strong> Store the agent ID returned by <code>client.beta.agents.create</code> and pass it to every subsequent <code>client.beta.sessions.create</code>; do not call <code>agents.create</code> in the request path. <strong>Recommended:</strong> define agents and environments as version-controlled YAML applied with the <code>ant</code> CLI - see <code>shared/anthropic-cli.md</code> (its live-docs URL is in <code>shared/live-sources.md</code>). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.</p>
+</blockquote>
+<h2>Installation</h2>
+<pre><code class="language-bash">gem install anthropic
+</code></pre>
+<h2>Client Initialization</h2>
+<pre><code class="language-ruby">require &quot;anthropic&quot;
+
+# Default (uses ANTHROPIC_API_KEY env var)
+client = Anthropic::Client.new
+
+# Explicit API key
+client = Anthropic::Client.new(api_key: &quot;your-api-key&quot;)
+</code></pre>
+<blockquote>
+<p>Warning: <strong>Trailing underscores:</strong> The Ruby SDK uses <code>system_:</code> and <code>send_(</code> (trailing underscore) to avoid shadowing <code>Kernel#system</code> and <code>Kernel#send</code>. Use these forms throughout managed-agents code.</p>
+</blockquote>
+<hr />
+<h2>Create an Environment</h2>
+<pre><code class="language-ruby">environment = client.beta.environments.create(
+  name: &quot;my-dev-env&quot;,
+  config: {
+    type: &quot;cloud&quot;,
+    networking: {type: &quot;unrestricted&quot;}
+  }
+)
+puts &quot;Environment ID: #{environment.id}&quot; # env_...
+</code></pre>
+<hr />
+<h2>Create an Agent (required first step)</h2>
+<blockquote>
+<p>Warning: <strong>There is no inline agent config.</strong> <code>model</code>/<code>system_</code>/<code>tools</code> live on the agent object, not the session. Always start with <code>client.beta.agents.create()</code> - the session takes either <code>agent: agent.id</code> or the typed hash form <code>agent: {type: "agent", id: agent.id, version: agent.version}</code>.</p>
+</blockquote>
+<h3>Minimal</h3>
+<pre><code class="language-ruby"># 1. Create the agent (reusable, versioned)
+agent = client.beta.agents.create(
+  name: &quot;Coding Assistant&quot;,
+  model: :&quot;claude-opus-5&quot;,
+  system_: &quot;You are a helpful coding assistant.&quot;,
+  tools: [{type: &quot;agent_toolset_20260401&quot;}]
+)
+
+# 2. Start a session
+session = client.beta.sessions.create(
+  agent: {type: &quot;agent&quot;, id: agent.id, version: agent.version},
+  environment_id: environment.id,
+  title: &quot;Quickstart session&quot;
+)
+puts &quot;Session ID: #{session.id}&quot;
+puts &quot;Trace: https://platform.claude.com/workspaces/default/sessions/#{session.id}&quot;  # swap 'default' for your workspace ID if the API key is not in the Default workspace
+</code></pre>
+<h3>Updating an Agent</h3>
+<p>Updates create new versions; the agent object is immutable per version.</p>
+<pre><code class="language-ruby">updated_agent = client.beta.agents.update(
+  agent.id,
+  version: agent.version,
+  system_: &quot;You are a helpful coding agent. Always write tests.&quot;
+)
+puts &quot;New version: #{updated_agent.version}&quot;
+
+# List all versions
+client.beta.agents.versions.list(agent.id).auto_paging_each do |version|
+  puts &quot;Version #{version.version}: #{version.updated_at.iso8601}&quot;
+end
+
+# Archive the agent
+archived = client.beta.agents.archive(agent.id)
+puts &quot;Archived at: #{archived.archived_at.iso8601}&quot;
+</code></pre>
+<hr />
+<h2>Send a User Message</h2>
+<pre><code class="language-ruby">client.beta.sessions.events.send_(
+  session.id,
+  events: [{
+    type: &quot;user.message&quot;,
+    content: [{type: &quot;text&quot;, text: &quot;Review the auth module&quot;}]
+  }]
+)
+</code></pre>
+<blockquote>
+<p>Tip: <strong>Stream-first:</strong> Open the stream <em>before</em> (or concurrently with) sending the message. The stream only delivers events that occur after it opens - stream-after-send means early events arrive buffered in one batch. See <a href="../../shared/managed-agents-events.html#steering-patterns">Steering Patterns</a>.</p>
+</blockquote>
+<hr />
+<h2>Stream Events (SSE)</h2>
+<pre><code class="language-ruby"># Open the stream first, then send the user message
+stream = client.beta.sessions.events.stream_events(session.id)
+
+client.beta.sessions.events.send_(
+  session.id,
+  events: [{
+    type: &quot;user.message&quot;,
+    content: [{type: &quot;text&quot;, text: &quot;Summarize the repo README&quot;}]
+  }]
+)
+
+stream.each do |event|
+  case event.type
+  in :&quot;agent.message&quot;
+    event.content.each { |block| print block.text }
+  in :&quot;agent.tool_use&quot;
+    puts &quot;\n[Using tool: #{event.name}]&quot;
+  in :&quot;session.status_idle&quot;
+    break
+  in :&quot;session.error&quot;
+    puts &quot;\n[Error: #{event.error&amp;.message || &quot;unknown&quot;}]&quot;
+    break
+  else
+    # ignore other event types
+  end
+end
+</code></pre>
+<blockquote>
+<p>Note: Event <code>.type</code> is a Symbol (compare with <code>:"agent.message"</code>, not <code>"agent.message"</code>).</p>
+</blockquote>
+<h3>Reconnecting and Tailing</h3>
+<p>When reconnecting mid-session, list past events first to dedupe, then tail live events:</p>
+<pre><code class="language-ruby">require &quot;set&quot;
+
+stream = client.beta.sessions.events.stream_events(session.id)
+
+# Stream is open and buffering. List history before tailing live.
+seen_event_ids = Set.new
+client.beta.sessions.events.list(session.id).auto_paging_each { |past| seen_event_ids &lt;&lt; past.id }
+
+# Tail live events, skipping anything already seen
+stream.each do |event|
+  next if seen_event_ids.include?(event.id)
+  seen_event_ids &lt;&lt; event.id
+  case event.type
+  in :&quot;agent.message&quot;
+    event.content.each { |block| print block.text }
+  in :&quot;session.status_idle&quot;
+    break
+  else
+    # ignore other event types
+  end
+end
+</code></pre>
+<hr />
+<h2>Provide Custom Tool Result</h2>
+<blockquote>
+<p>Note: The Ruby managed-agents bindings for <code>user.custom_tool_result</code> are not yet documented in this skill or in the apps source examples. Refer to <code>shared/managed-agents-events.md</code> for the wire format and the <code>anthropic</code> Ruby gem repository for the corresponding params.</p>
+</blockquote>
+<hr />
+<h2>Poll Events</h2>
+<pre><code class="language-ruby">client.beta.sessions.events.list(session.id).auto_paging_each do |event|
+  puts &quot;#{event.type}: #{event.id}&quot;
+end
+</code></pre>
+<hr />
+<h2>Upload a File</h2>
+<pre><code class="language-ruby">require &quot;pathname&quot;
+
+file = client.beta.files.upload(file: Pathname(&quot;data.csv&quot;))
+puts &quot;File ID: #{file.id}&quot;
+
+# Mount in a session
+session = client.beta.sessions.create(
+  agent: agent.id,
+  environment_id: environment.id,
+  resources: [
+    {
+      type: &quot;file&quot;,
+      file_id: file.id,
+      mount_path: &quot;/workspace/data.csv&quot;
+    }
+  ]
+)
+</code></pre>
+<h3>Add and Manage Resources on an Existing Session</h3>
+<pre><code class="language-ruby"># Attach an additional file to an open session
+resource = client.beta.sessions.resources.add(
+  session.id,
+  type: &quot;file&quot;,
+  file_id: file.id
+)
+puts resource.id # &quot;sesrsc_01ABC...&quot;
+
+# List resources on the session
+listed = client.beta.sessions.resources.list(session.id)
+listed.data.each { |entry| puts &quot;#{entry.id} #{entry.type}&quot; }
+
+# Detach a resource
+client.beta.sessions.resources.delete(resource.id, session_id: session.id)
+</code></pre>
+<hr />
+<h2>List and Download Session Files</h2>
+<pre><code class="language-ruby">files = client.beta.files.list(scope_id: &quot;sesn_abc123&quot;, betas: [&quot;managed-agents-2026-04-01&quot;])
+content = client.beta.files.download(files.data[0].id)
+File.binwrite(&quot;output.txt&quot;, content.read)
+</code></pre>
+<hr />
+<h2>Session Management</h2>
+<pre><code class="language-ruby"># List environments
+environments = client.beta.environments.list
+
+# Retrieve a specific environment
+env = client.beta.environments.retrieve(environment.id)
+
+# Archive an environment (read-only, existing sessions continue)
+client.beta.environments.archive(environment.id)
+
+# Delete an environment (only if no sessions reference it)
+client.beta.environments.delete(environment.id)
+
+# Delete a session
+client.beta.sessions.delete(session.id)
+</code></pre>
+<hr />
+<h2>MCP Server Integration</h2>
+<pre><code class="language-ruby"># Agent declares MCP server (no auth here - auth goes in a vault)
+agent = client.beta.agents.create(
+  name: &quot;GitHub Assistant&quot;,
+  model: :&quot;claude-opus-5&quot;,
+  mcp_servers: [
+    {
+      type: &quot;url&quot;,
+      name: &quot;github&quot;,
+      url: &quot;https://api.githubcopilot.com/mcp/&quot;
+    }
+  ],
+  tools: [
+    {type: &quot;agent_toolset_20260401&quot;},
+    {type: &quot;mcp_toolset&quot;, mcp_server_name: &quot;github&quot;}
+  ]
+)
+
+# Session attaches vault(s) containing credentials for those MCP server URLs
+session = client.beta.sessions.create(
+  agent: {type: &quot;agent&quot;, id: agent.id, version: agent.version},
+  environment_id: environment.id,
+  vault_ids: [vault.id]
+)
+</code></pre>
+<p>See <code>shared/managed-agents-tools.md</code> §Vaults for creating vaults and adding credentials.</p>
+<hr />
+<h2>Vaults</h2>
+<pre><code class="language-ruby"># Create a vault
+vault = client.beta.vaults.create(
+  display_name: &quot;Alice&quot;,
+  metadata: {external_user_id: &quot;usr_abc123&quot;}
+)
+puts vault.id # &quot;vlt_01ABC...&quot;
+
+# Add an OAuth credential
+credential = client.beta.vaults.credentials.create(
+  vault.id,
+  display_name: &quot;Alice's Slack&quot;,
+  auth: {
+    type: &quot;mcp_oauth&quot;,
+    mcp_server_url: &quot;https://mcp.slack.com/mcp&quot;,
+    access_token: &quot;xoxp-...&quot;,
+    expires_at: &quot;2026-04-15T00:00:00Z&quot;,
+    refresh: {
+      token_endpoint: &quot;https://slack.com/api/oauth.v2.access&quot;,
+      client_id: &quot;1234567890.0987654321&quot;,
+      scope: &quot;channels:read chat:write&quot;,
+      refresh_token: &quot;xoxe-1-...&quot;,
+      token_endpoint_auth: {
+        type: &quot;client_secret_post&quot;,
+        client_secret: &quot;abc123...&quot;
+      }
+    }
+  }
+)
+
+# Rotate the credential (e.g., after a token refresh)
+client.beta.vaults.credentials.update(
+  credential.id,
+  vault_id: vault.id,
+  auth: {
+    type: &quot;mcp_oauth&quot;,
+    access_token: &quot;xoxp-new-...&quot;,
+    expires_at: &quot;2026-05-15T00:00:00Z&quot;,
+    refresh: {refresh_token: &quot;xoxe-1-new-...&quot;}
+  }
+)
+
+# Archive a vault
+client.beta.vaults.archive(vault.id)
+</code></pre>
+<hr />
+<h2>GitHub Repository Integration</h2>
+<p>Mount a GitHub repository as a session resource (a vault holds the GitHub MCP credential):</p>
+<pre><code class="language-ruby">session = client.beta.sessions.create(
+  agent: agent.id,
+  environment_id: environment.id,
+  vault_ids: [vault.id],
+  resources: [
+    {
+      type: &quot;github_repository&quot;,
+      url: &quot;https://github.com/org/repo&quot;,
+      mount_path: &quot;/workspace/repo&quot;,
+      authorization_token: &quot;ghp_your_github_token&quot;
+    }
+  ]
+)
+</code></pre>
+<p>Multiple repositories on the same session:</p>
+<pre><code class="language-ruby">resources = [
+  {
+    type: &quot;github_repository&quot;,
+    url: &quot;https://github.com/org/frontend&quot;,
+    mount_path: &quot;/workspace/frontend&quot;,
+    authorization_token: &quot;ghp_your_github_token&quot;
+  },
+  {
+    type: &quot;github_repository&quot;,
+    url: &quot;https://github.com/org/backend&quot;,
+    mount_path: &quot;/workspace/backend&quot;,
+    authorization_token: &quot;ghp_your_github_token&quot;
+  }
+]
+</code></pre>
+<p>Rotating a repository's authorization token:</p>
+<pre><code class="language-ruby">listed = client.beta.sessions.resources.list(session.id)
+repo_resource_id = listed.data.first.id
+
+client.beta.sessions.resources.update(
+  repo_resource_id,
+  session_id: session.id,
+  authorization_token: &quot;ghp_your_new_github_token&quot;
+)
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

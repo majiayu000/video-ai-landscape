@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>game-flow · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/game-flow.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Game flow — <code>--type game</code></h1>
+<p>A game is a website whose template ships <strong>realtime multiplayer rooms</strong>. Same
+CLI, same repo layout, same deploy and publish; what differs is what you write
+and where the rules live.</p>
+<p>Games used to run on a separate engine with its own <code>higgsfield game</code> commands.
+They don't any more — that engine is being retired, and its commands are gone.
+If you find a reference telling you to publish a game any other way than
+<code>higgsfield website deploy</code>, it is out of date.</p>
+<h2>Create</h2>
+<pre><code class="language-bash">higgsfield website create --type game --category &lt;genre&gt; --subdomain &lt;name&gt;
+</code></pre>
+<ul>
+<li><strong><code>--category</code> is REQUIRED and must be a game genre</strong> — <code>arcade</code>, <code>puzzle</code>,
+  <code>shooter</code>, <code>platformer</code>, <code>rpg</code>, <code>strategy</code>, <code>racing</code>, <code>simulation</code>,
+  <code>adventure</code>, <code>action</code>, <code>fighting</code>, <code>survival</code>, <code>horror</code>, <code>sports</code>,
+  <code>card-board</code>, <code>education</code>, <code>endless-runner</code>, <code>moba</code>, <code>music-rhythm</code>,
+  <code>sandbox-building</code>. Fetch the live list with <code>higgsfield website categories</code>;
+  a site category (<code>cinematic</code>, <code>ads-marketing</code>, …) is rejected.</li>
+<li><strong>Do NOT pass <code>--template</code>.</strong> A game scaffolds from the one template a game
+  can use; naming any other is a 422.</li>
+<li><code>--subdomain</code> as always — it becomes the live URL.</li>
+</ul>
+<h2>Read the contract that ships with the repo</h2>
+<p>The scaffold's <strong><code>app/AGENTS.md</code></strong> is the authoritative contract, and it travels
+with the code so it cannot drift from the template you actually got. Read it
+before writing anything. In short:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it is</th>
+<th>Edit?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>app/src/logic.js</code></td>
+<td><strong>The game</strong> — six pure functions</td>
+<td><strong>Yes, this is the game</strong></td>
+</tr>
+<tr>
+<td><code>app/public/index.html</code> + <code>client.js</code></td>
+<td>The screen and the input</td>
+<td><strong>Yes</strong></td>
+</tr>
+<tr>
+<td><code>app/src/room.ts</code></td>
+<td>Sockets, state, fan-out</td>
+<td>Rarely</td>
+</tr>
+<tr>
+<td><code>app/src/worker.ts</code></td>
+<td>Routes <code>/ws/&lt;room&gt;</code></td>
+<td>Almost never</td>
+</tr>
+</tbody>
+</table>
+<p>The six exports are <code>meta</code>, <code>setup</code>, <code>validateAction</code>, <code>applyAction</code>,
+<code>isGameOver</code>, <code>viewFor</code>. <code>bun run check:logic</code> enforces the mechanical rules as
+part of the build — no imports, no <code>Date.now()</code>/<code>Math.random()</code>, JSON-serializable
+state.</p>
+<p>Two rules the checker cannot enforce and that decide whether the game is any
+good:</p>
+<ul>
+<li><strong><code>validateAction</code> is the only defence.</strong> The client is untrusted and can send
+  any action at any time. Whose turn it is, whether the move is in range,
+  whether the target is legal — all of it belongs there.</li>
+<li><strong><code>viewFor</code> is how you hide information.</strong> What it returns is the <em>only</em> thing
+  that player receives. For a card game return that player's hand and everyone
+  else's card <em>count</em>, never the full state.</li>
+</ul>
+<h2>Build, deploy, publish — identical to the other types</h2>
+<pre><code class="language-bash">cd app &amp;&amp; bun run build      # runs check:logic + tsc
+higgsfield website deploy &lt;website_id&gt;
+higgsfield website publish &lt;website_id&gt;
+</code></pre>
+<p>Deploy ships the live game at <code>&lt;subdomain&gt;.higgsfield.app</code>; publish lists it on
+the community feed. As with every type, <strong>fill <code>app/src/app-meta.json</code> before
+publishing</strong> (<code>og_title</code>, <code>og_description</code>, <code>og_image_url</code>,
+<code>marketplace_cover_url</code>) — a game with an empty <code>og_title</code> is invisible on the
+feed. See the cover + metadata section of <code>SKILL.md</code>.</p>
+<h2>Testing it</h2>
+<p>The template ships vitest against the real workerd runtime
+(<code>app/tests/room.test.ts</code>), driving the room through actual WebSockets. Run
+<code>bun run test</code> in <code>app/</code>. A game whose rules you changed should get a test for
+the rule — the suite is the safety net for the wire protocol every game shares.</p>
+<p>Play-test with two browser tabs on the deployed URL: rooms are per-path
+(<code>/ws/&lt;room&gt;</code>), so two tabs on the same room join the same game.</p>
+<h2>Art and audio</h2>
+<p>The asset pipeline lives here too, under the <code>game-</code> prefix. Read
+<code>references/game-design-system.md</code> FIRST — it settles the game profile, the core
+loop and the asset manifest — then <code>references/game-stylization.md</code> to derive the
+STYLE FORMULA every visual prompt reuses byte-for-byte. No visual should exist
+before that formula does.</p>
+<p>Then the reference matching each manifest row:</p>
+<table>
+<thead>
+<tr>
+<th>Asset</th>
+<th>Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sprites, backgrounds, UI</td>
+<td><code>references/game-stylization.md</code></td>
+</tr>
+<tr>
+<td>Spritesheets / 2D animation</td>
+<td><code>references/game-2d-animation.md</code></td>
+</tr>
+<tr>
+<td>Tiles, walls, ground, PBR maps</td>
+<td><code>references/game-textures.md</code></td>
+</tr>
+<tr>
+<td>Any 3D model or animation</td>
+<td><code>references/game-3d-animation.md</code></td>
+</tr>
+<tr>
+<td>Non-humanoid procedural rigs</td>
+<td><code>references/game-procedural-animation.md</code></td>
+</tr>
+<tr>
+<td>Music, SFX, voice</td>
+<td><code>references/game-audio.md</code></td>
+</tr>
+<tr>
+<td>Raw Meshy fallback</td>
+<td><code>references/game-meshy-api.md</code></td>
+</tr>
+<tr>
+<td>Before any image-to-3D submit</td>
+<td><code>references/game-meshy-input-rules.md</code></td>
+</tr>
+</tbody>
+</table>
+<p>The GLB, rigging and texture tooling those references drive ships in this
+skill's <code>scripts/</code> (<code>pipeline.py</code>, <code>glb_patch.py</code>, <code>rig_transfer.py</code>, …). Never
+recreate a bundled script from memory — find it on disk.</p>
+<p>Assets land in <code>app/public/</code>; keep <code>design/assets.csv</code> beside them so the
+manifest travels with the game.</p>
+<h2>Single-player is fine</h2>
+<p>Nothing here forces multiplayer. <code>meta: { minPlayers: 1, maxPlayers: 1 }</code> gives a
+single-player game that still gets rooms, persistence and the same deploy — many
+of the games on the platform are exactly that.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

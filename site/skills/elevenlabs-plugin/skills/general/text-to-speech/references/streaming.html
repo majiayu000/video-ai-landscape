@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>streaming · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/text-to-speech/references/streaming.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Streaming Audio</h1>
+<p>Stream audio chunks as they're generated for lower latency.</p>
+<h2>Model Selection for Streaming</h2>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Latency</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>eleven_flash_v2_5</code></td>
+<td>~75ms</td>
+<td>Lowest latency, 32 languages</td>
+</tr>
+<tr>
+<td><code>eleven_flash_v2</code></td>
+<td>~75ms</td>
+<td>Lowest latency, English only</td>
+</tr>
+<tr>
+<td><code>eleven_turbo_v2_5</code></td>
+<td>Low</td>
+<td>Balanced quality/speed</td>
+</tr>
+</tbody>
+</table>
+<h2>Python Streaming</h2>
+<pre><code class="language-python">from elevenlabs import ElevenLabs
+
+client = ElevenLabs()
+
+audio_stream = client.text_to_speech.stream(
+    text=&quot;This is a streaming example with ultra-low latency.&quot;,
+    voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+    model_id=&quot;eleven_flash_v2_5&quot;
+)
+
+with open(&quot;output.mp3&quot;, &quot;wb&quot;) as f:
+    for chunk in audio_stream:
+        f.write(chunk)
+</code></pre>
+<h3>Real-Time Playback</h3>
+<pre><code class="language-python">import subprocess
+
+def play_stream(audio_stream):
+    process = subprocess.Popen(
+        [&quot;ffplay&quot;, &quot;-nodisp&quot;, &quot;-autoexit&quot;, &quot;-&quot;],
+        stdin=subprocess.PIPE
+    )
+    for chunk in audio_stream:
+        process.stdin.write(chunk)
+    process.stdin.close()
+    process.wait()
+
+audio_stream = client.text_to_speech.stream(
+    text=&quot;Playing this audio in real-time.&quot;,
+    voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+    model_id=&quot;eleven_flash_v2_5&quot;
+)
+play_stream(audio_stream)
+</code></pre>
+<h2>JavaScript Streaming</h2>
+<pre><code class="language-javascript">import { ElevenLabsClient } from &quot;@elevenlabs/elevenlabs-js&quot;;
+import { createWriteStream } from &quot;fs&quot;;
+import { Readable } from &quot;stream&quot;;
+
+const client = new ElevenLabsClient();
+
+const audioStream = await client.textToSpeech.convert(&quot;JBFqnCBsd6RMkjVDRZzb&quot;, {
+  text: &quot;Streaming audio in JavaScript.&quot;,
+  modelId: &quot;eleven_flash_v2_5&quot;,
+});
+
+// Write to file (convert() returns a web ReadableStream — bridge to a Node stream first)
+Readable.fromWeb(audioStream).pipe(createWriteStream(&quot;output.mp3&quot;));
+
+// Or process chunks
+for await (const chunk of audioStream) {
+  console.log(`Received ${chunk.length} bytes`);
+}
+</code></pre>
+<h2>WebSocket Streaming</h2>
+<p>For text-streaming input where you send text chunks as they arrive (e.g., from an LLM).</p>
+<h3>Connection</h3>
+<pre><code>wss://api.elevenlabs.io/v1/text-to-speech/{voiceId}/stream-input?model_id={modelId}
+</code></pre>
+<p><strong>Note:</strong> WebSockets are unavailable for the <code>eleven_v3</code> model. Use <code>eleven_flash_v2_5</code> for lowest latency.</p>
+<h3>Message Flow</h3>
+<ol>
+<li><strong>Initialize</strong> - Send voice settings and configuration</li>
+<li><strong>Send text</strong> - Stream text chunks as they arrive</li>
+<li><strong>Close</strong> - Send empty string to signal completion</li>
+<li><strong>Receive</strong> - Process audio chunks as they're generated</li>
+</ol>
+<h3>Python WebSocket</h3>
+<pre><code class="language-python">import asyncio
+import json
+import base64
+import os
+import websockets
+from dotenv import load_dotenv
+
+load_dotenv()
+
+ELEVENLABS_API_KEY = os.getenv(&quot;ELEVENLABS_API_KEY&quot;)
+
+async def text_to_speech_ws_streaming(voice_id: str, model_id: str):
+    uri = f&quot;wss://api.elevenlabs.io/v1/text-to-speech/{voice_id}/stream-input?model_id={model_id}&quot;
+
+    async with websockets.connect(uri) as websocket:
+        # Initialize connection
+        await websocket.send(json.dumps({
+            &quot;text&quot;: &quot; &quot;,
+            &quot;voice_settings&quot;: {
+                &quot;stability&quot;: 0.5,
+                &quot;similarity_boost&quot;: 0.8
+            },
+            &quot;generation_config&quot;: {
+                &quot;chunk_length_schedule&quot;: [120, 160, 250, 290]
+            },
+            &quot;xi_api_key&quot;: ELEVENLABS_API_KEY
+        }))
+
+        # Send text chunks
+        await websocket.send(json.dumps({&quot;text&quot;: &quot;Hello, &quot;}))
+        await websocket.send(json.dumps({&quot;text&quot;: &quot;this is streaming text &quot;}))
+        await websocket.send(json.dumps({&quot;text&quot;: &quot;from a WebSocket connection.&quot;}))
+
+        # Close stream (empty text signals completion)
+        await websocket.send(json.dumps({&quot;text&quot;: &quot;&quot;}))
+
+        # Receive and process audio chunks
+        audio_chunks = []
+        while True:
+            message = await websocket.recv()
+            data = json.loads(message)
+            if data.get(&quot;audio&quot;):
+                audio_chunks.append(base64.b64decode(data[&quot;audio&quot;]))
+            elif data.get(&quot;isFinal&quot;):
+                break
+
+        return b&quot;&quot;.join(audio_chunks)
+
+async def main():
+    audio = await text_to_speech_ws_streaming(
+        voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+        model_id=&quot;eleven_flash_v2_5&quot;
+    )
+    with open(&quot;output.mp3&quot;, &quot;wb&quot;) as f:
+        f.write(audio)
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())
+</code></pre>
+<h3>JavaScript WebSocket</h3>
+<pre><code class="language-javascript">import &quot;dotenv/config&quot;;
+import WebSocket from &quot;ws&quot;;
+import * as fs from &quot;node:fs&quot;;
+
+const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
+
+async function textToSpeechWsStreaming(voiceId, modelId) {
+  const uri = `wss://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream-input?model_id=${modelId}`;
+
+  return new Promise((resolve, reject) =&gt; {
+    const websocket = new WebSocket(uri, {
+      headers: { &quot;xi-api-key&quot;: ELEVENLABS_API_KEY },
+    });
+
+    const audioChunks = [];
+
+    websocket.on(&quot;open&quot;, () =&gt; {
+      // Initialize connection
+      websocket.send(
+        JSON.stringify({
+          text: &quot; &quot;,
+          voice_settings: {
+            stability: 0.5,
+            similarity_boost: 0.8,
+          },
+          generation_config: {
+            chunk_length_schedule: [120, 160, 250, 290],
+          },
+        })
+      );
+
+      // Send text chunks
+      websocket.send(JSON.stringify({ text: &quot;Hello, &quot; }));
+      websocket.send(JSON.stringify({ text: &quot;this is streaming text &quot; }));
+      websocket.send(JSON.stringify({ text: &quot;from a WebSocket connection.&quot; }));
+
+      // Close stream
+      websocket.send(JSON.stringify({ text: &quot;&quot; }));
+    });
+
+    websocket.on(&quot;message&quot;, (event) =&gt; {
+      const data = JSON.parse(event.toString());
+      if (data.audio) {
+        audioChunks.push(Buffer.from(data.audio, &quot;base64&quot;));
+      } else if (data.isFinal) {
+        websocket.close();
+        resolve(Buffer.concat(audioChunks));
+      }
+    });
+
+    websocket.on(&quot;error&quot;, reject);
+  });
+}
+
+const audio = await textToSpeechWsStreaming(
+  &quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+  &quot;eleven_flash_v2_5&quot;
+);
+fs.writeFileSync(&quot;output.mp3&quot;, audio);
+</code></pre>
+<h3>Input Messages</h3>
+<p><strong>Initialization (first message):</strong></p>
+<pre><code class="language-json">{
+  &quot;text&quot;: &quot; &quot;,
+  &quot;voice_settings&quot;: {
+    &quot;stability&quot;: 0.5,
+    &quot;similarity_boost&quot;: 0.8,
+    &quot;use_speaker_boost&quot;: false
+  },
+  &quot;generation_config&quot;: {
+    &quot;chunk_length_schedule&quot;: [120, 160, 250, 290]
+  },
+  &quot;xi_api_key&quot;: &quot;your_api_key&quot;
+}
+</code></pre>
+<p><strong>Text chunks:</strong></p>
+<pre><code class="language-json">{ &quot;text&quot;: &quot;Your text content here&quot; }
+</code></pre>
+<p><strong>Force flush (generate audio immediately):</strong></p>
+<pre><code class="language-json">{ &quot;text&quot;: &quot;End of sentence.&quot;, &quot;flush&quot;: true }
+</code></pre>
+<p><strong>Close connection:</strong></p>
+<pre><code class="language-json">{ &quot;text&quot;: &quot;&quot; }
+</code></pre>
+<h3>Output Messages</h3>
+<p><strong>Audio chunk:</strong></p>
+<pre><code class="language-json">{
+  &quot;audio&quot;: &quot;base64_encoded_audio_data&quot;
+}
+</code></pre>
+<p><strong>Stream complete:</strong></p>
+<pre><code class="language-json">{
+  &quot;isFinal&quot;: true
+}
+</code></pre>
+<h3>Key Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>chunk_length_schedule</code></td>
+<td>Array of character counts that trigger audio generation. The model waits until it has this many characters before generating audio, which improves quality but adds latency. Lower values = faster response, higher values = better prosody. Example: <code>[120, 160, 250, 290]</code> means generate after 120 chars, then after 160 more, etc.</td>
+</tr>
+<tr>
+<td><code>flush</code></td>
+<td>Set <code>true</code> to force immediate audio generation without waiting for the character threshold. Use at the end of sentences or when you need audio NOW.</td>
+</tr>
+<tr>
+<td><code>voice_settings</code></td>
+<td>Adjustable per-message: <code>stability</code>, <code>similarity_boost</code>, <code>use_speaker_boost</code></td>
+</tr>
+</tbody>
+</table>
+<h3>Important Notes</h3>
+<ul>
+<li><strong>Inactivity timeout</strong>: Connection closes after 20 seconds without activity. Send a space <code>" "</code> to keep alive.</li>
+<li><strong>TTFB (Time to First Byte)</strong>: How long until audio starts playing. Affected by <code>chunk_length_schedule</code> - the model waits for enough text before generating.</li>
+<li><strong>Model limitation</strong>: WebSockets are unavailable for <code>eleven_v3</code>.</li>
+<li><strong>Best practice</strong>: Use <code>flush: true</code> at conversation turn endings to ensure the buffered text gets spoken.</li>
+<li><strong>Alignment data</strong>: Word-level timestamps available via <code>alignment</code> field for lip-sync or captions.</li>
+</ul>
+<h2>Best Practices</h2>
+<ol>
+<li>
+<p><strong>Use Flash models</strong> for real-time:
+   - <code>eleven_flash_v2_5</code> for multilingual (~75ms)
+   - <code>eleven_flash_v2</code> for English-only (~75ms)</p>
+</li>
+<li>
+<p><strong>Buffer audio</strong> before playback to prevent choppy output</p>
+</li>
+<li>
+<p><strong>Handle disconnections</strong> gracefully in WebSocket streams</p>
+</li>
+<li>
+<p><strong>Choose output format based on use case</strong>:
+   - <code>pcm_24000</code> - lowest latency processing
+   - <code>mp3_44100_128</code> - direct playback
+   - <code>ulaw_8000</code> - telephony/Twilio integration</p>
+</li>
+</ol></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

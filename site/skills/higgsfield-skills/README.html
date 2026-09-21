@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>README · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">README.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Higgsfield AI Skills</h1>
+<p><a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg" /></a>
+<a href="./VERSION"><img alt="Version" src="https://img.shields.io/badge/version-0.12.0-green.svg" /></a>
+<a href="#skills"><img alt="Skills" src="https://img.shields.io/badge/skills-9-blueviolet.svg" /></a>
+<a href="https://discord.com/invite/higgsfield"><img alt="Discord" src="https://img.shields.io/badge/discord-join-5865F2?logo=discord&amp;logoColor=white" /></a></p>
+<p>AI agent skills for image/video generation and complete visual brand systems via <a href="https://higgsfield.ai">Higgsfield AI</a>, including Marketing Studio and Virality Predictor video scoring. Works with Claude Code, Cursor, Codex, and other AI coding agents that load Markdown-based skills.</p>
+<h2>Install</h2>
+<p>Pick one. Each method handles the Higgsfield CLI install and auth as part of skill setup.</p>
+<h3><code>npx skills</code> — recommended, cross-agent</h3>
+<pre><code class="language-bash">npx skills add higgsfield-ai/skills
+</code></pre>
+<h3><code>gh skill install</code></h3>
+<p>GitHub CLI v2.90+:</p>
+<pre><code class="language-bash">gh skill install higgsfield-ai/skills
+</code></pre>
+<h3>Claude Code marketplace</h3>
+<p>Inside Claude Code:</p>
+<pre><code>/plugin marketplace add higgsfield-ai/skills
+/plugin install higgsfield@higgsfield
+</code></pre>
+<h3>Setup script</h3>
+<p>Universal fallback:</p>
+<pre><code class="language-bash">git clone --depth 1 https://github.com/higgsfield-ai/skills.git
+cd skills
+./setup
+</code></pre>
+<p>More options in <a href="./INSTALL.html">INSTALL.md</a>. Agent-driven install (paste into your agent): <a href="./INSTALL_FOR_AGENTS.html">INSTALL_FOR_AGENTS.md</a>.</p>
+<h2>Skills</h2>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Invoke</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="./higgsfield-generate"><code>higgsfield-generate</code></a></td>
+<td><code>/higgsfield:generate</code></td>
+<td>Image, video, 3D, and audio generation across 30+ models (Nano Banana 2, Soul V2, Veo 3.1, Kling 3.0, Seedance 2.5, Seed Audio 1.0, Flux 2, GPT Image 2.5, …), plus Marketing Studio for branded ads with avatars/products/hooks/settings and Virality Predictor scoring for finished videos.</td>
+</tr>
+<tr>
+<td><a href="./higgsfield-soul-id"><code>higgsfield-soul-id</code></a></td>
+<td><code>/higgsfield:soul-id</code></td>
+<td>Train a Soul Character — a reusable, face-faithful identity model. Returns a <code>reference_id</code> consumable by Soul-aware generation.</td>
+</tr>
+<tr>
+<td><a href="./higgsfield-product-photoshoot"><code>higgsfield-product-photoshoot</code></a></td>
+<td><code>/higgsfield:product-photoshoot</code></td>
+<td>Brand-quality product imagery with mode-specific prompt enhancement. 10 modes (studio, lifestyle, Pinterest, hero banner, ad packs, virtual try-on, …) backed by <code>gpt_image_2</code>.</td>
+</tr>
+<tr>
+<td><a href="./higgsfield-brandkit"><code>higgsfield-brandkit</code></a></td>
+<td><code>/higgsfield:brandkit</code></td>
+<td>Create or extend a complete visual identity: palettes, editable SVG logo marks, typography, mockups, social graphics, packaging, signage, merchandise, decks, and canonical PPTX/PDF brandbooks.</td>
+</tr>
+<tr>
+<td><a href="./higgsfield-marketplace-cards"><code>higgsfield-marketplace-cards</code></a></td>
+<td><code>/higgsfield:marketplace-cards</code></td>
+<td>Marketplace product cards: compliant main image, secondary product images, and A+ style modules via backend prompt enhancement.</td>
+</tr>
+<tr>
+<td><a href="./higgsfield-websites"><code>higgsfield-websites</code></a></td>
+<td><code>/higgsfield:websites</code></td>
+<td>Build, edit, and deploy full-stack websites — React 19 + TanStack Start, server-rendered as one Cloudflare Worker with D1 / R2 / KV / Durable Objects / Containers. Create → get git repo access → edit locally → push → deploy preview/production, all via <code>higgsfield website …</code>.</td>
+</tr>
+<tr>
+<td><a href="./higgsfield-video-explainer"><code>higgsfield-video-explainer</code></a></td>
+<td><code>/higgsfield:video-explainer</code></td>
+<td>Create a narrated non-photoreal explainer as matched Seed Audio + Gemini Omni blocks, then assemble the final MP4 with <code>explainer_video</code>.</td>
+</tr>
+<tr>
+<td><a href="./higgsfield-youtube-thumbnail"><code>higgsfield-youtube-thumbnail</code></a></td>
+<td><code>/higgsfield:youtube-thumbnail</code></td>
+<td>Create truthful, high-impact YouTube thumbnails and vertical video covers with identity-preserving references, controlled variants, focused edits, and optional text-overlay guidance.</td>
+</tr>
+<tr>
+<td><a href="./higgsfield-game-generation"><code>higgsfield-game-generation</code></a></td>
+<td><code>/higgsfield:game-generation</code></td>
+<td>Plan, build, verify, and deploy playable browser games, or generate game-specific sprites, textures, rigged 3D assets, and audio.</td>
+</tr>
+</tbody>
+</table>
+<p>The skills chain: train Soul → use the reference id in <code>generate</code> (including Marketing Studio jobs). <code>brandkit</code> chains Recraft, Seedream, GPT Image, and deterministic local tooling into one approval-aware identity system. <code>product-photoshoot</code> and <code>marketplace-cards</code> are self-contained — backend enhances prompts before submitting image jobs. <code>youtube-thumbnail</code> can follow any video workflow once its truthful topic and visual direction are known. <code>websites</code> chains with <code>generate</code> to embed bespoke hero images, video loops, and OG assets in the site.</p>
+<h3>Modes</h3>
+<p><strong><code>higgsfield-product-photoshoot</code></strong> — 10 modes for brand visuals:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>What it's for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>product_shot</code></td>
+<td>Product on neutral / studio / catalog background</td>
+</tr>
+<tr>
+<td><code>lifestyle_scene</code></td>
+<td>Product in a real environment — hands, action, atmosphere</td>
+</tr>
+<tr>
+<td><code>closeup_product_with_person</code></td>
+<td>Tight crop with hands or partial face — beauty, demonstrating</td>
+</tr>
+<tr>
+<td><code>moodboard_pin</code></td>
+<td>Vertical 2:3 Pinterest-native pin, moodboard feel</td>
+</tr>
+<tr>
+<td><code>hero_banner</code></td>
+<td>Wide-format website / email / campaign header</td>
+</tr>
+<tr>
+<td><code>social_carousel</code></td>
+<td>3–10 connected slides for IG / LinkedIn / Facebook</td>
+</tr>
+<tr>
+<td><code>ad_creative_pack</code></td>
+<td>Coordinated pack of static ad variants for Meta / TikTok / Pinterest / Google</td>
+</tr>
+<tr>
+<td><code>virtual_model_tryout</code></td>
+<td>Product worn or used by an AI-rendered model</td>
+</tr>
+<tr>
+<td><code>conceptual_product</code></td>
+<td>Surreal / CGI-style / levitating / splash / sculptural product</td>
+</tr>
+<tr>
+<td><code>restyle</code></td>
+<td>Transform an existing image's aesthetic, mood, or seasonal context</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>higgsfield-generate</code> Marketing Studio</strong> — 9 modes for branded ad video:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>What it's for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ugc</code></td>
+<td>Default. Casual, organic-feel content from a presenter</td>
+</tr>
+<tr>
+<td><code>ugc_how_to</code></td>
+<td>Tutorial / explainer</td>
+</tr>
+<tr>
+<td><code>ugc_unboxing</code></td>
+<td>Unboxing reveal</td>
+</tr>
+<tr>
+<td><code>product_showcase</code></td>
+<td>Clean product highlight, polished</td>
+</tr>
+<tr>
+<td><code>product_review</code></td>
+<td>Presenter giving an opinion</td>
+</tr>
+<tr>
+<td><code>tv_spot</code></td>
+<td>Broadcast-style commercial</td>
+</tr>
+<tr>
+<td><code>wild_card</code></td>
+<td>Experimental, model picks the vibe</td>
+</tr>
+<tr>
+<td><code>ugc_virtual_try_on</code></td>
+<td>Trying on clothing — UGC vibe</td>
+</tr>
+<tr>
+<td><code>virtual_try_on</code></td>
+<td>Trying on clothing — polished, model-driven</td>
+</tr>
+</tbody>
+</table>
+<h2>Quick Reference</h2>
+<table>
+<thead>
+<tr>
+<th>What you want</th>
+<th>Skill</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Generate any image / video from a prompt</td>
+<td><code>higgsfield-generate</code></td>
+<td>Prefers <code>gpt_image_2_5</code> / <code>nano_banana_2</code> for images and SOTA <code>seedance_2_5</code> for video by default</td>
+</tr>
+<tr>
+<td>Generate audio from a prompt</td>
+<td><code>higgsfield-generate</code></td>
+<td>Prefers <code>seed_audio</code> by default</td>
+</tr>
+<tr>
+<td>Image with my own face</td>
+<td><code>higgsfield-soul-id</code> then <code>higgsfield-generate</code></td>
+<td>One-time training, then <code>--soul-id</code></td>
+</tr>
+<tr>
+<td>Branded product photo (studio / lifestyle / Pinterest / hero / ad pack)</td>
+<td><code>higgsfield-product-photoshoot</code></td>
+<td>Mode-specific prompt enhancer + <code>gpt_image_2</code></td>
+</tr>
+<tr>
+<td>Create or extend a logo, visual identity, brand asset system, or Brandbook</td>
+<td><code>higgsfield-brandkit</code></td>
+<td>Recraft SVG marks + approved palette/type + local editable exports and dependency-aware revisions</td>
+</tr>
+<tr>
+<td>Marketplace product cards / A+ style content</td>
+<td><code>higgsfield-marketplace-cards</code></td>
+<td>Main image, secondary images, and A+ style modules with hidden marketplace prompt templates</td>
+</tr>
+<tr>
+<td>Branded ad video / UGC / unboxing / TV spot</td>
+<td><code>higgsfield-generate</code></td>
+<td>Marketing Studio mode with avatars + products + optional hooks/settings</td>
+</tr>
+<tr>
+<td>Analyze a video's hook / attention / virality potential</td>
+<td><code>higgsfield-generate</code></td>
+<td>Uses Virality Predictor (<code>brain_activity</code>) with <code>--video</code>; returns score metrics plus an Open report link</td>
+</tr>
+<tr>
+<td>Train a custom face identity</td>
+<td><code>higgsfield-soul-id</code></td>
+<td>5–20 photos, returns <code>reference_id</code></td>
+</tr>
+<tr>
+<td>Image-to-video animation</td>
+<td><code>higgsfield-generate</code></td>
+<td>Prefer <code>seedance_2_0</code> with <code>--start-image</code>; use <code>kling3_0</code> as lower-cost fallback</td>
+</tr>
+<tr>
+<td>Build / edit / deploy a website, web app, landing page, or dashboard</td>
+<td><code>higgsfield-websites</code></td>
+<td>Full-stack React 19 + TanStack Start on Cloudflare; <code>higgsfield website create/repo-access/deploy</code></td>
+</tr>
+<tr>
+<td>Create a narrated explainer from a topic or document</td>
+<td><code>higgsfield-video-explainer</code></td>
+<td>Resolves a live style, generates audio then video per block, and assembles with <code>explainer_video</code></td>
+</tr>
+<tr>
+<td>Create a YouTube thumbnail or Shorts/Instagram video cover</td>
+<td><code>higgsfield-youtube-thumbnail</code></td>
+<td>Nano Banana Pro 4K main render, optional face/logo references, controlled variants, and Seedream tweaks</td>
+</tr>
+<tr>
+<td>Build and deploy a playable browser game</td>
+<td><code>higgsfield-game-generation</code></td>
+<td>Owns game design, assets, implementation, QA, deploy, and optional marketplace publish</td>
+</tr>
+</tbody>
+</table>
+<h2>License</h2>
+<p>MIT — see <a href="./LICENSE">LICENSE</a>.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

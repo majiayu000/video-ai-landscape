@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>forms · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/pdf/forms.md</span><button onclick="t()">🌓</button></nav>
+<main><p><strong>CRITICAL: You MUST complete these steps in order. Do not skip ahead to writing code.</strong></p>
+<p>If you need to fill out a PDF form, first check to see if the PDF has fillable form fields. Run this script from this file's directory:
+ <code>python scripts/check_fillable_fields &lt;file.pdf&gt;</code>, and depending on the result go to either the "Fillable fields" or "Non-fillable fields" and follow those instructions.</p>
+<h1>Fillable fields</h1>
+<p>If the PDF has fillable form fields:
+- Run this script from this file's directory: <code>python scripts/extract_form_field_info.py &lt;input.pdf&gt; &lt;field_info.json&gt;</code>. It will create a JSON file with a list of fields in this format:</p>
+<pre><code>[
+  {
+    &quot;field_id&quot;: (unique ID for the field),
+    &quot;page&quot;: (page number, 1-based),
+    &quot;rect&quot;: ([left, bottom, right, top] bounding box in PDF coordinates, y=0 is the bottom of the page),
+    &quot;type&quot;: (&quot;text&quot;, &quot;checkbox&quot;, &quot;radio_group&quot;, or &quot;choice&quot;),
+  },
+  // Checkboxes have &quot;checked_value&quot; and &quot;unchecked_value&quot; properties:
+  {
+    &quot;field_id&quot;: (unique ID for the field),
+    &quot;page&quot;: (page number, 1-based),
+    &quot;type&quot;: &quot;checkbox&quot;,
+    &quot;checked_value&quot;: (Set the field to this value to check the checkbox),
+    &quot;unchecked_value&quot;: (Set the field to this value to uncheck the checkbox),
+  },
+  // Radio groups have a &quot;radio_options&quot; list with the possible choices.
+  {
+    &quot;field_id&quot;: (unique ID for the field),
+    &quot;page&quot;: (page number, 1-based),
+    &quot;type&quot;: &quot;radio_group&quot;,
+    &quot;radio_options&quot;: [
+      {
+        &quot;value&quot;: (set the field to this value to select this radio option),
+        &quot;rect&quot;: (bounding box for the radio button for this option)
+      },
+      // Other radio options
+    ]
+  },
+  // Multiple choice fields have a &quot;choice_options&quot; list with the possible choices:
+  {
+    &quot;field_id&quot;: (unique ID for the field),
+    &quot;page&quot;: (page number, 1-based),
+    &quot;type&quot;: &quot;choice&quot;,
+    &quot;choice_options&quot;: [
+      {
+        &quot;value&quot;: (set the field to this value to select this option),
+        &quot;text&quot;: (display text of the option)
+      },
+      // Other choice options
+    ],
+  }
+]
+</code></pre>
+<ul>
+<li>Convert the PDF to PNGs (one image for each page) with this script (run from this file's directory):
+<code>python scripts/convert_pdf_to_images.py &lt;file.pdf&gt; &lt;output_directory&gt;</code>
+Then analyze the images to determine the purpose of each form field (make sure to convert the bounding box PDF coordinates to image coordinates).</li>
+<li>Create a <code>field_values.json</code> file in this format with the values to be entered for each field:</li>
+</ul>
+<pre><code>[
+  {
+    &quot;field_id&quot;: &quot;last_name&quot;, // Must match the field_id from `extract_form_field_info.py`
+    &quot;description&quot;: &quot;The user's last name&quot;,
+    &quot;page&quot;: 1, // Must match the &quot;page&quot; value in field_info.json
+    &quot;value&quot;: &quot;Simpson&quot;
+  },
+  {
+    &quot;field_id&quot;: &quot;Checkbox12&quot;,
+    &quot;description&quot;: &quot;Checkbox to be checked if the user is 18 or over&quot;,
+    &quot;page&quot;: 1,
+    &quot;value&quot;: &quot;/On&quot; // If this is a checkbox, use its &quot;checked_value&quot; value to check it. If it's a radio button group, use one of the &quot;value&quot; values in &quot;radio_options&quot;.
+  },
+  // more fields
+]
+</code></pre>
+<ul>
+<li>Run the <code>fill_fillable_fields.py</code> script from this file's directory to create a filled-in PDF:
+<code>python scripts/fill_fillable_fields.py &lt;input pdf&gt; &lt;field_values.json&gt; &lt;output pdf&gt;</code>
+This script will verify that the field IDs and values you provide are valid; if it prints error messages, correct the appropriate fields and try again.</li>
+</ul>
+<h1>Non-fillable fields</h1>
+<p>If the PDF doesn't have fillable form fields, you'll add text annotations. First try to extract coordinates from the PDF structure (more accurate), then fall back to visual estimation if needed.</p>
+<h2>Step 1: Try Structure Extraction First</h2>
+<p>Run this script to extract text labels, lines, and checkboxes with their exact PDF coordinates:
+<code>python scripts/extract_form_structure.py &lt;input.pdf&gt; form_structure.json</code></p>
+<p>This creates a JSON file containing:
+- <strong>labels</strong>: Every text element with exact coordinates (x0, top, x1, bottom in PDF points)
+- <strong>lines</strong>: Horizontal lines that define row boundaries
+- <strong>checkboxes</strong>: Small square rectangles that are checkboxes (with center coordinates)
+- <strong>row_boundaries</strong>: Row top/bottom positions calculated from horizontal lines</p>
+<p><strong>Check the results</strong>: If <code>form_structure.json</code> has meaningful labels (text elements that correspond to form fields), use <strong>Approach A: Structure-Based Coordinates</strong>. If the PDF is scanned/image-based and has few or no labels, use <strong>Approach B: Visual Estimation</strong>.</p>
+<hr />
+<h2>Approach A: Structure-Based Coordinates (Preferred)</h2>
+<p>Use this when <code>extract_form_structure.py</code> found text labels in the PDF.</p>
+<h3>A.1: Analyze the Structure</h3>
+<p>Read form_structure.json and identify:</p>
+<ol>
+<li><strong>Label groups</strong>: Adjacent text elements that form a single label (e.g., "Last" + "Name")</li>
+<li><strong>Row structure</strong>: Labels with similar <code>top</code> values are in the same row</li>
+<li><strong>Field columns</strong>: Entry areas start after label ends (x0 = label.x1 + gap)</li>
+<li><strong>Checkboxes</strong>: Use the checkbox coordinates directly from the structure</li>
+</ol>
+<p><strong>Coordinate system</strong>: PDF coordinates where y=0 is at TOP of page, y increases downward.</p>
+<h3>A.2: Check for Missing Elements</h3>
+<p>The structure extraction may not detect all form elements. Common cases:
+- <strong>Circular checkboxes</strong>: Only square rectangles are detected as checkboxes
+- <strong>Complex graphics</strong>: Decorative elements or non-standard form controls
+- <strong>Faded or light-colored elements</strong>: May not be extracted</p>
+<p>If you see form fields in the PDF images that aren't in form_structure.json, you'll need to use <strong>visual analysis</strong> for those specific fields (see "Hybrid Approach" below).</p>
+<h3>A.3: Create fields.json with PDF Coordinates</h3>
+<p>For each field, calculate entry coordinates from the extracted structure:</p>
+<p><strong>Text fields:</strong>
+- entry x0 = label x1 + 5 (small gap after label)
+- entry x1 = next label's x0, or row boundary
+- entry top = same as label top
+- entry bottom = row boundary line below, or label bottom + row_height</p>
+<p><strong>Checkboxes:</strong>
+- Use the checkbox rectangle coordinates directly from form_structure.json
+- entry_bounding_box = [checkbox.x0, checkbox.top, checkbox.x1, checkbox.bottom]</p>
+<p>Create fields.json using <code>pdf_width</code> and <code>pdf_height</code> (signals PDF coordinates):</p>
+<pre><code class="language-json">{
+  &quot;pages&quot;: [
+    {&quot;page_number&quot;: 1, &quot;pdf_width&quot;: 612, &quot;pdf_height&quot;: 792}
+  ],
+  &quot;form_fields&quot;: [
+    {
+      &quot;page_number&quot;: 1,
+      &quot;description&quot;: &quot;Last name entry field&quot;,
+      &quot;field_label&quot;: &quot;Last Name&quot;,
+      &quot;label_bounding_box&quot;: [43, 63, 87, 73],
+      &quot;entry_bounding_box&quot;: [92, 63, 260, 79],
+      &quot;entry_text&quot;: {&quot;text&quot;: &quot;Smith&quot;, &quot;font_size&quot;: 10}
+    },
+    {
+      &quot;page_number&quot;: 1,
+      &quot;description&quot;: &quot;US Citizen Yes checkbox&quot;,
+      &quot;field_label&quot;: &quot;Yes&quot;,
+      &quot;label_bounding_box&quot;: [260, 200, 280, 210],
+      &quot;entry_bounding_box&quot;: [285, 197, 292, 205],
+      &quot;entry_text&quot;: {&quot;text&quot;: &quot;X&quot;}
+    }
+  ]
+}
+</code></pre>
+<p><strong>Important</strong>: Use <code>pdf_width</code>/<code>pdf_height</code> and coordinates directly from form_structure.json.</p>
+<h3>A.4: Validate Bounding Boxes</h3>
+<p>Before filling, check your bounding boxes for errors:
+<code>python scripts/check_bounding_boxes.py fields.json</code></p>
+<p>This checks for intersecting bounding boxes and entry boxes that are too small for the font size. Fix any reported errors before filling.</p>
+<hr />
+<h2>Approach B: Visual Estimation (Fallback)</h2>
+<p>Use this when the PDF is scanned/image-based and structure extraction found no usable text labels (e.g., all text shows as "(cid:X)" patterns).</p>
+<h3>B.1: Convert PDF to Images</h3>
+<p><code>python scripts/convert_pdf_to_images.py &lt;input.pdf&gt; &lt;images_dir/&gt;</code></p>
+<h3>B.2: Initial Field Identification</h3>
+<p>Examine each page image to identify form sections and get <strong>rough estimates</strong> of field locations:
+- Form field labels and their approximate positions
+- Entry areas (lines, boxes, or blank spaces for text input)
+- Checkboxes and their approximate locations</p>
+<p>For each field, note approximate pixel coordinates (they don't need to be precise yet).</p>
+<h3>B.3: Zoom Refinement (CRITICAL for accuracy)</h3>
+<p>For each field, crop a region around the estimated position to refine coordinates precisely.</p>
+<p><strong>Create a zoomed crop using ImageMagick:</strong></p>
+<pre><code class="language-bash">magick &lt;page_image&gt; -crop &lt;width&gt;x&lt;height&gt;+&lt;x&gt;+&lt;y&gt; +repage &lt;crop_output.png&gt;
+</code></pre>
+<p>Where:
+- <code>&lt;x&gt;, &lt;y&gt;</code> = top-left corner of crop region (use your rough estimate minus padding)
+- <code>&lt;width&gt;, &lt;height&gt;</code> = size of crop region (field area plus ~50px padding on each side)</p>
+<p><strong>Example:</strong> To refine a "Name" field estimated around (100, 150):</p>
+<pre><code class="language-bash">magick images_dir/page_1.png -crop 300x80+50+120 +repage crops/name_field.png
+</code></pre>
+<p>(Note: if the <code>magick</code> command isn't available, try <code>convert</code> with the same arguments).</p>
+<p><strong>Examine the cropped image</strong> to determine precise coordinates:
+1. Identify the exact pixel where the entry area begins (after the label)
+2. Identify where the entry area ends (before next field or edge)
+3. Identify the top and bottom of the entry line/box</p>
+<p><strong>Convert crop coordinates back to full image coordinates:</strong>
+- full_x = crop_x + crop_offset_x
+- full_y = crop_y + crop_offset_y</p>
+<p>Example: If the crop started at (50, 120) and the entry box starts at (52, 18) within the crop:
+- entry_x0 = 52 + 50 = 102
+- entry_top = 18 + 120 = 138</p>
+<p><strong>Repeat for each field</strong>, grouping nearby fields into single crops when possible.</p>
+<h3>B.4: Create fields.json with Refined Coordinates</h3>
+<p>Create fields.json using <code>image_width</code> and <code>image_height</code> (signals image coordinates):</p>
+<pre><code class="language-json">{
+  &quot;pages&quot;: [
+    {&quot;page_number&quot;: 1, &quot;image_width&quot;: 1700, &quot;image_height&quot;: 2200}
+  ],
+  &quot;form_fields&quot;: [
+    {
+      &quot;page_number&quot;: 1,
+      &quot;description&quot;: &quot;Last name entry field&quot;,
+      &quot;field_label&quot;: &quot;Last Name&quot;,
+      &quot;label_bounding_box&quot;: [120, 175, 242, 198],
+      &quot;entry_bounding_box&quot;: [255, 175, 720, 218],
+      &quot;entry_text&quot;: {&quot;text&quot;: &quot;Smith&quot;, &quot;font_size&quot;: 10}
+    }
+  ]
+}
+</code></pre>
+<p><strong>Important</strong>: Use <code>image_width</code>/<code>image_height</code> and the refined pixel coordinates from the zoom analysis.</p>
+<h3>B.5: Validate Bounding Boxes</h3>
+<p>Before filling, check your bounding boxes for errors:
+<code>python scripts/check_bounding_boxes.py fields.json</code></p>
+<p>This checks for intersecting bounding boxes and entry boxes that are too small for the font size. Fix any reported errors before filling.</p>
+<hr />
+<h2>Hybrid Approach: Structure + Visual</h2>
+<p>Use this when structure extraction works for most fields but misses some elements (e.g., circular checkboxes, unusual form controls).</p>
+<ol>
+<li><strong>Use Approach A</strong> for fields that were detected in form_structure.json</li>
+<li><strong>Convert PDF to images</strong> for visual analysis of missing fields</li>
+<li><strong>Use zoom refinement</strong> (from Approach B) for the missing fields</li>
+<li><strong>Combine coordinates</strong>: For fields from structure extraction, use <code>pdf_width</code>/<code>pdf_height</code>. For visually-estimated fields, you must convert image coordinates to PDF coordinates:
+   - pdf_x = image_x * (pdf_width / image_width)
+   - pdf_y = image_y * (pdf_height / image_height)</li>
+<li><strong>Use a single coordinate system</strong> in fields.json - convert all to PDF coordinates with <code>pdf_width</code>/<code>pdf_height</code></li>
+</ol>
+<hr />
+<h2>Step 2: Validate Before Filling</h2>
+<p><strong>Always validate bounding boxes before filling:</strong>
+<code>python scripts/check_bounding_boxes.py fields.json</code></p>
+<p>This checks for:
+- Intersecting bounding boxes (which would cause overlapping text)
+- Entry boxes that are too small for the specified font size</p>
+<p>Fix any reported errors in fields.json before proceeding.</p>
+<h2>Step 3: Fill the Form</h2>
+<p>The fill script auto-detects the coordinate system and handles conversion:
+<code>python scripts/fill_pdf_form_with_annotations.py &lt;input.pdf&gt; fields.json &lt;output.pdf&gt;</code></p>
+<h2>Step 4: Verify Output</h2>
+<p>Convert the filled PDF to images and verify text placement:
+<code>python scripts/convert_pdf_to_images.py &lt;output.pdf&gt; &lt;verify_images/&gt;</code></p>
+<p>If text is mispositioned:
+- <strong>Approach A</strong>: Check that you're using PDF coordinates from form_structure.json with <code>pdf_width</code>/<code>pdf_height</code>
+- <strong>Approach B</strong>: Check that image dimensions match and coordinates are accurate pixels
+- <strong>Hybrid</strong>: Ensure coordinate conversions are correct for visually-estimated fields</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

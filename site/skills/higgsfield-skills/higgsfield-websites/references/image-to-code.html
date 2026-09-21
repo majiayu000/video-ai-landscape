@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>image-to-code · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/image-to-code.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>image-to-code — implement the reference boards faithfully (Phase 3)</h1>
+<p>The boards are the specification. The #1 failure mode of image-grounded builds
+is <strong>design drift</strong>: strong references, generic code. This file is the
+discipline that prevents it.</p>
+<h2>Deep board analysis (per section, BEFORE coding it)</h2>
+<p>Read the board image again at build time — do not code from memory. Extract,
+per board:</p>
+<ul>
+<li><strong>Text:</strong> exact headline/sub/CTA wording visible (adapt, don't lorem);
+  line count and wrapping behavior; alignment logic.</li>
+<li><strong>Typography:</strong> size relationships between display/heading/body (ratios,
+  not px guesses); weight contrast; tracking feel; serif/sans behavior;
+  calm vs aggressive register.</li>
+<li><strong>Spacing:</strong> headline↔sub distance, text↔CTA distance, card gaps, section
+  top/bottom padding, side gutters, image↔text distance, overall cadence.
+  Goal: faithful spacing LOGIC, not pixel OCR. Never collapse a generous
+  board into default tight spacing.</li>
+<li><strong>Color:</strong> background, panel, accent placement, text hierarchy colors,
+  border/shadow color mood, image tint/grade. Preserve the palette logic —
+  never sub in generic web defaults.</li>
+<li><strong>Components:</strong> button size/shape/radius/fill-vs-outline and hierarchy;
+  card structure; badges; dividers; borders; shadows. If a detail is too
+  small to read, generate a closer detail image rather than guessing.</li>
+<li><strong>Rhythm:</strong> repeated motifs that define the design language (hairlines,
+  numerals, crop frames, rail notes) — these carry the concept spine.</li>
+</ul>
+<h2>Anti-drift rules (during implementation)</h2>
+<ul>
+<li>Do not simplify distinctive sections into generic rows.</li>
+<li>Do not compress generous spacing into dense layout.</li>
+<li>Do not flatten strong typography into a default hierarchy.</li>
+<li>Do not merge different section systems into one repeating pattern.</li>
+<li>Do not swap the board's palette for tokens you're used to.</li>
+<li>When your habit disagrees with the board, <strong>the board wins.</strong></li>
+<li>The coded page must feel like the same website as the boards. After each
+  section, glance board ↔ code and name one thing you kept faithful.</li>
+</ul>
+<h2>Ambiguity resolution (in order)</h2>
+<ol>
+<li>Preserve the visible design language.</li>
+<li>Preserve layout + spacing logic.</li>
+<li>Preserve the component family.</li>
+<li>Preserve mood/polish level.</li>
+<li>Generate an extra detail image of the unclear region.</li>
+<li>Regenerate that section's board fresh.</li>
+<li>Only then pick the most implementation-friendly faithful reading.</li>
+</ol>
+<p>Never fill ambiguity with a generic default first.</p>
+<h2>Bespoke chrome (hard rule, gate-checked)</h2>
+<p><strong>Page chrome inside a section board is non-normative.</strong> Board generators
+often render a nav bar, footer, or sibling-section fragments inside a single
+section's mockup. Only the section's OWN content is binding; do not copy
+board-invented nav items, footer chrome, or adjacent-section slivers into a
+section that doesn't own them.</p>
+<p><strong>Board-drawn eyebrows beyond the budget are also non-normative.</strong> Boards
+love uppercase kickers and will draw one on nearly every section; the page's
+eyebrow ceiling (ceil(sections/3)) wins. Keep the budgeted ones where the
+board placed them; drop the rest without treating it as drift.</p>
+<p><strong>The generated icon set is exempt from the "don't add micro-UI" rule</strong> when
+it annotates real content (spec rows, facts tables, feature labels) — the
+icons come from the asset plan, not board improvisation. Don't scatter them
+decoratively where nothing needs annotating.</p>
+<p><strong>Board vs. brief precedence for CTAs:</strong> the board wins for composition and
+placement; the brief's CTA inventory wins for the CTA's garment and
+interaction identity (boards often render generic default buttons — that part
+of the board is not authoritative). Distinct intents (e.g. "book" vs.
+"walk in") may carry distinct labels; the one-label rule collapses only
+same-intent duplicates.</p>
+<p><strong>Garment catalog — stop reinventing the same three buttons.</strong> Recent builds
+converged on the same trio (drawing underline, hover flood-fill, framed
+block). Those three are now RATIONED: at most ONE of them per page, and zero
+overlap with the previous build's garment set (anti-convergence ledger,
+<code>wow-catalog.md</code>). Pick or derive the rest from garments like these — always
+re-expressed through the brief's material world, not copied literally:</p>
+<ul>
+<li>text link whose arrow travels along a drawn path (route, circuit, seam)</li>
+<li>label that splits/slides apart revealing the destination underneath</li>
+<li>CTA embedded in an image cutout (button IS a photographed object/tag)</li>
+<li>stamp/press: :active physically imprints (skew + texture shift)</li>
+<li>ticket/coupon with perforation that "tears" on hover</li>
+<li>mono readout that types/decodes the label on hover</li>
+<li>circular badge that spins/unrolls; text-on-a-path</li>
+<li>magnetic pill with inertia (only if nothing else on the page is a pill)</li>
+<li>underline that is a waveform/route/thread, animating like the motif</li>
+<li>swatch/chip that flips like a material sample</li>
+<li>oversized numeral or glyph as the hit area, label as its caption</li>
+<li>row/band CTA where the entire strip shears or shifts grade on hover</li>
+<li>corner-bracket target that closes around the label (viewfinder)</li>
+<li>toggle/switch metaphor for binary intents (listen/read, light/dark)</li>
+</ul>
+<p>The test: cover the label — could you still tell which site this button
+belongs to? If it could live on any site, it's not done.</p>
+<p>No shared button/CTA style stamped across the page. Each CTA is designed in
+the component that owns it, with its own interaction identity — examples:</p>
+<ul>
+<li>Hero: oversized underlined text-link, underline draws in, magnetic pull.</li>
+<li>Work row: whole-row hover reveals a preview crop + sliding index digit.</li>
+<li>Contact: framed block that fills on hover with a clipped text swap.</li>
+<li>Nav: links with sliding digits or a moving hairline, not pill buttons.</li>
+</ul>
+<p>Same voice, different garments. Also: no site-wide <code>.btn-primary</code>-style
+utility classes in the global CSS; style CTAs where they live. Two builds (or
+two sections) sharing the same nav/CTA shape is a failure even if the palette
+differs.</p>
+<h2>Structural hygiene</h2>
+<ul>
+<li><strong>Anti-nested-box:</strong> don't wrap content in card-inside-panel-inside-frame
+  stacks the board doesn't show. Boards usually get their depth from ONE
+  surface change — mirror that.</li>
+<li><strong>Micro-UI clutter:</strong> don't add badges, dots, tag pills, version chips, or
+  icon confetti the board doesn't show. Every small element must exist on the
+  board or serve real content.</li>
+<li>Copy discipline: adapt the board's visible wording into real, specific copy
+  (design-recipe.md §5 rules apply — no filler verbs, no em-dashes, no fake
+  numbers).</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

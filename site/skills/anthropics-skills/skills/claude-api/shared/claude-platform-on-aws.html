@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>claude-platform-on-aws · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/claude-platform-on-aws.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Claude Platform on AWS</h1>
+<p><strong>Anthropic-operated</strong> access to the Claude Developer Platform through AWS infrastructure - SigV4 authentication, AWS IAM access control, and AWS Marketplace billing. Because Anthropic operates it, <strong>the API surface matches first-party with same-day parity</strong> - for per-feature exceptions, see <code>shared/platform-availability.md</code> (the single source of truth; do not rely on an inline exception list here). Model IDs are the bare first-party strings (<code>claude-opus-5</code>, <code>claude-sonnet-5</code>) - <strong>no provider prefix</strong>.</p>
+<blockquote>
+<p><strong>Not the same as Amazon Bedrock.</strong> Bedrock is partner-operated (AWS runs the service; release schedules vary, feature subset, <code>anthropic.</code>-prefixed model IDs). Claude Platform on AWS and Bedrock coexist; pick by whether you need AWS-native IAM/billing with full Anthropic API parity (this page) vs. Bedrock's own ecosystem.</p>
+</blockquote>
+<hr />
+<h2>Client &amp; install</h2>
+<table>
+<thead>
+<tr>
+<th>Language</th>
+<th>Install</th>
+<th>Client</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td><code>pip install -U "anthropic[aws]"</code></td>
+<td><code>from anthropic import AnthropicAWS</code> -&gt; <code>AnthropicAWS()</code></td>
+</tr>
+<tr>
+<td>TypeScript</td>
+<td><code>npm install @anthropic-ai/aws-sdk</code></td>
+<td><code>import AnthropicAws from "@anthropic-ai/aws-sdk"</code> -&gt; <code>new AnthropicAws()</code></td>
+</tr>
+<tr>
+<td>Go</td>
+<td><code>go get github.com/anthropics/anthropic-sdk-go</code></td>
+<td><code>import anthropicaws "github.com/anthropics/anthropic-sdk-go/aws"</code> -&gt; <code>anthropicaws.NewClient(ctx, anthropicaws.ClientConfig{})</code></td>
+</tr>
+<tr>
+<td>C#</td>
+<td><code>dotnet add package Anthropic.Aws</code></td>
+<td><code>new AnthropicAwsClient()</code></td>
+</tr>
+<tr>
+<td>Java</td>
+<td>See SDK repo in <code>shared/live-sources.md</code></td>
+<td>See SDK repo in <code>shared/live-sources.md</code></td>
+</tr>
+<tr>
+<td>Ruby</td>
+<td><code>gem install anthropic aws-sdk-core</code></td>
+<td>See SDK repo in <code>shared/live-sources.md</code></td>
+</tr>
+<tr>
+<td>PHP</td>
+<td><code>composer require anthropic-ai/sdk aws/aws-sdk-php</code></td>
+<td>See SDK repo in <code>shared/live-sources.md</code></td>
+</tr>
+</tbody>
+</table>
+<p>After construction, <strong>use the client exactly as you would <code>Anthropic()</code></strong> - <code>client.messages.create(...)</code>, <code>client.beta.sessions.*</code>, etc., with bare model IDs.</p>
+<pre><code class="language-python">from anthropic import AnthropicAWS
+
+client = AnthropicAWS()  # region + workspace_id from env; see below
+client.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=1024,
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Hello&quot;}],
+)
+</code></pre>
+<hr />
+<h2>Required configuration</h2>
+<p>Two values must be available (constructor args or environment) - <strong>there is no default fallback</strong> for either:</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Env var</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AWS region</td>
+<td><code>AWS_REGION</code></td>
+<td>Required. Unlike <code>AnthropicBedrock</code>, there is no <code>us-east-1</code> fallback.</td>
+</tr>
+<tr>
+<td>Workspace ID</td>
+<td><code>ANTHROPIC_AWS_WORKSPACE_ID</code></td>
+<td>Required. Routes requests to your Claude workspace.</td>
+</tr>
+</tbody>
+</table>
+<p>Endpoint pattern: <code>https://aws-external-anthropic.{region}.api.aws/v1/...</code>. Requests are SigV4-signed with service name <code>aws-external-anthropic</code>.</p>
+<h2>Authentication</h2>
+<p>The client resolves AWS credentials via the standard precedence chain: explicit constructor args -&gt; environment (<code>AWS_ACCESS_KEY_ID</code>/<code>AWS_SECRET_ACCESS_KEY</code>/<code>AWS_SESSION_TOKEN</code>) -&gt; shared profile -&gt; assumed role / instance metadata.</p>
+<p><strong>Short-term API keys</strong> are also supported for cases where SigV4 isn't practical (e.g., browser, simple scripts). Mint one with the per-language token-generator package; pass it as <code>api_key</code> on the client. Lifetime is the <strong>lesser of</strong> the requested duration, the underlying credential's expiry, and <strong>12 hours</strong>. For package names and IAM details, WebFetch the Claude Platform on AWS page in <code>shared/live-sources.md</code>.</p>
+<hr />
+<h2>What to tell users</h2>
+<ul>
+<li>Treat it as first-party: every section of this skill applies unchanged. Do <strong>not</strong> apply Bedrock's feature-availability mask. Three Managed Agents differences only: (1) a session can run autonomously (no user events) for at most <strong>6 hours</strong> before it needs reauthentication - send any user-role event to continue; (2) sessions on <strong>self-hosted</strong> environments <strong>cannot attach memory stores</strong> (rejected at session create) - cloud environments attach them as usual; (3) self-hosted workers authenticate with IAM/SigV4 or an AWS-Console API key plus the <code>AnthropicSelfHostedEnvironmentAccess</code> managed policy - Console-generated environment keys don't work against the AWS endpoint.</li>
+<li>Model IDs are bare (<code>claude-opus-5</code>). Do <strong>not</strong> add an <code>anthropic.</code> prefix.</li>
+<li>A missing region or <code>workspace_id</code> throws at client-construction time (no request is sent). A <strong>403</strong> means the request reached the server - check for a <strong>wrong</strong> <code>workspace_id</code> or a missing IAM action on the principal. See the IAM actions reference in <code>shared/live-sources.md</code>.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

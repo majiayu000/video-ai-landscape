@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>game-meshy-api · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/game-meshy-api.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Meshy API — verified animated-character pipeline (FALLBACK ONLY)</h1>
+<blockquote>
+<p><strong>STOP — check the native CLI path first.</strong> If <code>image_to_3d</code> and <code>3d_rigging</code>
+appear in <code>higgsfield model list</code>, do NOT use this raw API and
+do NOT ask the user for any API key. The native tool covers this entire
+pipeline with workspace credits: stage [1] = model <code>image_to_3d</code>
+(<code>should_texture:true</code>), stage [2] = <code>enable_rigging:true</code> (same job), stage
+[3] = one clip per job via <code>enable_animation:true</code> + <code>animation_action_id</code>
+(extra clips: model <code>3d_rigging</code> on the result GLB; ids via
+<code>higgsfield preset list animation-action</code>), stage [4] = the same local merge script.
+This document exists only for environments with no native 3D tool.</p>
+</blockquote>
+<p>Verified end-to-end 2026-06-10 (image → 3D → rig → 4 clips → merged GLB).
+Endpoint shapes re-checked against docs.meshy.ai 2026-06-11.</p>
+<p><strong>Before building ANY request, read <code>meshy-input-rules.md</code></strong> (single-figure
+rule, cropping, low-poly params). Skipping it wastes credits.</p>
+<h2>Basics</h2>
+<ul>
+<li>Base URL: <code>https://api.meshy.ai</code></li>
+<li>Auth: <code>Authorization: Bearer &lt;msy_... key&gt;</code>. Require the user to configure it
+  as <code>MESHY_API_KEY</code> outside chat; never print or commit it.</li>
+<li>All generation endpoints are async: POST returns <code>{"result": "&lt;task_id&gt;"}</code>,
+  then poll <code>GET &lt;same path&gt;/&lt;task_id&gt;</code> until <code>status</code> is <code>SUCCEEDED</code> /
+  <code>FAILED</code> / <code>CANCELED</code>. Poll every 10–15 s. SSE <code>.../stream</code> exists but
+  plain polling is simpler in a sandbox.</li>
+<li>Result URLs expire (<code>expires_at</code>, ~3 days) — <strong>download assets immediately</strong>
+  after SUCCEEDED.</li>
+<li>Credits: <code>GET /openapi/v1/balance</code>. Failed tasks are refunded
+  (<code>consumed_credits: 0</code> on FAILED).</li>
+</ul>
+<h2>Pipeline overview (humanoid)</h2>
+<pre><code>input image ──&gt; [1] image-to-3d ──&gt; [2] rigging ──&gt; [3] animations (xN) ──&gt; [4] merge clips
+ (validated)      static GLB         rigged GLB        1 GLB per clip          1 multi-clip GLB
+                                     + walk/run free                           (Blender CLI)
+</code></pre>
+<p>Cost observed: <strong>~85 credits for a full character</strong> (image-to-3d + rig +
+2 library animations). Each extra library animation ≈ 5 credits.</p>
+<h2>[1] Image → 3D</h2>
+<p><code>POST /openapi/v1/image-to-3d</code></p>
+<pre><code class="language-json">{
+  &quot;image_url&quot;: &quot;&lt;public URL or data URI&gt;&quot;,
+  &quot;pose_mode&quot;: &quot;t-pose&quot;,
+  &quot;should_remesh&quot;: true,
+  &quot;topology&quot;: &quot;triangle&quot;,
+  &quot;target_polycount&quot;: 20000,
+  &quot;should_texture&quot;: true,
+  &quot;enable_pbr&quot;: false,
+  &quot;target_formats&quot;: [&quot;glb&quot;],
+  &quot;multi_view_thumbnails&quot;: true
+}
+</code></pre>
+<ul>
+<li><code>pose_mode: "t-pose"</code> straightens the character regardless of the
+  reference pose — fixes "awkward" references before auto-rig.</li>
+<li><code>target_formats: ["glb"]</code> — don't generate fbx/obj/usdz you won't use;
+  task finishes faster.</li>
+<li><code>multi_view_thumbnails: true</code> — 4 cardinal-view PNGs for vision QC without
+  downloading the GLB (~3 s extra latency).</li>
+<li>Low-poly rules and polycount budgets: see <code>meshy-input-rules.md</code>.</li>
+<li>Multi-image variant: <code>POST /openapi/v1/multi-image-to-3d</code> (1–4 views,
+  same pose on every view — see input rules).</li>
+</ul>
+<h2>text-to-3d note (two-phase) + stuck-refine recovery</h2>
+<p><code>text-to-3d</code> is two tasks: <strong>preview</strong> (geometry, gray) then <strong>refine</strong>
+(texture, created with <code>preview_task_id</code>). Verified failure mode: a refine
+stuck at <code>IN_PROGRESS</code> <code>progress: 0</code> for 1.5 h — a queue jam on Meshy's side.</p>
+<p>Recovery recipe:
+- refine with <code>progress: 0</code> for longer than ~15 min ⇒ stuck forever.
+- <code>DELETE /openapi/v1/text-to-3d/&lt;id&gt;</code> the stuck task, re-create with the
+  <strong>same</strong> <code>preview_task_id</code> — re-ran in ~70 s. Credits for stuck/FAILED
+  tasks are refunded.
+- <strong>Never block the pipeline on texture</strong>: run rigging + animations on the
+  preview (gray) mesh in parallel; swap in the textured mesh at the end with
+  the same scripts.</p>
+<h2>[2] Rigging</h2>
+<p><code>POST /openapi/v1/rigging</code></p>
+<pre><code class="language-json">{
+  &quot;input_task_id&quot;: &quot;&lt;image-to-3d task id&gt;&quot;,   // OR &quot;model_url&quot;: &quot;&lt;public GLB url&gt;&quot;
+  &quot;height_meters&quot;: 1.8
+}
+</code></pre>
+<ul>
+<li>Returns task id; on SUCCEEDED the result has <code>rigged_character_glb_url</code>,
+  <code>rigged_character_fbx_url</code>, and <strong><code>basic_animations</code></strong> — walking + running
+  GLB/FBX <strong>for free</strong>, no separate animation tasks needed for those two.</li>
+<li><strong>Humanoid only.</strong> Docs: "not suitable for non-humanoid assets". A
+  quadruped/creature returns <code>422 — Pose estimation failed</code>. Branch to
+  Tripo3D or the procedural pipeline (<code>procedural-animation.md</code>).
+  Nuance: Meshy's <strong>web app</strong> offers a 4-legs (quadruped) rig option, but the
+  public <strong>API</strong> endpoint is humanoid-only — don't promise API quadruped
+  support; suggest the web UI as a manual fallback for quadrupeds.</li>
+<li>Also rejected: untextured meshes, unclear limb structure, models
+  <strong>&gt; 300,000 faces</strong> (use <code>POST /openapi/v1/remesh</code> first).</li>
+<li><code>height_meters</code> aids rig scaling — pass a sensible value (1.7–1.9 humans).</li>
+</ul>
+<h2>[3] Animations (library retarget)</h2>
+<p><code>POST /openapi/v1/animations</code></p>
+<pre><code class="language-json">{
+  &quot;rig_task_id&quot;: &quot;&lt;rigging task id&gt;&quot;,
+  &quot;action_id&quot;: 0
+}
+</code></pre>
+<ul>
+<li>Library: <strong>~680 mocap presets</strong> (locomotion, combat, deaths, dances,
+  emotes). Catalog: <code>https://api.meshy.ai/web/public/animations/resources</code>
+  (web endpoint, not under /openapi) and the Animation Library page in the
+  docs. Used in the verified run: <code>idle = action_id 0</code>, <code>attack = action_id 4</code>.
+  Don't trust ids from memory — fetch the catalog and match by name.</li>
+<li>All presets are <strong>biped mocap</strong> — they only fit humanoid rigs.</li>
+<li>Result: <code>animation_glb_url</code> — one GLB per clip, skinned, same skeleton as
+  the rig task.</li>
+<li>Optional <code>post_process</code>: <code>change_fps</code> (24/25/30/60), <code>fbx2usdz</code>,
+  <code>extract_armature</code>.</li>
+</ul>
+<h2>[4] Merge clips into one multi-clip GLB</h2>
+<p>Meshy gives N single-clip GLBs (walk/run from the rig + one per animation
+task). Preferred: stdlib merger, no Blender (verified on a live run
+2026-06-11 — full pipeline cost 41 credits: text-to-3d + rig + 2 anims):</p>
+<pre><code class="language-bash">python3 scripts/glb_merge_anims.py \
+  rigged.glb walk.glb:Walk run.glb:Run idle.glb:Idle attack.glb:Attack out.glb
+</code></pre>
+<p>Blender alternative (same semantics):</p>
+<pre><code class="language-bash">blender -b -P scripts/merge_anim_glbs.py -- \
+  rigged.glb walk.glb:Walk run.glb:Run idle.glb:Idle attack.glb:Attack out.glb
+</code></pre>
+<p>Note: <code>rigged.glb</code> may carry a service clip named like
+<code>Armature|clip0|baselayer</code> (bind pose) — drop it from the merged file before
+delivery.</p>
+<p><strong>MANDATORY post-merge check — root-bone scale bug (verified):</strong> library
+animations can bake a scale factor into the root bone's scale channel.
+Observed: <code>Hips</code> scale <strong>1.176</strong> baked into <code>idle</code> while walk/run were 1.0 —
+the character visibly grew 18% when idle played. Fix (automated in the merge
+script): for every clip, if the root bone's scale min/max ≠ 1.0 — set scale
+keys to 1.0 AND divide that clip's root translation keys by the same factor
+(otherwise the character hovers above ground). Verify with
+<code>scripts/glb_inspect.py</code> — it prints per-clip root-scale ranges.</p>
+<p>Finish with the standard checks: <code>glb_inspect.py</code> (skins ≥ 1, all clips
+present, alphaMode OPAQUE) and zip before <code>higgsfield upload create</code> (raw <code>.glb</code>
+is a blocked extension).</p>
+<h2>Polling skeleton (bash)</h2>
+<pre><code class="language-bash">TASK=$(curl -s -X POST https://api.meshy.ai/openapi/v1/image-to-3d \
+  -H &quot;Authorization: Bearer $MESHY_API_KEY&quot; -H 'Content-Type: application/json' \
+  -d @payload.json | python3 -c 'import sys,json;print(json.load(sys.stdin)[&quot;result&quot;])')
+while :; do
+  S=$(curl -s https://api.meshy.ai/openapi/v1/image-to-3d/$TASK \
+    -H &quot;Authorization: Bearer $MESHY_API_KEY&quot;)
+  ST=$(echo &quot;$S&quot; | python3 -c 'import sys,json;d=json.load(sys.stdin);print(d[&quot;status&quot;],d[&quot;progress&quot;])')
+  echo &quot;$ST&quot;; case &quot;$ST&quot; in SUCCEEDED*|FAILED*|CANCELED*) break;; esac
+  sleep 12
+done
+</code></pre>
+<h2>Error cheat-sheet</h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>400</td>
+<td>bad params / unreachable image URL / &gt;300k faces on rig</td>
+<td>fix payload; remesh first</td>
+</tr>
+<tr>
+<td>402</td>
+<td>out of credits</td>
+<td>tell user, show balance</td>
+</tr>
+<tr>
+<td>422 (rigging)</td>
+<td>pose estimation failed — non-humanoid or unclear limbs</td>
+<td>procedural branch / Tripo</td>
+</tr>
+<tr>
+<td>429</td>
+<td>rate limit</td>
+<td>back off, retry</td>
+</tr>
+<tr>
+<td>refine stuck progress 0 &gt;15 min</td>
+<td>Meshy queue jam</td>
+<td>DELETE + recreate with same preview_task_id</td>
+</tr>
+</tbody>
+</table></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

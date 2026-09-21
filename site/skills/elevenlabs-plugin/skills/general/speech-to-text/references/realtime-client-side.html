@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>realtime-client-side · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/speech-to-text/references/realtime-client-side.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Client-Side Real-Time Streaming</h1>
+<p>Stream audio from the browser directly to ElevenLabs for real-time transcription.</p>
+<h2>Installation</h2>
+<pre><code class="language-bash"># React
+npm install @elevenlabs/react@latest @elevenlabs/elevenlabs-js@latest
+
+# JavaScript
+npm install @elevenlabs/client@latest @elevenlabs/elevenlabs-js@latest
+</code></pre>
+<blockquote>
+<p><strong>Warning:</strong> Always use the <code>@elevenlabs/*</code> namespace for client-side packages.</p>
+</blockquote>
+<h2>Token Generation</h2>
+<p>Client-side streaming requires a single-use token to protect your API key. Generate tokens on your backend:</p>
+<pre><code class="language-typescript">import { ElevenLabsClient } from &quot;@elevenlabs/elevenlabs-js&quot;;
+
+const elevenlabs = new ElevenLabsClient({
+  apiKey: process.env.ELEVENLABS_API_KEY,
+});
+
+app.get(&quot;/scribe-token&quot;, yourAuthMiddleware, async (req, res) =&gt; {
+  const token = await elevenlabs.tokens.singleUse.create(&quot;realtime_scribe&quot;);
+  res.json(token);
+});
+</code></pre>
+<p><strong>Note:</strong> Single-use tokens expire after 15 minutes.</p>
+<h2>React Implementation</h2>
+<pre><code class="language-typescript">import { useScribe, CommitStrategy } from &quot;@elevenlabs/react&quot;;
+
+function TranscriptionComponent() {
+  const [transcript, setTranscript] = useState(&quot;&quot;);
+
+  const scribe = useScribe({
+    modelId: &quot;scribe_v2_realtime&quot;,
+    commitStrategy: CommitStrategy.VAD, // Auto-commit on silence for mic input
+    includeLanguageDetection: true,
+    onPartialTranscript: (data) =&gt; {
+      // Show live feedback as user speaks
+      console.log(&quot;Partial:&quot;, data.text);
+    },
+    onCommittedTranscript: (data) =&gt; {
+      // Final transcript for this segment
+      setTranscript((prev) =&gt; prev + data.text);
+    },
+  });
+
+  const startRecording = async () =&gt; {
+    const tokenResponse = await fetch(&quot;/scribe-token&quot;);
+    const { token } = await tokenResponse.json();
+
+    await scribe.connect({
+      token,
+      microphone: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+      },
+    });
+  };
+
+  const stopRecording = () =&gt; {
+    scribe.disconnect();
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;div&gt;Status: {scribe.status}&lt;/div&gt;
+      &lt;button onClick={startRecording}&gt;Start&lt;/button&gt;
+      &lt;button onClick={stopRecording}&gt;Stop&lt;/button&gt;
+      &lt;p&gt;{transcript}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<blockquote>
+<p><strong>Important:</strong> The default commit strategy is <code>CommitStrategy.MANUAL</code>, which requires you to call <code>scribe.commit()</code> explicitly. For microphone input, always set <code>CommitStrategy.VAD</code> so the server auto-commits when silence is detected. Without this, committed transcripts will never fire and the connection may drop.</p>
+</blockquote>
+<h3><code>scribe.status</code> Values</h3>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>"disconnected"</code></td>
+<td>No active connection</td>
+</tr>
+<tr>
+<td><code>"connecting"</code></td>
+<td>Connection is being established</td>
+</tr>
+<tr>
+<td><code>"connected"</code></td>
+<td>Connected and ready to receive audio</td>
+</tr>
+<tr>
+<td><code>"transcribing"</code></td>
+<td>Actively processing speech (transitions from <code>"connected"</code> when audio is detected or VAD commits)</td>
+</tr>
+<tr>
+<td><code>"error"</code></td>
+<td>An error occurred</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Important:</strong> When checking if the session is active, always check for both <code>"connected"</code> and <code>"transcribing"</code>. The status transitions to <code>"transcribing"</code> during speech processing, so checking only <code>"connected"</code> will cause UI elements (buttons, waveforms, indicators) to incorrectly reset mid-session.</p>
+</blockquote>
+<pre><code class="language-typescript">// Correct - handles both active states
+const isListening = scribe.status === &quot;connected&quot; || scribe.status === &quot;transcribing&quot;;
+
+// Wrong - will flicker/reset when VAD commits
+const isListening = scribe.status === &quot;connected&quot;;
+</code></pre>
+<h2>JavaScript Implementation</h2>
+<pre><code class="language-typescript">import { Scribe, RealtimeEvents } from &quot;@elevenlabs/client&quot;;
+
+async function startTranscription() {
+  const tokenResponse = await fetch(&quot;/scribe-token&quot;);
+  const { token } = await tokenResponse.json();
+
+  const connection = Scribe.connect({
+    token,
+    modelId: &quot;scribe_v2_realtime&quot;,
+    includeTimestamps: true,
+    includeLanguageDetection: true,
+    keyterms: [&quot;ElevenLabs&quot;, &quot;Scribe&quot;],
+    noVerbatim: true,
+    microphone: {
+      echoCancellation: true,
+      noiseSuppression: true,
+      autoGainControl: true,
+    },
+  });
+
+  connection.on(RealtimeEvents.OPEN, () =&gt; {
+    console.log(&quot;Connected&quot;);
+  });
+
+  connection.on(RealtimeEvents.PARTIAL_TRANSCRIPT, (data) =&gt; {
+    console.log(&quot;Partial:&quot;, data.text);
+  });
+
+  connection.on(RealtimeEvents.COMMITTED_TRANSCRIPT, (data) =&gt; {
+    console.log(&quot;Committed:&quot;, data.text);
+  });
+
+  connection.on(RealtimeEvents.COMMITTED_TRANSCRIPT_WITH_TIMESTAMPS, (data) =&gt; {
+    for (const word of data.words) {
+      console.log(`${word.text}: ${word.start}s - ${word.end}s`);
+    }
+  });
+
+  connection.on(RealtimeEvents.ERROR, (error) =&gt; {
+    console.error(&quot;Error:&quot;, error);
+  });
+
+  connection.on(RealtimeEvents.CLOSE, () =&gt; {
+    console.log(&quot;Disconnected&quot;);
+  });
+
+  return connection;
+}
+</code></pre>
+<p><code>keyterms</code> biases realtime recognition toward important terms. <code>noVerbatim</code> removes filler words,
+false starts, and disfluencies from committed transcripts. <code>includeLanguageDetection</code> returns the
+detected language code in a delayed final transcript event.</p>
+<p>Both <code>Scribe.connect</code> and <code>useScribe</code> accept <code>secondaryLanguages</code> for expected additional
+languages, <code>entityDetection</code> for entity events, and <code>filterBackgroundAudio</code> to reduce false
+activation from background speech and ambient noise. Do not combine <code>filterBackgroundAudio</code> with
+<code>includeTimestamps</code>. Enterprise zero-retention sessions can set <code>enableLogging: false</code>.</p>
+<h2>Manual Audio Chunking</h2>
+<p>For file uploads or custom audio sources, encode to PCM-16 and send in chunks:</p>
+<pre><code class="language-typescript">const chunkSize = 4096;
+
+for (let offset = 0; offset &lt; pcmData.length; offset += chunkSize) {
+  const chunk = pcmData.slice(offset, offset + chunkSize);
+  const bytes = new Uint8Array(chunk.buffer);
+  const base64 = btoa(String.fromCharCode(...bytes));
+
+  scribe.sendAudio(base64);
+
+  // Simulate real-time streaming
+  await new Promise((resolve) =&gt; setTimeout(resolve, 50));
+}
+
+// Finalize transcription
+scribe.commit();
+</code></pre>
+<h2>Microphone Options</h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>echoCancellation</code></td>
+<td>Remove echo from speakers</td>
+</tr>
+<tr>
+<td><code>noiseSuppression</code></td>
+<td>Filter background noise</td>
+</tr>
+<tr>
+<td><code>autoGainControl</code></td>
+<td>Normalize volume levels</td>
+</tr>
+</tbody>
+</table>
+<h2>Security</h2>
+<ul>
+<li>Never expose your API key to the client</li>
+<li>Always generate single-use tokens on your backend</li>
+<li>Use authentication middleware to protect token endpoints</li>
+<li>For enterprise zero-retention sessions, set <code>enableLogging: false</code> in <code>Scribe.connect</code> or
+  <code>useScribe</code>; this disables history features for the session</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

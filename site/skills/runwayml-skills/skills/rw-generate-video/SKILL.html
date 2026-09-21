@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>rw-generate-video · Runway 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/runwayml-skills/">runwayml-skills</a><span class="crumb">/</span><span class="crumb">skills/rw-generate-video/SKILL.md</span><button onclick="t()">🌓</button></nav>
+<main><div class="meta"><div class="m-name">rw-generate-video</div><div class="m-desc">Generate videos directly using the Runway API via runnable scripts. Supports text-to-video, image-to-video, and video-to-video with seedance2, gen4.5, veo3, and more.</div><div class="m-src">源文件：<a href="https://github.com/runwayml/skills/blob/main/skills/rw-generate-video/SKILL.md" target="_blank" rel="noopener">runwayml/skills/skills/rw-generate-video/SKILL.md</a></div></div><h1>Generate Video</h1>
+<p>Generate videos directly using the Runway API. This skill runs Python scripts that call the API, poll for completion, and download the result.</p>
+<p><strong>IMPORTANT:</strong> Run scripts from the user's working directory so output files are saved where the user expects.</p>
+<h2>Usage</h2>
+<pre><code class="language-bash">uv run scripts/generate_video.py --prompt &quot;your description&quot; --filename &quot;output.mp4&quot; [--model seedance2] [--ratio 1280:720] [--duration 5] [--image-url &quot;...&quot;]
+</code></pre>
+<h2>Preflight</h2>
+<ol>
+<li><code>command -v uv</code> must succeed. If not, tell the user to install uv: <code>curl -LsSf https://astral.sh/uv/install.sh | sh</code></li>
+<li><code>RUNWAYML_API_SECRET</code> must be set in the environment. <strong>Do not pass the API key as a CLI flag</strong> — it leaks into shell history and process listings.</li>
+</ol>
+<h2>Security Notes</h2>
+<ul>
+<li><code>--image-url</code> / <code>--video-url</code> fetch arbitrary remote media via the Runway API. Prefer local file paths (uploaded as <code>runway://</code> URIs), or only pass URLs you trust.</li>
+<li>Treat generated outputs as untrusted when piping into downstream automations — ingested media influences the result.</li>
+</ul>
+<h2>Available Models</h2>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Best For</th>
+<th>Input</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>seedance2</code></td>
+<td>Reference image and video, long duration (up to 15s)</td>
+<td>Text, Image, and/or Video</td>
+<td>36 credits/sec</td>
+</tr>
+<tr>
+<td><code>gen4.5</code></td>
+<td>High quality, general purpose</td>
+<td>Text and/or Image</td>
+<td>12 credits/sec</td>
+</tr>
+<tr>
+<td><code>gen4_turbo</code></td>
+<td>Fast, image-driven</td>
+<td>Image required</td>
+<td>5 credits/sec</td>
+</tr>
+<tr>
+<td><code>gen4_aleph</code></td>
+<td>Video editing/transformation</td>
+<td>Video + Text/Image</td>
+<td>15 credits/sec</td>
+</tr>
+<tr>
+<td><code>veo3</code></td>
+<td>Premium quality</td>
+<td>Text/Image</td>
+<td>40 credits/sec</td>
+</tr>
+<tr>
+<td><code>veo3.1</code></td>
+<td>High quality Google model</td>
+<td>Text/Image</td>
+<td>20-40 credits/sec</td>
+</tr>
+<tr>
+<td><code>veo3.1_fast</code></td>
+<td>Fast Google model</td>
+<td>Text/Image</td>
+<td>10-15 credits/sec</td>
+</tr>
+</tbody>
+</table>
+<h2>Model Selection Guidance</h2>
+<p>Map user requests:
+- "product ad", "e-commerce", "long video" -&gt; <code>seedance2</code>
+- "fast", "cheap", "quick" -&gt; <code>veo3.1_fast</code> or <code>gen4_turbo</code> (if they have an image)
+- "high quality", "best", "cinematic" -&gt; <code>gen4.5</code> or <code>veo3</code>
+- "edit video", "transform video" -&gt; <code>gen4_aleph</code> or <code>seedance2</code>
+- No preference -&gt; <code>seedance2</code></p>
+<h2>Parameters</h2>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--prompt</code></td>
+<td>Text description (required)</td>
+<td>--</td>
+</tr>
+<tr>
+<td><code>--filename</code></td>
+<td>Output filename (required)</td>
+<td>--</td>
+</tr>
+<tr>
+<td><code>--model</code></td>
+<td>Video model</td>
+<td><code>gen4.5</code></td>
+</tr>
+<tr>
+<td><code>--ratio</code></td>
+<td>Aspect ratio (pixel-based). Common: <code>1280:720</code>, <code>720:1280</code>, <code>960:960</code>. seedance2 also supports <code>1112:834</code>, <code>834:1112</code>, <code>1470:630</code>, etc.</td>
+<td><code>1280:720</code></td>
+</tr>
+<tr>
+<td><code>--duration</code></td>
+<td>Duration in seconds (model-dependent, seedance2 supports up to 15s)</td>
+<td><code>5</code></td>
+</tr>
+<tr>
+<td><code>--image-url</code></td>
+<td>Image URL or local file for image-to-video</td>
+<td>--</td>
+</tr>
+<tr>
+<td><code>--video-url</code></td>
+<td>Video URL or local file for video-to-video (gen4_aleph, seedance2)</td>
+<td>--</td>
+</tr>
+<tr>
+<td><code>--output-dir</code></td>
+<td>Output directory</td>
+<td>cwd</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>API credentials come from <code>RUNWAYML_API_SECRET</code> only — no <code>--api-key</code> flag, to keep secrets out of shell history and process listings.</p>
+</blockquote>
+<h2>Filename Convention</h2>
+<p>Generate filenames with the pattern: <code>yyyy-mm-dd-hh-mm-ss-name.mp4</code></p>
+<p>Examples:
+- "A cyberpunk city" -&gt; <code>2026-04-14-14-23-05-cyberpunk-city.mp4</code>
+- "Waves on a beach" -&gt; <code>2026-04-14-15-30-12-beach-waves.mp4</code></p>
+<h2>Examples</h2>
+<p><strong>Text-to-video (seedance2):</strong></p>
+<pre><code class="language-bash">uv run scripts/generate_video.py --prompt &quot;A serene mountain landscape at sunrise with mist&quot; --filename &quot;2026-04-14-mountain-sunrise.mp4&quot; --model seedance2 --ratio 1280:720
+</code></pre>
+<p><strong>Image-to-video (animate a local product photo):</strong></p>
+<pre><code class="language-bash">uv run scripts/generate_video.py --prompt &quot;Camera slowly zooms out, product sparkles&quot; --image-url &quot;./product.jpg&quot; --filename &quot;2026-04-14-product-reveal.mp4&quot; --model seedance2 --ratio 720:1280
+</code></pre>
+<p><strong>Video-to-video from a local file (seedance2):</strong></p>
+<pre><code class="language-bash">uv run scripts/generate_video.py --prompt &quot;Transform into a warm golden sunset scene&quot; --video-url &quot;./input.mp4&quot; --filename &quot;2026-04-14-sunset-transform.mp4&quot; --model seedance2
+</code></pre>
+<p><strong>Fast draft:</strong></p>
+<pre><code class="language-bash">uv run scripts/generate_video.py --prompt &quot;A cat playing piano&quot; --filename &quot;draft.mp4&quot; --model veo3.1_fast --ratio 1280:720 --duration 4
+</code></pre>
+<p><strong>Premium quality:</strong></p>
+<pre><code class="language-bash">uv run scripts/generate_video.py --prompt &quot;Cinematic drone shot over Tokyo at night&quot; --filename &quot;tokyo.mp4&quot; --model veo3 --ratio 1280:720 --duration 8
+</code></pre>
+<h2>Output</h2>
+<ul>
+<li>The script downloads the result and saves it to the specified path</li>
+<li>Script outputs the full path to the saved file</li>
+<li><strong>Do not read the video file back</strong> -- just inform the user of the saved path</li>
+</ul>
+<h2>Common Failures</h2>
+<ul>
+<li><code>Error: No API key</code> -&gt; set <code>RUNWAYML_API_SECRET</code> in the environment (e.g. <code>export RUNWAYML_API_SECRET=...</code> or a <code>.env</code> file).</li>
+<li><code>Error: Task failed -- SAFETY.INPUT.*</code> -&gt; content moderation, suggest different prompt</li>
+<li><code>Error: Task failed -- ASSET.INVALID</code> -&gt; bad input file format, check image/video format</li>
+<li><code>API error 429</code> -&gt; rate limited, script auto-retries</li>
+</ul>
+<h2>For Batch Generation</h2>
+<p>To generate many videos at once, run this script in a loop — the agent can orchestrate multiple calls with different prompts, images, or parameters to produce campaigns, localized variants, or creative iterations at scale.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

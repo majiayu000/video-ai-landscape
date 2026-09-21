@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>README · Runway 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/runwayml-skills/">runwayml-skills</a><span class="crumb">/</span><span class="crumb">README.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Runway API Skills</h1>
+<p>Media Generation at scale. One platform to run the best image, video, audio and real-time models. Generate videos, images, and audio with Runway's API — batch Ad campaigns, product videos, multishot stories, and creative iteration. Supports seedance2, gen4.5, veo3, Nano, Banana Pro, and more.</p>
+<p>Works with <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a>, <a href="https://cursor.com">Cursor</a>, <a href="https://openai.com/index/codex/">Codex</a>, and other compatible agents.</p>
+<h2>Two Ways to Use</h2>
+<h3>1. Generate media at scale</h3>
+<p>Tell your agent what to create and it handles the rest — calls the API, polls for completion, downloads the result. Generate one asset or orchestrate hundreds.</p>
+<pre><code>Generate a 15-second product video from this image using seedance2
+</code></pre>
+<pre><code>Generate a video for each of these 5 product photos, 9:16 ratio for Instagram Reels
+</code></pre>
+<pre><code>Create a voiceover for this ad script, then generate a sound effect of applause
+</code></pre>
+<h3>2. Build Runway into your app</h3>
+<p>Use Dev MCP for live project context and the official SDK for application code. The agent inspects the existing backend and UI, follows current docs, implements the relevant product surface, and verifies it safely.</p>
+<pre><code>Set up Runway video generation in my Next.js app
+</code></pre>
+<h2>Installation</h2>
+<h3>Claude Code (community marketplace)</h3>
+<pre><code class="language-bash">claude plugin marketplace add anthropics/claude-plugins-community
+claude plugin install runway-api-skills@claude-community
+</code></pre>
+<p>You can also run <code>/plugin</code> in Claude Code, open <strong>Discover</strong>, search for <strong>runway-api-skills</strong>, and install from there. After installing or updating plugins, run <code>/reload-plugins</code> if skills do not appear immediately.</p>
+<h3>Other agents (<code>npx skills</code>)</h3>
+<pre><code class="language-bash">npx skills add runwayml/skills
+</code></pre>
+<p>Select all the skills with your keyboard (Space to select, arrow keys to navigate), then press Enter to install.</p>
+<p>For Dev Platform integration, install the foundation plus the skill for your surface:</p>
+<pre><code class="language-bash">npx skills add runwayml/skills --skill runway-dev --skill runway-dev-models --agent cursor claude-code codex -y
+</code></pre>
+<h2>Prerequisites</h2>
+<ul>
+<li>A <a href="https://dev.runwayml.com/">Runway developer account</a> with prepaid credits ($10 minimum)</li>
+<li>For generation skills: <a href="https://docs.astral.sh/uv/">uv</a> (Python package runner) and <code>RUNWAYML_API_SECRET</code> env var</li>
+<li>For integration skills: a server-side project — Node.js 18+ or Python 3.8+ with a backend framework</li>
+</ul>
+<h2>Available Skills</h2>
+<h3>Dev Platform (integrate via Dev MCP + SDK)</h3>
+<p>These skills use Dev MCP for live project context and the SDK for server-side integration.</p>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>runway-dev</code></td>
+<td>Shared MCP, docs, auth, task polling, and error flow</td>
+</tr>
+<tr>
+<td><code>runway-dev-models</code></td>
+<td>Model endpoint integration</td>
+</tr>
+<tr>
+<td><code>runway-dev-model-routers</code></td>
+<td>Model Router setup and routed SDK calls</td>
+</tr>
+<tr>
+<td><code>runway-dev-characters</code></td>
+<td>Characters and realtime avatar sessions</td>
+</tr>
+<tr>
+<td><code>runway-dev-recipes</code></td>
+<td>Recipe pipeline integration</td>
+</tr>
+<tr>
+<td><code>runway-dev-workflows</code></td>
+<td>Runway app workflows exposed through API endpoints</td>
+</tr>
+</tbody>
+</table>
+<h3>Generation (run directly)</h3>
+<p>Generate media assets directly — your agent runs the scripts, polls for completion, and saves the output.</p>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rw-generate-video</code></td>
+<td>Generate videos: text-to-video, image-to-video, video-to-video</td>
+</tr>
+<tr>
+<td><code>rw-generate-image</code></td>
+<td>Generate images: text-to-image with optional reference images</td>
+</tr>
+<tr>
+<td><code>rw-generate-audio</code></td>
+<td>Generate audio: TTS, sound effects, voice isolation, dubbing, voice conversion</td>
+</tr>
+</tbody>
+</table>
+<h3>Utilities</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>use-runway-api</code></td>
+<td>Call public API endpoints directly to manage resources, trigger generations, and inspect state</td>
+</tr>
+<tr>
+<td><code>rw-check-org-details</code></td>
+<td>Query organization rate limits, credit balance, usage tier, and generation counts</td>
+</tr>
+</tbody>
+</table>
+<h2>Supported Models</h2>
+<h3>Video</h3>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Use Case</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>seedance2</code></td>
+<td>Reference image and video, long duration</td>
+<td>36 credits/sec</td>
+</tr>
+<tr>
+<td><code>gen4.5</code></td>
+<td>High quality, general purpose</td>
+<td>12 credits/sec</td>
+</tr>
+<tr>
+<td><code>gen4_turbo</code></td>
+<td>Fast, image-driven (image required)</td>
+<td>5 credits/sec</td>
+</tr>
+<tr>
+<td><code>gen4_aleph</code></td>
+<td>Video-to-video editing</td>
+<td>15 credits/sec</td>
+</tr>
+<tr>
+<td><code>veo3</code></td>
+<td>Premium quality</td>
+<td>40 credits/sec</td>
+</tr>
+<tr>
+<td><code>veo3.1</code> / <code>veo3.1_fast</code></td>
+<td>High quality / fast Google models</td>
+<td>10–40 credits/sec</td>
+</tr>
+</tbody>
+</table>
+<h3>Image</h3>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gen4_image</code></td>
+<td>5–8 credits</td>
+</tr>
+<tr>
+<td><code>gen4_image_turbo</code></td>
+<td>2 credits</td>
+</tr>
+<tr>
+<td><code>gemini_2.5_flash</code></td>
+<td>5 credits</td>
+</tr>
+</tbody>
+</table>
+<h3>Audio</h3>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>eleven_multilingual_v2</code></td>
+<td>Text-to-speech</td>
+</tr>
+<tr>
+<td><code>eleven_text_to_sound_v2</code></td>
+<td>Sound effects</td>
+</tr>
+<tr>
+<td><code>eleven_voice_isolation</code></td>
+<td>Isolate voice from audio</td>
+</tr>
+<tr>
+<td><code>eleven_voice_dubbing</code></td>
+<td>Dub audio to other languages</td>
+</tr>
+<tr>
+<td><code>eleven_multilingual_sts_v2</code></td>
+<td>Voice conversion</td>
+</tr>
+</tbody>
+</table>
+<h3>Characters</h3>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gwm1_avatars</code></td>
+<td>Real-time conversational avatars (5-min max session)</td>
+</tr>
+</tbody>
+</table>
+<h2>Quick Start</h2>
+<h3>Generate media directly</h3>
+<pre><code>Generate a 10-second video of a sunset over the ocean
+</code></pre>
+<pre><code>Generate an image of a red door in a white wall
+</code></pre>
+<pre><code>Create a voiceover saying &quot;Welcome to our store&quot; and save it as welcome.mp3
+</code></pre>
+<h3>Integrate into a project</h3>
+<pre><code>Use Dev MCP to add Runway video generation to my existing Next.js app
+</code></pre>
+<pre><code>Add a Runway Character with domain knowledge to this support app
+</code></pre>
+<h2>Supported Frameworks</h2>
+<p>The Dev Platform skills inspect and integrate with server-side stacks including:</p>
+<ul>
+<li><strong>Node.js</strong> — Express, Fastify, Next.js (App Router &amp; Pages Router), Remix, SvelteKit, Nuxt, Astro</li>
+<li><strong>Python</strong> — FastAPI, Flask, Django</li>
+<li><strong>Serverless</strong> — Vercel Functions, AWS Lambda, Cloudflare Workers</li>
+</ul>
+<h2>API Reference</h2>
+<ul>
+<li><strong>Base URL:</strong> <code>https://api.dev.runwayml.com</code></li>
+<li><strong>Auth header:</strong> <code>Authorization: Bearer &lt;RUNWAYML_API_SECRET&gt;</code></li>
+<li><strong>Version header:</strong> <code>X-Runway-Version: 2024-11-06</code></li>
+<li><strong>Official docs:</strong> <a href="https://docs.dev.runwayml.com/">docs.dev.runwayml.com</a></li>
+<li><strong>API Reference:</strong> <a href="https://docs.dev.runwayml.com/api">docs.dev.runwayml.com/api</a></li>
+<li><strong>Developer portal:</strong> <a href="https://dev.runwayml.com/">dev.runwayml.com</a></li>
+</ul>
+<h2>License</h2>
+<p><a href="LICENSE">MIT</a></p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

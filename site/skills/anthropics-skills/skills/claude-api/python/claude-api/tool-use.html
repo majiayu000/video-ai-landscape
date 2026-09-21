@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>tool-use · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/python/claude-api/tool-use.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Tool Use - Python</h1>
+<p>For conceptual overview (tool definitions, tool choice, tips), see <a href="../../shared/tool-use-concepts.html">shared/tool-use-concepts.md</a>.</p>
+<h2>Tool Runner (Recommended)</h2>
+<p><strong>Beta:</strong> The tool runner is in beta in the Python SDK.</p>
+<p>Use the <code>@beta_tool</code> decorator to define tools as typed functions, then pass them to <code>client.beta.messages.tool_runner()</code>:</p>
+<pre><code class="language-python">import anthropic
+from anthropic import beta_tool
+
+client = anthropic.Anthropic()
+
+@beta_tool
+def get_weather(location: str, unit: str = &quot;celsius&quot;) -&gt; str:
+    &quot;&quot;&quot;Get current weather for a location.
+
+    Args:
+        location: City and state, e.g., San Francisco, CA.
+        unit: Temperature unit, either &quot;celsius&quot; or &quot;fahrenheit&quot;.
+    &quot;&quot;&quot;
+    # Your implementation here
+    return f&quot;72°F and sunny in {location}&quot;
+
+# The tool runner handles the agentic loop automatically
+runner = client.beta.messages.tool_runner(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    tools=[get_weather],
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What's the weather in Paris?&quot;}],
+)
+
+# Each iteration yields a BetaMessage; iteration stops when Claude is done
+for message in runner:
+    print(message)
+</code></pre>
+<p>For async usage, use <code>@beta_async_tool</code> with <code>async def</code> functions.</p>
+<p><strong>Key benefits of the tool runner:</strong></p>
+<ul>
+<li>No manual loop - the SDK handles calling tools and feeding results back</li>
+<li>Type-safe tool inputs via decorators</li>
+<li>Tool schemas are generated automatically from function signatures</li>
+<li>Iteration stops automatically when Claude has no more tool calls</li>
+</ul>
+<h3>Server tools with the tool runner</h3>
+<p>The runner's <code>tools</code> list accepts raw server-tool definitions (<code>web_search_20260209</code>, <code>web_fetch_20260209</code>, code execution) alongside decorated tools - pass the literal tool dict; server tools run on Anthropic's servers, so there is no function to implement.</p>
+<p><strong>Caution - the runner does not auto-resume <code>pause_turn</code> (as of <code>anthropic</code> 0.116.0).</strong> A long-running server-tool turn can stop with <code>stop_reason: "pause_turn"</code>. The runner only continues after a client tool produces a result, so a paused turn ends the loop and is returned as the final message - no error, no warning, just a silently truncated answer. Unlike the TypeScript runner, the Python runner cannot be resumed mid-loop: it exits unconditionally when no client tool ran, and <code>runner.append_messages(...)</code> does not prevent the exit. To handle <code>pause_turn</code>, mirror the conversation history as you iterate, then restart the runner with the paused turn appended:</p>
+<pre><code class="language-python">messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_input}]
+
+max_restarts = 5  # cap pause_turn restarts, mirroring max_continuations advice
+restarts = 0
+while True:
+    runner = client.beta.messages.tool_runner(
+        model=&quot;claude-opus-5&quot;,
+        max_tokens=16000,
+        tools=tools,  # may mix @beta_tool functions and server-tool definitions
+        messages=messages,
+    )
+    last = None
+    for message in runner:
+        last = message
+        # Mirror the history - the runner keeps its own copy and does not expose it
+        messages.append({&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: message.content})
+        tool_response = runner.generate_tool_call_response()  # cached; tools still run once
+        if tool_response is not None:
+            messages.append(tool_response)
+    if last is None or last.stop_reason != &quot;pause_turn&quot;:
+        break
+    restarts += 1
+    if restarts &gt; max_restarts:
+        raise RuntimeError(&quot;giving up: turn still paused after max_restarts&quot;)
+    # Paused mid-turn: `messages` already ends with the paused assistant
+    # turn, so the next runner resumes it
+</code></pre>
+<p>Alternatively, use the manual loop below, which handles <code>pause_turn</code> explicitly.</p>
+<hr />
+<h2>MCP Tool Conversion Helpers</h2>
+<p><strong>Beta.</strong> Convert <a href="https://modelcontextprotocol.io/">MCP (Model Context Protocol)</a> tools, prompts, and resources to Anthropic API types for use with the tool runner. Requires <code>pip install anthropic[mcp]</code> (Python 3.10+).</p>
+<blockquote>
+<p><strong>Note:</strong> The Claude API also supports an <code>mcp_servers</code> parameter that lets Claude connect directly to remote MCP servers. Use these helpers instead when you need local MCP servers, prompts, resources, or more control over the MCP connection.</p>
+</blockquote>
+<h3>MCP Tools with Tool Runner</h3>
+<pre><code class="language-python">from anthropic import AsyncAnthropic
+from anthropic.lib.tools.mcp import async_mcp_tool
+from mcp import ClientSession
+from mcp.client.stdio import stdio_client, StdioServerParameters
+
+client = AsyncAnthropic()
+
+async with stdio_client(StdioServerParameters(command=&quot;mcp-server&quot;)) as (read, write):
+    async with ClientSession(read, write) as mcp_client:
+        await mcp_client.initialize()
+
+        tools_result = await mcp_client.list_tools()
+        # tool_runner is sync - returns the runner, not a coroutine
+        runner = client.beta.messages.tool_runner(
+            model=&quot;claude-opus-5&quot;,
+            max_tokens=16000,
+            messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Use the available tools&quot;}],
+            tools=[async_mcp_tool(t, mcp_client) for t in tools_result.tools],
+        )
+        async for message in runner:
+            print(message)
+</code></pre>
+<p>For sync usage, use <code>mcp_tool</code> instead of <code>async_mcp_tool</code>.</p>
+<h3>MCP Prompts</h3>
+<pre><code class="language-python">from anthropic.lib.tools.mcp import mcp_message
+
+prompt = await mcp_client.get_prompt(name=&quot;my-prompt&quot;)
+response = await client.beta.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    messages=[mcp_message(m) for m in prompt.messages],
+)
+</code></pre>
+<h3>MCP Resources as Content</h3>
+<pre><code class="language-python">from anthropic.lib.tools.mcp import mcp_resource_to_content
+
+resource = await mcp_client.read_resource(uri=&quot;file:///path/to/doc.txt&quot;)
+response = await client.beta.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    messages=[{
+        &quot;role&quot;: &quot;user&quot;,
+        &quot;content&quot;: [
+            mcp_resource_to_content(resource),
+            {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;Summarize this document&quot;},
+        ],
+    }],
+)
+</code></pre>
+<h3>Upload MCP Resources as Files</h3>
+<pre><code class="language-python">from anthropic.lib.tools.mcp import mcp_resource_to_file
+
+resource = await mcp_client.read_resource(uri=&quot;file:///path/to/data.json&quot;)
+uploaded = await client.beta.files.upload(file=mcp_resource_to_file(resource))
+</code></pre>
+<p>Conversion functions raise <code>UnsupportedMCPValueError</code> if an MCP value cannot be converted (e.g., unsupported content types like audio, unsupported MIME types).</p>
+<hr />
+<h2>Manual Agentic Loop</h2>
+<p>Prefer the tool runner above. Drop to a manual loop only when you need control the runner does not expose (e.g., a custom transport, request shapes the SDK cannot build, or avoiding a beta dependency - the runner is beta). Human-in-the-loop approval does <em>not</em> require a manual loop - gate inside the tool function (return a "user declined" result) or inspect pending <code>tool_use</code> blocks in the <code>for message in runner:</code> body and call <code>runner.set_messages_params()</code>.</p>
+<p>If you do need a manual loop:</p>
+<pre><code class="language-python">import anthropic
+
+client = anthropic.Anthropic()
+tools = [...]  # Your tool definitions
+messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_input}]
+
+# Agentic loop: keep going until Claude stops calling tools
+while True:
+    response = client.messages.create(
+        model=&quot;claude-opus-5&quot;,
+        max_tokens=16000,
+        tools=tools,
+        messages=messages
+    )
+
+    # If Claude is done (no more tool calls), break
+    if response.stop_reason == &quot;end_turn&quot;:
+        break
+
+    # Server-side tool hit iteration limit; re-send to continue
+    if response.stop_reason == &quot;pause_turn&quot;:
+        messages = [
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_input},
+            {&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: response.content},
+        ]
+        continue
+
+    # Extract tool use blocks from the response
+    tool_use_blocks = [b for b in response.content if b.type == &quot;tool_use&quot;]
+
+    # Append assistant's response (including tool_use blocks)
+    messages.append({&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: response.content})
+
+    # Execute each tool and collect results
+    tool_results = []
+    for tool in tool_use_blocks:
+        result = execute_tool(tool.name, tool.input)  # Your implementation
+        tool_results.append({
+            &quot;type&quot;: &quot;tool_result&quot;,
+            &quot;tool_use_id&quot;: tool.id,  # Must match the tool_use block's id
+            &quot;content&quot;: result
+        })
+
+    # Append tool results as a user message
+    messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: tool_results})
+
+# Final response text
+final_text = next(b.text for b in response.content if b.type == &quot;text&quot;)
+</code></pre>
+<hr />
+<h2>Handling Tool Results</h2>
+<pre><code class="language-python">response = client.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    tools=tools,
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What's the weather in Paris?&quot;}]
+)
+
+for block in response.content:
+    if block.type == &quot;tool_use&quot;:
+        tool_name = block.name
+        tool_input = block.input
+        tool_use_id = block.id
+
+        result = execute_tool(tool_name, tool_input)
+
+        followup = client.messages.create(
+            model=&quot;claude-opus-5&quot;,
+            max_tokens=16000,
+            tools=tools,
+            messages=[
+                {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What's the weather in Paris?&quot;},
+                {&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: response.content},
+                {
+                    &quot;role&quot;: &quot;user&quot;,
+                    &quot;content&quot;: [{
+                        &quot;type&quot;: &quot;tool_result&quot;,
+                        &quot;tool_use_id&quot;: tool_use_id,
+                        &quot;content&quot;: result
+                    }]
+                }
+            ]
+        )
+</code></pre>
+<hr />
+<h2>Multiple Tool Calls</h2>
+<pre><code class="language-python">tool_results = []
+
+for block in response.content:
+    if block.type == &quot;tool_use&quot;:
+        result = execute_tool(block.name, block.input)
+        tool_results.append({
+            &quot;type&quot;: &quot;tool_result&quot;,
+            &quot;tool_use_id&quot;: block.id,
+            &quot;content&quot;: result
+        })
+
+# Send all results back at once
+if tool_results:
+    followup = client.messages.create(
+        model=&quot;claude-opus-5&quot;,
+        max_tokens=16000,
+        tools=tools,
+        messages=[
+            *previous_messages,
+            {&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: response.content},
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: tool_results}
+        ]
+    )
+</code></pre>
+<hr />
+<h2>Error Handling in Tool Results</h2>
+<pre><code class="language-python">tool_result = {
+    &quot;type&quot;: &quot;tool_result&quot;,
+    &quot;tool_use_id&quot;: tool_use_id,
+    &quot;content&quot;: &quot;Error: Location 'xyz' not found. Please provide a valid city name.&quot;,
+    &quot;is_error&quot;: True
+}
+</code></pre>
+<hr />
+<h2>Tool Choice</h2>
+<pre><code class="language-python">response = client.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    tools=tools,
+    tool_choice={&quot;type&quot;: &quot;tool&quot;, &quot;name&quot;: &quot;get_weather&quot;},  # Force specific tool
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What's the weather in Paris?&quot;}]
+)
+</code></pre>
+<hr />
+<h2>Code Execution</h2>
+<h3>Basic Usage</h3>
+<pre><code class="language-python">import anthropic
+
+client = anthropic.Anthropic()
+
+response = client.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    messages=[{
+        &quot;role&quot;: &quot;user&quot;,
+        &quot;content&quot;: &quot;Calculate the mean and standard deviation of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]&quot;
+    }],
+    tools=[{
+        &quot;type&quot;: &quot;code_execution_20260120&quot;,
+        &quot;name&quot;: &quot;code_execution&quot;
+    }]
+)
+
+for block in response.content:
+    if block.type == &quot;text&quot;:
+        print(block.text)
+    elif block.type == &quot;bash_code_execution_tool_result&quot;:
+        print(f&quot;stdout: {block.content.stdout}&quot;)
+</code></pre>
+<h3>Upload Files for Analysis</h3>
+<pre><code class="language-python"># 1. Upload a file
+uploaded = client.beta.files.upload(file=open(&quot;sales_data.csv&quot;, &quot;rb&quot;))
+
+# 2. Pass to code execution via container_upload block
+response = client.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    messages=[{
+        &quot;role&quot;: &quot;user&quot;,
+        &quot;content&quot;: [
+            {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;Analyze this sales data. Show trends and create a visualization.&quot;},
+            {&quot;type&quot;: &quot;container_upload&quot;, &quot;file_id&quot;: uploaded.id}
+        ]
+    }],
+    tools=[{&quot;type&quot;: &quot;code_execution_20260120&quot;, &quot;name&quot;: &quot;code_execution&quot;}]
+)
+</code></pre>
+<h3>Retrieve Generated Files</h3>
+<pre><code class="language-python">import os
+
+OUTPUT_DIR = &quot;./claude_outputs&quot;
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+for block in response.content:
+    if block.type == &quot;bash_code_execution_tool_result&quot;:
+        result = block.content
+        if result.type == &quot;bash_code_execution_result&quot; and result.content:
+            for file_ref in result.content:
+                if file_ref.type == &quot;bash_code_execution_output&quot;:
+                    metadata = client.beta.files.retrieve_metadata(file_ref.file_id)
+                    file_content = client.beta.files.download(file_ref.file_id)
+                    # Use basename to prevent path traversal; validate result
+                    safe_name = os.path.basename(metadata.filename)
+                    if not safe_name or safe_name in (&quot;.&quot;, &quot;..&quot;):
+                        print(f&quot;Skipping invalid filename: {metadata.filename}&quot;)
+                        continue
+                    output_path = os.path.join(OUTPUT_DIR, safe_name)
+                    file_content.write_to_file(output_path)
+                    print(f&quot;Saved: {output_path}&quot;)
+</code></pre>
+<h3>Container Reuse</h3>
+<pre><code class="language-python"># First request: set up environment
+response1 = client.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Install tabulate and create data.json with sample data&quot;}],
+    tools=[{&quot;type&quot;: &quot;code_execution_20260120&quot;, &quot;name&quot;: &quot;code_execution&quot;}]
+)
+
+# Get container ID from response
+container_id = response1.container.id
+
+# Second request: reuse the same container
+response2 = client.messages.create(
+    container=container_id,
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Read data.json and display as a formatted table&quot;}],
+    tools=[{&quot;type&quot;: &quot;code_execution_20260120&quot;, &quot;name&quot;: &quot;code_execution&quot;}]
+)
+</code></pre>
+<h3>Response Structure</h3>
+<pre><code class="language-python">for block in response.content:
+    if block.type == &quot;text&quot;:
+        print(block.text)  # Claude's explanation
+    elif block.type == &quot;server_tool_use&quot;:
+        print(f&quot;Running: {block.name} - {block.input}&quot;)  # What Claude is doing
+    elif block.type == &quot;bash_code_execution_tool_result&quot;:
+        result = block.content
+        if result.type == &quot;bash_code_execution_result&quot;:
+            if result.return_code == 0:
+                print(f&quot;Output: {result.stdout}&quot;)
+            else:
+                print(f&quot;Error: {result.stderr}&quot;)
+        else:
+            print(f&quot;Tool error: {result.error_code}&quot;)
+    elif block.type == &quot;text_editor_code_execution_tool_result&quot;:
+        print(f&quot;File operation: {block.content}&quot;)
+</code></pre>
+<hr />
+<h2>Memory Tool</h2>
+<h3>Basic Usage</h3>
+<pre><code class="language-python">import anthropic
+
+client = anthropic.Anthropic()
+
+response = client.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Remember that my preferred language is Python.&quot;}],
+    tools=[{&quot;type&quot;: &quot;memory_20250818&quot;, &quot;name&quot;: &quot;memory&quot;}],
+)
+</code></pre>
+<h3>SDK Memory Helper</h3>
+<p>Subclass <code>BetaAbstractMemoryTool</code>:</p>
+<pre><code class="language-python">from anthropic.lib.tools import BetaAbstractMemoryTool
+
+class MyMemoryTool(BetaAbstractMemoryTool):
+    def view(self, command): ...
+    def create(self, command): ...
+    def str_replace(self, command): ...
+    def insert(self, command): ...
+    def delete(self, command): ...
+    def rename(self, command): ...
+
+memory = MyMemoryTool()
+
+# Use with tool runner
+runner = client.beta.messages.tool_runner(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    tools=[memory],
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Remember my preferences&quot;}],
+)
+
+for message in runner:
+    print(message)
+</code></pre>
+<p>For full implementation examples, use WebFetch:</p>
+<ul>
+<li><code>https://github.com/anthropics/anthropic-sdk-python/blob/main/examples/memory/basic.py</code></li>
+</ul>
+<hr />
+<h2>Structured Outputs</h2>
+<h3>JSON Outputs (Pydantic - Recommended)</h3>
+<pre><code class="language-python">from pydantic import BaseModel
+from typing import List
+import anthropic
+
+class ContactInfo(BaseModel):
+    name: str
+    email: str
+    plan: str
+    interests: List[str]
+    demo_requested: bool
+
+client = anthropic.Anthropic()
+
+response = client.messages.parse(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    messages=[{
+        &quot;role&quot;: &quot;user&quot;,
+        &quot;content&quot;: &quot;Extract: Jane Doe (jane@co.com) wants Enterprise, interested in API and SDKs, wants a demo.&quot;
+    }],
+    output_format=ContactInfo,
+)
+
+# response.parsed_output is a validated ContactInfo instance
+contact = response.parsed_output
+print(contact.name)           # &quot;Jane Doe&quot;
+print(contact.interests)      # [&quot;API&quot;, &quot;SDKs&quot;]
+</code></pre>
+<h3>Raw Schema</h3>
+<pre><code class="language-python">response = client.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    messages=[{
+        &quot;role&quot;: &quot;user&quot;,
+        &quot;content&quot;: &quot;Extract info: John Smith (john@example.com) wants the Enterprise plan.&quot;
+    }],
+    output_config={
+        &quot;format&quot;: {
+            &quot;type&quot;: &quot;json_schema&quot;,
+            &quot;schema&quot;: {
+                &quot;type&quot;: &quot;object&quot;,
+                &quot;properties&quot;: {
+                    &quot;name&quot;: {&quot;type&quot;: &quot;string&quot;},
+                    &quot;email&quot;: {&quot;type&quot;: &quot;string&quot;},
+                    &quot;plan&quot;: {&quot;type&quot;: &quot;string&quot;},
+                    &quot;demo_requested&quot;: {&quot;type&quot;: &quot;boolean&quot;}
+                },
+                &quot;required&quot;: [&quot;name&quot;, &quot;email&quot;, &quot;plan&quot;, &quot;demo_requested&quot;],
+                &quot;additionalProperties&quot;: False
+            }
+        }
+    }
+)
+
+import json
+# output_config.format guarantees the first block is text with valid JSON
+text = next(b.text for b in response.content if b.type == &quot;text&quot;)
+data = json.loads(text)
+</code></pre>
+<h3>Strict Tool Use</h3>
+<pre><code class="language-python">response = client.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Book a flight to Tokyo for 2 passengers on March 15&quot;}],
+    tools=[{
+        &quot;name&quot;: &quot;book_flight&quot;,
+        &quot;description&quot;: &quot;Book a flight to a destination&quot;,
+        &quot;strict&quot;: True,
+        &quot;input_schema&quot;: {
+            &quot;type&quot;: &quot;object&quot;,
+            &quot;properties&quot;: {
+                &quot;destination&quot;: {&quot;type&quot;: &quot;string&quot;},
+                &quot;date&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;format&quot;: &quot;date&quot;},
+                &quot;passengers&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;enum&quot;: [1, 2, 3, 4, 5, 6, 7, 8]}
+            },
+            &quot;required&quot;: [&quot;destination&quot;, &quot;date&quot;, &quot;passengers&quot;],
+            &quot;additionalProperties&quot;: False
+        }
+    }]
+)
+</code></pre>
+<h3>Using Both Together</h3>
+<pre><code class="language-python">response = client.messages.create(
+    model=&quot;claude-opus-5&quot;,
+    max_tokens=16000,
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Plan a trip to Paris next month&quot;}],
+    output_config={
+        &quot;format&quot;: {
+            &quot;type&quot;: &quot;json_schema&quot;,
+            &quot;schema&quot;: {
+                &quot;type&quot;: &quot;object&quot;,
+                &quot;properties&quot;: {
+                    &quot;summary&quot;: {&quot;type&quot;: &quot;string&quot;},
+                    &quot;next_steps&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;items&quot;: {&quot;type&quot;: &quot;string&quot;}}
+                },
+                &quot;required&quot;: [&quot;summary&quot;, &quot;next_steps&quot;],
+                &quot;additionalProperties&quot;: False
+            }
+        }
+    },
+    tools=[{
+        &quot;name&quot;: &quot;search_flights&quot;,
+        &quot;description&quot;: &quot;Search for available flights&quot;,
+        &quot;strict&quot;: True,
+        &quot;input_schema&quot;: {
+            &quot;type&quot;: &quot;object&quot;,
+            &quot;properties&quot;: {
+                &quot;destination&quot;: {&quot;type&quot;: &quot;string&quot;},
+                &quot;date&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;format&quot;: &quot;date&quot;}
+            },
+            &quot;required&quot;: [&quot;destination&quot;, &quot;date&quot;],
+            &quot;additionalProperties&quot;: False
+        }
+    }]
+)
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

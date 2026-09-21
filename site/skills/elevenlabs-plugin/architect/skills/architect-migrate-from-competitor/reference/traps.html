@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>traps · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">architect/skills/architect-migrate-from-competitor/reference/traps.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Import traps</h1>
+<p>These bite specifically because you are converting a foreign config, so no sibling skill covers them.
+<strong>Every one of them fails silently or misleadingly</strong> — the payload is accepted, the graph renders, and
+the agent is wrong on the first real call. That is why they are worth reading before you author rather
+than after something breaks.</p>
+<p>Grouped by what you are building when each one bites. Condition and edge semantics live in
+<code>expressions.md</code> instead; read that one when you write conditions.</p>
+<hr />
+<h2>Authoring tools</h2>
+<h3>A tenant id in a tool URL: use a path parameter, not the body</h3>
+<p>Source platforms interpolate variables straight into a tool URL —
+<code>{{api_host}}/v2/{{account_id}}/customers</code>. ElevenLabs rejects <code>{{...}}</code> in a URL outright. The
+instinct to move those values into the request body is wrong for a path segment, and following it
+literally forces one hardcoded tool per tenant.</p>
+<p>The right shape is a static host, a <strong>single-brace</strong> placeholder in the path, and a
+<code>path_params_schema</code> keyed by the placeholder name:</p>
+<pre><code>url:                &quot;https://api.example.com/v2/{account_id}/customers&quot;
+path_params_schema: {&quot;account_id&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;dynamic_variable&quot;: &quot;account_id&quot;}}
+</code></pre>
+<p>Multi-tenancy is preserved and the tool stays single. Two things to get right:</p>
+<ul>
+<li><strong>The two params schemas are different shapes, next to each other.</strong> <code>path_params_schema</code> is an
+  object keyed by parameter name, and the keys must match the URL placeholders.
+  <code>query_params_schema</code> is a single object with <code>properties</code> and <code>required</code>. Neither is an array of
+  parameter objects. Passing the wrong one of the two is the <code>Input should be a valid dictionary</code>
+  rejection.</li>
+<li>Each entry declares <strong>exactly one</strong> value source — <code>description</code>, <code>dynamic_variable</code>,
+  <code>is_system_provided</code>, <code>constant_value</code>, or <code>is_omitted</code>. Setting two is rejected. <strong><code>description</code>
+  is a member of that set</strong>, which is the part that catches people: a parameter with a
+  <code>constant_value</code> or a <code>dynamic_variable</code> may carry no description at all. That is the default
+  mistake in a migration, because the source platform usually has both and copying the pair across
+  looks like the careful thing to do. This applies to array <code>items</code> schemas too: a bare
+  <code>items: {"type": "string"}</code> fails, because the items schema needs its own value source.</li>
+<li><strong>Response paths are dot notation. A carried-over JSONPath is rejected.</strong> <code>reservation.status</code>, not
+  <code>$.reservation.status</code>, in <code>assignments[].value_path</code> and in <code>response_filter.filters</code>. Sources
+  commonly write the <code>$.</code> form, so this is a find-and-replace on every response mapping rather than a
+  one-off.</li>
+</ul>
+<h3>A tool parameter bound to a runtime variable fails at conversation start</h3>
+<p>Tool validation sees initiation variables and other tools' response assignments — but not the
+placeholder set that prompt, first message and say nodes get. So a tool argument bound to a variable
+populated later in the call fails at conversation start even though a placeholder is declared, and
+nothing in the config shows the asymmetry.</p>
+<p><strong>Declaring the placeholder is not the fix, and this is not a check you can pass by reading.</strong> Do it
+mechanically, before shipping:</p>
+<ol>
+<li>List every tool parameter bound to a <code>dynamic_variable</code>.</li>
+<li>Classify each source: an <strong>initiation</strong> variable, another tool's <strong>response assignment</strong>, or written
+   <strong>only</strong> by an <code>update_state</code> node.</li>
+<li>The third category is broken. Fix it — either promote the value to an initiation variable (often
+   right when an upstream system already creates it), or populate it from a tool response assignment.</li>
+</ol>
+<p>A single shared identifier bound across most of the tool set is the common shape here, so one missed
+variable can take down nearly every tool call in the agent.</p>
+<h3>Tool scoping is not a security boundary — or an ordering one</h3>
+<p>Attaching a tool to one procedure does not stop another from calling it: every tool referenced by
+any attached procedure is in scope from the first turn. If the source relied on per-state tool
+availability to gate a sensitive action — taking a payment, issuing a refund, releasing personal
+data — that gate must be enforced by the tool's own endpoint against session state. Graph and
+procedure structure route; they do not authorize.</p>
+<p><strong>The same fact bites a second way, and this is the one that catches migrations.</strong> A source flow that
+collects details, reads them back, and only then writes is extremely common — bookings, orders,
+cancellations. It is tempting to reproduce that with a deterministic procedure whose steps run in
+order, and it does not work: the compiled step order governs the procedure's <em>progression</em>, not the
+model's <em>access</em>. The write tool is in scope on every turn from the first, so the model calls it as
+soon as it has plausible arguments — before the read-back. Making it deterministic does not help, and
+removing the tool from the base set does not either, because a procedure that references a tool puts it
+back in scope.</p>
+<p>So <strong>no agent configuration makes an irreversible action unreachable until a confirmation step.</strong> The
+gate is behavioural, held by three reinforcing pressures — a prompt section on irreversible actions,
+preconditions written into the tool's own description, and the procedure's step order — and it holds
+most of the time, not always. Measure it rather than assuming it, report the rate, and say plainly what
+would make it absolute: the endpoint refusing a write that does not carry a token issued after the
+read-back. That is a conversation to have with the customer during the migration, not after.</p>
+<p>Do not spend rounds trying to configure your way out of this. One migration burned four fix rounds on
+it and arrived at the same answer.</p>
+<h3>Timeouts have two different ceilings</h3>
+<p>Configured ranges are <code>[5,120]</code> for webhook and code tools, <code>[1,120]</code> for client tools, and
+<code>[5,300]</code> for MCP. But a code tool's sandbox refuses anything over <strong>30 seconds</strong> at execution time,
+so a code tool configured at 60 is accepted by the API and then fails to run. Keep code tools within
+<code>[5,30]</code>. Source platforms commonly default to a very long timeout; clamp rather than carrying it.</p>
+<hr />
+<h2>Authoring nodes and graph shape</h2>
+<h3>A transfer node with no outgoing edge silently ends the call</h3>
+<p>A <code>phone_number</code> node is <strong>not</strong> terminal. It stops only when the transfer succeeds; when the
+transfer fails it writes the outcome into <code>local::last_tool_dispatch_result_successful</code> and
+re-evaluates its outgoing edges. Give every migrated transfer an outgoing edge so a failed transfer
+has somewhere to go — the edge takes a <code>result</code> condition, so the fallback is deterministic rather
+than an LLM judgment. Leaving it edgeless is what throws the failure path away.</p>
+<p>The only genuinely terminal node type is <code>end</code>.</p>
+<h3><code>say</code> nodes silently ignore node-scoped tools and knowledge</h3>
+<p><code>additional_tool_ids</code> and <code>additional_knowledge_base</code> exist on <code>say</code> nodes and the API accepts
+writes to them, but only <code>override_agent</code> nodes actually apply them at runtime. If a source state
+needs its own tools or its own documents, it must become an <code>override_agent</code> node.</p>
+<h3>Appending versus replacing a node prompt</h3>
+<p>A node can either append to the base prompt or replace it. Porting a source state's prompt into the
+replacing field discards the base personality, tone and guardrails with no error. Append is almost
+always what a converted per-state prompt wants. <code>agent-review</code> and <code>agent-simplification</code> both call
+this the single most common mistake on a node; confirm which field you are writing before you write.</p>
+<h3>A source "global" node becomes reachable from every turn, and the model decides</h3>
+<p>Lowering an always-available source node onto a triggered procedure puts its trigger in a menu that
+is re-injected into the system prompt <strong>every turn</strong>, and there is no per-node scoping to narrow it
+afterwards — a node cannot restrict which procedures are offered the way it can restrict tools.</p>
+<p><strong>But it does not take precedence over your graph, and the difference matters.</strong> Activation is the
+model calling a <code>start_procedure</code> system tool with the index it picked out of that menu; nothing
+preempts the authored path automatically. So the property to design against is not "this outranks my
+edges", it is "at every single turn the model <em>may</em> leave the path I authored, and whether it does is
+not deterministic".</p>
+<p>That is the harder version to test. A conversion that reasons "the verification node runs first
+because it comes first" will pass every scripted run and still be bypassed in production, because the
+bypass depends on what the caller says. If a step must happen before an irreversible action, the
+guarantee has to live at the endpoint — see the tool-scoping trap above; graph position and step
+ordering both fail here for the same reason.</p>
+<p>Where the global node only transfers or hangs up, prefer the corresponding system tool plus a line in
+the prompt.</p>
+<h3>Folding a source branch node into its predecessor's edges</h3>
+<p>A dedicated branch/router node usually has no ElevenLabs counterpart — its logic belongs on the edges
+leaving the node before it. Two mechanics make this possible, and neither is obvious:</p>
+<ul>
+<li><strong>Judgment and determinism mix in one condition.</strong> The expression AST has an <code>llm</code> node type, so a
+  single condition can conjoin a model judgment with a deterministic variable test. This is what makes
+  folding viable at all rather than forcing a choice between the two.</li>
+<li><strong>A tool's success/failure is available as a variable.</strong> A <code>result</code> condition is itself sugar over a
+  comparison against the last tool dispatch result, which the runtime writes after every tool node. So
+  a branch sitting downstream of a tool call can fold too — conjoin that comparison with the rest of
+  the logic. It fails closed: on a node with no preceding tool node the fold never fires.</li>
+</ul>
+<p><strong>When not to fold.</strong> Because there is no <code>not</code> operator, splitting one source branch into two paired
+edges means hand-writing the negation and keeping two copies in sync, and any LLM judgment inside gets
+evaluated twice per turn. Count before committing: saving eight nodes at the price of a dozen
+hand-negated conditions is usually the worse trade. Keeping the router as a silent <code>update_state</code> node
+with no updates is a legitimate outcome — it advances without an LLM turn and the routing stays in one
+place. Fold where it simplifies; keep the router where it does not.</p>
+<hr />
+<h2>Agent-level config</h2>
+<h3>Deletion flags are silently switched off unless you set a retention window</h3>
+<p>Privacy config has a trap with the same shape as the transcriber one, and it fails in the direction
+that keeps data. If <code>retention_days</code> is <code>-1</code> <strong>or simply omitted</strong>, then <code>delete_transcript_and_pii</code>
+and <code>delete_audio</code> are forced to <code>false</code> before the payload is validated. No error is returned, and a
+later read shows <code>false</code> exactly as though you had chosen it.</p>
+<p>So lowering a source setting that means "keep everything except PII" into <code>delete_transcript_and_pii:
+true</code> <strong>and nothing else</strong> silently retains the PII. Set a real <code>retention_days</code> in the same payload,
+and re-read the saved config to confirm both fields survived. The validation error you might expect to
+catch this is unreachable — the coercion runs first.</p>
+<p><code>zero_retention_mode</code> is the separate, stricter option: it requires <code>record_voice: false</code> and
+<code>retention_days: -1</code>. Do not reach for it as a shortcut to "delete the PII" — it is a different
+setting with different consequences, and it is the customer's decision, not a conversion detail.</p>
+<h3>Other silent rewrites and caps</h3>
+<ul>
+<li>An <code>update_state</code> node writes at most <strong>10</strong> updates. Split a larger source state-write block.</li>
+<li><strong>Procedures are silently dropped from an agent-create payload.</strong> Pass them and the call returns 200
+  with an empty procedure list. They must be created through the branch-scoped flow that
+  <code>architect-manage-procedures</code> owns — route there rather than inlining it, because every source global
+  node lands on a procedure.</li>
+<li>Post-call field extraction has no enum type — the types are boolean, string, integer and number. A
+  source field with a fixed choice list has to fold those choices into its description.</li>
+<li>EL enforces catch-all-last by moving unconditional edges to the end of the edge order, so you only
+  need to order the <em>conditional</em> edges.</li>
+<li>The default turn model triggers a validator that rewrites the transcriber choice. Reading the value
+  back proves nothing — the rewritten value appears exactly as though you had chosen it. <strong>Set the
+  transcriber explicitly</strong> rather than verifying by reading.</li>
+<li>Capturing something the caller said into a variable mid-call is done with an <code>update_state</code> node
+  plus an LLM extraction expression. This is feature-flagged — confirm availability before designing
+  around it.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

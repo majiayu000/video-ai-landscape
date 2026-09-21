@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>commercial · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/fal-recipes/references/commercial.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Commercial Recipe</h1>
+<p>Use this recipe when the user wants advertising, product, brand, or e-commerce media. Keep the output production-focused. Do not add inflated marketing language, unsupported claims, fake text in the image, or em dashes.</p>
+<h2>Inputs to collect</h2>
+<p>Only ask when the answer cannot be inferred from the task or the source files.</p>
+<ul>
+<li>Product: exact product name, category, material, color, scale, logo rules.</li>
+<li>Goal: hero shot, PDP image, ad creative, motion reveal, demo, UGC, lifestyle.</li>
+<li>Platform: square, vertical, landscape, banner, transparent background, print.</li>
+<li>Brand: premium, playful, clinical, athletic, minimal, natural, technical.</li>
+<li>Source media: product packshot, logo, reference scene, prior generated asset.</li>
+<li>Constraints: preserve packaging, avoid new labels, no fake readable copy.</li>
+</ul>
+<h2>Genmedia workflow</h2>
+<ol>
+<li>Routed endpoints (see <a href="../../fal-models-catalog/SKILL.html">fal-models-catalog</a>):</li>
+</ol>
+<p><code>bash
+ genmedia models --endpoint_id openai/gpt-image-2 --json
+ genmedia models --endpoint_id fal-ai/nano-banana-pro/edit --json
+ genmedia models --endpoint_id fal-ai/nano-banana-2 --json
+ genmedia models --endpoint_id bytedance/seedance-2.0/image-to-video --json</code></p>
+<p>Fallback discovery:</p>
+<p><code>bash
+ genmedia models "background removal product image" --json
+ genmedia docs "commercial product image generation" --json</code></p>
+<ol start="2">
+<li>Inspect the selected endpoint before running.</li>
+</ol>
+<p><code>bash
+ genmedia schema &lt;endpoint_id&gt; --json
+ genmedia pricing &lt;endpoint_id&gt; --json</code></p>
+<ol start="3">
+<li>Upload every local or remote reference file.</li>
+</ol>
+<p><code>bash
+ genmedia upload ./product.png --json
+ genmedia upload ./logo.png --json</code></p>
+<ol start="4">
+<li>Still-image jobs synchronously when quick:</li>
+</ol>
+<p><code>bash
+ genmedia run &lt;endpoint_id&gt; \
+ --prompt "&lt;commercial prompt&gt;" \
+ --image_url "&lt;uploaded product url if supported&gt;" \
+ --download "./outputs/commercial/{request_id}_{index}.{ext}" \
+ --json</code></p>
+<ol start="5">
+<li>Video jobs async, download from <code>status</code>:</li>
+</ol>
+<p>```bash
+ genmedia run <endpoint_id> \
+ --prompt "<motion prompt>" \
+ --image_url "<uploaded hero frame if supported>" \
+ --async \
+ --json</p>
+<p>genmedia status <endpoint_id> <request_id> \
+ --download "./outputs/commercial/{request_id}_{index}.{ext}" \
+ --json
+ ```</p>
+<ol start="6">
+<li>Use schema fields exactly. Mirror the model's field names. <code>image_urls</code>, <code>reference_image_url</code>, <code>aspect_ratio</code>, <code>duration</code>, <code>seed</code>, etc.</li>
+</ol>
+<h2>Prompt build order</h2>
+<ol>
+<li><strong>Product invariant</strong>: exact object, material, color, packaging, scale.</li>
+<li><strong>Commercial role</strong>: hero image, PDP image, launch teaser, demo shot, social ad.</li>
+<li><strong>Setting</strong>: surface, background, props, environment, distance from product.</li>
+<li><strong>Lighting</strong>: softbox, strip light, rim light, backlight, caustics, practicals.</li>
+<li><strong>Camera</strong>: angle, focal length feel, macro, depth of field, motion if video.</li>
+<li><strong>Composition</strong>: centered, negative space, safe zone, text-free area, platform.</li>
+<li><strong>Brand tone</strong>: premium, clean, clinical, bold, energetic, warm, editorial.</li>
+<li><strong>Guardrails</strong>: preserve logo and packaging, no extra text, no distorted labels.</li>
+</ol>
+<p>Do not promise claims like "best", "clinically proven", "50 percent faster", or celebrity endorsements unless the user provides that copy.</p>
+<h2>Prompt patterns</h2>
+<h3>Product hero image</h3>
+<pre><code class="language-text">[exact product] as the only hero object, [material and color], placed on
+[surface], [background], [lighting setup], [camera angle and lens feel],
+[composition and crop], premium commercial product photography, clean edges,
+accurate packaging, no extra text, no fake labels, no hands unless requested
+</code></pre>
+<h3>Product with lifestyle context</h3>
+<pre><code class="language-text">[exact product] used in [specific real setting], natural interaction with
+[person or environment], product remains sharp and readable, [time of day],
+[brand tone], [lens feel], [platform crop], no invented claims, no extra logos
+</code></pre>
+<h3>E-commerce PDP image</h3>
+<pre><code class="language-text">[exact product] centered on seamless [background color], front-facing,
+accurate silhouette, even softbox lighting, realistic shadow, high detail,
+no props, no decorative text, clean product catalog photography
+</code></pre>
+<h3>Social ad with safe-zone composition</h3>
+<pre><code class="language-text">[product] in [scene], subject placed in [left/right/lower third], large clean
+negative space on [side] for copy, [platform aspect ratio], strong first-frame
+readability, no text generated inside the image
+</code></pre>
+<h3>Product reveal video</h3>
+<pre><code class="language-text">[duration] second product reveal of [product], starts with [opening frame],
+camera [movement], product rotates or reveals [feature], [lighting change],
+[background motion], premium commercial pacing, product remains centered and
+undistorted, no text, no logo morphing
+</code></pre>
+<h3>Background replacement</h3>
+<pre><code class="language-text">keep the uploaded product exactly unchanged, replace only the background with
+[environment], match reflections and contact shadows, [lighting direction],
+commercial product photography, no product deformation, no added labels
+</code></pre>
+<h3>Material cues</h3>
+<ul>
+<li><strong>Glass</strong>: backlight, rim light, caustics, transparent edges, controlled reflections.</li>
+<li><strong>Metal</strong>: strip highlights, hard rim, dark flags, precise specular lines.</li>
+<li><strong>Plastic</strong>: softbox, clean shadow, realistic molded edges, no over-gloss.</li>
+<li><strong>Fabric</strong>: side light, visible weave, natural folds, accurate color.</li>
+<li><strong>Food</strong>: soft directional light, steam or condensation only when plausible.</li>
+<li><strong>Jewelry</strong>: macro lens feel, dark cards, crisp sparkle, controlled highlights.</li>
+</ul>
+<h3>Negative prompt components</h3>
+<p>Use only when the selected model supports a negative prompt:</p>
+<pre><code class="language-text">extra text, fake logo, misspelled label, deformed packaging, duplicated
+product, cropped product, warped geometry, bad reflections, messy background,
+unreadable brand mark, synthetic hands, low resolution
+</code></pre>
+<h2>Workflows</h2>
+<h3>Hero image from product reference</h3>
+<ol>
+<li>Upload the product image with <code>genmedia upload</code>.</li>
+<li>Search for image editing, reference image, or product photography models.</li>
+<li>Inspect schema and choose fields that preserve product identity.</li>
+<li>Prompt for surface, lighting, crop, and background. Keep the product invariant short and exact.</li>
+<li>Run with <code>--download "./outputs/commercial/{request_id}_{index}.{ext}"</code>.</li>
+<li>Reject outputs with altered logos, warped packaging, or invented text.</li>
+</ol>
+<h3>Text-to-image product concept</h3>
+<p>Use when no reference exists or the user wants early creative exploration.</p>
+<ol>
+<li>Ask or infer product category, materials, and brand tone.</li>
+<li>Generate 2-4 controlled variants if the model supports count.</li>
+<li>Keep each variant different by one dimension only: background, lighting, camera angle, or prop set.</li>
+<li>Pick the strongest frame before moving to video or batch production.</li>
+</ol>
+<h3>Product reveal video</h3>
+<ol>
+<li>Create a still hero frame or upload the user's approved product frame.</li>
+<li>Search image-to-video models and inspect <code>duration</code>, <code>aspect_ratio</code>, image input, seed, and motion controls.</li>
+<li>Keep motion simple: push-in, turntable, parallax, reveal, pour, unwrap.</li>
+<li>Run async, then download from <code>genmedia status</code>.</li>
+<li>If the product changes shape, reduce motion and strengthen identity constraints.</li>
+</ol>
+<h3>E-commerce batch</h3>
+<ol>
+<li>Build a base prompt with exact product invariants.</li>
+<li>Create a small matrix: white background, brand-color background, lifestyle, scale/detail, packaging close-up.</li>
+<li>Use consistent output naming with <code>{request_id}_{index}</code>.</li>
+<li>Return a table of output path, concept, endpoint, and notable defects.</li>
+</ol>
+<h3>Ad creative set</h3>
+<p>Produce separate assets for:</p>
+<ul>
+<li><strong>Hook frame</strong>: product and benefit visible in under one second.</li>
+<li><strong>Proof frame</strong>: product detail, ingredient, feature, texture, or before-after.</li>
+<li><strong>Lifestyle frame</strong>: human or environmental context.</li>
+<li><strong>Conversion frame</strong>: clean safe-zone layout for external text and CTA.</li>
+</ul>
+<p>Do not generate legal claims, pricing, discounts, or health claims unless the user supplies the exact copy.</p>
+<h2>Examples</h2>
+<h3>Skincare serum hero</h3>
+<pre><code class="language-text">amber glass skincare serum bottle with matte black dropper, exact label and
+packaging preserved from the reference image, standing on pale stone, soft
+diffused key light from upper left, thin rim light on glass edges, subtle
+water condensation, warm beige background, centered square crop, premium beauty
+product photography, no added text, no extra bottles, no warped label
+</code></pre>
+<h3>Sneaker launch still</h3>
+<pre><code class="language-text">single white running sneaker with blue outsole accents, three-quarter side
+view, suspended just above a clean concrete surface, sharp shadow under sole,
+crisp studio flash, slight motion dust behind heel, athletic launch campaign
+style, product fully visible, no brand changes, no text
+</code></pre>
+<h3>Beverage pour video</h3>
+<pre><code class="language-text">8 second commercial video of a cold craft soda can on wet black stone,
+opening on a close-up of condensation, slow push-in as liquid pours into a
+glass beside it, controlled splash, amber backlight through the liquid, premium
+beverage ad pacing, can shape and label remain stable, no added text
+</code></pre>
+<h3>SaaS device mockup</h3>
+<pre><code class="language-text">thin laptop on a clean walnut desk showing an abstract dashboard interface,
+morning side light, shallow depth of field, organized workspace with notebook
+and pen, calm productivity mood, wide landscape crop with negative space on
+right for headline, no readable fake UI text
+</code></pre>
+<h3>Background replacement</h3>
+<pre><code class="language-text">preserve the uploaded ceramic coffee mug exactly, replace background with a
+bright Scandinavian kitchen counter, soft morning window light from left,
+realistic contact shadow and reflection, warm lifestyle product photography,
+no new logo, no deformation, no text
+</code></pre>
+<h2>Quality bar</h2>
+<p>Before returning, check:</p>
+<ul>
+<li>Product shape, logo, material, and color are not invented or distorted.</li>
+<li>The composition leaves enough room for platform crop and optional copy.</li>
+<li>Background props support the product and do not compete with it.</li>
+<li>Any generated text is absent or intentionally controlled.</li>
+<li>Lighting makes sense for the product material.</li>
+<li>Output paths come from <code>downloaded_files[]</code>, not manually curled URLs.</li>
+</ul>
+<p>If the result misses product fidelity, switch from text-only generation to a reference or edit workflow before retrying.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

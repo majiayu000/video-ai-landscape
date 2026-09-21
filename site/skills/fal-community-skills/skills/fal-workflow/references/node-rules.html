@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>node-rules · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/fal-workflow/references/node-rules.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Node rules</h1>
+<h2>Planner node</h2>
+<ul>
+<li>Produces the workflow graph, shot table, or variant matrix.</li>
+<li>Output must be structured enough to execute without interpretation drift.</li>
+<li>Include node IDs, dependencies, intended endpoint role, inputs, and expected
+  outputs.</li>
+<li>Keep creative planning separate from executable parameters.</li>
+</ul>
+<h2>Extractor node</h2>
+<ul>
+<li>Converts planner output into one narrow prompt, caption, subtitle, filename,
+  or parameter set.</li>
+<li>Use deterministic wording and low creativity.</li>
+<li>Prefer split or merge text utilities when the task is simple string
+  manipulation.</li>
+</ul>
+<h2>Image generation node</h2>
+<ul>
+<li>Choose the endpoint from <code>model-routing</code> first.</li>
+<li>Verify it with <code>genmedia models --endpoint_id &lt;endpoint_id&gt; --json</code>.</li>
+<li>Use free-text <code>genmedia models "&lt;query&gt;" --json</code> only when the routed
+  endpoint is missing or the role is not covered.</li>
+<li>Inspect schema before setting aspect ratio, image size, count, seed, or
+  negative prompt.</li>
+<li>For grids, describe layout and panel count exactly.</li>
+<li>For product or character continuity, prefer reference or edit workflows.</li>
+</ul>
+<h2>Image editing node</h2>
+<ul>
+<li>Upload every source image first.</li>
+<li>Change one thing per pass.</li>
+<li>State preservation rules first, edit instruction second.</li>
+<li>If multiple references are used, assign roles: identity, style, background,
+  product, pose, texture.</li>
+</ul>
+<h2>Image-to-video node</h2>
+<ul>
+<li>Prefer image-to-video when a reference frame exists.</li>
+<li>Use short motion prompts, usually 15 to 35 words.</li>
+<li>Specify subject motion, camera motion, and ambient motion.</li>
+<li>Avoid describing static composition again unless the schema or model needs it.</li>
+<li>Run async and download via <code>genmedia status</code>.</li>
+</ul>
+<h2>Utility node</h2>
+<ul>
+<li>Utility work should be deterministic: resize, crop, grid, composite, overlay,
+  subtitle, join audio and video, speed change, split, merge, compress.</li>
+<li>Always inspect schema because utility endpoints often have exact field names.</li>
+<li>Use generated result URLs for downstream inputs when available.</li>
+<li>Use <code>genmedia upload</code> for local intermediate files before passing them into
+  another endpoint.</li>
+</ul>
+<h2>QA node</h2>
+<p>Use a manual or vision-based check after high-risk nodes:</p>
+<ul>
+<li>Identity preserved.</li>
+<li>Product logo and packaging preserved.</li>
+<li>Crop and aspect ratio correct.</li>
+<li>Text is absent, intentional, or added by a text utility.</li>
+<li>Audio and subtitle timing match.</li>
+<li>Clip order and duration match the plan.</li>
+</ul>
+<h2>Manifest node</h2>
+<p>Return a compact manifest at the end:</p>
+<pre><code class="language-json">{
+  &quot;node_id&quot;: &quot;shot_03_i2v&quot;,
+  &quot;role&quot;: &quot;image_to_video&quot;,
+  &quot;endpoint_id&quot;: &quot;selected endpoint&quot;,
+  &quot;request_id&quot;: &quot;fal request id&quot;,
+  &quot;inputs&quot;: [&quot;source url or local path&quot;],
+  &quot;outputs&quot;: [&quot;result media url&quot;],
+  &quot;downloaded_files&quot;: [&quot;local file path&quot;],
+  &quot;status&quot;: &quot;accepted | retried | rejected&quot;,
+  &quot;notes&quot;: &quot;short defect or continuity note&quot;
+}
+</code></pre>
+<p>Keep manifests factual. Do not include promotional copy.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

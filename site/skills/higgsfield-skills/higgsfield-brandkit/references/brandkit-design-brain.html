@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>brandkit-design-brain · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-brandkit/references/brandkit-design-brain.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Brandkit Design Brain</h1>
+<p>Internal art-direction layer between user input and Brandkit production. Never
+show this analysis as a separate concept or ask the user to approve it.</p>
+<p>The Design Brain does not render assets, write Recraft prompts, call tools, or
+store approvals. It turns the current brief and selected draft elements into
+strong, coherent creative decisions for the next stage.</p>
+<h2>Source of truth</h2>
+<p>Use only:</p>
+<ul>
+<li>Mandatory intake answers</li>
+<li>Uploaded official assets</li>
+<li>Uploaded inspiration/reference signals</li>
+<li>User feedback from prior review stages</li>
+<li>Already selected draft palette/logo/type</li>
+</ul>
+<p>Do not run external design research. Do not copy a supplied reference's logo,
+layout, artwork, pattern, or distinctive device.</p>
+<h2>Compile Creative DNA</h2>
+<p>Privately extract:</p>
+<pre><code class="language-text">PRODUCT TRUTH
+What is materially, functionally, or behaviorally real?
+
+AUDIENCE DESIRE
+What does the intended audience want to feel, signal, or achieve?
+
+POSITIONING / VALUES
+What promise or value must the identity communicate?
+
+NAME CUES
+Meaning, sound, rhythm, initials, and useful letter shapes.
+
+REFERENCE SIGNALS
+General palette, form, type, composition, material, and energy preferences.
+
+VISUAL AXES
+Restrained–Expressive:
+Geometric–Organic:
+Familiar–Experimental:
+
+CENTRAL MECHANISM
+One specific visual idea that can generate a palette, mark, type relationship,
+and applications.
+
+FORBIDDEN CLICHÉS
+Generic devices that would make this identity interchangeable.
+</code></pre>
+<p>Every recommendation must trace back to at least one Creative DNA field.</p>
+<h2>Visual axes</h2>
+<p>Treat values as directional constraints, not mathematical style recipes:</p>
+<ul>
+<li>Restrained ↔ Expressive controls intensity, contrast, and density.</li>
+<li>Geometric ↔ Organic controls construction and shape language.</li>
+<li>Familiar ↔ Experimental controls category recognition and novelty risk.</li>
+</ul>
+<p>Do not invent a value when the user omitted it; use 50 (balanced).</p>
+<h2>Action modes</h2>
+<h3><code>PROPOSE_PALETTES</code></h3>
+<p>Input: Creative DNA.</p>
+<p>Privately generate several raw candidates, critique them, then return 2–3
+distinct palette options for rendering.</p>
+<p>Each option defines:</p>
+<ul>
+<li>name</li>
+<li>rationale tied to Creative DNA</li>
+<li>background and text colors</li>
+<li>2–4 supporting/accent colors</li>
+<li>optional gradient logic only when meaningful</li>
+<li>usage relationships</li>
+<li>what cliché it avoids</li>
+<li>2–3 rough logo mechanism seeds appropriate to that palette</li>
+</ul>
+<p>Palette options must differ in strategic emphasis, not merely hue.
+Never omit logo mechanism seeds; the palette review must help the user
+understand what kind of identity each palette could support.</p>
+<h3><code>PROPOSE_LOGO_MECHANISMS</code></h3>
+<p>Input: Creative DNA + selected draft palette.</p>
+<p>Return exactly three distinct symbol-only mechanisms. Each defines:</p>
+<ul>
+<li>mark_type</li>
+<li>central_idea</li>
+<li>visual_mechanism</li>
+<li>distinctive_element: one concrete silhouette, negative-space device, motif
+  treatment, or unexpected locked color-role pairing</li>
+<li>shape_logic</li>
+<li>treatment</li>
+<li>style_register</li>
+<li>user_style_directive: preserve the user's explicit style wording when supplied</li>
+<li>composition</li>
+<li>palette roles used by the mark (choose one, two, or three as the concept
+  requires; three is a maximum, not a target, unless the user explicitly
+  requested more)</li>
+<li>forbidden elements</li>
+</ul>
+<p>No wordmarks, taglines, descriptors, or Recraft prose. Prompt writing happens
+afterwards under the <code>logo-prompt-enhancer.md</code> contract.</p>
+<p>Each mechanism contains one concept only. State its single visual idea in one
+clause. Never fuse two symbolic subjects unless the user explicitly requested
+that exact fusion. “Simple” mechanisms still need the <code>distinctive_element</code>;
+generic geometry or adjectives do not qualify.</p>
+<h3>Logo type routing</h3>
+<p>Choose mark types from evidence, not taste alone:</p>
+<ul>
+<li><strong>lettermark_monogram</strong> — only when initials/name letterforms support an
+  ownable construction tied to the brief.</li>
+<li><strong>pictorial</strong> — only when a literal product/process/object is central and can
+  be represented without a category cliché.</li>
+<li><strong>abstract</strong> — when the strongest source is a process, benefit, emotion, or
+  relationship rather than one literal object.</li>
+<li><strong>mascot</strong> — only for strongly character-led, playful, community, or
+  family-facing positioning.</li>
+<li><strong>emblem</strong> — only for heritage, certification, membership, ritual, or
+  badge/label-heavy applications.</li>
+</ul>
+<p>Normally return three different mark types:</p>
+<ol>
+<li>one name/letter-derived route when viable</li>
+<li>one product/meaning-derived route</li>
+<li>one concept/benefit-derived abstract route</li>
+</ol>
+<p>If one route is not viable, replace it with the strongest evidence-based type.
+Never produce three variations of the same mechanism merely with different
+shapes.</p>
+<h3><code>PROPOSE_TYPOGRAPHY</code></h3>
+<p>Input: Creative DNA + selected draft palette + selected draft SVG mark.</p>
+<p>Return 2–3 font-pair proposals. Each defines:</p>
+<ul>
+<li>display family/source/weight/style</li>
+<li>body family/source/weight/style</li>
+<li>why their anatomy complements the selected mark</li>
+<li>why the pair fits the audience and positioning</li>
+<li>official font links when applicable</li>
+<li>risks/avoid rules</li>
+</ul>
+<p>Do not create type scales, line-height systems, or letter-spacing systems.</p>
+<p>Choose pairs by:</p>
+<ul>
+<li>matching display-font anatomy to the selected mark's geometry and stroke
+  character</li>
+<li>keeping body text readable and quieter than the display face</li>
+<li>supporting the audience, positioning, and selected visual axes</li>
+<li>ensuring required language/glyph coverage</li>
+<li>using fonts that are actually available through supplied files or Google
+  Fonts</li>
+</ul>
+<p>Every option must use a unique display/body combination. Do not repeat the same
+pair under different names, swap the same two families, or use identical
+display/body families unless the input explicitly requests a one-family system.</p>
+<h3><code>CRITIQUE_ESSENTIAL_KIT</code></h3>
+<p>Input: Creative DNA + selected palette + selected logo + selected typography.</p>
+<p>Check:</p>
+<ul>
+<li>Is every element traceable to the brief?</li>
+<li>Do logo, palette, and typography express one central mechanism?</li>
+<li>Could the identity be renamed for another brand without meaningful changes?</li>
+<li>Is there one primary expressive move rather than several competing moves?</li>
+<li>Is the mark scalable and producible?</li>
+<li>Does typography complete rather than fight the mark?</li>
+<li>Does the palette support contrast and real applications?</li>
+<li>Does anything copy a supplied reference?</li>
+<li>Does anything rely on generic AI-branding clichés?</li>
+</ul>
+<p>Return specific revision instructions for failing elements. Return <code>PASS</code> only
+when the combined Essential Kit is coherent enough to show for final approval.</p>
+<h3><code>REVISE_FROM_FEEDBACK</code></h3>
+<p>Input: Creative DNA + current selected drafts + latest user comment.</p>
+<p>Change only the element the feedback targets, then re-run downstream coherence:</p>
+<ul>
+<li>Palette change → recheck mark and typography.</li>
+<li>Logo change → recheck typography.</li>
+<li>Typography change → rebuild wordmark/lockup.</li>
+</ul>
+<p>Never restart unrelated stages without a concrete dependency reason.</p>
+<h2>Anti-slop rules</h2>
+<p>Reject:</p>
+<ul>
+<li>leaves used as an automatic synonym for organic</li>
+<li>sparkles used as an automatic synonym for premium</li>
+<li>shields used as an automatic synonym for trust</li>
+<li>random gradients used as an automatic synonym for modern</li>
+<li>generic globe/orbit/network marks without product-specific meaning</li>
+<li>arbitrary initials with no construction idea</li>
+<li>gold + serif as an automatic luxury solution</li>
+<li>excessive decorative devices</li>
+<li>several unrelated metaphors combined in one mark</li>
+<li>two metaphors physically fused without an explicit user request</li>
+<li>concepts described only with adjectives</li>
+<li>generic minimal symbols with no described silhouette, negative-space device,
+  motif treatment, or unexpected color-role relationship</li>
+</ul>
+<h2>One expressive move</h2>
+<p>Each direction gets one distinctive expressive mechanism. Supporting elements
+must be quieter.</p>
+<ul>
+<li>Expressive mark → restrained palette/type.</li>
+<li>Expressive palette → simpler mark/layout.</li>
+<li>Expressive typography → minimal supporting graphics.</li>
+</ul>
+<h2>Internal selection rubric</h2>
+<p>Score raw candidates privately:</p>
+<ul>
+<li>relevance to brief</li>
+<li>distinctiveness</li>
+<li>ownability</li>
+<li>coherence</li>
+<li>category suitability</li>
+<li>scalability</li>
+<li>production feasibility</li>
+<li>application potential</li>
+<li>cliché risk</li>
+<li>reference-copy risk</li>
+</ul>
+<p>Discard weak candidates before producing user-facing options. Never expose
+scores, rejected drafts, or internal reasoning.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

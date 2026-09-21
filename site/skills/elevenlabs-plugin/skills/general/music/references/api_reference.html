@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>api_reference · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/music/references/api_reference.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Music API Reference</h1>
+<p>All endpoints below default to <code>music_v1</code> unless noted for backwards compatibility. Always pass <code>music_v2</code> unless the caller explicitly needs the legacy model.</p>
+<h2>Table of Contents</h2>
+<ul>
+<li><a href="#compose">compose</a></li>
+<li><a href="#stream">stream</a></li>
+<li><a href="#composition_plancreate">composition_plan.create</a></li>
+<li><a href="#compose_detailed">compose_detailed</a></li>
+<li><a href="#compose_detailed_stream">compose_detailed_stream</a></li>
+<li><a href="#upload">upload</a></li>
+<li><a href="#video_to_music">video_to_music</a></li>
+<li><a href="#inpainting">Inpainting</a></li>
+<li><a href="#error-handling">Error Handling</a></li>
+</ul>
+<h2>compose</h2>
+<p>Generate music from a text prompt or composition plan. Returns an audio stream.</p>
+<h3>Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>prompt</code></td>
+<td>string</td>
+<td>Yes*</td>
+<td>Description of desired music</td>
+</tr>
+<tr>
+<td><code>composition_plan</code></td>
+<td>object</td>
+<td>Yes*</td>
+<td>Pre-defined composition plan (alternative to prompt)</td>
+</tr>
+<tr>
+<td><code>music_length_ms</code></td>
+<td>integer</td>
+<td>No</td>
+<td>Duration in milliseconds (3,000–600,000) when using <code>prompt</code>; if omitted, the model chooses. Returns an error if a composition plan is also provided.</td>
+</tr>
+<tr>
+<td><code>model_id</code></td>
+<td>string</td>
+<td>No</td>
+<td>Music model. Defaults to <code>music_v1</code>.</td>
+</tr>
+<tr>
+<td><code>force_instrumental</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Guarantee an instrumental output (prompt mode only)</td>
+</tr>
+<tr>
+<td><code>finetune_id</code></td>
+<td>string</td>
+<td>No</td>
+<td>ID of the music finetune to use for generation.</td>
+</tr>
+<tr>
+<td><code>respect_sections_durations</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Enforce exact <code>duration_ms</code> for each composition plan chunk. Ignored if using <code>music_v2</code> model.</td>
+</tr>
+<tr>
+<td><code>output_format</code></td>
+<td>string</td>
+<td>No</td>
+<td>Query parameter for output codec/sample-rate/bitrate. <code>auto</code> selects <code>mp3_44100_128</code> for <code>music_v1</code> and <code>mp3_48000_192</code> for <code>music_v2</code>; high-bitrate MP3 options include <code>mp3_48000_240</code> and <code>mp3_48000_320</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>*Provide either <code>prompt</code> or <code>composition_plan</code>, not both.</p>
+<h3>Python</h3>
+<pre><code class="language-python">audio = client.music.compose(
+    prompt=&quot;An upbeat electronic track with synth leads&quot;,
+    music_length_ms=30000,
+    model_id=&quot;music_v2&quot;,
+)
+
+with open(&quot;output.mp3&quot;, &quot;wb&quot;) as f:
+    for chunk in audio:
+        f.write(chunk)
+</code></pre>
+<h3>TypeScript</h3>
+<pre><code class="language-typescript">const audio = await client.music.compose({
+  prompt: &quot;An upbeat electronic track with synth leads&quot;,
+  musicLengthMs: 30000,
+  modelId: &quot;music_v2&quot;,
+});
+
+const writeStream = createWriteStream(&quot;output.mp3&quot;);
+audio.pipe(writeStream);
+</code></pre>
+<h3>With Composition Plan</h3>
+<pre><code class="language-python">plan = client.music.composition_plan.create(
+    prompt=&quot;A jazz ballad with piano and saxophone&quot;,
+    music_length_ms=60000,
+    model_id=&quot;music_v2&quot;,
+)
+
+# Modify the plan as needed
+audio = client.music.compose(
+    composition_plan=plan,
+    model_id=&quot;music_v2&quot;,
+)
+</code></pre>
+<pre><code class="language-typescript">const plan = await client.music.compositionPlan.create({
+  prompt: &quot;A jazz ballad with piano and saxophone&quot;,
+  musicLengthMs: 60000,
+  modelId: &quot;music_v2&quot;,
+});
+
+// Modify the plan as needed
+const audio = await client.music.compose({
+  compositionPlan: plan,
+  modelId: &quot;music_v2&quot;,
+});
+</code></pre>
+<h2>stream</h2>
+<p>Stream audio chunks as they are generated. Same parameters as <a href="#compose"><code>compose</code></a>; returns an
+iterable/async-iterable of audio bytes instead of a single response. Available on paid plans only.</p>
+<h3>Python</h3>
+<pre><code class="language-python">from io import BytesIO
+
+stream = client.music.stream(
+    prompt=&quot;A driving synthwave track with arpeggiated leads&quot;,
+    music_length_ms=30000,
+    model_id=&quot;music_v2&quot;,
+)
+
+buffer = BytesIO()
+for chunk in stream:
+    if chunk:
+        buffer.write(chunk)
+</code></pre>
+<h3>TypeScript</h3>
+<pre><code class="language-typescript">const stream = await client.music.stream({
+  prompt: &quot;A driving synthwave track with arpeggiated leads&quot;,
+  musicLengthMs: 30000,
+  modelId: &quot;music_v2&quot;,
+});
+
+const chunks: Buffer[] = [];
+for await (const chunk of stream) {
+  chunks.push(chunk);
+}
+</code></pre>
+<h2>composition_plan.create</h2>
+<p>Generate a structured composition plan from a prompt for granular control before generating audio.</p>
+<h3>Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>prompt</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Music description</td>
+</tr>
+<tr>
+<td><code>music_length_ms</code></td>
+<td>integer</td>
+<td>Yes</td>
+<td>Total duration in milliseconds (3,000–600,000)</td>
+</tr>
+<tr>
+<td><code>model_id</code></td>
+<td>string</td>
+<td>No</td>
+<td>Defaults to <code>music_v2</code>. Plan structure differs between models.</td>
+</tr>
+</tbody>
+</table>
+<h3>Plan Structure (<code>music_v2</code>)</h3>
+<p>A plan is an ordered list of <code>chunks</code>. Each chunk is either a <strong>generation chunk</strong> or an
+<strong>audio reference chunk</strong> (see <a href="#inpainting">Inpainting</a>).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>chunks</code></td>
+<td>array</td>
+<td>Up to 30 chunks; 3 s to 10 min total</td>
+</tr>
+<tr>
+<td><code>chunks[].text</code></td>
+<td>string</td>
+<td>Section labels (<code>[Verse 1]</code>), lyrics, inline cues like <code>{guitar solo}</code></td>
+</tr>
+<tr>
+<td><code>chunks[].duration_ms</code></td>
+<td>integer</td>
+<td>3,000–120,000 ms</td>
+</tr>
+<tr>
+<td><code>chunks[].positive_styles</code></td>
+<td>array&lt;string&gt;</td>
+<td>Up to 50 desired qualities (genre, instrumentation, vocal style). Must be English.</td>
+</tr>
+<tr>
+<td><code>chunks[].negative_styles</code></td>
+<td>array&lt;string&gt;</td>
+<td>Up to 50 qualities to avoid</td>
+</tr>
+<tr>
+<td><code>chunks[].context_adherence</code></td>
+<td>string</td>
+<td><code>low</code>, <code>medium</code>, or <code>high</code> (default). Higher = stays consistent with surrounding chunks.</td>
+</tr>
+</tbody>
+</table>
+<h3>Python</h3>
+<pre><code class="language-python">plan = client.music.composition_plan.create(
+    prompt=&quot;A peaceful ambient track with nature sounds&quot;,
+    music_length_ms=60000,
+    model_id=&quot;music_v2&quot;,
+)
+
+# Inspect or edit the plan in place
+print(plan[&quot;chunks&quot;][0][&quot;positive_styles&quot;])
+plan[&quot;chunks&quot;][0][&quot;text&quot;] = &quot;[Intro]\nSoft pad with rain&quot;
+
+audio = client.music.compose(composition_plan=plan, model_id=&quot;music_v2&quot;)
+</code></pre>
+<h3>TypeScript</h3>
+<pre><code class="language-typescript">const plan = await client.music.compositionPlan.create({
+  prompt: &quot;A peaceful ambient track with nature sounds&quot;,
+  musicLengthMs: 60000,
+  modelId: &quot;music_v2&quot;,
+});
+
+plan.chunks[0].text = &quot;[Intro]\nSoft pad with rain&quot;;
+const audio = await client.music.compose({ compositionPlan: plan, modelId: &quot;music_v2&quot; });
+</code></pre>
+<h2>compose_detailed</h2>
+<p>Generate music while returning both the composition plan and metadata alongside the audio.</p>
+<h3>Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>prompt</code></td>
+<td>string</td>
+<td>Yes*</td>
+<td>Description of desired music</td>
+</tr>
+<tr>
+<td><code>composition_plan</code></td>
+<td>object</td>
+<td>Yes*</td>
+<td>Pre-defined composition plan (alternative to <code>prompt</code>)</td>
+</tr>
+<tr>
+<td><code>music_length_ms</code></td>
+<td>integer</td>
+<td>No</td>
+<td>Total duration in milliseconds when using <code>prompt</code></td>
+</tr>
+<tr>
+<td><code>model_id</code></td>
+<td>string</td>
+<td>No</td>
+<td>Defaults to <code>music_v2</code></td>
+</tr>
+<tr>
+<td><code>store_for_inpainting</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>If <code>true</code>, retains the generated audio under a <code>song_id</code> so it can be referenced by later inpainting plans</td>
+</tr>
+<tr>
+<td><code>force_instrumental</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Guarantee an instrumental output (prompt mode only)</td>
+</tr>
+<tr>
+<td><code>output_format</code></td>
+<td>string</td>
+<td>No</td>
+<td>Query parameter for output codec/sample-rate/bitrate. <code>auto</code> selects <code>mp3_44100_128</code> for <code>music_v1</code> and <code>mp3_48000_192</code> for <code>music_v2</code>; high-bitrate MP3 options include <code>mp3_48000_240</code> and <code>mp3_48000_320</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>*Provide either <code>prompt</code> or <code>composition_plan</code>, not both.</p>
+<h3>Returns</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>json</code></td>
+<td>Composition plan + song metadata (includes lyrics if applicable)</td>
+</tr>
+<tr>
+<td><code>filename</code></td>
+<td>Output file identifier</td>
+</tr>
+<tr>
+<td><code>audio</code></td>
+<td>Audio bytes</td>
+</tr>
+<tr>
+<td><code>song_id</code></td>
+<td>Identifier for the stored song (only when <code>store_for_inpainting=True</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3>Python</h3>
+<pre><code class="language-python">result = client.music.compose_detailed(
+    prompt=&quot;A pop song about summer adventures&quot;,
+    music_length_ms=120000,
+    model_id=&quot;music_v2&quot;,
+    store_for_inpainting=True,
+)
+
+print(result.json)        # composition plan + metadata
+print(result.song_id)     # reusable identifier for inpainting
+
+with open(result.filename, &quot;wb&quot;) as f:
+    f.write(result.audio)
+</code></pre>
+<h3>TypeScript</h3>
+<pre><code class="language-typescript">import { writeFileSync } from &quot;fs&quot;;
+
+const result = await client.music.composeDetailed({
+  prompt: &quot;A pop song about summer adventures&quot;,
+  musicLengthMs: 120000,
+  modelId: &quot;music_v2&quot;,
+  storeForInpainting: true,
+});
+
+console.log(result.json);    // composition plan + metadata
+console.log(result.songId);  // reusable identifier for inpainting
+
+writeFileSync(result.filename, result.audio);
+</code></pre>
+<h2>compose_detailed_stream</h2>
+<p>Stream music generation details as Server-Sent Events from
+<a href="https://elevenlabs.io/docs/api-reference/music/compose-detailed-stream"><code>POST /v1/music/detailed/stream</code></a>.
+Use this when a client should receive the composition plan, song metadata, audio chunks, optional
+word timestamps, and completion signal incrementally.</p>
+<h3>Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>prompt</code></td>
+<td>string</td>
+<td>Yes*</td>
+<td>Description of desired music</td>
+</tr>
+<tr>
+<td><code>composition_plan</code></td>
+<td>object</td>
+<td>Yes*</td>
+<td>Pre-defined composition plan (alternative to <code>prompt</code>)</td>
+</tr>
+<tr>
+<td><code>music_length_ms</code></td>
+<td>integer</td>
+<td>No</td>
+<td>Duration in milliseconds when using <code>prompt</code></td>
+</tr>
+<tr>
+<td><code>model_id</code></td>
+<td>string</td>
+<td>No</td>
+<td>Defaults to <code>music_v1</code>; pass <code>music_v2</code> for the current model</td>
+</tr>
+<tr>
+<td><code>seed</code></td>
+<td>integer</td>
+<td>No</td>
+<td>Random seed for more consistent generation; cannot be used with <code>prompt</code></td>
+</tr>
+<tr>
+<td><code>force_instrumental</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Guarantee an instrumental output (prompt mode only)</td>
+</tr>
+<tr>
+<td><code>store_for_inpainting</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Store the generated song so it can be referenced by later inpainting plans</td>
+</tr>
+<tr>
+<td><code>with_timestamps</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Include word timestamps in the streamed events</td>
+</tr>
+<tr>
+<td><code>output_format</code></td>
+<td>string</td>
+<td>No</td>
+<td>Query parameter for output codec/sample-rate/bitrate. <code>auto</code> selects <code>mp3_44100_128</code> for <code>music_v1</code> and <code>mp3_48000_192</code> for <code>music_v2</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>*Provide either <code>prompt</code> or <code>composition_plan</code>, not both.</p>
+<h3>CLI</h3>
+<pre><code class="language-bash">elevenlabs music compose_detailed_stream \
+  --prompt &quot;A bright indie pop hook with warm guitars&quot; \
+  --music-length-ms 30000 \
+  --model-id music_v2 \
+  --with-timestamps true \
+  --output-format auto
+</code></pre>
+<h2>upload</h2>
+<p>Upload a music file for later inpainting workflows. This endpoint is available to enterprise clients with access to the inpainting feature.</p>
+<h3>Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>file</code></td>
+<td>file</td>
+<td>Yes</td>
+<td>The audio file to upload</td>
+</tr>
+<tr>
+<td><code>extract_composition_plan</code></td>
+<td>boolean | string</td>
+<td>No</td>
+<td>If <code>true</code> (or a model id such as <code>"music_v2"</code>), the response includes an extracted composition plan; passing a model id chooses the extraction model. The request may take longer to return.</td>
+</tr>
+<tr>
+<td><code>with_timestamps</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Transcribe the uploaded song and include word-level timestamps in the response. The request may take longer to return.</td>
+</tr>
+</tbody>
+</table>
+<h3>Returns</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>song_id</code></td>
+<td>Unique identifier for the uploaded song</td>
+</tr>
+<tr>
+<td><code>composition_plan</code></td>
+<td>Extracted composition plan, or <code>null</code> when <code>extract_composition_plan</code> is not enabled</td>
+</tr>
+<tr>
+<td><code>words_timestamps</code></td>
+<td>Word-level timestamps when <code>with_timestamps</code> is enabled</td>
+</tr>
+</tbody>
+</table>
+<h3>Python</h3>
+<pre><code class="language-python">response = client.music.upload(
+    file=open(&quot;my-song.mp3&quot;, &quot;rb&quot;),
+    extract_composition_plan=&quot;music_v2&quot;,
+)
+song_id = response.song_id
+composition_plan = response.composition_plan
+</code></pre>
+<h3>TypeScript</h3>
+<pre><code class="language-typescript">import { createReadStream } from &quot;fs&quot;;
+
+const response = await client.music.upload({
+  file: createReadStream(&quot;my-song.mp3&quot;),
+  extractCompositionPlan: &quot;music_v2&quot;,
+});
+const songId = response.songId;
+const compositionPlan = response.compositionPlan;
+</code></pre>
+<h3>CLI</h3>
+<pre><code class="language-bash">elevenlabs music upload \
+  --file my-song.mp3 \
+  --extract-composition-plan music_v2
+</code></pre>
+<h2>video_to_music</h2>
+<p>Generate background music from uploaded video clips. This is a <strong>separate endpoint</strong> from
+<a href="#compose"><code>compose</code></a> (<code>POST /v1/music/video-to-music</code>, not <code>POST /v1/music</code>). See the
+<a href="https://elevenlabs.io/docs/api-reference/music/video-to-music">Video to music API reference</a>.</p>
+<p>Videos are combined in order before music generation.</p>
+<h3>Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>videos</code></td>
+<td>array of files</td>
+<td>Yes</td>
+<td>One or more video files. Up to 10 files, 200MB combined size, and 600 seconds total duration.</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>string</td>
+<td>No</td>
+<td>Optional text prompt describing the desired music (up to 1000 characters).</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td>array of strings</td>
+<td>No</td>
+<td>Optional style tags such as <code>upbeat</code> or <code>cinematic</code> (up to 10 tags).</td>
+</tr>
+<tr>
+<td><code>model_id</code></td>
+<td>string</td>
+<td>No</td>
+<td>Music model to use. Defaults to <code>music_v1</code> on this endpoint — pass <code>music_v2</code> to opt in.</td>
+</tr>
+<tr>
+<td><code>sign_with_c2pa</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Sign generated MP3 output with C2PA metadata. Defaults to <code>false</code>.</td>
+</tr>
+<tr>
+<td><code>output_format</code></td>
+<td>string</td>
+<td>No</td>
+<td>Output codec/sample-rate/bitrate, such as <code>mp3_44100_128</code>, <code>pcm_44100</code>, or <code>opus_48000_96</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3>Python</h3>
+<pre><code class="language-python">audio = client.music.video_to_music(
+    videos=[open(&quot;scene-1.mp4&quot;, &quot;rb&quot;), open(&quot;scene-2.mp4&quot;, &quot;rb&quot;)],
+    description=&quot;Cinematic ambient score with a gentle build&quot;,
+    tags=[&quot;cinematic&quot;, &quot;ambient&quot;],
+    model_id=&quot;music_v2&quot;,
+)
+
+with open(&quot;video-score.mp3&quot;, &quot;wb&quot;) as f:
+    for chunk in audio:
+        f.write(chunk)
+</code></pre>
+<h3>TypeScript</h3>
+<pre><code class="language-typescript">import { createReadStream, createWriteStream } from &quot;fs&quot;;
+
+const audio = await client.music.videoToMusic({
+  videos: [createReadStream(&quot;scene-1.mp4&quot;), createReadStream(&quot;scene-2.mp4&quot;)],
+  description: &quot;Cinematic ambient score with a gentle build&quot;,
+  tags: [&quot;cinematic&quot;, &quot;ambient&quot;],
+  modelId: &quot;music_v2&quot;,
+});
+
+audio.pipe(createWriteStream(&quot;video-score.mp3&quot;));
+</code></pre>
+<h3>CLI</h3>
+<pre><code class="language-bash">elevenlabs music video_to_music \
+  --videos scene-1.mp4 \
+  --description &quot;Cinematic ambient score with a gentle build&quot; \
+  --tags cinematic \
+  --output-format mp3_44100_128 \
+  --output video-score.mp3
+</code></pre>
+<p>The CLI currently accepts one <code>--videos</code> file and one <code>--tags</code> value per request; use the Python
+or TypeScript SDK to send multiple videos or tags.</p>
+<h2>Inpainting</h2>
+<p>Inpainting edits or extends a stored song by combining <strong>audio reference chunks</strong> (unchanged
+slices of stored audio) with <strong>generation chunks</strong> in a single <code>music_v2</code> composition plan.
+Available to enterprise clients.</p>
+<h3>Getting a <code>song_id</code></h3>
+<ul>
+<li>Call <a href="#compose_detailed"><code>compose_detailed</code></a> or <a href="#compose"><code>compose</code></a> with <code>store_for_inpainting=True</code> to keep a
+  generation for later editing.</li>
+<li>Call <a href="#upload"><code>upload</code></a> with <code>extract_composition_plan="music_v2"</code> to import an existing
+  track and recover its plan.</li>
+</ul>
+<h3>Chunk Types</h3>
+<p><strong>Audio reference chunk</strong> — replay a slice of a stored song unchanged:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>song_id</code></td>
+<td>string</td>
+<td>Stored song identifier</td>
+</tr>
+<tr>
+<td><code>range.start_ms</code></td>
+<td>integer</td>
+<td>Start offset (minimum 50 ms range)</td>
+</tr>
+<tr>
+<td><code>range.end_ms</code></td>
+<td>integer</td>
+<td>End offset</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Generation chunk</strong> — same fields as a normal <code>music_v2</code> plan chunk (<code>text</code>,
+<code>duration_ms</code>, <code>positive_styles</code>, <code>negative_styles</code>, <code>context_adherence</code>), with two optional
+fields for matching the feel of an existing slice:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>conditioning_ref.song_id</code></td>
+<td>string</td>
+<td>Song to condition on</td>
+</tr>
+<tr>
+<td><code>conditioning_ref.range</code></td>
+<td>object</td>
+<td><code>start_ms</code>/<code>end_ms</code>; up to 30,000 ms</td>
+</tr>
+<tr>
+<td><code>condition_strength</code></td>
+<td>string</td>
+<td><code>low</code>, <code>medium</code> (default), <code>high</code>, or <code>xhigh</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>conditioning_ref</code> on the first chunk influences every subsequent chunk in the plan.</p>
+<h3>Constraints</h3>
+<table>
+<thead>
+<tr>
+<th>Constraint</th>
+<th>Limit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Chunks per plan</td>
+<td>30</td>
+</tr>
+<tr>
+<td>Chunk duration</td>
+<td>3,000–120,000 ms</td>
+</tr>
+<tr>
+<td>Conditioning reference duration</td>
+<td>up to 30,000 ms</td>
+</tr>
+<tr>
+<td>Minimum time range</td>
+<td>50 ms</td>
+</tr>
+</tbody>
+</table>
+<h3>Python</h3>
+<pre><code class="language-python">plan = {
+    &quot;chunks&quot;: [
+        {&quot;song_id&quot;: song_id, &quot;range&quot;: {&quot;start_ms&quot;: 0, &quot;end_ms&quot;: 30000}},
+        {
+            &quot;text&quot;: &quot;[Chorus]\nWe're rising up tonight&quot;,
+            &quot;duration_ms&quot;: 30000,
+            &quot;positive_styles&quot;: [&quot;bigger drums&quot;, &quot;layered vocals&quot;, &quot;anthemic&quot;],
+            &quot;negative_styles&quot;: [&quot;sparse&quot;],
+            &quot;context_adherence&quot;: &quot;high&quot;,
+            &quot;conditioning_ref&quot;: {
+                &quot;song_id&quot;: song_id,
+                &quot;range&quot;: {&quot;start_ms&quot;: 30000, &quot;end_ms&quot;: 45000},
+            },
+            &quot;condition_strength&quot;: &quot;high&quot;,
+        },
+    ]
+}
+
+audio = client.music.compose(composition_plan=plan, model_id=&quot;music_v2&quot;)
+</code></pre>
+<h3>TypeScript</h3>
+<pre><code class="language-typescript">const plan = {
+  chunks: [
+    { songId, range: { startMs: 0, endMs: 30000 } },
+    {
+      text: &quot;[Chorus]\nWe're rising up tonight&quot;,
+      durationMs: 30000,
+      positiveStyles: [&quot;bigger drums&quot;, &quot;layered vocals&quot;, &quot;anthemic&quot;],
+      negativeStyles: [&quot;sparse&quot;],
+      contextAdherence: &quot;high&quot;,
+      conditioningRef: { songId, range: { startMs: 30000, endMs: 45000 } },
+      conditionStrength: &quot;high&quot;,
+    },
+  ],
+};
+
+const audio = await client.music.compose({ compositionPlan: plan, modelId: &quot;music_v2&quot; });
+</code></pre>
+<h2>Error Handling</h2>
+<h3>bad_prompt</h3>
+<p>Occurs when the prompt references copyrighted material (specific artists, bands, or copyrighted lyrics). The error response includes a <code>prompt_suggestion</code> with alternative phrasing.</p>
+<pre><code class="language-python">try:
+    audio = client.music.compose(
+        prompt=&quot;A song like Beatles&quot;,
+        music_length_ms=30000
+    )
+except Exception as e:
+    print(f&quot;Request failed: {e}&quot;)
+</code></pre>
+<pre><code class="language-typescript">try {
+  const audio = await client.music.compose({
+    prompt: &quot;A song like Beatles&quot;,
+    musicLengthMs: 30000,
+  });
+} catch (err) {
+  console.error(&quot;Request failed:&quot;, err);
+}
+</code></pre>
+<h3>bad_composition_plan</h3>
+<p>Returned when a composition plan contains copyrighted styles. The error includes a <code>composition_plan_suggestion</code> with corrected styles. No suggestion is provided for harmful content.</p>
+<h3>Common HTTP Errors</h3>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>401</td>
+<td>Invalid API key</td>
+</tr>
+<tr>
+<td>422</td>
+<td>Invalid parameters</td>
+</tr>
+<tr>
+<td>429</td>
+<td>Rate limit exceeded</td>
+</tr>
+</tbody>
+</table></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

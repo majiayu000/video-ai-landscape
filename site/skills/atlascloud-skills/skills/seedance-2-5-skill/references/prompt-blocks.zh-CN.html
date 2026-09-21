@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>prompt-blocks.zh-CN · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/seedance-2-5-skill/references/prompt-blocks.zh-CN.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>提示词组件库与约定</h1>
+<p>只使用会影响当前镜头的组件，不要默认填满。</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>作用</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>参考绑定</td>
+<td>指定输入图片控制什么</td>
+<td><code>图片1中的保温杯作为主体</code></td>
+</tr>
+<tr>
+<td>动作</td>
+<td>给镜头一个可观察事件</td>
+<td><code>手自然拿起杯身并轻微旋转</code></td>
+</tr>
+<tr>
+<td>空间</td>
+<td>锁定重要关系</td>
+<td><code>杯子位于木桌中央，窗光从左侧照入</code></td>
+</tr>
+<tr>
+<td>镜头</td>
+<td>指定景别与镜头意图</td>
+<td><code>中近景，镜头向右平稳横移，保持跟随杯子</code></td>
+</tr>
+<tr>
+<td>光影与风格</td>
+<td>必要时统一视觉</td>
+<td><code>暖黄实用光，手绘食物番质感</code></td>
+</tr>
+<tr>
+<td>音频</td>
+<td>仅在启用原生音频时加入</td>
+<td><code>（轻快爵士乐）&lt;油锅滋滋声&gt;</code></td>
+</tr>
+<tr>
+<td>末态</td>
+<td>让某一段落在可检查的状态上</td>
+<td><code>末态：杯子居中放在架子上；双手已离开画面</code></td>
+</tr>
+<tr>
+<td>约束</td>
+<td>保住重做代价高的内容</td>
+<td><code>保持标签清晰，无字幕</code></td>
+</tr>
+</tbody>
+</table>
+<p>整张 Storyboard R2V 按 <code>镜头1 / 镜头2 / 镜头3</code> 写事件顺序。I2V 只写单个镜头从开始到结束的变化。</p>
+<h2>末态</h2>
+<p>任何必须落在特定位置的段落都要写一个。这是承载多事件片子的那个组件——它把「保持一致」变成模型能瞄准、你也能在一张静帧上检查的东西。</p>
+<pre><code class="language-text">弱：  两个人继续弄那束花
+强：  末态：花艺师左手持花束；剪刀回到工作台右侧
+</code></pre>
+<p>规则：</p>
+<ul>
+<li>必须<strong>看得见</strong>。<code>她感到释然</code> 不是末态；<code>她的肩膀落下、皱起的眉松开</code> 是</li>
+<li>位置、谁拿着什么、什么是打开或关闭的、什么已经离开画面</li>
+<li><strong>最后一段也需要</strong>——最常被漏掉的一项，也是片子会散掉而不是收住的原因</li>
+<li>每段一个主要变化。两个变化意味着模型自己挑一个</li>
+</ul>
+<p>同一个装置还有图像形态（关键帧序列——每张图<strong>就是</strong>某一段的末态）和视频形态（延长的边界帧）。见 <a href="long-video.zh-CN.html">long-video.zh-CN.md</a> 与 <a href="editing-and-extension.zh-CN.html">editing-and-extension.zh-CN.md</a>。</p>
+<h2>运镜</h2>
+<p>每镜头先选一个主导运镜：</p>
+<ul>
+<li><code>固定机位</code>：观察、产品静态、对话。</li>
+<li><code>缓慢推近</code>：揭示、情绪、关键展示。</li>
+<li><code>缓慢拉远</code>：释放、收尾、展示空间。</li>
+<li><code>平稳横移</code>：展示产品或陪伴人物行走。</li>
+<li><code>跟拍</code>：有明确方向的移动或动作。</li>
+<li><code>摇镜</code>：揭示第二主体或地点。</li>
+<li><code>升降</code>：开场尺度或收尾上扬。</li>
+<li><code>平滑环绕</code>：产品或中远景人物；避免近距离脸部大幅环绕。</li>
+</ul>
+<p>当多个运动共同服务于一个同步意图时，可以使用复合运镜。例如 <code>镜头向右平稳横移，保持跟随人物</code> 是侧向跟拍。写清方向、与主体关系和速度。若多个运动彼此独立或抢注意力，应在计划好的剪辑处分开。</p>
+<h2>音频符号</h2>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>符号</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>音乐</td>
+<td><code>（）</code></td>
+<td><code>（背景中播放着快节奏的摇滚乐）</code></td>
+</tr>
+<tr>
+<td>音效</td>
+<td><code>&lt;&gt;</code></td>
+<td><code>&lt;远处传来狗叫声&gt;</code></td>
+</tr>
+<tr>
+<td>台词</td>
+<td><code>{}</code></td>
+<td><code>用日语说道{こんにちは}</code></td>
+</tr>
+<tr>
+<td>画面文字</td>
+<td><code>【】</code></td>
+<td><code>【第一章：启程】</code></td>
+</tr>
+</tbody>
+</table>
+<p>脚本默认开启原生音频。只有用户明确希望完全使用后期替换音轨时，才设置 <code>generate_audio:false</code>。需要原生台词时，保持同一种语言并使用以上符号。</p>
+<h2>约束</h2>
+<p>约束用于具体风险，不要写成长篇负面词：</p>
+<ul>
+<li><code>保持图片1中产品的瓶身比例和标签清晰</code>。</li>
+<li><code>保持无字幕</code>。</li>
+<li><code>不要出现无关文字、平台 UI 或角标</code>。</li>
+<li><code>同框仅保留一个对应人物，避免出现相同外形的重复人物</code>。</li>
+</ul>
+<p>把少数最重要的约束放在末尾。不要在文本里要求精确逐秒时间表；使用服务的时长参数。</p>
+<h2>剪辑词汇</h2>
+<ul>
+<li><code>硬切到……</code>：节奏、能量或机位切换。</li>
+<li><code>以&lt;形状、颜色或动作&gt;匹配切到……</code>：匹配剪辑。</li>
+<li><code>蒸汽、人物或物体掠过镜头遮满画面后切到……</code>：遮挡剪辑。</li>
+<li><code>插入&lt;产品或环境细节&gt;，再切回……</code>：插入镜头。</li>
+</ul>
+<p>只有真正延长同一个镜头时才写 <code>无缝承接上一段最后画面</code>。整张 Storyboard R2V 只有在转场对故事真正重要时才写明，否则让有序分镜自行表达剪辑。</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

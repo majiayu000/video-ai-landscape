@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>expressions · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">architect/skills/architect-migrate-from-competitor/reference/expressions.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Writing expression conditions safely</h1>
+<p>This file is ElevenLabs-side, so it applies to a migration from any source platform.</p>
+<p>This is the whole authority on conditions and edges: what can be expressed, why a carried-over
+condition silently inverts, and the shapes to emit so you compose guards rather than re-derive them on
+every edge. On a graph with a few hundred edges, hand-writing each condition is where the silent
+inversions get in. Read it before you author any condition, not after one misbehaves.</p>
+<h2>Two ways an expression fails to be an expression</h2>
+<p>Get these wrong first and everything below is unreachable. Both are worth knowing before you write a
+single condition, because one wastes a lot of time and the other does not fail at all.</p>
+<p><strong>An expression is a structured object, never a string.</strong> Passing the condition as text — even
+perfectly formed text — is rejected with <code>Input should be a valid dictionary or object to extract
+fields from</code>. That message does not mention expressions, strings, or which field was wrong, so it is
+easy to read as a problem with the enclosing payload and start bisecting the wrong thing. In one real
+migration this single error was hit fourteen times. If you see it, check that every <code>expression</code> value
+is an object.</p>
+<p><strong>An empty expression is not an empty condition.</strong> <code>expression: {}</code> is accepted and silently
+normalises to <code>boolean_literal</code> false, so the edge never fires and nothing reports a problem. Any code
+path that can emit an absent or empty condition object produces a dead edge that looks authored.</p>
+<p>While you are here: an <strong>LLM</strong> condition carries its text in <code>condition</code>. A <code>label</code> field also exists
+on conditions and is <em>not</em> the condition — it is a display name. Setting only <code>label</code> gives you an
+edge with no condition, which is the same silent dead end as the empty expression.</p>
+<h2>What you can express at all, and what inverts</h2>
+<p>Read this before writing a single condition: the first part decides whether a source condition can be
+translated, and the next two are why a translated one silently does the opposite of what it says.</p>
+<h3>Most source operators have no ElevenLabs equivalent at all</h3>
+<p>Before worrying about how a condition behaves, check whether it can be expressed. The complete
+expression operator set is: <code>or</code>, <code>and</code>, <code>eq</code>, <code>neq</code>, <code>gt</code>, <code>lt</code>, <code>gte</code>, <code>lte</code>, <code>add</code>, <code>sub</code>, <code>mul</code>,
+<code>div</code>, <code>conditional</code>. That is all of it.</p>
+<p>So there is <strong>no <code>contains</code></strong>, no <code>not_contains</code>, no <code>exists</code>, no <code>not_exists</code>, and <strong>no <code>not</code></strong>.</p>
+<ul>
+<li><code>contains</code> / <code>not_contains</code> — no mechanical translation exists. Each one is a <strong>semantic rewrite</strong>,
+  usually into an LLM condition describing the intent. In real exports these are common, often the
+  majority of a graph's equations, so budget for it: this is hand work per condition, not a pass you
+  can automate.</li>
+<li><code>exists</code> / <code>not_exists</code> — express as a comparison against <code>null_literal</code>. <code>x neq null</code> is true
+  exactly when the variable is populated, because null-vs-null takes the equal-types path.</li>
+<li><strong>No <code>not</code> operator.</strong> Negation must be written out by hand — an <code>and</code> of negated leaves rather than
+  a negation of the <code>and</code>. This matters most when you split one source branch into two paired edges:
+  you are maintaining a De Morgan negation by hand, and the two copies drift.</li>
+</ul>
+<h3>Equality conditions invert when a variable is absent or differently typed</h3>
+<p>EL's equality operators short-circuit on a <strong>type</strong> mismatch before comparing values. An absent
+dynamic variable resolves to null, so against a string literal:</p>
+<ul>
+<li><code>eq</code> returns <strong>false</strong> — the edge never fires.</li>
+<li><code>neq</code> returns <strong>true</strong> — the edge fires on no data at all.</li>
+</ul>
+<p>The same happens for a <em>populated</em> variable whose runtime value is a boolean or number while the
+condition compares against a string, which is the normal case when the source exported its
+comparison values as JSON strings. So a gate meaning "if plan is not free, take the premium path"
+opens for every call whose variable failed to populate.</p>
+<p>When lowering a source equality test, guard it:</p>
+<ul>
+<li>For a value that could arrive as a bool or number, accept both typings:
+  <code>(flag eq "true") or (flag eq true)</code>.</li>
+<li>For any <code>neq</code>, prefix a null guard: <code>(plan neq null) and (plan neq "free")</code>. Null-vs-null takes the
+  equal-types path, so the guard is false exactly when the variable is missing.</li>
+</ul>
+<p>Both guards are below as composable builders — use those rather than hand-writing each condition.</p>
+<h3>Numeric comparisons do not mis-route, they end the turn</h3>
+<p><code>gt</code>, <code>lt</code>, <code>gte</code> and <code>lte</code> coerce through a numeric conversion that <strong>raises</strong> — both for a string
+and for an absent variable. Source platforms overwhelmingly export variable defaults as strings, so
+a threshold gate carried across mechanically is an outage rather than a wrong branch. Convert the
+value at its source (a tool response assignment, or an <code>update_state</code> write) so the variable holds a
+real number before any comparison reads it.</p>
+<h2>The node types</h2>
+<p>An expression condition is a tree of typed nodes. Leaves name a variable or carry a literal:</p>
+<pre><code class="language-js">const V    = (name)  =&gt; ({ type: 'dynamic_variable', name });
+const S    = (value) =&gt; ({ type: 'string_literal',   value });
+const N    = (value) =&gt; ({ type: 'number_literal',   value });
+const B    = (value) =&gt; ({ type: 'boolean_literal',  value });
+const NULL = ()      =&gt; ({ type: 'null_literal' });
+
+const eq  = (left, right) =&gt; ({ type: 'eq_operator',  left, right });
+const neq = (left, right) =&gt; ({ type: 'neq_operator', left, right });
+const or  = (...children) =&gt; ({ type: 'or_operator',  children });
+const and = (...children) =&gt; ({ type: 'and_operator', children });
+</code></pre>
+<p>Note the shape difference: comparisons take <code>left</code>/<code>right</code>, boolean combinators take a <code>children</code>
+array. <code>gt</code>, <code>lt</code>, <code>gte</code>, <code>lte</code> follow the comparison shape.</p>
+<h2>The four guards</h2>
+<p>Each of these exists because the naive lowering is wrong in a way that does not announce itself.</p>
+<pre><code class="language-js">// A source `== &quot;true&quot;` (or `contains &quot;true&quot;`) against a value that arrives as a real boolean.
+// Equality short-circuits on a TYPE mismatch before comparing values, so accept both typings.
+const boolGuard = (name, want = true) =&gt;
+  or(eq(V(name), B(want)), eq(V(name), S(String(want))));
+
+// A source `== &quot;1&quot;` against a value that may arrive as a number. Same reason.
+const numOrStrGuard = (name, value) =&gt;
+  or(eq(V(name), N(value)), eq(V(name), S(String(value))));
+
+// Any inequality. A bare `neq` is TRUE when the variable is ABSENT, which inverts the gate on
+// missing data. Null-vs-null takes the equal-types path, so this is false exactly when unpopulated.
+const neqGuard = (name, value) =&gt;
+  and(neq(V(name), NULL()), neq(V(name), S(value)));
+
+// No `exists` operator exists, so a null-or-empty-or-sentinel test becomes an explicit disjunction.
+const isBlank = (name, ...sentinels) =&gt;
+  or(eq(V(name), NULL()), eq(V(name), S('')), ...sentinels.map((s) =&gt; eq(V(name), S(s))));
+</code></pre>
+<p><code>neqGuard</code> is the one to apply without exception. An unguarded inequality is the single most common
+way a migrated graph routes calls down a path the source never would have — and it only fires when a
+variable fails to populate, so it survives every happy-path test.</p>
+<p>Negation has no operator, so <code>neqGuard</code> is also the only way to express "not this". When you need to
+negate a conjunction, write the De Morgan expansion by hand and keep the two edges of a split branch
+next to each other in your working notes; they drift otherwise.</p>
+<h2>Make the guards unnecessary where you can</h2>
+<p>A guard accommodates a type you do not control. Better, where the variable's value originates in a
+tool response or an <code>update_state</code> write, is to fix the type at the source:</p>
+<ul>
+<li>On a response assignment, set <code>preserve_native_type: true</code> so a JSON boolean or number stays one.
+  Then <code>boolGuard</code>'s native arm is the arm that matches, rather than relying on stringification.</li>
+<li>For any variable a numeric comparison will read, make it a real number <strong>before</strong> the comparison
+  exists. <code>gt</code>/<code>lt</code>/<code>gte</code>/<code>lte</code> raise on a string and on an absent variable — that ends the turn
+  rather than mis-routing, so there is no guard shape that rescues it.</li>
+</ul>
+<p>A guard is also worthless if the assignment feeding it never resolves, and a response <code>value_path</code>
+carried over from another platform usually does not. Two rewrites are mechanical:</p>
+<ul>
+<li><strong>Array indexing is dotted.</strong> <code>items[0].id</code> must be written <code>items.0.id</code>. A bracketed path does not
+  resolve, so the variable stays unset and every condition reading it takes the absent-variable path.</li>
+<li><strong>The response envelope has to be included.</strong> A path written against the bare payload needs whatever
+  prefix the API actually returns — for a GraphQL endpoint that is <code>data.</code>. A source platform that
+  strips or renames the envelope leaves you a path that is valid on the old platform and inert here.</li>
+</ul>
+<p>Check each assignment against a real response body rather than against the source's path. These fail
+silently: an unresolvable path is indistinguishable at runtime from an API that returned nothing.</p>
+<h2>Filling tool parameters from variables</h2>
+<p>Related trap, same origin. Source platforms often encode "fill this parameter from a variable" by
+putting the template text in the parameter's <em>description</em>. Carried across literally, that asks the
+model to invent a value from a template string.</p>
+<p>A property may declare <strong>exactly one</strong> value source. So a description that is purely <code>{{some_var}}</code>
+becomes a <code>dynamic_variable</code> binding and drops the description entirely:</p>
+<pre><code class="language-js">const PURE_VAR = /^\s*\{\{([a-zA-Z_][a-zA-Z0-9_]*)\}\}\s*$/;
+
+function leafProp(desc, type = 'string') {
+  const m = (desc || '').match(PURE_VAR);
+  if (m) return { type, dynamic_variable: m[1] };      // bound, no description
+  const d = (desc || '').trim();
+  if (!d) return null;                                  // zero sources is invalid — handle upstream
+  return { type, description: d };                      // genuine guidance, LLM-filled
+}
+</code></pre>
+<p>Mixed text that merely mentions a variable stays an LLM-filled property — the prose is real guidance.
+Only a description that is <em>nothing but</em> a binding gets converted.</p>
+<h2>Refuse to emit a credential</h2>
+<p>Before writing any payload, assert the source's literal credential is absent from it. Source exports
+frequently carry a token in two places at once — a variable default <em>and</em> an example header pasted
+into prompt text — and the prompt copy is the one that gets missed:</p>
+<pre><code class="language-js">function assertClean(payload, seedToken) {
+  if (!seedToken) return;
+  if (JSON.stringify(payload).includes(seedToken)) {
+    throw new Error('REFUSING TO EMIT: credential present in payload');
+  }
+}
+</code></pre>
+<p>Keep an <code>Authorization</code> header as a <strong>reference</strong>, not a resolved literal. Where the token is
+legitimately swapped mid-call, flattening it to whatever value was present at migration time pins
+every later request to the bootstrap credential, silently and permanently.</p>
+<p>Use the typed locator, never a template string: <strong>a header string is transmitted verbatim</strong>, so
+<code>Basic {{vault_token}}</code> sends those literal characters and authenticates nothing. Write
+<code>{"variable_name": "vault_token"}</code> for a dynamic variable or <code>{"secret_id": "&lt;id&gt;"}</code> for a workspace
+secret. A locator supplies the whole header value, so a scheme word like <code>Basic</code> lives inside the
+value — create the secret holding <code>Basic &lt;token&gt;</code> rather than trying to prefix the locator. See
+<code>SKILL.md</code> step 2.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

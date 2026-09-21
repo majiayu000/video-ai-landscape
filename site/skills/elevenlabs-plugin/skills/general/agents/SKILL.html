@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>agents · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/agents/SKILL.md</span><button onclick="t()">🌓</button></nav>
+<main><div class="meta"><div class="m-name">agents</div><div class="m-desc">Build voice AI agents with ElevenLabs. Use when creating voice assistants, customer service bots, interactive voice characters, or any real-time voice conversation experience, and when configuring an agent&#x27;s tools, workflows, or procedures, including creating, editing, compiling, and publishing procedure drafts on an agent branch over the SDKs or REST API.</div><div class="m-src">源文件：<a href="https://github.com/elevenlabs/plugin/blob/main/skills/general/agents/SKILL.md" target="_blank" rel="noopener">elevenlabs/plugin/skills/general/agents/SKILL.md</a></div></div><h1>ElevenLabs Agents Platform</h1>
+<p>Build voice AI agents with natural conversations, multiple LLM providers, custom tools, and easy web embedding.</p>
+<blockquote>
+<p><strong>Setup:</strong> See <a href="references/installation.html">Installation Guide</a> for CLI and SDK setup.</p>
+</blockquote>
+<h2>Quick Start with CLI</h2>
+<p>The ElevenLabs CLI is the recommended way to create and manage agents:</p>
+<pre><code class="language-bash"># Install CLI and authenticate
+npm install -g @elevenlabs/cli
+elevenlabs auth login
+
+# Initialize project and create an agent
+elevenlabs agents init
+elevenlabs agents add &quot;My Assistant&quot; --template complete
+
+# Push to ElevenLabs platform
+elevenlabs agents push
+</code></pre>
+<p><strong>Available templates:</strong> <code>complete</code>, <code>minimal</code>, <code>voice-only</code>, <code>text-only</code>, <code>customer-service</code>, <code>assistant</code></p>
+<h3>Python</h3>
+<pre><code class="language-python">from elevenlabs import ElevenLabs
+
+client = ElevenLabs()
+
+agent = client.conversational_ai.agents.create(
+    name=&quot;My Assistant&quot;,
+    conversation_config={
+        &quot;agent&quot;: {
+            &quot;first_message&quot;: &quot;Hello! How can I help?&quot;,
+            &quot;language&quot;: &quot;en&quot;,
+            &quot;prompt&quot;: {
+                &quot;prompt&quot;: &quot;You are a helpful assistant. Be concise and friendly.&quot;,
+                &quot;llm&quot;: &quot;gemini-2.0-flash&quot;,
+                &quot;temperature&quot;: 0.7
+            }
+        },
+        &quot;tts&quot;: {&quot;voice_id&quot;: &quot;JBFqnCBsd6RMkjVDRZzb&quot;}
+    }
+)
+</code></pre>
+<h3>JavaScript</h3>
+<pre><code class="language-javascript">import { ElevenLabsClient } from &quot;@elevenlabs/elevenlabs-js&quot;;
+const client = new ElevenLabsClient();
+
+const agent = await client.conversationalAi.agents.create({
+  name: &quot;My Assistant&quot;,
+  conversationConfig: {
+    agent: {
+      firstMessage: &quot;Hello! How can I help?&quot;,
+      language: &quot;en&quot;,
+      prompt: {
+        prompt: &quot;You are a helpful assistant.&quot;,
+        llm: &quot;gemini-2.0-flash&quot;,
+        temperature: 0.7
+      }
+    },
+    tts: { voiceId: &quot;JBFqnCBsd6RMkjVDRZzb&quot; }
+  }
+});
+</code></pre>
+<h3>CLI</h3>
+<p>The CLI reads <code>ELEVENLABS_API_KEY</code> from the environment automatically:</p>
+<pre><code class="language-bash">elevenlabs agents create \
+  --json '{&quot;name&quot;: &quot;My Assistant&quot;, &quot;conversation_config&quot;: {&quot;agent&quot;: {&quot;first_message&quot;: &quot;Hello!&quot;, &quot;language&quot;: &quot;en&quot;, &quot;prompt&quot;: {&quot;prompt&quot;: &quot;You are helpful.&quot;, &quot;llm&quot;: &quot;gemini-2.0-flash&quot;}}, &quot;tts&quot;: {&quot;voice_id&quot;: &quot;JBFqnCBsd6RMkjVDRZzb&quot;}}}'
+</code></pre>
+<h2>Starting Conversations</h2>
+<h3>Temporary LiveKit WebSocket Pin</h3>
+<p>Until the ElevenLabs LiveKit server supports <code>/rtc/v1</code>, browser clients using WebRTC can fail or stall during the underlying LiveKit WebSocket handshake with <code>livekit-client</code> versions newer than <code>2.16.1</code>. For React, Next.js, Electron, or other <code>@elevenlabs/client</code> / <code>@elevenlabs/react</code> integrations that use <code>connectionType: "webrtc"</code> or hit <code>wss://livekit.rtc.elevenlabs.io/rtc/v1</code>, add this temporary pin to <code>package.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;overrides&quot;: {
+    &quot;livekit-client&quot;: &quot;2.16.1&quot;
+  }
+}
+</code></pre>
+<p>Use the pin when the app logs <code>/rtc/v1</code> 404s, <code>v1 RTC path not found</code>, or <code>could not establish pc connection</code> during session startup. This is a LiveKit server compatibility workaround for WebRTC sessions, not the ElevenLabs <code>connectionType: "websocket"</code> transport. Remove it after the upstream LiveKit server or SDK issue is fixed.</p>
+<p><strong>Authenticated WebRTC:</strong> Request a session token from your backend. The response includes both
+the token and the conversation ID:</p>
+<pre><code class="language-python">session = client.conversational_ai.conversations.get_webrtc_token(
+    agent_id=&quot;your-agent-id&quot;,
+)
+print(session.token, session.conversation_id)
+</code></pre>
+<p><strong>Server-side (Python):</strong> Get signed URL for client connection:</p>
+<pre><code class="language-python">signed_url = client.conversational_ai.conversations.get_signed_url(
+    agent_id=&quot;your-agent-id&quot;,
+    environment=&quot;staging&quot;,
+)
+</code></pre>
+<p><strong>Client-side (JavaScript):</strong></p>
+<pre><code class="language-javascript">import { Conversation } from &quot;@elevenlabs/client&quot;;
+
+const conversation = await Conversation.startSession({
+  agentId: &quot;your-agent-id&quot;,
+  environment: &quot;staging&quot;,
+  overrides: { asr: { keywords: [&quot;ElevenLabs&quot;, &quot;TechCorp&quot;] } },
+  onMessage: (msg) =&gt; console.log(&quot;Agent:&quot;, msg.message),
+  onUserTranscript: (t) =&gt; console.log(&quot;User:&quot;, t.message),
+  onPing: (event) =&gt; console.log(&quot;Estimated latency:&quot;, event.ping_ms),
+  onError: (e) =&gt; console.error(e)
+});
+</code></pre>
+<p><strong>React Hook:</strong> Wrap hook consumers in <code>ConversationProvider</code>. Prefer granular hooks such as
+<code>useConversationControls</code> and <code>useConversationStatus</code> for session controls and UI state;
+<code>useConversation</code> remains available as the convenience all-in-one hook. Pass provider-level
+callbacks such as <code>onError</code> when you want React to handle conversation errors in one place.</p>
+<pre><code class="language-typescript">import {
+  ConversationProvider,
+  useConversationControls,
+  useConversationStatus,
+} from &quot;@elevenlabs/react&quot;;
+
+function Agent({ signedUrl }: { signedUrl: string }) {
+  const { startSession, endSession } = useConversationControls();
+  const { status } = useConversationStatus();
+
+  if (status === &quot;connected&quot;) {
+    return &lt;button onClick={endSession}&gt;End conversation&lt;/button&gt;;
+  }
+
+  return (
+    &lt;button onClick={() =&gt; startSession({ signedUrl })}&gt;
+      Start conversation
+    &lt;/button&gt;
+  );
+}
+
+function App({ signedUrl }: { signedUrl: string }) {
+  return (
+    &lt;ConversationProvider
+      onError={(error) =&gt; console.error(&quot;Conversation error:&quot;, error)}
+      onPing={(event) =&gt; console.log(&quot;Estimated latency:&quot;, event.ping_ms)}
+    &gt;
+      &lt;Agent signedUrl={signedUrl} /&gt;
+    &lt;/ConversationProvider&gt;
+  );
+}
+</code></pre>
+<h2>Configuration</h2>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Models</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OpenAI</td>
+<td><code>gpt-5.6-sol</code>, <code>gpt-5.6-terra</code>, <code>gpt-5.6-luna</code>, <code>gpt-5.5</code>, <code>gpt-5.5-2026-04-23</code>, <code>gpt-5.4</code>, <code>gpt-5.4-mini</code>, <code>gpt-5.4-nano</code>, <code>gpt-5.4-2026-03-05</code>, <code>gpt-5.4-mini-2026-03-17</code>, <code>gpt-5.4-nano-2026-03-17</code>, <code>gpt-5</code>, <code>gpt-5-mini</code>, <code>gpt-5-nano</code>, <code>gpt-4.1</code>, <code>gpt-4.1-mini</code>, <code>gpt-4.1-nano</code>, <code>gpt-4o</code>, <code>gpt-4o-mini</code>, <code>gpt-4-turbo</code></td>
+</tr>
+<tr>
+<td>Anthropic</td>
+<td><code>claude-opus-4-7</code>, <code>claude-sonnet-4-6</code>, <code>claude-sonnet-4-5</code>, <code>claude-sonnet-4</code>, <code>claude-haiku-4-5</code>, <code>claude-3-7-sonnet</code>, <code>claude-3-5-sonnet</code>, <code>claude-3-haiku</code></td>
+</tr>
+<tr>
+<td>Google</td>
+<td><code>gemini-3.7-flash</code>, <code>gemini-3.6-flash</code>, <code>gemini-3.1-flash-lite-preview</code>, <code>gemini-3.1-pro-preview</code>, <code>gemini-3-pro-preview</code>, <code>gemini-3-flash-preview</code>, <code>gemini-2.5-flash</code>, <code>gemini-2.5-flash-lite</code>, <code>gemini-2.0-flash</code>, <code>gemini-2.0-flash-lite</code></td>
+</tr>
+<tr>
+<td>ElevenLabs</td>
+<td><code>glm-45-air-fp8</code>, <code>qwen3-30b-a3b</code>, <code>qwen36-35b-a3b</code>, <code>qwen35-35b-a3b</code>, <code>qwen35-397b-a17b</code>, <code>gpt-oss-120b</code></td>
+</tr>
+<tr>
+<td>Custom</td>
+<td><code>custom-llm</code> (bring your own endpoint)</td>
+</tr>
+</tbody>
+</table>
+<p>Use <code>GET /v1/convai/llm/list</code> to inspect the current model catalog, including deprecation state, token/context limits, capability flags such as image-input support, and model-specific reasoning effort support.</p>
+<p><strong>Popular voices:</strong> <code>JBFqnCBsd6RMkjVDRZzb</code> (George), <code>EXAVITQu4vr4xnSDxMaL</code> (Sarah), <code>onwK4e9ZLuTAKqWW03F9</code> (Daniel), <code>XB0fDUnXU5powFXDhCwa</code> (Charlotte)</p>
+<p><strong>Turn eagerness:</strong> <code>patient</code> (waits longer for user to finish), <code>normal</code>, or <code>eager</code> (responds quickly)</p>
+<p>See <a href="references/agent-configuration.html">Agent Configuration</a> for all options.</p>
+<h2>System Prompt Structure</h2>
+<p>Section the prompt with markdown headings — the model prioritizes and interprets instructions more reliably (<a href="https://elevenlabs.io/docs/eleven-agents/best-practices/prompting-guide">prompting guide</a>):</p>
+<pre><code># Personality   – named character, 2-3 traits
+# Environment   – where they work, who they talk to
+# Tone          – vocal style as 4-5 bullets
+# Goal          – what success looks like (numbered for multi-step flows)
+</code></pre>
+<p>Keep instructions short and action-based. Mark critical steps with "This step is important." For critical refusal/safety rules, include concise instructions in the prompt and also configure independent custom Guardrails via <code>platform_settings.guardrails</code> (see <a href="#guardrails">Guardrails</a>).</p>
+<h2>Tools</h2>
+<p>Extend agents with webhook, client, or built-in system tools. Tools are defined inside <code>conversation_config.agent.prompt</code>:</p>
+<p>Workspace environment variables can resolve per-environment server tool URLs, headers, and auth connections, and runtime system variables such as <code>{{system__conversation_history}}</code> can pass full conversation context into tool calls when needed.</p>
+<pre><code class="language-python">&quot;prompt&quot;: {
+    &quot;prompt&quot;: &quot;You are a helpful assistant that can check the weather.&quot;,
+    &quot;llm&quot;: &quot;gemini-2.0-flash&quot;,
+    &quot;tools&quot;: [
+        # Webhook: server-side API call
+        {&quot;type&quot;: &quot;webhook&quot;, &quot;name&quot;: &quot;get_weather&quot;, &quot;description&quot;: &quot;Get weather&quot;,
+         &quot;api_schema&quot;: {&quot;url&quot;: &quot;https://api.example.com/weather&quot;, &quot;method&quot;: &quot;POST&quot;,
+             &quot;request_body_schema&quot;: {&quot;type&quot;: &quot;object&quot;, &quot;properties&quot;: {&quot;location&quot;: {&quot;type&quot;: &quot;string&quot;}}, &quot;required&quot;: [&quot;location&quot;]}}},
+        # Client: runs in the browser
+        {&quot;type&quot;: &quot;client&quot;, &quot;name&quot;: &quot;show_product&quot;, &quot;description&quot;: &quot;Display a product&quot;,
+         &quot;parameters&quot;: {&quot;type&quot;: &quot;object&quot;, &quot;properties&quot;: {&quot;productId&quot;: {&quot;type&quot;: &quot;string&quot;}}, &quot;required&quot;: [&quot;productId&quot;]}}
+    ],
+    &quot;built_in_tools&quot;: {
+        &quot;end_call&quot;: {},
+        &quot;transfer_to_number&quot;: {&quot;transfers&quot;: [{&quot;transfer_destination&quot;: {&quot;type&quot;: &quot;phone&quot;, &quot;phone_number&quot;: &quot;+1234567890&quot;}, &quot;condition&quot;: &quot;User asks for human support&quot;}]},
+        &quot;start_procedure&quot;: {}
+    }
+}
+</code></pre>
+<p><strong>Client tools</strong> run in browser:</p>
+<pre><code class="language-javascript">clientTools: {
+  show_product: async ({ productId }) =&gt; {
+    document.getElementById(&quot;product&quot;).src = `/products/${productId}`;
+    return { success: true };
+  }
+}
+</code></pre>
+<p>See <a href="references/client-tools.html">Client Tools Reference</a> for complete documentation.</p>
+<h3>Built-in System Tools</h3>
+<p>Set under <code>conversation_config.agent.prompt.built_in_tools</code>. <code>{}</code> enables defaults; provide <code>description</code> to customize; omit to disable.</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Enable for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>end_call</code></td>
+<td>All agents</td>
+</tr>
+<tr>
+<td><code>language_detection</code></td>
+<td>Multilingual agents</td>
+</tr>
+<tr>
+<td><code>transfer_to_number</code></td>
+<td>Phone-based human escalation</td>
+</tr>
+<tr>
+<td><code>transfer_to_agent</code></td>
+<td>Multi-agent workflows</td>
+</tr>
+<tr>
+<td><code>start_procedure</code></td>
+<td>Procedure-guided conversations (see <a href="#procedures">Procedures</a>)</td>
+</tr>
+<tr>
+<td><code>end_procedure</code></td>
+<td>Completing active procedures</td>
+</tr>
+<tr>
+<td><code>skip_turn</code></td>
+<td>Tutoring / coaching (silent listening)</td>
+</tr>
+<tr>
+<td><code>voicemail_detection</code></td>
+<td>Outbound calling</td>
+</tr>
+<tr>
+<td><code>play_keypad_touch_tone</code></td>
+<td>IVR navigation</td>
+</tr>
+</tbody>
+</table>
+<p><code>run_subagent</code> is a system tool for delegating a task to another configured agent. Add it to
+<code>conversation_config.agent.prompt.tools</code> with <code>params.system_tool_type: "run_subagent"</code> and an
+<code>agents</code> array. Each entry requires <code>agent_id</code> and <code>description</code>; <code>branch_id</code> and a JSON-schema
+<code>parameters</code> object are optional.</p>
+<p><code>knowledge_base</code> is a system tool for letting the model choose how to inspect attached knowledge.
+Add it to <code>conversation_config.agent.prompt.tools</code> with <code>type: "system"</code>, a <code>name</code>, and
+<code>params.system_tool_type: "knowledge_base"</code>. Use <code>enabled_strategies</code> to expose any combination of
+<code>cat</code>, <code>keyword</code>, <code>semantic</code>, and <code>ls</code>:</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;system&quot;,
+  &quot;name&quot;: &quot;knowledge_base&quot;,
+  &quot;description&quot;: &quot;Search the attached knowledge base.&quot;,
+  &quot;params&quot;: {
+    &quot;system_tool_type&quot;: &quot;knowledge_base&quot;,
+    &quot;enabled_strategies&quot;: [&quot;semantic&quot;, &quot;keyword&quot;]
+  }
+}
+</code></pre>
+<h3>Integration Tools</h3>
+<p>Pre-built connectors managed by the platform. Create a connection with credentials, then attach via <code>tool_ids</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Integration</th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>calcom</code></td>
+<td>Scheduling appointments</td>
+</tr>
+<tr>
+<td><code>salesforce</code></td>
+<td>CRM lookups, case creation</td>
+</tr>
+<tr>
+<td><code>hubspot</code></td>
+<td>CRM, marketing, contacts</td>
+</tr>
+<tr>
+<td><code>zendesk</code></td>
+<td>Support ticketing</td>
+</tr>
+</tbody>
+</table>
+<p>Three-step flow: <code>POST /v1/convai/api-integrations/{id}/connections</code> → <code>GET /v1/convai/api-integrations/{id}/tools</code> → <code>POST /v1/convai/tools</code> with <code>api_integration_id</code> and <code>api_integration_connection_id</code>. Attach to the agent with <code>"prompt": {"tool_ids": ["tool_xxxx"]}</code>. Inline <code>tools</code> and <code>tool_ids</code> can coexist — prefer an integration over a duplicate custom webhook.</p>
+<h3>Public-API Webhook Examples</h3>
+<p>No-auth APIs useful for prototypes (URLs must be HTTPS):</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>URL</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>get_weather</code></td>
+<td><code>https://wttr.in/{location}?format=j1</code></td>
+<td>Current weather</td>
+</tr>
+<tr>
+<td><code>search_wikipedia</code></td>
+<td><code>https://en.wikipedia.org/api/rest_v1/page/summary/{topic}</code></td>
+<td>Topic summary</td>
+</tr>
+<tr>
+<td><code>get_exchange_rate</code></td>
+<td><code>https://open.er-api.com/v6/latest/{base_currency}</code></td>
+<td>FX rates</td>
+</tr>
+</tbody>
+</table>
+<h2>Workflows</h2>
+<p>Route conversations through discrete steps with branching logic. Define under the agent's top-level <code>workflow</code> field. Reference: <a href="https://elevenlabs.io/docs/eleven-agents/customization/agent-workflows">Agent Workflows</a>.</p>
+<p><strong>Node types:</strong> <code>start</code> (ID must be <code>"start_node"</code>), <code>end</code>, <code>override_agent</code> (subagent step with <code>label</code> + <code>additional_prompt</code>), <code>dispatch_tool</code> (executes a tool with success/failure routing), <code>agent_transfer</code>, <code>transfer_to_number</code>.</p>
+<p><strong>Edge types:</strong> <code>unconditional</code>, <code>llm</code> (natural-language condition), <code>expression</code> (deterministic data check). Tool nodes have separate success/failure edges.</p>
+<p><strong>Scope tools per step</strong> with <code>additional_tool_ids</code> on a node — prevents the wrong tool firing at the wrong step. Set <code>additional_tool_ids: []</code> on conversational routing nodes such as greeting and <code>classify_intent</code> so they only converse:</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;override_agent&quot;,
+  &quot;label&quot;: &quot;Book Appointment&quot;,
+  &quot;additional_prompt&quot;: &quot;Discuss preferred dates and doctors. Show the booking form once agreed.&quot;,
+  &quot;entry_behavior&quot;: &quot;wait_for_user&quot;,
+  &quot;additional_tool_ids&quot;: [&quot;show_booking_form&quot;, &quot;display_appointment_card&quot;],
+  &quot;position&quot;: {&quot;x&quot;: 0, &quot;y&quot;: 400}
+}
+</code></pre>
+<p>Include <code>position</code> (<code>{x, y}</code>) on every node so the editor renders cleanly. Start at <code>y=0</code>, put <code>end</code> at the bottom, and space branches horizontally at <code>x=-150</code> and <code>x=150</code>; suggested spacing is 200px vertical between levels and 300px horizontal between branches. Keep workflows to 4-7 nodes and always have a path to <code>end</code>.</p>
+<p>Use <code>entry_behavior</code> on <code>override_agent</code> nodes to choose whether a sub-agent speaks immediately (<code>generate_immediately</code>), waits for user input (<code>wait_for_user</code>), or lets the platform decide (<code>auto</code>).</p>
+<p>For nested agent transfers, set <code>enable_nesting</code> on a <code>standalone_agent</code> node and
+<code>return_when_nested</code> on an <code>end</code> node that should return control to the parent workflow.</p>
+<h2>Procedures</h2>
+<p>Reusable instruction blocks an agent runs when a trigger matches. A procedure is <code>free_form</code> (markdown guidance the agent adapts, and the only type that can reference knowledge base documents) or <code>deterministic</code> (ordered, typed steps for flows that must run consistently). Procedures are in Alpha. See <a href="references/using-procedure-api.html">Using the Procedure API</a> for the full CLI and SDK flow, and <a href="references/writing-procedures.html">Writing Procedures</a> for the step schema and authoring rules.</p>
+<p>Procedures live on an agent branch, and every write stages a per-user draft:</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Call</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>List, create, read, update, discard, remove</td>
+<td><code>/v1/convai/agents/{agent_id}/branches/{branch_id}/procedures...</code> (<code>procedures.*</code> and <code>procedures.drafts.*</code> in the SDKs)</td>
+</tr>
+<tr>
+<td>Compile</td>
+<td><code>POST .../procedures/compile</code> (<code>procedures.compile</code>)</td>
+</tr>
+<tr>
+<td>Publish</td>
+<td><code>PATCH /v1/convai/agents/{agent_id}?branch_id=...</code> (<code>agents.update</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>Semantics worth knowing before writing any of these calls:</p>
+<ul>
+<li>Nothing reaches the live agent until you publish. Publishing is not a procedure endpoint; one PATCH on the agent versions every changed procedure draft on the branch.</li>
+<li><code>GET .../procedures/{procedure_id}</code> reads branch HEAD and returns <code>404</code> until that procedure's first publish. Read the <code>/draft</code> variant to see a procedure you just created; do not retry the create.</li>
+<li>Compile only when structured (<code>deterministic</code>) procedures changed. Compilation turns them into workflow nodes, so the publish must carry the <code>workflow</code> that compile returned. Free-form-only changes publish without compiling, because the agent loads free-form procedures from their published versions.</li>
+<li>Compile validates structured content and is the only way to check it. On <code>400</code> it returns <code>errors</code> keyed by procedure ID with the offending field <code>path</code>; repair the draft and compile again rather than publishing.</li>
+<li>A draft update replaces the whole body. Read the draft first, then resend <code>name</code>, <code>type</code>, and <code>trigger</code> alongside the new <code>content</code>.</li>
+<li><code>content</code> is markdown for a <code>free_form</code> procedure, and a JSON-encoded object with a <code>trigger</code> and a <code>steps</code> array for a <code>deterministic</code> one. Serialize it; do not hand-escape quotes.</li>
+<li>Routing is driven by the <code>trigger</code> text, not the procedure name. Write concrete, non-overlapping triggers that cover the phrasings a user would actually say.</li>
+<li>Procedure APIs require <code>elevenlabs</code> (Python) or <code>@elevenlabs/elevenlabs-js</code> at <code>2.60.0</code> or newer.</li>
+</ul>
+<h2>Guardrails</h2>
+<p>Layered safety enforcement that runs independently of the LLM — configured under <code>platform_settings.guardrails</code>, not in the system prompt. Reference: <a href="https://elevenlabs.io/docs/eleven-agents/best-practices/guardrails">Guardrails</a>.</p>
+<pre><code class="language-json">&quot;platform_settings&quot;: {
+  &quot;guardrails&quot;: {
+    &quot;version&quot;: &quot;1&quot;,
+    &quot;focus&quot;: {&quot;is_enabled&quot;: true},
+    &quot;prompt_injection&quot;: {&quot;is_enabled&quot;: true},
+    &quot;content&quot;: {&quot;config&quot;: {&quot;harassment&quot;: {&quot;is_enabled&quot;: true, &quot;threshold&quot;: 0.5}}},
+    &quot;custom&quot;: {
+      &quot;config&quot;: {
+        &quot;configs&quot;: [{
+          &quot;is_enabled&quot;: true,
+          &quot;name&quot;: &quot;No medical diagnoses&quot;,
+          &quot;prompt&quot;: &quot;Block the agent from providing medical diagnoses or treatment advice.&quot;,
+          &quot;execution_mode&quot;: &quot;blocking&quot;,
+          &quot;model&quot;: &quot;gemini-2.5-flash-lite&quot;,
+          &quot;history_message_count&quot;: 1,
+          &quot;trigger_action&quot;: {&quot;type&quot;: &quot;retry&quot;, &quot;feedback&quot;: &quot;Reason: {{trigger_reason}}&quot;}
+        }]
+      }
+    }
+  }
+}
+</code></pre>
+<p><strong>Types:</strong> <code>focus</code> (on-topic), <code>prompt_injection</code> (manipulation defense), <code>content</code> (category filters), <code>custom</code> (LLM-evaluated domain rules). Content categories include <code>harassment</code>, <code>profanity</code>, <code>sexual</code>, <code>violence</code>, <code>self_harm</code>, and <code>medical_and_legal_information</code> — threshold range <code>0.0</code>–<code>1.0</code> (default <code>0.3</code>). Custom rules use <code>execution_mode: "blocking"</code> with a <code>model</code>, <code>history_message_count</code>, and <code>trigger_action</code> (e.g., <code>retry</code> with feedback). Custom guardrails evaluate in parallel and fail-open.</p>
+<p><strong>Per vertical:</strong> healthcare/finance/legal → enable <code>medical_and_legal_information</code>; education/youth → <code>sexual</code>/<code>violence</code>/<code>self_harm</code>/<code>profanity</code>; support/sales → <code>harassment</code>/<code>profanity</code>. All agents benefit from <code>focus</code> + <code>prompt_injection</code> + 2-4 custom rules.</p>
+<h2>Testing Agents</h2>
+<p>Three test types via <code>POST /v1/convai/agent-testing/create</code>, then attached with PATCH on the agent. Reference: <a href="https://elevenlabs.io/docs/eleven-agents/customization/agent-testing">Agent Testing</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>llm</code></td>
+<td>Scenario test — does the agent respond appropriately to a message?</td>
+</tr>
+<tr>
+<td><code>tool</code></td>
+<td>Tool-call test — right tool, right parameters?</td>
+</tr>
+<tr>
+<td><code>simulation</code></td>
+<td>Multi-turn flow with a simulated user persona</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-json">// Tool-call test (snake_case throughout; chat_history role is &quot;user&quot; or &quot;agent&quot;)
+{
+  &quot;name&quot;: &quot;Books with correct doctor and date&quot;,
+  &quot;type&quot;: &quot;tool&quot;,
+  &quot;chat_history&quot;: [
+    {&quot;role&quot;: &quot;user&quot;, &quot;message&quot;: &quot;Dr. Smith on March 5 at 2pm&quot;, &quot;time_in_call_secs&quot;: 10}
+  ],
+  &quot;tool_call_parameters&quot;: {
+    &quot;referenced_tool&quot;: {&quot;id&quot;: &quot;show_booking_form&quot;, &quot;type&quot;: &quot;client&quot;},
+    &quot;parameters&quot;: [
+      {&quot;path&quot;: &quot;doctor_name&quot;, &quot;eval&quot;: {&quot;type&quot;: &quot;llm&quot;, &quot;description&quot;: &quot;Should reference Dr. Smith&quot;}},
+      {&quot;path&quot;: &quot;date&quot;, &quot;eval&quot;: {&quot;type&quot;: &quot;regex&quot;, &quot;pattern&quot;: &quot;2025-03-05|March 5&quot;}}
+    ]
+  }
+}
+</code></pre>
+<p>Eval strategies: <code>exact</code>, <code>regex</code>, <code>llm</code>. Prompt evaluation criteria can use binary scoring or
+numeric scoring with <code>scoring_mode: "numeric_uniform"</code>, <code>max_score</code>, and <code>score_instructions</code>;
+numeric scores are normalized into the aggregate conversation success percentage. Attach via an agent update:</p>
+<pre><code class="language-bash">elevenlabs agents update --agent-id &quot;your-agent-id&quot; \
+  --json '{&quot;platform_settings&quot;: {&quot;testing&quot;: {&quot;attached_tests&quot;: [{&quot;test_id&quot;: &quot;test_xxxx&quot;}]}}}'
+</code></pre>
+<p>Run selected tests with <code>POST /v1/convai/agents/{agent_id}/run-tests</code>. The request
+body requires <code>tests</code> and accepts <code>repeat_count</code> from <code>1</code> to <code>50</code> for repeated runs.
+Simulation tests can define up to 30 <code>success_conditions</code> prompts; all criteria are
+evaluated and merged into the final result.
+Simulation tests can also define <code>tool_mock_overrides</code>, keyed by tool ID, to replace shared response
+mocks for one test. Each override is an array of mocks with a required <code>mock_result</code>; set
+<code>is_error: true</code> to exercise a tool-failure path. Overrides only apply to tools enabled for mocking
+through <code>tool_mock_config</code>.
+For completed conversations, rerun one evaluation criterion with <code>POST /v1/convai/conversations/{conversation_id}/analysis/evaluations/run</code> and a request body containing <code>evaluation_id</code>.</p>
+<h2>Widget Embedding</h2>
+<pre><code class="language-html">&lt;elevenlabs-convai agent-id=&quot;your-agent-id&quot;&gt;&lt;/elevenlabs-convai&gt;
+&lt;script src=&quot;https://unpkg.com/@elevenlabs/convai-widget-embed&quot; async type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+</code></pre>
+<p>Customize with attributes: <code>avatar-image-url</code>, <code>action-text</code>, <code>start-call-text</code>, <code>end-call-text</code>.</p>
+<p>See <a href="references/widget-embedding.html">Widget Embedding Reference</a> for all options.</p>
+<h2>Outbound Calls</h2>
+<p>Make outbound phone calls using your agent via Twilio or Exotel integration:</p>
+<p>The examples below use Twilio. See the reference for Exotel usage.</p>
+<h3>Python</h3>
+<pre><code class="language-python">response = client.conversational_ai.twilio.outbound_call(
+    agent_id=&quot;your-agent-id&quot;,
+    agent_phone_number_id=&quot;your-phone-number-id&quot;,
+    to_number=&quot;+1234567890&quot;,
+    call_recording_enabled=True
+)
+print(f&quot;Call initiated: {response.conversation_id}&quot;)
+</code></pre>
+<h3>JavaScript</h3>
+<pre><code class="language-javascript">const response = await client.conversationalAi.twilio.outboundCall({
+  agentId: &quot;your-agent-id&quot;,
+  agentPhoneNumberId: &quot;your-phone-number-id&quot;,
+  toNumber: &quot;+1234567890&quot;,
+  callRecordingEnabled: true,
+});
+</code></pre>
+<h3>CLI</h3>
+<pre><code class="language-bash">elevenlabs agents twilio outbound_call \
+  --agent-id &quot;your-agent-id&quot; \
+  --agent-phone-number-id &quot;your-phone-number-id&quot; \
+  --to-number &quot;+1234567890&quot; \
+  --call-recording-enabled true
+</code></pre>
+<p>See <a href="references/outbound-calls.html">Outbound Calls Reference</a> for provider-specific endpoints, configuration overrides, and dynamic variables.</p>
+<h2>Managing Agents</h2>
+<h3>Using CLI (Recommended)</h3>
+<pre><code class="language-bash"># List agents and check status
+elevenlabs agents list
+elevenlabs agents status
+
+# Import agents from platform to local config
+elevenlabs agents pull                      # Import all agents
+elevenlabs agents pull --agent &lt;agent-id&gt;   # Import specific agent
+
+# Push local changes to platform
+elevenlabs agents push              # Upload configurations
+elevenlabs agents push --dry-run    # Preview changes first
+
+# Add tools
+elevenlabs tools add-webhook &quot;Weather API&quot;
+elevenlabs tools add-client &quot;UI Tool&quot;
+</code></pre>
+<h3>Project Structure</h3>
+<p>The CLI creates a project structure for managing agents:</p>
+<pre><code>your_project/
+├── agents.json       # Agent definitions
+├── tools.json        # Tool configurations
+├── tests.json        # Test configurations
+├── agent_configs/    # Individual agent configs
+├── tool_configs/     # Individual tool configs
+└── test_configs/     # Individual test configs
+</code></pre>
+<h3>SDK Examples</h3>
+<pre><code class="language-python"># List
+agents = client.conversational_ai.agents.list()
+
+# Get
+agent = client.conversational_ai.agents.get(agent_id=&quot;your-agent-id&quot;)
+
+# Update (partial - only include fields to change)
+client.conversational_ai.agents.update(agent_id=&quot;your-agent-id&quot;, name=&quot;New Name&quot;)
+client.conversational_ai.agents.update(agent_id=&quot;your-agent-id&quot;,
+    conversation_config={
+        &quot;agent&quot;: {&quot;prompt&quot;: {&quot;prompt&quot;: &quot;New instructions&quot;, &quot;llm&quot;: &quot;claude-sonnet-4&quot;}}
+    })
+
+# Delete
+client.conversational_ai.agents.delete(agent_id=&quot;your-agent-id&quot;)
+</code></pre>
+<p>See <a href="references/agent-configuration.html">Agent Configuration</a> for all configuration options and SDK examples.</p>
+<h2>Error Handling</h2>
+<pre><code class="language-python">try:
+    agent = client.conversational_ai.agents.create(...)
+except Exception as e:
+    print(f&quot;API error: {e}&quot;)
+</code></pre>
+<p>Common errors: <strong>401</strong> (invalid key), <strong>404</strong> (not found), <strong>422</strong> (invalid config), <strong>429</strong> (rate limit)</p>
+<h2>References</h2>
+<ul>
+<li><a href="references/installation.html">Installation Guide</a> - SDK setup and migration</li>
+<li><a href="references/agent-configuration.html">Agent Configuration</a> - All config options and CRUD examples</li>
+<li><a href="references/client-tools.html">Client Tools</a> - Webhook, client, and system tools</li>
+<li><a href="references/using-procedure-api.html">Using the Procedure API</a> - Procedure CLI and SDK flow, compile and publish</li>
+<li><a href="references/writing-procedures.html">Writing Procedures</a> - Trigger and content authoring, step schema</li>
+<li><a href="references/widget-embedding.html">Widget Embedding</a> - Website integration</li>
+<li><a href="references/outbound-calls.html">Outbound Calls</a> - Phone call integrations</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

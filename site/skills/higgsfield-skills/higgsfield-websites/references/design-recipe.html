@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>design-recipe · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/design-recipe.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>design-recipe — the distilled craft playbook (read on EVERY build)</h1>
+<p>This is the short, always-read version of <code>design-taste-frontend.md</code>. Follow it as
+written; open the full playbook only where this file explicitly defers to it. Every
+rule here exists because the default LLM output violates it.</p>
+<h2>1. Typography</h2>
+<ul>
+<li><strong>Display:</strong> <code>text-4xl md:text-6xl tracking-tighter leading-none</code> as the base
+  scale. <code>text-6xl md:text-7xl</code> ONLY when the headline is 3-5 words. A 4-line hero
+  headline is a font-size error, not a copy-length error.</li>
+<li><strong>Body:</strong> <code>text-base leading-relaxed max-w-[65ch]</code>.</li>
+<li><strong>Fonts:</strong> pick from these pairings — <code>Geist</code> + <code>Geist Mono</code>, <code>Satoshi</code> +
+  <code>JetBrains Mono</code>, <code>Cabinet Grotesk</code> + <code>Inter Tight</code>, <code>Outfit</code> + <code>IBM Plex Mono</code>,
+  <code>GT Walsheim</code> / <code>PP Neue Montreal</code> + a mono. <strong>Inter as display is banned</strong> unless
+  the brief explicitly wants neutral/Linear/public-sector.</li>
+<li><strong>Serif is very discouraged as default.</strong> "Creative/premium brief = serif" is the
+  most-tested AI tell. Serif ONLY when the brief names one, or the brand is
+  genuinely editorial/luxury/heritage AND you write the justification into the
+  design brief. <code>Fraunces</code> and <code>Instrument Serif</code> are banned as defaults.
+  "Heritage" means an actual editorial/luxury/legacy institution — a business
+  being a few years old ("est. 2015") or in a traditional trade (barber,
+  bakery, tailor) does NOT qualify by itself; those default to sans like
+  everything else.</li>
+<li><strong>Emphasis inside a headline:</strong> italic or bold of the SAME family. Never inject a
+  serif word into a sans headline for "visual interest."</li>
+<li>Italic display words with descenders (<code>y g j p q</code>): <code>leading-[1.1]</code> minimum +
+  <code>pb-1</code> reserve, or the descender clips.</li>
+</ul>
+<h2>2. Color</h2>
+<ul>
+<li><strong>Exactly ONE accent color</strong>, saturation &lt; 80% by default, locked page-wide. A
+  rose-accented site does not get a teal badge in the footer.</li>
+<li>Neutral base (zinc/slate/stone family — pick warm OR cool, never both), no pure
+  <code>#000000</code> (use off-black/zinc-950), no neon glows, no AI-purple gradient slop.</li>
+<li><strong>Banned default palette families</strong> (gate-checked; overridable only by the
+  user's explicit brand colors): (1) graphite/near-black + orange/amber/ember
+  accent (<code>#ff5c1a #ff6b35 #e8590c #f97316 #ea580c #d9480f</code> on <code>#0a0a0a</code>-family
+  grounds — the single most common AI reach for "bold/technical"), (2)
+  near-black + neon cyan/blue/green accent (<code>#00e5ff #22d3ee #00ff88 #4ade80
+  #3b82f6</code>-glow on dark), (3) the beige+brass family below, (4) AI
+  purple/violet glow (<code>#8b5cf6 #a855f7 #7c3aed</code> gradients), (5) whatever
+  palette family your PREVIOUS build in this chat used — consecutive builds
+  must not share a palette family.</li>
+<li><strong>Premium-consumer palette ban:</strong> for cookware/wellness/artisan/luxury/DTC
+  briefs, the beige-cream + brass/clay/oxblood + espresso family is BANNED as the
+  default reach. Banned default hexes: backgrounds <code>#f5f1ea #f7f5f1 #fbf8f1
+  #efeae0 #ece6db #faf7f1 #e8dfcb</code>; accents <code>#b08947 #b6553a #9a2436 #9c6e2a
+  #bc7c3a #7d5621</code>; text <code>#1a1714 #1a1814 #1b1814</code>. Rotate instead: Cold Luxury
+  (silver/chrome/smoke), Forest (deep green + bone + amber), Black &amp; Tan, Cobalt +
+  Cream, Terracotta + Slate, Olive + Brick + Paper, or monochrome + one saturated
+  pop. Beige+brass is allowed only when the brief literally names those colors.
+  <strong>This rotation list is examples, not a menu:</strong> don't default to the first
+  item (Forest + amber is over-picked and heading toward becoming the new AI
+  tell). Derive the palette from the brief's actual material world first;
+  reach for the list only to escape a banned family.</li>
+<li><strong>One theme per page.</strong> Dark page = ALL sections dark. No warm-paper section
+  sandwiched into a zinc-950 page. Tint-shifts within the family are fine.</li>
+</ul>
+<h2>3. Hero discipline (hard rules)</h2>
+<ul>
+<li>Hero fits the initial viewport: headline max 2 lines desktop, subtext max 20
+  words / 3-4 lines, CTA visible without scrolling. Top padding cap <code>pt-24</code>.</li>
+<li><strong>Max 4 text elements:</strong> (0-1) eyebrow OR brand strip, (1) headline, (1) subtext,
+  (1) CTA row (1 primary + max 1 secondary). BANNED inside the hero: tagline under
+  the CTAs, trust micro-strip, pricing teaser, feature bullets, avatar rows,
+  version labels (<code>BETA</code>, <code>v2.0</code>), "Brand · No. 01" micro-meta. Logo walls go in
+  their own section BELOW the hero.</li>
+<li><strong>The hero needs a real visual</strong> (the Phase 1 generated asset). Text + gradient
+  blob is a placeholder, not a hero. Div-built fake product UI (fake task list,
+  fake terminal, fake dashboard) is the #1 LLM tell — use a real screenshot,
+  generated image, real component preview, or nothing.</li>
+<li>Anti-center bias: unless the brief is editorial/manifesto, prefer split 50/50,
+  left-content/right-asset, or asymmetric composition over the centered stack.</li>
+</ul>
+<h2>4. Layout rules (page-wide)</h2>
+<ul>
+<li><strong>Section-layout-repetition ban:</strong> each layout family (3-col cards, split
+  text+image, full-width quote, bento…) appears at most ONCE per page; 6+ sections
+  need ≥4 distinct families. Max 2 consecutive image/text zigzag splits.</li>
+<li><strong>Eyebrow ration:</strong> max 1 eyebrow per 3 sections (hero counts). Mechanical check:
+  count <code>uppercase tracking</code> labels; if count &gt; ceil(sections/3), fail. Prefer
+  dropping the eyebrow — the headline alone is enough.</li>
+<li><strong>No 3-column equal feature cards</strong> (the generic identical-trio row). Use
+  2-col zigzag (≤2 in a row), asymmetric grid, or horizontal scroll.</li>
+<li><strong>Bento:</strong> exactly as many cells as content items (no blank filler tiles), and
+  2-3 cells need real visual variation (image / brand gradient / pattern / tint) —
+  not 6 white-on-white text cards.</li>
+<li><strong>Split-header ban:</strong> "left giant headline + right floating small paragraph" as a
+  section header is banned by default; stack vertically instead.</li>
+<li>Cards ONLY where elevation means hierarchy — otherwise <code>border-t</code>, <code>divide-y</code>,
+  or negative space. One corner-radius scale for the whole page (all-sharp OR
+  all-soft 12-16px OR all-pill; mixed only with a written rule).</li>
+<li>Nav: single line at desktop, height ≤80px.</li>
+<li>Mobile collapse declared explicitly per multi-column section — no "Tailwind
+  handles it."</li>
+<li>Use <code>h-dvh</code>/<code>min-h-dvh</code>, not <code>h-screen</code> (mobile URL-bar breakage).</li>
+</ul>
+<h2>5. Copy rules</h2>
+<ul>
+<li>Headline ≤8 words; sub-paragraph ≤25 words; per section one visual OR one CTA.</li>
+<li><strong>Em-dash (<code>—</code>) and en-dash-as-separator (<code>–</code>) are COMPLETELY banned</strong> anywhere
+  visible: headlines, body, quotes, captions, buttons. Use period, comma, colon,
+  parentheses, or hyphen. Zero tolerance — one <code>—</code> on the page is a gate failure.</li>
+<li><strong>One label per CTA intent page-wide.</strong> "Get in touch" + "Contact us" + "Let's
+  talk" on one page = fail; pick one and reuse it in nav/hero/footer.</li>
+<li>CTA text fits one line at desktop (≤3 words for primary).</li>
+<li>No filler verbs (Elevate / Seamless / Unleash / Next-Gen / Revolutionize), no
+  startup-slop names (Acme, Nexus, SmartFlow), no "Jane Doe" testimonials, no
+  fake-precise invented MARKETING stats (<code>92% faster</code>, <code>4.1× ROI</code>, <code>10k+
+  teams</code>) unless labeled mock. Carve-out: invented PRODUCT FACTS (prices,
+  spec values, batch counts, dimensions) are required content for a
+  fictional-brand brochure — keep them plausible and internally consistent;
+  the ban targets performance/social-proof claims, not catalog data. No
+  performative-craftsman labels ("Field notes", "Quietly trusted by"), no section
+  numbering (<code>001 · Capabilities</code>), no scroll cues ("Scroll to explore"), no
+  locale/weather strips, no version footers on marketing pages, no pills/tags
+  overlaid on photos, no decorative status dots.</li>
+<li>Quotes: max 3 lines, real typographic quotes, attribution = name + role.</li>
+<li><strong>Copy self-audit before ship:</strong> re-read every visible string; rewrite anything
+  grammatically broken, referent-unclear, or "LLM trying to sound thoughtful."
+  Plain functional copy beats cute copy.</li>
+</ul>
+<h2>6. Motion rules</h2>
+<ul>
+<li>ONE signature/hero effect per page (from the design brief), plus motivated
+  reveals. Before adding any animation, answer "what does this communicate?"
+  (hierarchy / narrative / feedback / state). "It looked cool" = drop it.</li>
+<li>Spring physics (<code>type: "spring", stiffness: 100, damping: 20</code>) over linear
+  easing. Magnetic/cursor physics via <code>useMotionValue</code>/<code>useTransform</code>, never
+  <code>useState</code>.</li>
+<li>Animate only <code>transform</code> + <code>opacity</code> on the hot path.</li>
+<li><strong><code>prefers-reduced-motion</code> fallback on every animated element</strong> (mandatory).</li>
+<li>No custom mouse cursors — EXCEPT spectacle tier, where the brief-mandated
+  custom cursor is part of the tier contract. No infinite loops on
+  informational sections.</li>
+<li>If motion can't be finished properly in scope, ship a clean static page instead
+  of half-wired ScrollTriggers.</li>
+</ul>
+<h2>7. Interactive states &amp; forms</h2>
+<ul>
+<li>Implement full cycles, not just the happy state: skeleton loaders shaped like the
+  final layout (no generic spinners), composed empty states, inline error states.</li>
+<li><code>:active</code> tactile feedback: <code>-translate-y-[1px]</code> or <code>scale-[0.98]</code>.</li>
+<li><strong>Bespoke chrome:</strong> no site-wide shared button style. Each CTA from the
+  brief's inventory is its own component with its own interaction identity
+  (see <code>image-to-code.md</code>). A page of identical pills is a gate failure.</li>
+<li><strong>Button contrast check:</strong> every button label ≥ WCAG AA against its own
+  background (ghost buttons over photos need a scrim/stroke). White-on-white CTA
+  is a gate failure.</li>
+<li>Forms: label ABOVE input, error BELOW, never placeholder-as-label; placeholder/
+  helper/focus states pass AA contrast.</li>
+</ul>
+<h2>8. Images &amp; icons</h2>
+<ul>
+<li>Priority: (1) generated bespoke assets (Phase 1 — always available in this
+  environment, so picsum/stock is NOT an acceptable final state), (2) real brand
+  URLs from the brief, (3) clearly-labeled TODO slots + tell the user.</li>
+<li>Even minimalist sites need 2-3 real images. Pure-text is incomplete, not minimal.</li>
+<li>Logo walls: real SVG marks (Simple Icons CDN / <code>simple-icons</code>), logos ONLY (no
+  category captions under each logo). Invented brands get an invented inline-SVG
+  monogram, not a styled <code>&lt;span&gt;</code>.</li>
+<li><strong>Icons: generated set first.</strong> The site's visible icons come from the
+  Higgsfield-generated custom icon set (<code>asset-system.md</code> §4) — one consistent
+  stroke style in the brand palette. Library icons (Phosphor / Radix / Tabler;
+  Lucide on request) are the fallback for dense functional UI (forms, tables,
+  20+ tiny glyphs). Never mix the two sets in one visual zone. No hand-rolled
+  decorative SVG illustrations.</li>
+</ul>
+<h2>9. Where the full playbook still wins</h2>
+<p>Open <code>design-taste-frontend.md</code> for: the three dials + use-case presets (§1),
+design-system briefs like "make it feel like Notion/Stripe" (§2), canonical
+animation skeletons — sticky-stack, horizontal-pan, scroll-reveal (§5), dark-mode
+token protocol (§8), the complete AI-tells list (§9), and the pattern vocabulary
+(§10). When this recipe and the full playbook disagree, the recipe wins.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

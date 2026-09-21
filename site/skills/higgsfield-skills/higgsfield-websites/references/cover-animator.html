@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cover-animator · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/cover-animator.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Cover animator (~5s reveal → <code>og_video_url</code>)</h1>
+<p>Turn a finished launch cover (the one made per <code>references/app-cover.md</code>) into
+a short reveal animation for the feed card's <code>og_video_url</code>: the hero scene
+moves, the typography and plates fly in, and the last frame lands exactly on
+the approved cover.</p>
+<blockquote>
+<p><strong>PERMISSION-GATED.</strong> The cover video costs credits. OFFER it when publishing
+("want a short cover video for the feed card?") and only generate it after
+the user says yes — never unprompted. Everything else in the publish gate
+(cover image, OG, favicon) ships without asking; the video is the one
+exception (see <code>references/app-flow.md</code> publish gate item 6).</p>
+</blockquote>
+<h2>The trick: end-frame reveal</h2>
+<p><code>seedance_2_0</code> accepts an end frame (<code>--end-image</code>). Pass the finished cover as
+the END frame and describe the buildup — this guarantees the video finishes
+pixel-perfect on the approved cover while the model invents the entrance. Do NOT
+pass it as <code>--start-image</code> (that drifts away from the cover instead of revealing
+it).</p>
+<h2>Workflow</h2>
+<h3>1. Read the cover's content</h3>
+<p>Use the <strong>plain full-bleed cover</strong> (<code>marketplace_cover_url</code> / <code>&lt;name&gt;_cover.png</code>),
+NOT the OG version — the OG's frame and capsule confuse the motion model. (If
+only an OG exists it still works; then instruct the model to keep the frame and
+dots perfectly static.) Look at the image and note the hero subject, background,
+title text, tagline, pill CTA, and logos — you'll reference these concretely in
+the prompt.</p>
+<h3>2. Design the beats (~5s), all derived from the cover's actual content</h3>
+<ol>
+<li><strong>0–1.5s — scene alive, no text yet.</strong> The hero scene exists and moves
+   contextually: fur ripples, stars orbit, clouds drift, train lights flicker,
+   camera pushes in slowly. Name the motion that fits THIS cover's subject.</li>
+<li><strong>1.5–3.5s — text entrance.</strong> The title pops/slides/bounces in (match the
+   motion to the typography: pixel type snaps in block by block, chrome bubble
+   letters inflate, condensed uppercase slams down), the tagline fades up, the
+   pill CTA slides in with a soft bounce.</li>
+<li><strong>3.5–5s — settle.</strong> Micro-motion only; everything eases into the exact
+   final composition (the end frame).</li>
+</ol>
+<h3>3. Generate</h3>
+<p><code>--end-image</code> accepts a local file path (the CLI auto-uploads it) or the UUID of
+a prior <code>higgsfield upload create</code>, so you can pass the cover file straight in.
+Call <code>higgsfield generate create</code> once:</p>
+<pre><code class="language-bash">higgsfield generate create seedance_2_0 \
+  --aspect_ratio auto --duration 5 --resolution 1080p --mode std \
+  --generate_audio false --count 1 \
+  --end-image &lt;cover_file_or_upload_id&gt; \
+  --prompt &quot;&lt;see template&gt;&quot; --wait
+</code></pre>
+<p><code>--generate_audio false</code> by default (feed cards autoplay muted); set <code>true</code> only
+if the user asks for sound. Duration 5 unless the user wants another length
+(4–15 supported). If a param is rejected, run <code>higgsfield model get seedance_2_0</code>
+and use what it reports.</p>
+<p>Prompt template — fill from your beat design, keep the ending anchor sentence:</p>
+<blockquote>
+<p>Premium 5-second motion cover reveal, smooth cinematic easing. The scene
+starts WITHOUT any text or plates: [SCENE AT START + CONTEXT MOTION — e.g.
+"the fluffy lime creature slowly rotates, its fur rippling in the light,
+stars drifting"]. Then the title "[TITLE TEXT]" [ENTRANCE MOTION matched to
+its typography], the tagline fades up beneath it, and the small rounded pill
+button slides in with a soft bounce. All elements ease precisely into their
+final positions and the video ends exactly on the provided end frame, holding
+still for the last moments. Subtle camera push-in, no flicker, no extra text,
+no new objects.</p>
+</blockquote>
+<p>If animating an OG cover, append: "The solid color frame, corner dots and
+capsule shape stay perfectly static at all times."</p>
+<h3>4. Wire into the app</h3>
+<p>With <code>--wait</code> the command blocks and prints the result; otherwise poll
+<code>higgsfield generate wait &lt;id&gt;</code> / <code>higgsfield generate get &lt;id&gt;</code>. Take the mp4
+and set it as <code>og_video_url</code> in <code>app/src/app-meta.json</code> — either the hosted
+https URL directly, or download it into <code>app/public/</code> (e.g.
+<code>app/public/cover-video.mp4</code>) and set <code>"og_video_url": "/cover-video.mp4"</code>.
+Commit + deploy; the feed card picks it up on the next deploy. Review the
+result: if the ending visibly drifts from the cover or extra text appears
+mid-video, regenerate once naming the flaw (e.g., "the title must not change
+after it lands").</p>
+<p>For a standalone "animate this cover" request (not a publish), just save the
+mp4 as <code>&lt;name&gt;_cover_anim.mp4</code> and show it.</p>
+<h2>Deviations</h2>
+<p>The user's wishes win: other durations, with sound, animating the OG version,
+looping intent (then ask for subtle motion and no big entrance), vertical
+covers, <code>seedance_2_0_mini</code> for cheap drafts.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

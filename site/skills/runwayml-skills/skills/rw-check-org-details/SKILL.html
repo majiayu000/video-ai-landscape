@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>rw-check-org-details · Runway 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/runwayml-skills/">runwayml-skills</a><span class="crumb">/</span><span class="crumb">skills/rw-check-org-details/SKILL.md</span><button onclick="t()">🌓</button></nav>
+<main><div class="meta"><div class="m-name">rw-check-org-details</div><div class="m-desc">Query the Runway API for organization details: rate limits, credit balance, usage tier, and daily generation counts</div><div class="m-src">源文件：<a href="https://github.com/runwayml/skills/blob/main/skills/rw-check-org-details/SKILL.md" target="_blank" rel="noopener">runwayml/skills/skills/rw-check-org-details/SKILL.md</a></div></div><h1>Check Organization Details</h1>
+<blockquote>
+<p><strong>Prerequisite:</strong> <code>RUNWAYML_API_SECRET</code> must be available to the server-side process. Never print or paste its value.</p>
+</blockquote>
+<p>Query the Runway API to retrieve the user's organization details — credit balance, usage tier, rate limits, current daily generation counts, and historical credit usage.</p>
+<h2>Step 1: Verify API Key Is Available</h2>
+<p>Before making any requests, confirm the API key is accessible:</p>
+<ol>
+<li>Check whether the project loads <code>RUNWAYML_API_SECRET</code> from its server-side environment.</li>
+<li>Or check the current shell without printing the value: <code>test -n "$RUNWAYML_API_SECRET"</code>.</li>
+</ol>
+<p>If the key is not found, ask the user to create one in Runway Developer Portal settings and add it to the server-side environment, then stop.</p>
+<h2>Step 2: Query Organization Info</h2>
+<p>Call <code>GET /v1/organization</code> to retrieve the org's tier, credit balance, and current usage.</p>
+<h3>Node.js</h3>
+<pre><code class="language-javascript">import RunwayML from '@runwayml/sdk';
+
+const client = new RunwayML();
+const details = await client.organization.retrieve();
+console.log(JSON.stringify(details, null, 2));
+</code></pre>
+<h3>Python</h3>
+<pre><code class="language-python">from runwayml import RunwayML
+
+client = RunwayML()
+details = client.organization.retrieve()
+print(details)
+</code></pre>
+<h3>cURL / fetch (no SDK)</h3>
+<pre><code class="language-bash">curl -s https://api.dev.runwayml.com/v1/organization \
+  -H &quot;Authorization: Bearer $RUNWAYML_API_SECRET&quot; \
+  -H &quot;X-Runway-Version: 2024-11-06&quot; | python3 -m json.tool
+</code></pre>
+<h3>Response Shape</h3>
+<pre><code class="language-json">{
+  &quot;tier&quot;: {
+    &quot;maxMonthlyCreditSpend&quot;: 10000,
+    &quot;models&quot;: {
+      &quot;gen4.5&quot;: {
+        &quot;maxConcurrentGenerations&quot;: 2,
+        &quot;maxDailyGenerations&quot;: 200
+      }
+    }
+  },
+  &quot;creditBalance&quot;: 5000,
+  &quot;usage&quot;: {
+    &quot;models&quot;: {
+      &quot;gen4.5&quot;: {
+        &quot;dailyGenerations&quot;: 12
+      }
+    }
+  }
+}
+</code></pre>
+<h2>Step 3: Present the Results</h2>
+<p>Format the output as a clear summary for the user:</p>
+<pre><code>## Organization Overview
+
+**Credit Balance:** X credits ($X.XX at $0.01/credit)
+**Monthly Spend Cap:** X credits
+
+### Rate Limits (by model)
+
+| Model | Concurrency | Daily Limit | Used Today | Remaining |
+|-------|-------------|-------------|------------|-----------|
+| gen4.5 | 2 | 200 | 12 | 188 |
+| veo3.1 | 2 | 100 | 5 | 95 |
+| ... | ... | ... | ... | ... |
+</code></pre>
+<p>Key things to highlight:
+- <strong>Credit balance</strong> — convert to dollar value (<code>credits × $0.01</code>)
+- <strong>Per-model daily limits</strong> — show how many generations remain today (rolling 24-hour window)
+- <strong>Concurrency</strong> — how many tasks can run simultaneously per model
+- <strong>Monthly cap</strong> — the max credit spend per month for their tier</p>
+<h2>Step 4 (Optional): Query Credit Usage History</h2>
+<p>If the user wants to see historical usage, call <code>POST /v1/organization/usage</code>.</p>
+<h3>Node.js</h3>
+<pre><code class="language-javascript">const usage = await client.organization.retrieveUsage({
+  startDate: '2026-02-15',   // ISO-8601, up to 90 days back
+  beforeDate: '2026-03-17'   // exclusive end date
+});
+console.log(JSON.stringify(usage, null, 2));
+</code></pre>
+<h3>Python</h3>
+<pre><code class="language-python">usage = client.organization.retrieve_usage(
+    start_date=&quot;2026-02-15&quot;,
+    before_date=&quot;2026-03-17&quot;
+)
+print(usage)
+</code></pre>
+<h3>cURL / fetch (no SDK)</h3>
+<pre><code class="language-bash">curl -s -X POST https://api.dev.runwayml.com/v1/organization/usage \
+  -H &quot;Authorization: Bearer $RUNWAYML_API_SECRET&quot; \
+  -H &quot;X-Runway-Version: 2024-11-06&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{&quot;startDate&quot;: &quot;2026-02-15&quot;, &quot;beforeDate&quot;: &quot;2026-03-17&quot;}' \
+  | python3 -m json.tool
+</code></pre>
+<h3>Response Shape</h3>
+<pre><code class="language-json">{
+  &quot;results&quot;: [
+    {
+      &quot;date&quot;: &quot;2026-03-16&quot;,
+      &quot;usedCredits&quot;: [
+        { &quot;model&quot;: &quot;gen4.5&quot;, &quot;amount&quot;: 120 },
+        { &quot;model&quot;: &quot;veo3.1&quot;, &quot;amount&quot;: 400 }
+      ]
+    }
+  ],
+  &quot;models&quot;: [&quot;gen4.5&quot;, &quot;veo3.1&quot;]
+}
+</code></pre>
+<p>Present this as a usage breakdown:</p>
+<pre><code>### Credit Usage (Feb 15 – Mar 17)
+
+| Date | Model | Credits Used |
+|------|-------|-------------|
+| 2026-03-16 | gen4.5 | 120 |
+| 2026-03-16 | veo3.1 | 400 |
+| ... | ... | ... |
+
+**Total:** X credits
+</code></pre>
+<h2>Tier Reference</h2>
+<p>If the user asks about upgrading, share the tier breakdown:</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Concurrency</th>
+<th>Daily Gens</th>
+<th>Monthly Cap</th>
+<th>Unlock Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 (default)</td>
+<td>1–2</td>
+<td>50–200</td>
+<td>$100</td>
+<td>—</td>
+</tr>
+<tr>
+<td>2</td>
+<td>3</td>
+<td>500–1,000</td>
+<td>$500</td>
+<td>1 day + $50 spent</td>
+</tr>
+<tr>
+<td>3</td>
+<td>5</td>
+<td>1,000–2,000</td>
+<td>$2,000</td>
+<td>7 days + $100 spent</td>
+</tr>
+<tr>
+<td>4</td>
+<td>10</td>
+<td>5,000–10,000</td>
+<td>$20,000</td>
+<td>14 days + $1,000 spent</td>
+</tr>
+<tr>
+<td>5</td>
+<td>20</td>
+<td>25,000–30,000</td>
+<td>$100,000</td>
+<td>7 days + $5,000 spent</td>
+</tr>
+</tbody>
+</table>
+<p>Tiers upgrade automatically once the spend and time requirements are met.</p>
+<h2>Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>401 Unauthorized</code></td>
+<td>Invalid or missing API key</td>
+<td>Replace <code>RUNWAYML_API_SECRET</code> with a valid Developer Portal key</td>
+</tr>
+<tr>
+<td><code>creditBalance</code> is 0</td>
+<td>No credits purchased</td>
+<td>Purchase at https://dev.runwayml.com/ → Billing (min $10)</td>
+</tr>
+<tr>
+<td>Daily limit reached</td>
+<td>Rolling 24-hour quota exhausted</td>
+<td>Wait for the window to reset, or upgrade tier</td>
+</tr>
+<tr>
+<td>All models show 0 daily limit</td>
+<td>Tier 1 restrictions</td>
+<td>Check that credits have been purchased</td>
+</tr>
+</tbody>
+</table></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

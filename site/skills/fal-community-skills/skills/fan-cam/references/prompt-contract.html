@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>prompt-contract · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/fan-cam/references/prompt-contract.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Fan cam prompt contract</h1>
+<p>Use this reference to write the generated frame prompt and Kling multi prompts.</p>
+<h2>Planning contract</h2>
+<p>Inputs:</p>
+<ul>
+<li>User photo URL or uploaded URL.</li>
+<li>Event details.</li>
+<li>Reaction or situation.</li>
+<li>Budget or quality target, only when the user explicitly gives one.</li>
+</ul>
+<p>The user photo is the identity reference. It is not a finished fan-cam frame.
+When the input is an ordinary person photo, the image-generation step must use
+<code>openai/gpt-image-2/edit</code> to create the broadcast scene before any Kling run.</p>
+<p>Outputs to produce before running models:</p>
+<pre><code class="language-json">{
+  &quot;image_prompt&quot;: &quot;...&quot;,
+  &quot;image_quality&quot;: &quot;high&quot;,
+  &quot;image_size&quot;: { &quot;width&quot;: 3840, &quot;height&quot;: 2160 },
+  &quot;kling_endpoint&quot;: &quot;fal-ai/kling-video/v3/pro/image-to-video&quot;,
+  &quot;beats&quot;: [
+    { &quot;duration&quot;: &quot;3&quot;, &quot;prompt&quot;: &quot;...&quot; }
+  ],
+  &quot;total_duration&quot;: &quot;...&quot;
+}
+</code></pre>
+<p>Rules:</p>
+<ul>
+<li><code>beats.length</code> must be 2 to 5.</li>
+<li>Every beat duration must be at least 3 seconds.</li>
+<li>Total duration must be 15 seconds or less.</li>
+<li>Default GPT Image 2 edit quality is <code>high</code> with a 3840x2160 16:9 frame.
+  Use <code>low</code> only for explicitly requested economy or preview runs.</li>
+<li>Default Kling endpoint is <code>fal-ai/kling-video/v3/pro/image-to-video</code>. Use
+  Standard only for explicitly requested economy or preview runs. Use native
+  4K only when explicitly requested for final video delivery.</li>
+<li>If using a real user-provided or approved Kling <code>elements</code> entry, every beat
+  prompt must reference <code>@Element1</code>. Do not invent extra elements just to
+  satisfy this pattern.</li>
+<li>Do not expose internal planning text to the user unless they ask for prompts.</li>
+</ul>
+<h2>Image prompt build order</h2>
+<ol>
+<li>Identity reference.</li>
+<li>Event context.</li>
+<li>Spectator situation or reaction.</li>
+<li>Broadcast composition.</li>
+<li>Sport-specific overlay.</li>
+<li>Channel bug.</li>
+<li>Realism texture.</li>
+<li>Negative constraints.</li>
+</ol>
+<p>Do not treat the identity photo as a <code>start_image_url</code> for Kling. The image
+prompt must turn that photo into a realistic 16:9 spectator broadcast frame.
+The approved generated frame becomes the Kling <code>start_image_url</code>.</p>
+<p>Template:</p>
+<pre><code class="language-text">Use the uploaded photo as the identity reference for the featured spectator.
+Preserve the real face, age impression, skin tone, hair, facial hair, glasses,
+face structure, asymmetry, pores, wrinkles, blemishes, and ordinary
+imperfections. Create a horizontal 16:9 realistic live TV broadcast screenshot
+from [event]. The person is [seated/standing] naturally among [sport-specific
+crowd], [reaction or situation with concrete face, posture, hands, and eye
+direction]. Use [sport-specific venue and broadcast camera language]. Add a
+compact [score/timing] overlay if appropriate and a small top-right generic
+[sport] channel bug reading &quot;[BUG TEXT]&quot;. Use mild broadcast compression noise,
+subtle motion blur, off-center crop, foreground occlusion, imperfect background
+faces, natural venue lighting, focus falloff, and ordinary skin texture. No AI
+beauty retouching, no face anatomy changes, no portrait orientation, no studio
+portrait, no passport photo, no influencer look, no fake sponsor marks, no
+oversized logos, no warped text, no anime, no cartoon.
+</code></pre>
+<h2>Reaction mapping</h2>
+<p>Use the selected reaction as visible physical direction:</p>
+<ul>
+<li>Excited: alert eyes, lifted cheeks, energized shoulders, forward lean.</li>
+<li>Happy: natural smile, relaxed face, warm eyes, open posture.</li>
+<li>Laughing: candid mid-laugh, cheeks raised, mouth naturally open, body tilted
+  toward friends or the event.</li>
+<li>Sad: downcast eyes, deflated shoulders, closed mouth, disappointed stillness.</li>
+<li>Neutral: calm face, minimal expression, steady gaze.</li>
+<li>Angry: narrowed eyes, tense jaw, restrained complaint, no aggression.</li>
+<li>Surprised: raised brows, wider eyes, slight head turn, caught off guard.</li>
+<li>Nervous: stiff shoulders, tight mouth, fixed stare, small hand tension.</li>
+<li>Focused: locked eyes, minimal mouth movement, concentrated posture.</li>
+<li>Eating or drinking: preserve candid broadcast realism. Keep food or drink
+  ordinary and sport-venue plausible, not a comedy prop unless requested.</li>
+</ul>
+<p>Blend reaction with event logic. A tennis spectator may be restrained; a
+basketball or football fan may be more animated; a combat sports crowd may be
+tense; a racing grandstand may track fast offscreen motion.</p>
+<h2>Scene archetypes</h2>
+<p>Pick the archetype that best matches user details:</p>
+<h3>Classic spectator cutaway</h3>
+<p>The person watches the event naturally, unaware or barely aware of the camera.
+Use 2 or 3 beats.</p>
+<h3>Caught-on-camera moment</h3>
+<p>The person is eating, drinking, talking to a friend, holding a scarf, checking
+the big screen, or reacting at the exact wrong or funny moment. Keep it candid,
+not slapstick. Use 3 or 4 beats.</p>
+<h3>Stadium screen or broadcast feature</h3>
+<p>The person notices the stadium screen or broadcast camera. Use subtle
+recognition, not a staged pose. Use 4 or 5 beats.</p>
+<h3>Tense match moment</h3>
+<p>The offscreen event intensifies. Crowd motion rises around the person while
+the person stays nervous, focused, surprised, or disappointed. Use 3 to 5 beats.</p>
+<h3>Celebration or disappointment</h3>
+<p>The surrounding crowd erupts or deflates. The person reacts in a natural way
+that matches the chosen reaction and the sport. Use 3 or 4 beats.</p>
+<h2>Beat patterns</h2>
+<p>Choose the smallest useful pattern.</p>
+<h3>6 seconds, 2 beats</h3>
+<ol>
+<li>Establish the broadcast cutaway.</li>
+<li>Subtle reaction and crowd rise.</li>
+</ol>
+<h3>9 seconds, 3 beats</h3>
+<ol>
+<li>Establish the exact cutaway.</li>
+<li>Reaction-specific motion.</li>
+<li>Camera correction or crowd rise.</li>
+</ol>
+<h3>12 seconds, 4 beats</h3>
+<ol>
+<li>Establish the cutaway.</li>
+<li>Person reaction or situation detail.</li>
+<li>Broadcast camera push, pan, or sidestep.</li>
+<li>Event-specific crowd response.</li>
+</ol>
+<h3>15 seconds, 5 beats</h3>
+<ol>
+<li>Establish the cutaway.</li>
+<li>Person micro-motion and nearby crowd.</li>
+<li>Broadcast reframing or tighter angle.</li>
+<li>Offscreen event tension or reveal.</li>
+<li>Crowd reaction peak or held final moment.</li>
+</ol>
+<h2>Kling beat prompt template</h2>
+<pre><code class="language-text">Use @Element1 as the exact [sport] live broadcast cutaway. Preserve [person,
+wardrobe, crowd, seat layout, overlay, top-right channel bug, lighting]. Animate
+[beat-specific movement]. Keep [reaction] natural and candid. No face morphing,
+no beautification, no unstable text, no wrong sport.
+</code></pre>
+<p>Use <code>@Element1</code> only when a real approved <code>elements</code> entry is in the payload.
+Otherwise say "the featured spectator in the start image" or equivalent. Keep
+prompts concise. Do not list every constraint in every beat. Put the highest-
+risk continuity constraints in each beat: identity, overlay, channel bug,
+crowd layout, and reaction.</p>
+<h2>Audio and voiceover contract</h2>
+<ul>
+<li>Kling requests in this skill must use <code>generate_audio=true</code>.</li>
+<li>Do not combine <code>multi_prompt</code> with <code>end_image_url</code>.</li>
+<li>Do not invent extra Kling elements. Use <code>elements</code> only for real
+  user-provided or approved references.</li>
+<li>Do not write external narration as dialogue from the featured spectator.</li>
+<li>If using Kling native audio for a line, phrase it as an off-screen broadcast
+  commentator, arena PA voice, or non-diegetic voiceover and add: the featured
+  spectator stays silent, lips do not move, no lip sync.</li>
+</ul>
+<p>Good native-audio pattern:</p>
+<pre><code class="language-json">{
+  &quot;duration&quot;: &quot;6&quot;,
+  &quot;generate_audio&quot;: true,
+  &quot;shot_type&quot;: &quot;customize&quot;,
+  &quot;cfg_scale&quot;: 0.32,
+  &quot;start_image_url&quot;: &quot;&lt;approved 16:9 spectator frame&gt;&quot;,
+  &quot;multi_prompt&quot;: [
+    {
+      &quot;duration&quot;: &quot;3&quot;,
+      &quot;prompt&quot;: &quot;Use the start image as the same live NBA timeout crowd shot. The featured spectator is silent and watches the missed t-shirt cannon moment with a small amused reaction. No visible person speaks.&quot;
+    },
+    {
+      &quot;duration&quot;: &quot;3&quot;,
+      &quot;prompt&quot;: &quot;Keep the camera on the same spectator and crowd. An off-camera arena PA or crowd-mic voice from the venue says, \&quot;that was close!\&quot; It is not the spectator speaking; no lip sync, no mouth movement matching the words.&quot;
+    }
+  ],
+  &quot;negative_prompt&quot;: &quot;featured spectator speaking, lip sync, lips moving to narration, mouth forming words, on-camera subject says the line, dialogue from visible fan, visible fan voice, face morphing, unstable scoreboard, wrong sport, camera leaving crowd, end image url&quot;
+}
+</code></pre>
+<h2>Overlay guidance</h2>
+<p>Use overlays only when they improve realism:</p>
+<ul>
+<li>Football: score, clock, half or match time.</li>
+<li>Basketball: team abbreviations, score, quarter, game clock.</li>
+<li>Tennis: player names, sets, games, point score.</li>
+<li>Racing: timing tower or position strip.</li>
+<li>Combat sports: round and clock.</li>
+<li>Esports: match HUD or lower-third style, not overloaded UI.</li>
+</ul>
+<p>Use a small top-right broadcast bug:</p>
+<ul>
+<li>Generic, sport-specific, and short.</li>
+<li>Prefer 1 to 2 words plus LIVE when useful.</li>
+<li>Keep it secondary to the spectator.</li>
+<li>If the user supplies an exact approved network logo or asks for a named
+  network, preserve it as a small broadcast bug. Otherwise use a generic bug.</li>
+</ul>
+<h2>Realism checklist</h2>
+<p>The frame should have:</p>
+<ul>
+<li>Professional TV lens, not phone selfie.</li>
+<li>Slightly compressed broadcast feed texture.</li>
+<li>Natural venue light, not glamor lighting.</li>
+<li>Foreground occlusion from heads, shoulders, railings, cups, or scarves.</li>
+<li>Imperfect but believable background faces.</li>
+<li>Ordinary posture.</li>
+<li>Sport-specific crowd behavior.</li>
+<li>Scoreboard and channel bug small enough to feel like TV, not a poster.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

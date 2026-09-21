@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>README · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/java/managed-agents/README.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Managed Agents - Java</h1>
+<blockquote>
+<p><strong>Bindings not shown here:</strong> This README covers the most common managed-agents flows for Java. If you need a class, method, namespace, field, or behavior that isn't shown, WebFetch the Java SDK repo <strong>or the relevant docs page</strong> from <code>shared/live-sources.md</code> rather than guess. Do not extrapolate from cURL shapes or another language's SDK.</p>
+<p><strong>Agents are persistent - create once, reference by ID.</strong> Store the agent ID returned by <code>client.beta().agents().create</code> and pass it to every subsequent <code>client.beta().sessions().create</code>; do not call <code>agents().create</code> in the request path. <strong>Recommended:</strong> define agents and environments as version-controlled YAML applied with the <code>ant</code> CLI - see <code>shared/anthropic-cli.md</code> (its live-docs URL is in <code>shared/live-sources.md</code>). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.</p>
+</blockquote>
+<h2>Installation</h2>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.anthropic&lt;/groupId&gt;
+    &lt;artifactId&gt;anthropic-java&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h2>Client Initialization</h2>
+<pre><code class="language-java">import com.anthropic.client.okhttp.AnthropicOkHttpClient;
+
+// Default (uses ANTHROPIC_API_KEY env var)
+var client = AnthropicOkHttpClient.fromEnv();
+</code></pre>
+<hr />
+<h2>Create an Environment</h2>
+<pre><code class="language-java">import com.anthropic.models.beta.environments.BetaCloudConfigParams;
+import com.anthropic.models.beta.environments.BetaUnrestrictedNetwork;
+import com.anthropic.models.beta.environments.EnvironmentCreateParams;
+
+var environment = client.beta().environments().create(EnvironmentCreateParams.builder()
+    .name(&quot;my-dev-env&quot;)
+    .config(BetaCloudConfigParams.builder()
+        .networking(BetaUnrestrictedNetwork.builder().build())
+        .build())
+    .build());
+System.out.println(&quot;Environment ID: &quot; + environment.id()); // env_...
+</code></pre>
+<hr />
+<h2>Create an Agent (required first step)</h2>
+<blockquote>
+<p>Warning: <strong>There is no inline agent config.</strong> Model, system, and tools live on the agent object, not the session. Always start with <code>client.beta().agents().create()</code> - the session takes either <code>.agent(agent.id())</code> or the typed <code>BetaManagedAgentsAgentParams.builder()...build()</code>.</p>
+</blockquote>
+<h3>Minimal</h3>
+<pre><code class="language-java">import com.anthropic.models.beta.agents.AgentCreateParams;
+import com.anthropic.models.beta.agents.BetaManagedAgentsAgentToolset20260401Params;
+import com.anthropic.models.beta.sessions.BetaManagedAgentsAgentParams;
+import com.anthropic.models.beta.sessions.SessionCreateParams;
+
+// 1. Create the agent (reusable, versioned)
+var agent = client.beta().agents().create(AgentCreateParams.builder()
+    .name(&quot;Coding Assistant&quot;)
+    .model(&quot;claude-opus-5&quot;)
+    .system(&quot;You are a helpful coding assistant.&quot;)
+    .addTool(BetaManagedAgentsAgentToolset20260401Params.builder()
+        .type(BetaManagedAgentsAgentToolset20260401Params.Type.AGENT_TOOLSET_20260401)
+        .build())
+    .build());
+
+// 2. Start a session
+var session = client.beta().sessions().create(SessionCreateParams.builder()
+    .agent(BetaManagedAgentsAgentParams.builder()
+        .type(BetaManagedAgentsAgentParams.Type.AGENT)
+        .id(agent.id())
+        .version(agent.version())
+        .build())
+    .environmentId(environment.id())
+    .title(&quot;Quickstart session&quot;)
+    .build());
+System.out.println(&quot;Session ID: &quot; + session.id());
+System.out.println(&quot;Trace: https://platform.claude.com/workspaces/default/sessions/&quot; + session.id()); // swap 'default' for your workspace ID if the API key is not in the Default workspace
+</code></pre>
+<h3>Updating an Agent</h3>
+<p>Updates create new versions; the agent object is immutable per version.</p>
+<pre><code class="language-java">import com.anthropic.models.beta.agents.AgentUpdateParams;
+
+var updatedAgent = client.beta().agents().update(agent.id(), AgentUpdateParams.builder()
+    .version(agent.version())
+    .system(&quot;You are a helpful coding agent. Always write tests.&quot;)
+    .build());
+System.out.println(&quot;New version: &quot; + updatedAgent.version());
+
+// List all versions
+for (var version : client.beta().agents().versions().list(agent.id()).autoPager()) {
+    System.out.println(&quot;Version &quot; + version.version() + &quot;: &quot; + version.updatedAt());
+}
+
+// Archive the agent
+var archived = client.beta().agents().archive(agent.id());
+System.out.println(&quot;Archived at: &quot; + archived.archivedAt().orElseThrow());
+</code></pre>
+<hr />
+<h2>Send a User Message</h2>
+<pre><code class="language-java">import com.anthropic.models.beta.sessions.events.BetaManagedAgentsUserMessageEventParams;
+import com.anthropic.models.beta.sessions.events.EventSendParams;
+
+client.beta().sessions().events().send(session.id(), EventSendParams.builder()
+    .addEvent(BetaManagedAgentsUserMessageEventParams.builder()
+        .type(BetaManagedAgentsUserMessageEventParams.Type.USER_MESSAGE)
+        .addTextContent(&quot;Review the auth module&quot;)
+        .build())
+    .build());
+</code></pre>
+<blockquote>
+<p>Tip: <strong>Stream-first:</strong> Open the stream <em>before</em> (or concurrently with) sending the message. The stream only delivers events that occur after it opens - stream-after-send means early events arrive buffered in one batch. See <a href="../../shared/managed-agents-events.html#steering-patterns">Steering Patterns</a>.</p>
+</blockquote>
+<hr />
+<h2>Stream Events (SSE)</h2>
+<pre><code class="language-java">import com.anthropic.models.beta.sessions.events.StreamEvents;
+
+// Open the stream first, then send the user message
+try (var stream = client.beta().sessions().events().streamStreaming(session.id())) {
+    client.beta().sessions().events().send(session.id(), EventSendParams.builder()
+        .addEvent(BetaManagedAgentsUserMessageEventParams.builder()
+            .type(BetaManagedAgentsUserMessageEventParams.Type.USER_MESSAGE)
+            .addTextContent(&quot;Summarize the repo README&quot;)
+            .build())
+        .build());
+
+    for (var event : (Iterable&lt;StreamEvents&gt;) stream.stream()::iterator) {
+        if (event.isAgentMessage()) {
+            event.asAgentMessage().content().forEach(block -&gt; System.out.print(block.text()));
+        } else if (event.isAgentToolUse()) {
+            System.out.println(&quot;\n[Using tool: &quot; + event.asAgentToolUse().name() + &quot;]&quot;);
+        } else if (event.isSessionStatusIdle()) {
+            break;
+        } else if (event.isSessionError()) {
+            System.out.println(&quot;\n[Error]&quot;);
+            break;
+        }
+    }
+}
+</code></pre>
+<h3>Reconnecting and Tailing</h3>
+<p>When reconnecting mid-session, list past events first to dedupe, then tail live events. The cross-variant <code>id</code> field is read from the raw <code>_json()</code> value:</p>
+<pre><code class="language-java">import com.anthropic.core.JsonValue;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+
+try (var stream = client.beta().sessions().events().streamStreaming(session.id())) {
+    // Stream is open and buffering. List history before tailing live.
+    var seenEventIds = new HashSet&lt;String&gt;();
+    for (var past : client.beta().sessions().events().list(session.id()).autoPager()) {
+        Optional&lt;Map&lt;String, JsonValue&gt;&gt; obj = past._json().orElseThrow().asObject();
+        seenEventIds.add(obj.orElseThrow().get(&quot;id&quot;).asStringOrThrow());
+    }
+
+    // Tail live events, skipping anything already seen
+    for (var event : (Iterable&lt;StreamEvents&gt;) stream.stream()::iterator) {
+        Optional&lt;Map&lt;String, JsonValue&gt;&gt; obj = event._json().orElseThrow().asObject();
+        if (!seenEventIds.add(obj.orElseThrow().get(&quot;id&quot;).asStringOrThrow())) continue;
+        if (event.isAgentMessage()) {
+            event.asAgentMessage().content().forEach(block -&gt; System.out.print(block.text()));
+        } else if (event.isSessionStatusIdle()) {
+            break;
+        }
+    }
+}
+</code></pre>
+<hr />
+<h2>Provide Custom Tool Result</h2>
+<blockquote>
+<p>Note: The Java managed-agents bindings for <code>user.custom_tool_result</code> are not yet documented in this skill or in the apps source examples. Refer to <code>shared/managed-agents-events.md</code> for the wire format and the <code>anthropic-java</code> repository for the corresponding params types.</p>
+</blockquote>
+<hr />
+<h2>Poll Events</h2>
+<pre><code class="language-java">for (var event : client.beta().sessions().events().list(session.id()).autoPager()) {
+    System.out.println(event.type() + &quot;: &quot; + event);
+}
+</code></pre>
+<hr />
+<h2>Upload a File</h2>
+<pre><code class="language-java">import com.anthropic.models.beta.files.FileUploadParams;
+import com.anthropic.models.beta.sessions.BetaManagedAgentsFileResourceParams;
+import java.nio.file.Path;
+
+var dataCsv = Path.of(&quot;data.csv&quot;);
+
+var file = client.beta().files().upload(FileUploadParams.builder()
+    .file(dataCsv)
+    .build());
+System.out.println(&quot;File ID: &quot; + file.id());
+
+// Mount in a session
+var session = client.beta().sessions().create(SessionCreateParams.builder()
+    .agent(agent.id())
+    .environmentId(environment.id())
+    .addResource(BetaManagedAgentsFileResourceParams.builder()
+        .type(BetaManagedAgentsFileResourceParams.Type.FILE)
+        .fileId(file.id())
+        .mountPath(&quot;/workspace/data.csv&quot;)
+        .build())
+    .build());
+</code></pre>
+<h3>Add and Manage Resources on an Existing Session</h3>
+<pre><code class="language-java">import com.anthropic.models.beta.sessions.resources.ResourceAddParams;
+import com.anthropic.models.beta.sessions.resources.ResourceDeleteParams;
+
+// Attach an additional file to an open session
+var resource = client.beta().sessions().resources().add(session.id(), ResourceAddParams.builder()
+    .betaManagedAgentsFileResourceParams(BetaManagedAgentsFileResourceParams.builder()
+        .type(BetaManagedAgentsFileResourceParams.Type.FILE)
+        .fileId(file.id())
+        .build())
+    .build());
+System.out.println(resource.id()); // &quot;sesrsc_01ABC...&quot;
+
+// List resources on the session - entries are a discriminated union
+var listed = client.beta().sessions().resources().list(session.id());
+for (var entry : listed.data()) {
+    if (entry.isFile()) {
+        var fileResource = entry.asFile();
+        System.out.println(fileResource.id() + &quot; &quot; + fileResource.type());
+    } else if (entry.isGitHubRepository()) {
+        var repoResource = entry.asGitHubRepository();
+        System.out.println(repoResource.id() + &quot; &quot; + repoResource.type());
+    }
+}
+
+// Detach a resource
+client.beta().sessions().resources().delete(resource.id(), ResourceDeleteParams.builder()
+    .sessionId(session.id())
+    .build());
+</code></pre>
+<hr />
+<h2>List and Download Session Files</h2>
+<blockquote>
+<p>Note: Listing and downloading files an agent wrote during a session is not yet documented for Java in this skill or in the apps source examples. See <code>shared/managed-agents-events.md</code> and the <code>anthropic-java</code> repository for the file list/download bindings.</p>
+</blockquote>
+<hr />
+<h2>Session Management</h2>
+<pre><code class="language-java">// List environments
+var environments = client.beta().environments().list();
+
+// Retrieve a specific environment
+var env = client.beta().environments().retrieve(environment.id());
+
+// Archive an environment (read-only, existing sessions continue)
+client.beta().environments().archive(environment.id());
+
+// Delete an environment (only if no sessions reference it)
+client.beta().environments().delete(environment.id());
+
+// Delete a session
+client.beta().sessions().delete(session.id());
+</code></pre>
+<hr />
+<h2>MCP Server Integration</h2>
+<pre><code class="language-java">import com.anthropic.models.beta.agents.BetaManagedAgentsMcpToolsetParams;
+import com.anthropic.models.beta.agents.BetaManagedAgentsUrlMcpServerParams;
+
+// Agent declares MCP server (no auth here - auth goes in a vault)
+var agent = client.beta().agents().create(AgentCreateParams.builder()
+    .name(&quot;GitHub Assistant&quot;)
+    .model(&quot;claude-opus-5&quot;)
+    .addMcpServer(BetaManagedAgentsUrlMcpServerParams.builder()
+        .type(BetaManagedAgentsUrlMcpServerParams.Type.URL)
+        .name(&quot;github&quot;)
+        .url(&quot;https://api.githubcopilot.com/mcp/&quot;)
+        .build())
+    .addTool(BetaManagedAgentsAgentToolset20260401Params.builder()
+        .type(BetaManagedAgentsAgentToolset20260401Params.Type.AGENT_TOOLSET_20260401)
+        .build())
+    .addTool(BetaManagedAgentsMcpToolsetParams.builder()
+        .type(BetaManagedAgentsMcpToolsetParams.Type.MCP_TOOLSET)
+        .mcpServerName(&quot;github&quot;)
+        .build())
+    .build());
+
+// Session attaches vault(s) containing credentials for those MCP server URLs
+var session = client.beta().sessions().create(SessionCreateParams.builder()
+    .agent(BetaManagedAgentsAgentParams.builder()
+        .type(BetaManagedAgentsAgentParams.Type.AGENT)
+        .id(agent.id())
+        .version(agent.version())
+        .build())
+    .environmentId(environment.id())
+    .addVaultId(vault.id())
+    .build());
+</code></pre>
+<p>See <code>shared/managed-agents-tools.md</code> §Vaults for creating vaults and adding credentials.</p>
+<hr />
+<h2>Vaults</h2>
+<pre><code class="language-java">import com.anthropic.core.JsonValue;
+import com.anthropic.models.beta.vaults.VaultCreateParams;
+import com.anthropic.models.beta.vaults.credentials.BetaManagedAgentsMcpOAuthCreateParams;
+import com.anthropic.models.beta.vaults.credentials.BetaManagedAgentsMcpOAuthRefreshParams;
+import com.anthropic.models.beta.vaults.credentials.BetaManagedAgentsMcpOAuthRefreshUpdateParams;
+import com.anthropic.models.beta.vaults.credentials.BetaManagedAgentsMcpOAuthUpdateParams;
+import com.anthropic.models.beta.vaults.credentials.CredentialCreateParams;
+import com.anthropic.models.beta.vaults.credentials.CredentialUpdateParams;
+import java.time.OffsetDateTime;
+
+// Create a vault
+var vault = client.beta().vaults().create(VaultCreateParams.builder()
+    .displayName(&quot;Alice&quot;)
+    .metadata(VaultCreateParams.Metadata.builder()
+        .putAdditionalProperty(&quot;external_user_id&quot;, JsonValue.from(&quot;usr_abc123&quot;))
+        .build())
+    .build());
+System.out.println(vault.id()); // &quot;vlt_01ABC...&quot;
+
+// Add an OAuth credential
+var credential = client.beta().vaults().credentials().create(vault.id(),
+    CredentialCreateParams.builder()
+        .displayName(&quot;Alice's Slack&quot;)
+        .auth(BetaManagedAgentsMcpOAuthCreateParams.builder()
+            .type(BetaManagedAgentsMcpOAuthCreateParams.Type.MCP_OAUTH)
+            .mcpServerUrl(&quot;https://mcp.slack.com/mcp&quot;)
+            .accessToken(&quot;xoxp-...&quot;)
+            .expiresAt(OffsetDateTime.parse(&quot;2026-04-15T00:00:00Z&quot;))
+            .refresh(BetaManagedAgentsMcpOAuthRefreshParams.builder()
+                .tokenEndpoint(&quot;https://slack.com/api/oauth.v2.access&quot;)
+                .clientId(&quot;1234567890.0987654321&quot;)
+                .scope(&quot;channels:read chat:write&quot;)
+                .refreshToken(&quot;xoxe-1-...&quot;)
+                .clientSecretPostTokenEndpointAuth(&quot;abc123...&quot;)
+                .build())
+            .build())
+        .build());
+
+// Rotate the credential (e.g., after a token refresh)
+client.beta().vaults().credentials().update(credential.id(),
+    CredentialUpdateParams.builder()
+        .vaultId(vault.id())
+        .auth(BetaManagedAgentsMcpOAuthUpdateParams.builder()
+            .type(BetaManagedAgentsMcpOAuthUpdateParams.Type.MCP_OAUTH)
+            .accessToken(&quot;xoxp-new-...&quot;)
+            .expiresAt(OffsetDateTime.parse(&quot;2026-05-15T00:00:00Z&quot;))
+            .refresh(BetaManagedAgentsMcpOAuthRefreshUpdateParams.builder()
+                .refreshToken(&quot;xoxe-1-new-...&quot;)
+                .build())
+            .build())
+        .build());
+
+// Archive a vault
+client.beta().vaults().archive(vault.id());
+</code></pre>
+<hr />
+<h2>GitHub Repository Integration</h2>
+<p>Mount a GitHub repository as a session resource (a vault holds the GitHub MCP credential):</p>
+<pre><code class="language-java">import com.anthropic.models.beta.sessions.BetaManagedAgentsGitHubRepositoryResourceParams;
+
+var session = client.beta().sessions().create(SessionCreateParams.builder()
+    .agent(agent.id())
+    .environmentId(environment.id())
+    .addVaultId(vault.id())
+    .addResource(BetaManagedAgentsGitHubRepositoryResourceParams.builder()
+        .type(BetaManagedAgentsGitHubRepositoryResourceParams.Type.GITHUB_REPOSITORY)
+        .url(&quot;https://github.com/org/repo&quot;)
+        .mountPath(&quot;/workspace/repo&quot;)
+        .authorizationToken(&quot;ghp_your_github_token&quot;)
+        .build())
+    .build());
+</code></pre>
+<p>Multiple repositories on the same session:</p>
+<pre><code class="language-java">import java.util.List;
+
+var resources = List.of(
+    BetaManagedAgentsGitHubRepositoryResourceParams.builder()
+        .type(BetaManagedAgentsGitHubRepositoryResourceParams.Type.GITHUB_REPOSITORY)
+        .url(&quot;https://github.com/org/frontend&quot;)
+        .mountPath(&quot;/workspace/frontend&quot;)
+        .authorizationToken(&quot;ghp_your_github_token&quot;)
+        .build(),
+    BetaManagedAgentsGitHubRepositoryResourceParams.builder()
+        .type(BetaManagedAgentsGitHubRepositoryResourceParams.Type.GITHUB_REPOSITORY)
+        .url(&quot;https://github.com/org/backend&quot;)
+        .mountPath(&quot;/workspace/backend&quot;)
+        .authorizationToken(&quot;ghp_your_github_token&quot;)
+        .build());
+</code></pre>
+<p>Rotating a repository's authorization token:</p>
+<pre><code class="language-java">import com.anthropic.models.beta.sessions.resources.ResourceUpdateParams;
+
+var listed = client.beta().sessions().resources().list(session.id());
+var repoResourceId = listed.data().get(0).asGitHubRepository().id();
+
+client.beta().sessions().resources().update(repoResourceId, ResourceUpdateParams.builder()
+    .sessionId(session.id())
+    .authorizationToken(&quot;ghp_your_new_github_token&quot;)
+    .build());
+</code></pre></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>managed-agents-events · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/managed-agents-events.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Managed Agents - Events &amp; Steering</h1>
+<h2>Events</h2>
+<h3>Sending Events</h3>
+<p>Send events to a session via <code>POST /v1/sessions/{id}/events</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Event Type</th>
+<th>When to Send</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user.message</code></td>
+<td>Send a user message</td>
+</tr>
+<tr>
+<td><code>user.interrupt</code></td>
+<td>Interrupt the agent while it's running</td>
+</tr>
+<tr>
+<td><code>user.tool_confirmation</code></td>
+<td>Approve/deny a tool call that paused for approval (<code>always_ask</code>, or <code>auto</code> when the server reached no determination)</td>
+</tr>
+<tr>
+<td><code>user.custom_tool_result</code></td>
+<td>Provide result for a custom tool call</td>
+</tr>
+<tr>
+<td><code>user.define_outcome</code></td>
+<td>Start a rubric-graded iterate loop - see <code>shared/managed-agents-outcomes.md</code></td>
+</tr>
+<tr>
+<td><code>system.message</code></td>
+<td>Append privileged system-level context for this turn and every turn after it; see § Adding system context mid-session</td>
+</tr>
+</tbody>
+</table>
+<h4>Adding system context mid-session (<code>system.message</code>)</h4>
+<p>The <code>system</code> field on the agent definition sets the top-level system prompt and is fixed for the session's lifetime. A <code>system.message</code> event <strong>appends</strong> to the session's system context as a <code>role: "system"</code> turn - it does not replace that prompt. The content applies to the accompanying turn and all subsequent turns. Use it for a different persona, revised constraints, or runtime-fetched context that should shape behavior going forward:</p>
+<pre><code class="language-python">client.beta.sessions.events.send(
+    session.id,
+    events=[
+        {
+            &quot;type&quot;: &quot;system.message&quot;,
+            &quot;content&quot;: [
+                {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;The user's current timezone is America/New_York.&quot;},
+            ],
+        },
+    ],
+)
+</code></pre>
+<p>Constraints:</p>
+<ul>
+<li><strong>Model-gated: Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5, Claude Fable 5.1, and Claude Mythos 5.1.</strong> Only the agent's <strong>primary</strong> model is checked - <code>system.message</code> lands on the primary thread only, so subagent models are not considered. On an unsupported primary model the event is rejected with a <code>model_does_not_support_mid_conversation_system</code> validation error.</li>
+<li><strong>While the session is idle with <code>stop_reason: requires_action</code></strong> (blocked on <code>user.custom_tool_result</code> / <code>user.tool_confirmation</code>), a <code>system.message</code> is accepted <strong>only when it trails a tool result event in the same request</strong>. Sent on its own - or alongside a <code>user.message</code> - it is rejected until the pending tool events are resolved.</li>
+<li><code>content</code> accepts 1-1000 text items.</li>
+</ul>
+<h3>Receiving Events</h3>
+<p>Three methods:</p>
+<ol>
+<li><strong>Streaming (SSE)</strong>: <code>GET /v1/sessions/{id}/events/stream</code> - real-time Server-Sent Events. <strong>Long-lived</strong> - the server sends periodic heartbeats to keep the connection alive.</li>
+<li><strong>Polling</strong>: <code>GET /v1/sessions/{id}/events</code> - paginated event list (query params: <code>limit</code> default 1000, <code>page</code>). <strong>Returns immediately</strong> - this is a plain paginated GET, not a long-poll.</li>
+<li><strong>Webhooks</strong>: Anthropic POSTs session state transitions to your HTTPS endpoint - thin payloads (IDs only), HMAC-signed, Console-registered. See <code>shared/managed-agents-webhooks.md</code>.</li>
+</ol>
+<p><strong>No-code inspection - the Console session viewer</strong> (Console sidebar -&gt; <strong>Managed Agents</strong> -&gt; <strong>Sessions</strong>; Developers and Admins only). Point users here for debugging before they parse the stream themselves: a session list (ID, name, status, agent, tokens in/out, cost; filter by status/created, search by ID); a <strong>timeline minimap</strong> with one lane per thread in multiagent sessions; the <strong>transcript</strong> grouped by model request (thinking, tool calls with inputs/results, streaming text) with a <strong>Filter events</strong> box (matches ID, type, tool name, or text; Enter steps between matches) and copy/download-as-JSON (filtered export when a filter is active); and an <strong>Inspector</strong> side panel (toggle with <code>d</code>) with five tabs - <strong>Session</strong> (details, metadata, cumulative-cost chart vs. budget), <strong>Events</strong> (raw events in server order, JSON per event, plus a <strong>Deltas</strong> view for messages that streamed while the page was open), <strong>Tools</strong> (every configured tool with call counts, failures, median duration; jump to any call), <strong>Resources</strong> (mounted files, repos, memory stores with per-session memory changes, <code>/mnt/session/outputs</code> files, skills under <code>/workspace/skills</code>), <strong>Threads</strong> (status, context size, cost per thread; context-size chart for the current thread; switch threads). Deep-link with <code>?event={event_id}</code> on the session URL - handy to include in error reports alongside the Console link from <code>shared/managed-agents-core.md</code>.</p>
+<p>All <strong>persisted</strong> events carry <code>id</code>, <code>type</code>, and <code>processed_at</code> (ISO 8601), set when the event finishes processing. On events you send, <code>processed_at</code> is <code>null</code> while the event is still queued behind earlier ones - <strong>except</strong> <code>user.define_outcome</code>, <code>user.custom_tool_result</code>, and <code>user.tool_result</code>, which are processed on receipt and echoed back with <code>processed_at</code> already populated. The stream-only <code>event_start</code> / <code>event_delta</code> preview events (see § Live previews) carry only the <code>id</code> of the event they preview.</p>
+<blockquote>
+<p>Warning: <strong>Robust polling (raw HTTP).</strong> If you bypass the SDK and roll your own poll loop, don't rely on <code>requests</code> or <code>httpx</code> timeouts as wall-clock caps - they're <strong>per-chunk</strong> read timeouts, reset every time a byte arrives. A trickling response (heartbeats, a wedged chunked-encoding body, a misbehaving proxy) can keep the call blocked indefinitely even with <code>timeout=(5, 60)</code> or <code>httpx.Timeout(120)</code>. Neither library has a "total wall-clock" timeout built in. For a hard deadline: track <code>time.monotonic()</code> at the loop level and break/cancel if a single request exceeds your budget (e.g. via a watchdog thread, or <code>asyncio.wait_for()</code> around async httpx). <strong>Prefer the SDK</strong> - <code>client.beta.sessions.events.stream()</code> and <code>client.beta.sessions.events.list()</code> handle timeout + retry sanely.</p>
+<p>If <code>GET /v1/sessions/{id}/events</code> (paginated) ever hangs after headers, you've likely hit <code>GET /v1/sessions/{id}/events/stream</code> by mistake or a server-side stall - report it; don't treat it as a client-config problem.</p>
+</blockquote>
+<h3>Event Types (Received)</h3>
+<p>Event types use dot notation, grouped by namespace:</p>
+<table>
+<thead>
+<tr>
+<th>Event Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agent.message</code></td>
+<td>Agent text output</td>
+</tr>
+<tr>
+<td><code>agent.thinking</code></td>
+<td>Progress signal that the agent is thinking - it does <strong>not</strong> carry the thinking content</td>
+</tr>
+<tr>
+<td><code>agent.tool_use</code></td>
+<td>Agent used a built-in tool (<code>agent_toolset_20260401</code>). Carries <code>evaluated_permission</code> (<code>allow</code>/<code>ask</code>/<code>deny</code>) and usually <code>evaluation</code> - see <code>shared/managed-agents-tools.md</code> § <code>evaluated_permission</code> and <code>evaluation</code></td>
+</tr>
+<tr>
+<td><code>agent.tool_result</code></td>
+<td>Result from a built-in tool</td>
+</tr>
+<tr>
+<td><code>agent.mcp_tool_use</code></td>
+<td>Agent used an MCP tool. Carries <code>evaluated_permission</code> and usually <code>evaluation</code>, same as <code>agent.tool_use</code></td>
+</tr>
+<tr>
+<td><code>agent.mcp_tool_result</code></td>
+<td>Result from an MCP tool</td>
+</tr>
+<tr>
+<td><code>agent.custom_tool_use</code></td>
+<td>Agent invoked a custom tool - session goes idle, you respond with <code>user.custom_tool_result</code></td>
+</tr>
+<tr>
+<td><code>agent.thread_context_compacted</code></td>
+<td>Conversation context was compacted</td>
+</tr>
+<tr>
+<td><code>session.status_idle</code></td>
+<td>Agent has finished the current task, and is awaiting input. It's either waiting for input to continue working via a <code>user.message</code>, blocked awaiting a <code>user.custom_tool_result</code> or <code>user.tool_confirmation</code>, or paused because the session budget cap was reached. The <code>stop_reason</code> attached contains more information about why the Agent has stopped working.</td>
+</tr>
+<tr>
+<td><code>session.status_running</code></td>
+<td>Session has starting running, and the Agent is actively doing work.</td>
+</tr>
+<tr>
+<td><code>session.status_rescheduled</code></td>
+<td>Session is (re)scheduling after a retryable error has occurred, ready to be picked up by the orchestration system.</td>
+</tr>
+<tr>
+<td><code>session.status_terminated</code></td>
+<td>Session ended and is irreversibly unusable - <strong>on completion or on error</strong>, not error-only.</td>
+</tr>
+<tr>
+<td><code>session.updated</code></td>
+<td>A session update changed at least one field - carries only the changed fields (a budget removal carries <code>budget: null</code>)</td>
+</tr>
+<tr>
+<td><code>session.usage</code></td>
+<td>Snapshot of the session's cumulative usage and tracked list cost - see § Reaching a session budget below</td>
+</tr>
+<tr>
+<td><code>session.error</code></td>
+<td>Error occurred during processing</td>
+</tr>
+<tr>
+<td><code>span.model_request_start</code></td>
+<td>Model inference started</td>
+</tr>
+<tr>
+<td><code>span.model_request_end</code></td>
+<td>Model inference completed</td>
+</tr>
+<tr>
+<td><code>span.outcome_evaluation_start</code> / <code>_ongoing</code> / <code>_end</code></td>
+<td>Grader progress for outcome-oriented sessions - see <code>shared/managed-agents-outcomes.md</code></td>
+</tr>
+<tr>
+<td><code>session.thread_created</code></td>
+<td>Subagent thread spawned (multiagent), or an advisor consultation started (thread name <code>anthropic.advisor</code>) - see <code>shared/managed-agents-multiagent.md</code></td>
+</tr>
+<tr>
+<td><code>session.thread_status_running</code> / <code>_idle</code> / <code>_rescheduled</code> / <code>_terminated</code></td>
+<td>Thread status transitions - mostly seen in multiagent sessions, but a single-agent session's primary thread also emits <code>_idle</code> when pausing at a session budget (§ Reaching a session budget). <code>_idle</code> carries <code>stop_reason</code>.</td>
+</tr>
+<tr>
+<td><code>agent.thread_message_sent</code> / <code>_received</code></td>
+<td>Cross-thread message, carries <code>to_session_thread_id</code> / <code>from_session_thread_id</code> (multiagent)</td>
+</tr>
+</tbody>
+</table>
+<p>The stream also echoes back user-sent events (<code>user.message</code>, <code>user.interrupt</code>, <code>user.tool_confirmation</code>, <code>user.tool_result</code>, <code>user.custom_tool_result</code>, <code>user.define_outcome</code>) - except a <code>user.interrupt</code> sent while the session is paused at its budget, which is accepted and ignored and never appears (§ Reaching a session budget).</p>
+<p>Stream-only delta preview events (<code>event_start</code>, <code>event_delta</code>) are the one exception to the <code>{domain}.{action}</code> naming convention - see § Live previews below; they never appear in <code>GET /v1/sessions/{id}/events</code>.</p>
+<hr />
+<h2>Live previews</h2>
+<p>By default, assistant text reaches the stream as buffered <code>agent.message</code> events - emitted only after the model request that produced them finishes. <strong>Live previews</strong> let you render that text incrementally while the model is still generating. The buffered <code>agent.message</code> is always the authoritative record; a client that ignores previews still receives a complete, correct stream. The wire format is <strong>not</strong> Messages-API streaming: the delta type is <code>content_delta</code>, not <code>content_block_delta</code>, so Messages-API accumulator code does not carry over unchanged.</p>
+<p><strong>Opt in per stream connection</strong> by adding the <code>event_deltas[]</code> query parameter, repeated once per event type to preview. Accepted values: <code>agent.message</code>, <code>agent.thinking</code> - any other value returns a 400, as does a request with more than 100 values. <strong>Both stream endpoints accept it:</strong> the session-level stream (<code>GET /v1/sessions/{id}/events/stream</code>) and each session thread's own stream (<code>GET /v1/sessions/{sid}/threads/{tid}/stream</code>). In a shell, quote the URL or percent-encode the brackets as <code>%5B%5D</code> - bare <code>[]</code> is a glob pattern.</p>
+<p><strong>Previews are thread-scoped.</strong> A connection previews only the thread it is reading. A child thread's previews are delivered on that child's stream and are <em>never</em> cross-posted to the session-level stream, whose previews stay scoped to the primary thread. To watch a subagent's text as the model generates it, open that subagent's thread stream - see <code>shared/managed-agents-multiagent.md</code>. Run one accumulator instance per connection.</p>
+<pre><code class="language-python">stream = client.beta.sessions.events.stream(
+    session_id=session.id,
+    event_deltas=[&quot;agent.message&quot;],
+)
+</code></pre>
+<p>When a previewed event begins, the stream emits an <code>event_start</code> carrying the upcoming event's <code>type</code> and <code>id</code>; for <code>agent.message</code> it's followed by <code>event_delta</code> events carrying incremental text:</p>
+<pre><code class="language-json">{&quot;type&quot;: &quot;event_start&quot;, &quot;event&quot;: {&quot;type&quot;: &quot;agent.message&quot;, &quot;id&quot;: &quot;sevt_01abc...&quot;}}
+{&quot;type&quot;: &quot;event_delta&quot;, &quot;event_id&quot;: &quot;sevt_01abc...&quot;, &quot;delta&quot;: {&quot;type&quot;: &quot;content_delta&quot;, &quot;index&quot;: 0, &quot;content&quot;: {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;Here is the summary&quot;}}}
+</code></pre>
+<p><code>event_start</code> and <code>event_delta</code> have no <code>id</code> or <code>processed_at</code> of their own - the only identifier they carry is the <code>id</code> of the event they preview. For <code>agent.thinking</code>, <strong>only</strong> the <code>event_start</code> is emitted (a "thinking has started" signal) - no deltas follow, and the buffered <code>agent.thinking</code> that concludes the preview carries no thinking content either. It is a progress signal, not a content carrier; there is nothing to read out of it.</p>
+<p><strong>Accumulate-and-reconcile pattern.</strong> Treat the preview as a scratch buffer keyed by <code>(event_id, index)</code>. On <code>event_start</code>, create an empty entry for the announced <code>id</code>. On each <code>event_delta</code>, append <code>delta.content.text</code> to <code>(event_id, delta.index)</code> and render the running text. When the buffered <code>agent.message</code> arrives, match it by <code>id</code>, <strong>discard the accumulated preview</strong>, and render the message's content instead. The identifiers always line up: <code>event_start.event.id</code>, every <code>event_delta.event_id</code>, and the buffered event's <code>id</code> are the same value. On a normal turn the order is fixed: <code>session.status_running</code> -&gt; <code>span.model_request_start</code> -&gt; <code>event_start</code> -&gt; <code>event_delta</code>* -&gt; buffered <code>agent.message</code> -&gt; <code>span.model_request_end</code>. If the turn errors or is interrupted the buffered event may never arrive, but <code>span.model_request_end</code> still does - close any unreconciled preview when you see it. Python/TypeScript/Go SDKs ship an accumulator helper that implements this; in other SDKs apply the manual pattern to the generated event types.</p>
+<p><strong>Two guarantees the pattern relies on:</strong> concatenating a preview's deltas in arrival order, keyed by <code>(event_id, index)</code>, yields a <em>prefix</em> of <code>content[index].text</code> in the buffered event (a prefix, not necessarily the whole text - deltas may be shed under load); and a connection emits at most one <code>event_start</code> per <code>event_id</code>, with the buffered event as the last thing that connection delivers for that <code>id</code>.</p>
+<p><strong>Limitations:</strong>
+- <strong>Best effort</strong> - under load the server may shed deltas for an event; you receive a contiguous prefix and then no further deltas for that event. The buffered <code>agent.message</code> still arrives complete. Never treat an accumulated preview as final.
+- <strong>No replay on reconnect</strong> - deltas are delivered only to the connection that opted in, while it's open; this holds for the session-level stream and each thread stream alike. A connection opened after a model request started receives no deltas for that in-flight event. After a drop, follow the consolidation pattern in § Reconnecting after a dropped stream - the history fetch returns any buffered events emitted during the gap; missed deltas cannot be re-requested.
+- <strong>One thread, text only</strong> - previews cover assistant text on the thread the connection is reading. Tool use, tool results, MCP results, and activity on any <em>other</em> thread are never previewed on that connection.
+- <strong>Never persisted</strong> - <code>event_start</code> / <code>event_delta</code> exist only on the live SSE stream, never in <code>GET /v1/sessions/{id}/events</code> or any thread's event history.</p>
+<p><strong>Troubleshooting:</strong></p>
+<table>
+<thead>
+<tr>
+<th>You see</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Buffered events but no <code>event_start</code> / <code>event_delta</code></td>
+<td>This connection didn't opt in (<code>event_deltas[]</code> is per connection, not per session), or the turn ran on a different thread. List <code>GET /v1/sessions/{sid}/threads</code> to find which one ran.</td>
+</tr>
+<tr>
+<td>404 on the stream URL</td>
+<td>Wrong path or ID, or the request carries no managed-agents beta header - the thread endpoints are beta-gated, so without it they don't exist. The thread path is <code>/threads/{tid}/stream</code>, <strong>not</strong> <code>/threads/{tid}/events/stream</code> (which doesn't exist) and not <code>/events/stream</code> (session level only).</td>
+</tr>
+<tr>
+<td>400 naming <code>event_deltas</code></td>
+<td>Only <code>agent.message</code> and <code>agent.thinking</code> are accepted, max 100 values.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Steering Patterns</h2>
+<p>Practical patterns for driving a session via the events surface.</p>
+<h3>Stream-first ordering</h3>
+<p><strong>Open the stream before sending events.</strong> The stream only delivers events that occur <em>after</em> it's opened - it does not replay current state or historical events. If you send a message first and open the stream second, early events (including fast status transitions) arrive buffered in a single batch and you lose the ability to react to them in real time.</p>
+<pre><code class="language-ts">// Correct - stream and send concurrently
+const [response] = await Promise.all([
+  streamEvents(sessionId),   // opens SSE connection
+  sendMessage(sessionId, text),
+]);
+
+// Wrong - events before stream opens arrive as a single buffered batch
+await sendMessage(sessionId, text);
+const response = await streamEvents(sessionId);
+</code></pre>
+<p><strong>For full history,</strong> use <code>GET /v1/sessions/{id}/events</code> (paginated list) - the stream only gives you live events from connection onward.</p>
+<h3>Reconnecting after a dropped stream</h3>
+<p><strong>The SSE stream has no replay.</strong> If your connection drops (httpx read timeout, network blip) and you reconnect, you only get events emitted <em>after</em> reconnection. Any events emitted during the gap are lost from the stream.</p>
+<p><strong>The consolidation pattern:</strong> on every (re)connect, overlap the stream with a history fetch and dedupe by event ID:</p>
+<pre><code class="language-python">def connect_with_consolidation(client, session_id):
+    # 1. Open the SSE stream first
+    stream = client.beta.sessions.events.stream(session_id=session_id)
+
+    # 2. Fetch history to cover any gap
+    history = client.beta.sessions.events.list(
+        session_id=session_id,
+    )
+
+    # 3. Yield history first, then stream - dedupe by event.id
+    seen = set()
+    for ev in history.data:
+        seen.add(ev.id)
+        yield ev
+    for ev in stream:
+        if ev.id not in seen:
+            seen.add(ev.id)
+            yield ev
+</code></pre>
+<h3>Message queuing</h3>
+<p><strong>You don't have to wait for a response before sending the next message.</strong> User events are queued server-side and processed in order. This is useful for chat bridges where the user sends rapid follow-ups:</p>
+<pre><code class="language-ts">// All three go into one session; agent processes them in order
+await sendMessage(sessionId, &quot;Summarize the README&quot;);
+await sendMessage(sessionId, &quot;Actually also check the CONTRIBUTING guide&quot;);
+await sendMessage(sessionId, &quot;And compare the two&quot;);
+// Stream once - agent responds to all three as a coherent turn
+</code></pre>
+<p>Events can be sent up to the Session at any time. There is no need to wait on a specific session status to enqueue new events via <code>client.beta.sessions.events.send()</code>. One exception: a session paused at its budget (<code>stop_reason: budget_reached</code>) accepts only settle events - a <code>user.message</code> there is a 400. See § Reaching a session budget.</p>
+<h3>Interrupt</h3>
+<p>A <code>user.interrupt</code> event <strong>jumps the queue</strong> (ahead of any pending user messages) and forces the session into <code>idle</code>. Exception: while the session is paused at its budget, an interrupt is accepted and ignored - it is never persisted and changes nothing (§ Reaching a session budget). Use this for "stop" / "nevermind" / "cancel" commands:</p>
+<pre><code class="language-ts">await client.beta.sessions.events.send(sessionId, {
+  events: [{ type: 'user.interrupt' }],
+});
+</code></pre>
+<p>The agent stops mid-task. It does not see the interrupt as a message - it just halts. Send a follow-up <code>user</code> event to explain what to do instead. If an outcome is active, the interrupt also marks <code>span.outcome_evaluation_end.result: "interrupted"</code> (see <code>shared/managed-agents-outcomes.md</code>) - though not at a budget pause, where the interrupt is accepted and ignored (see § Reaching a session budget).</p>
+<p><strong>The interrupted turn ends with <code>stop_reason: end_turn</code></strong> - the same value a turn that finishes on its own carries. There is no interruption-specific stop reason, so a drain loop can't distinguish the two from <code>stop_reason</code> alone; track that you sent the interrupt.</p>
+<p><strong>Against an already-<code>idle</code> session an interrupt is normally a no-op.</strong> The exception is a session on a self-hosted environment whose worker failed the claimed work item (a memory-store mount error, for instance): it sits <code>idle</code> with <code>stop_reason: requires_action</code> and no error event, and <code>user.interrupt</code> re-queues the work for the next worker claim (<code>shared/managed-agents-self-hosted-sandboxes.md</code> § Memory stores -&gt; Troubleshooting).</p>
+<p><strong>In a multiagent session, omitting <code>session_thread_id</code> interrupts every non-archived thread, including the primary</strong> - it is not primary-only. Pass <code>session_thread_id</code> to stop one thread. See <code>shared/managed-agents-multiagent.md</code>.</p>
+<blockquote>
+<p><strong>Note</strong>: Interrupt events may have empty IDs in the current implementation. When troubleshooting, use the <code>processed_at</code> timestamp along with surrounding event IDs. (Not applicable to an interrupt sent at the budget cap - that event is never persisted, so there is nothing to locate.)</p>
+</blockquote>
+<h3>Reaching a session budget</h3>
+<p>A session created with a budget (see <code>shared/managed-agents-core.md</code> § Session budgets) pauses instead of overspending. Before every model request the platform checks whether consumed list cost has reached the cap and pauses the thread if it has, and the session goes idle with <code>stop_reason: budget_reached</code> rather than terminating. On the stream, the pause arrives as three events, in order:</p>
+<ol>
+<li><code>session.thread_status_idle</code> with <code>stop_reason: budget_reached</code>, for each thread as it pauses. When a thread's final request both crosses the cap and finishes its turn, that thread reports <code>stop_reason: end_turn</code> while the session still reports <code>budget_reached</code> - key on the <strong>session-level</strong> <code>stop_reason</code>, not thread-level ones, to detect the pause.</li>
+<li><code>session.usage</code> - a snapshot of the session's cumulative usage and tracked list cost.</li>
+<li><code>session.status_idle</code> with <code>stop_reason: budget_reached</code>. The <code>session.usage</code> event always immediately precedes this idle.</li>
+</ol>
+<p>While at the cap the session accepts <strong>only settle events</strong> (<code>user.tool_confirmation</code>, <code>user.tool_result</code>, <code>user.custom_tool_result</code>, <code>user.interrupt</code>); anything that starts new work, including <code>user.message</code>, is a 400 naming that list. A <code>user.interrupt</code> sent while the session is paused at its budget (all threads paused at the cap) is accepted and ignored: it does not appear in the event list and changes nothing. Raise or remove the budget to continue. When one thread waits on a tool ask and another is paused at the cap, the session-level <code>stop_reason</code> is <code>requires_action</code>, not <code>budget_reached</code> - settling the ask doesn't trigger a model request, so respond as usual.</p>
+<p><strong>No event resumes a session paused at its cap.</strong> Update the session's budget instead: change it to a value above the consumed list cost (higher or lower than the old cap), or remove it with <code>"budget": null</code>. An accepted update resumes the paused work automatically.</p>
+<p><strong><code>session.usage</code></strong> carries the session's cumulative token totals, <code>list_cost</code> (<code>{amount, currency}</code>, rounded to the nearest cent), <code>active_seconds</code> (concurrent-thread overlap counted once - the figure runtime cost is priced on), <code>server_tool_use</code> counts (<code>web_search_requests</code>, and <code>web_fetch_requests</code> - informational, currently always 0 since web fetch is not metered), and an echo of the session's <code>budget</code> when one is set. It appears in the events list and the session stream - a stream reader sees the final cost of the work that hit the cap without an extra fetch; child threads' own streams do not carry it. The same totals live on the session object's <code>usage</code> field, and each thread's own <code>usage</code> carries per-thread <code>list_cost</code> and <code>active_seconds</code> - but per-thread costs do <strong>not</strong> sum to the session total: the session figure additionally includes session running time and each figure is rounded independently, so the session figure is the authoritative one. To enforce a spend limit, set a budget rather than polling usage and interrupting the session yourself - the platform's gate runs before each model request.</p>
+<h3>Event payloads</h3>
+<p>some events carry useful metadata beyond the status change itself:</p>
+<p><code>session.status_idle</code> - includes a <code>stop_reason</code> field which elaborates on why the session stopped and what type of further action is required by the user.</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;sevt_456&quot;,
+  &quot;processed_at&quot;: &quot;2026-04-07T04:27:43.197Z&quot;,
+  &quot;stop_reason&quot;: {
+    &quot;event_ids&quot;: [
+      &quot;sevt_123&quot;
+    ],
+    &quot;type&quot;: &quot;requires_action&quot;
+  },
+  &quot;type&quot;: &quot;status_idle&quot;
+}
+</code></pre>
+<p><code>span.model_request_end</code> contains a <code>model_usage</code> field for cost tracking and efficiency analysis:</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;span.model_request_end&quot;,
+  &quot;id&quot;: &quot;sevt_456&quot;,
+  &quot;is_error&quot;: false,
+  &quot;model_request_start_id&quot;: &quot;sevt_123&quot;,
+  &quot;model_usage&quot;: {
+    &quot;cache_creation_input_tokens&quot;: 0,
+    &quot;cache_read_input_tokens&quot;: 6656,
+    &quot;input_tokens&quot;: 3571,
+    &quot;output_tokens&quot;: 727
+  },
+  &quot;processed_at&quot;: &quot;2026-04-07T04:11:32.189Z&quot;
+}
+</code></pre>
+<p><strong><code>agent.thread_context_compacted</code></strong> - emitted when the conversation history was summarized to fit context. Includes <code>pre_compaction_tokens</code> so you know how much was squeezed:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;sevt_abc123&quot;,
+  &quot;processed_at&quot;: &quot;2026-03-24T14:05:15.787Z&quot;,
+  &quot;type&quot;: &quot;agent.thread_context_compacted&quot;
+}
+</code></pre>
+<h3>Archive</h3>
+<p>When done with a session, archive it to free resources:</p>
+<pre><code class="language-ts">await client.beta.sessions.archive(sessionId);
+</code></pre>
+<blockquote>
+<p>Archiving a <strong>session</strong> is routine cleanup - sessions are per-run and disposable. <strong>Do not generalize this to agents or environments</strong>: those are persistent, reusable resources, and archiving them is permanent (no unarchive; new sessions cannot reference them). See <code>shared/managed-agents-overview.md</code> -&gt; Common Pitfalls.</p>
+</blockquote></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

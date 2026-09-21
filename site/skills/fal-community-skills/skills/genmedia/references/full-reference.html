@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>full-reference · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/genmedia/references/full-reference.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>genmedia: Full CLI Reference</h1>
+<p>Complete command surface. SKILL.md has the trigger surface and quick patterns; this file is the manual.</p>
+<h2>Install</h2>
+<p>Linux / macOS:</p>
+<pre><code class="language-bash">curl https://genmedia.sh/install -fsS | bash
+</code></pre>
+<p>Windows (PowerShell):</p>
+<pre><code class="language-powershell">irm https://genmedia.sh/install.ps1 | iex
+</code></pre>
+<h2>setup: configure</h2>
+<p>Interactive wizard:</p>
+<pre><code class="language-bash">genmedia setup
+</code></pre>
+<p>Configures:</p>
+<ul>
+<li><strong>API key</strong>: saved encrypted to local config (or skip and use <code>FAL_KEY</code> env var)</li>
+<li><strong>Auto-load <code>.env</code></strong>: automatically load <code>FAL_KEY</code> from a project <code>.env</code></li>
+<li><strong>Output mode</strong>: <code>auto</code> (pretty in TTY, JSON when piped), <code>json</code> (always structured), <code>standard</code> (always human-readable)</li>
+<li><strong>Automatic updates</strong>: background check; <code>GENMEDIA_NO_UPDATE=1</code> to disable</li>
+</ul>
+<p>Non-interactive (agents / CI):</p>
+<pre><code class="language-bash">genmedia setup --non-interactive --api-key &quot;$FAL_KEY&quot;
+genmedia setup --non-interactive --output-format json --no-auto-load-env --auto-update
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--non-interactive</code>, <code>-y</code></td>
+<td>Skip all prompts. Required when there is no TTY.</td>
+</tr>
+<tr>
+<td><code>--api-key &lt;key&gt;</code></td>
+<td>API key to save. Pass <code>""</code> to clear the saved key.</td>
+</tr>
+<tr>
+<td><code>--no-save-key</code></td>
+<td>With <code>--api-key</code>, do not persist the key to <code>config.json</code> (use <code>FAL_KEY</code> at runtime instead).</td>
+</tr>
+<tr>
+<td><code>--output-format &lt;auto\|json\|standard&gt;</code></td>
+<td>Default output mode.</td>
+</tr>
+<tr>
+<td><code>--auto-load-env</code> / <code>--no-auto-load-env</code></td>
+<td>Toggle auto-loading <code>FAL_KEY</code> from a project <code>.env</code>.</td>
+</tr>
+<tr>
+<td><code>--auto-update</code> / <code>--no-auto-update</code></td>
+<td>Toggle background update checks.</td>
+</tr>
+</tbody>
+</table>
+<p>API keys: <a href="https://fal.ai/dashboard/keys">https://fal.ai/dashboard/keys</a>.</p>
+<h2>models: search and inspect</h2>
+<pre><code class="language-bash">genmedia models &quot;text to video&quot;
+genmedia models &quot;flux&quot; --category text-to-image
+genmedia models --category text-to-speech --limit 5
+genmedia models --status all # include deprecated
+genmedia models --endpoint_id fal-ai/flux/dev,fal-ai/flux/schnell # specific models
+genmedia models --endpoint_id fal-ai/flux/dev --expand openapi-3.0
+genmedia models &quot;flux&quot; --cursor &lt;token&gt; # pagination
+genmedia models &quot;text to image&quot; --no-classify # skip auto-category inference
+</code></pre>
+<p>When <code>--category</code> is omitted and a query is supplied, the CLI infers the category from the query (same classifier the smart router uses) and applies it server-side. JSON output includes <code>inferred_category</code> so you can see what was inferred. Pass <code>--no-classify</code> to disable, or set <code>--category &lt;cat&gt;</code> to override.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--category</code></td>
+<td><code>text-to-image</code>, <code>image-to-video</code>, <code>text-to-speech</code>, etc. Explicit values always win over inferred.</td>
+</tr>
+<tr>
+<td><code>--no-classify</code></td>
+<td>Skip auto-inference of <code>--category</code> from the query.</td>
+</tr>
+<tr>
+<td><code>--status</code></td>
+<td><code>active</code> (default), <code>deprecated</code>, <code>all</code></td>
+</tr>
+<tr>
+<td><code>--limit</code></td>
+<td>Max results (default 20)</td>
+</tr>
+<tr>
+<td><code>--cursor</code></td>
+<td>Pagination token from a previous response</td>
+</tr>
+<tr>
+<td><code>--endpoint_id</code></td>
+<td>Fetch specific model(s), comma-separated or repeated</td>
+</tr>
+<tr>
+<td><code>--expand</code></td>
+<td><code>openapi-3.0</code>, <code>enterprise_status</code></td>
+</tr>
+</tbody>
+</table>
+<h2>schema: inspect inputs/outputs</h2>
+<pre><code class="language-bash">genmedia schema fal-ai/flux/dev
+genmedia schema fal-ai/flux/dev --format openapi
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--format</code></td>
+<td><code>compact</code> (default) or <code>openapi</code> (full OpenAPI JSON)</td>
+</tr>
+</tbody>
+</table>
+<p>Always run <code>schema</code> before <code>run</code> for an unfamiliar endpoint. The exact field names matter, guessed flags fail with 422.</p>
+<h2>run: execute a model</h2>
+<p>Two forms — smart routing (no endpoint) and explicit endpoint.</p>
+<h3>Smart routing (preferred for default-quality requests)</h3>
+<p>The positional is interpreted as a prompt when it doesn't contain a <code>/</code>. The CLI classifies the prompt by modality (image / video / music / tts / 3d) and routes to a sensible default endpoint resolved from a hosted manifest with baked-in fallback.</p>
+<pre><code class="language-bash">genmedia run &quot;a cat on the moon&quot; --json
+genmedia run &quot;a 5-second clip of a robot dancing&quot; --async --json
+genmedia run &quot;narrate this paragraph in a calm voice&quot; --json
+genmedia run --prompt &quot;a cat on the moon&quot; --json # equivalent: --prompt without positional
+</code></pre>
+<p>JSON output includes a <code>routed</code> block:</p>
+<pre><code class="language-json">{
+  &quot;status&quot;: &quot;completed&quot;,
+  &quot;endpoint_id&quot;: &quot;fal-ai/flux/schnell&quot;,
+  &quot;routed&quot;: {
+    &quot;modality&quot;: &quot;text-to-image&quot;,
+    &quot;source&quot;: &quot;manifest&quot;,
+    &quot;from_prompt&quot;: &quot;a cat on the moon&quot;
+  },
+  &quot;result&quot;: { ... }
+}
+</code></pre>
+<p><code>source</code> is one of <code>manifest</code> (fetched from <code>https://genmedia.sh/defaults.json</code>), <code>cached</code> (within the 6-hour TTL), or <code>baked-in</code> (fallback when offline or fetch failed). Use the returned <code>endpoint_id</code> if you need to poll on <code>status</code> for an async submission.</p>
+<h3>Explicit endpoint</h3>
+<p>The positional is treated as an endpoint id when it contains <code>/</code>. No routing, no <code>routed</code> field in the output.</p>
+<pre><code class="language-bash">genmedia run fal-ai/flux/dev --prompt &quot;a cat on the moon&quot;
+genmedia run fal-ai/flux/dev --prompt &quot;a cat&quot; --num_images 2
+genmedia run fal-ai/flux/dev --prompt &quot;a cat&quot; --logs
+genmedia run fal-ai/veo3.1 --prompt &quot;a dog running&quot; --async
+genmedia run fal-ai/flux/dev --prompt &quot;a cat&quot; --download
+genmedia run fal-ai/flux/dev --prompt &quot;a cat&quot; --num_images 3 \
+ --download &quot;./out/{index}.{ext}&quot;
+genmedia run fal-ai/flux/dev --help # introspect parameters as CLI flags
+</code></pre>
+<p>Any model input parameter can be passed as <code>--&lt;param&gt; &lt;value&gt;</code>. Run <code>genmedia run &lt;endpoint_id&gt; --help</code> to see a model's accepted parameters as CLI flags, or <code>genmedia schema &lt;endpoint_id&gt;</code> for the same as JSON.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;positional&gt;</code></td>
+<td>Endpoint id (contains <code>/</code>) → explicit run. Otherwise → smart routing prompt.</td>
+</tr>
+<tr>
+<td><code>--&lt;param&gt;</code></td>
+<td>Any model input parameter (e.g. <code>--prompt</code>, <code>--num_images</code>). For smart routing, <code>prompt</code> is filled from the positional automatically.</td>
+</tr>
+<tr>
+<td><code>--logs</code></td>
+<td>Stream logs while the model runs (pretty mode only)</td>
+</tr>
+<tr>
+<td><code>--async</code></td>
+<td>Submit to queue without waiting, returns a <code>request_id</code></td>
+</tr>
+<tr>
+<td><code>--download [template]</code></td>
+<td>Save every media URL in the result. Optional template uses <code>{index}</code>, <code>{name}</code>, <code>{ext}</code>, <code>{request_id}</code> placeholders. Omitted → cwd with source file names. Trailing <code>/</code> or existing dir → dir + source names. Plain filename + multiple outputs → <code>_1</code>, <code>_2</code> collision suffixes. Downloaded paths appear under <code>downloaded_files</code> in JSON.</td>
+</tr>
+</tbody>
+</table>
+<h2>status: async job</h2>
+<pre><code class="language-bash">genmedia status fal-ai/veo3.1 &lt;request_id&gt;
+genmedia status fal-ai/veo3.1 &lt;request_id&gt; --result
+genmedia status fal-ai/veo3.1 &lt;request_id&gt; --logs
+genmedia status fal-ai/veo3.1 &lt;request_id&gt; --cancel
+genmedia status fal-ai/veo3.1 &lt;request_id&gt; --download ./out/ # implies --result
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--result</code></td>
+<td>Fetch the completed result</td>
+</tr>
+<tr>
+<td><code>--logs</code></td>
+<td>Show logs verbosely</td>
+</tr>
+<tr>
+<td><code>--cancel</code></td>
+<td>Cancel the queued job</td>
+</tr>
+<tr>
+<td><code>--download [template]</code></td>
+<td>Same template syntax as on <code>run</code>. Implies <code>--result</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2>upload: file to fal.ai CDN</h2>
+<pre><code class="language-bash">genmedia upload ./photo.jpg
+genmedia upload https://example.com/image.png
+</code></pre>
+<p>Accepts a local path or a remote URL. Returns a CDN URL usable as model input.</p>
+<h2>pricing: cost per call</h2>
+<pre><code class="language-bash">genmedia pricing fal-ai/flux/dev
+</code></pre>
+<p>Use before running an unfamiliar premium endpoint. Some endpoints (GPT Image 2 at <code>quality=high</code>, Seedance Pro at long durations) are an order of magnitude more expensive than alternatives.</p>
+<h2>docs: documentation search</h2>
+<pre><code class="language-bash">genmedia docs &quot;how to use LoRA&quot;
+genmedia docs &quot;webhook callbacks&quot;
+</code></pre>
+<p>Searches fal.ai documentation, guides, and API references.</p>
+<h2>version / update</h2>
+<pre><code class="language-bash">genmedia version # current version + any pending update
+genmedia update # download and swap in latest
+genmedia update --check # check only, no download
+genmedia update --force # reinstall even if already on latest
+</code></pre>
+<p>When automatic updates are enabled (default), every TTY invocation may trigger a rate-limited (1/hour) background check that stages the next release. The next launch atomically swaps it in. <code>GENMEDIA_NO_UPDATE=1</code> disables all background checks; the manual <code>update</code> command still works.</p>
+<h2>init: install the default skill bundle</h2>
+<pre><code class="language-bash">genmedia init
+genmedia init --force # overwrite existing files
+</code></pre>
+<p>Installs the default genmedia skill bundle (<code>genmedia-ref</code> + <code>genmedia</code> core skills) into <code>.agents/skills/</code> if the project has a <code>.agents/</code> directory, otherwise into <code>.claude/skills/</code>. Exits with a message if neither directory exists.</p>
+<p>After <code>init</code>, agent sessions in that project can use the installed skills without calling <code>--help</code>. Commit the installed skills directory so teammates and other agents get the same context.</p>
+<h2>skills: manage installed agent skills</h2>
+<pre><code class="language-bash">genmedia skills list
+genmedia skills install genmedia
+genmedia skills update
+genmedia skills remove genmedia
+</code></pre>
+<p>Installs, updates, lists, and removes agent skills from the genmedia registry.</p>
+<h2>Agent-first design</h2>
+<p>All commands emit structured JSON when piped or called with <code>--json</code>:</p>
+<pre><code class="language-bash">genmedia run fal-ai/flux/dev --prompt &quot;a cat&quot; --json
+genmedia models &quot;text to video&quot; --json | jq '.models[]'
+</code></pre>
+<p>For a machine-readable description of every command, argument, and option:</p>
+<pre><code class="language-bash">genmedia --help --json
+</code></pre>
+<p>Useful when bootstrapping an agent's context with the full CLI surface.</p>
+<h2>Common patterns</h2>
+<h3>Run + download in one go</h3>
+<pre><code class="language-bash">genmedia run fal-ai/flux/dev \
+ --prompt &quot;...&quot; \
+ --download &quot;./out/{request_id}_{index}.{ext}&quot; \
+ --json
+</code></pre>
+<h3>Async submission, then poll until done</h3>
+<pre><code class="language-bash">SUBMIT=$(genmedia run &lt;endpoint_id&gt; --prompt &quot;...&quot; --async --json)
+REQ=$(echo &quot;$SUBMIT&quot; | jq -r '.request_id')
+
+# Poll until status is COMPLETED
+while true; do
+ RES=$(genmedia status &lt;endpoint_id&gt; &quot;$REQ&quot; --json)
+ STATUS=$(echo &quot;$RES&quot; | jq -r '.status')
+ [ &quot;$STATUS&quot; = &quot;COMPLETED&quot; ] &amp;&amp; break
+ [ &quot;$STATUS&quot; = &quot;FAILED&quot; ] &amp;&amp; { echo &quot;$RES&quot; | jq '.error'; exit 1; }
+ sleep 5
+done
+
+genmedia status &lt;endpoint_id&gt; &quot;$REQ&quot; \
+ --download &quot;./out/{request_id}_{index}.{ext}&quot; \
+ --json
+</code></pre>
+<h3>Upload then reference</h3>
+<pre><code class="language-bash">URL=$(genmedia upload ./input.png --json | jq -r '.url')
+genmedia run fal-ai/nano-banana-pro/edit \
+ --image_urls &quot;$URL&quot; \
+ --prompt &quot;...&quot; \
+ --download &quot;./out/{request_id}_{index}.{ext}&quot; \
+ --json
+</code></pre>
+<h3>Inspect before run (always)</h3>
+<pre><code class="language-bash">genmedia schema &lt;endpoint_id&gt; --json
+genmedia pricing &lt;endpoint_id&gt; --json
+</code></pre>
+<h2>Errors</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>422 Unprocessable Entity</code></td>
+<td>Wrong field name or missing required field</td>
+<td><code>genmedia schema &lt;endpoint_id&gt; --json</code> and read <code>validation_errors</code></td>
+</tr>
+<tr>
+<td><code>401 Unauthorized</code></td>
+<td>Missing or invalid API key</td>
+<td><code>genmedia setup</code> or <code>export FAL_KEY=…</code></td>
+</tr>
+<tr>
+<td><code>Endpoint not found</code></td>
+<td>Wrong endpoint ID, deprecated, or typo</td>
+<td><code>genmedia models "&lt;task&gt;" --json</code> to discover</td>
+</tr>
+<tr>
+<td>Slow / timeout</td>
+<td>Long-running generation</td>
+<td>Use <code>--async</code>, then <code>genmedia status … --result</code></td>
+</tr>
+</tbody>
+</table>
+<h2>Environment variables</h2>
+<ul>
+<li><code>FAL_KEY</code>: API key. Used at runtime when <code>--no-save-key</code> was set or no key was saved.</li>
+<li><code>GENMEDIA_NO_UPDATE=1</code>: Disable automatic background update checks.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

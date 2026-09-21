@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>tool-use · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/java/claude-api/tool-use.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Tool Use - Java</h1>
+<p>For conceptual overview (tool definitions, tool choice, tips), see <a href="../../shared/tool-use-concepts.html">shared/tool-use-concepts.md</a>.</p>
+<h2>Tool Use (Beta)</h2>
+<p>The Java SDK supports beta tool use with annotated classes. Tool classes implement <code>Supplier&lt;String&gt;</code> for automatic execution via <code>BetaToolRunner</code>.</p>
+<h3>Tool Runner (automatic loop)</h3>
+<pre><code class="language-java">import com.anthropic.models.beta.messages.MessageCreateParams;
+import com.anthropic.models.beta.messages.BetaMessage;
+import com.anthropic.helpers.BetaToolRunner;
+import com.fasterxml.jackson.annotation.JsonClassDescription;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import java.util.function.Supplier;
+
+@JsonClassDescription(&quot;Get the weather in a given location&quot;)
+static class GetWeather implements Supplier&lt;String&gt; {
+    @JsonPropertyDescription(&quot;The city and state, e.g. San Francisco, CA&quot;)
+    public String location;
+
+    @Override
+    public String get() {
+        return &quot;The weather in &quot; + location + &quot; is sunny and 72°F&quot;;
+    }
+}
+
+BetaToolRunner toolRunner = client.beta().messages().toolRunner(
+    MessageCreateParams.builder()
+        .model(&quot;claude-opus-5&quot;)
+        .maxTokens(16000L)
+        .putAdditionalHeader(&quot;anthropic-beta&quot;, &quot;structured-outputs-2025-11-13&quot;)
+        .addTool(GetWeather.class)
+        .addUserMessage(&quot;What's the weather in San Francisco?&quot;)
+        .build());
+
+for (BetaMessage message : toolRunner) {
+    System.out.println(message);
+}
+</code></pre>
+<h3>Memory Tool</h3>
+<p>The Java SDK provides <code>BetaMemoryToolHandler</code> for implementing the memory tool backend. You supply a handler that manages file storage, and the <code>BetaToolRunner</code> handles memory tool calls automatically.</p>
+<pre><code class="language-java">import com.anthropic.helpers.BetaMemoryToolHandler;
+import com.anthropic.helpers.BetaToolRunner;
+import com.anthropic.models.beta.messages.BetaMemoryTool20250818;
+import com.anthropic.models.beta.messages.BetaMessage;
+import com.anthropic.models.beta.messages.MessageCreateParams;
+import com.anthropic.models.beta.messages.ToolRunnerCreateParams;
+
+// Implement BetaMemoryToolHandler with your storage backend (e.g., filesystem)
+BetaMemoryToolHandler memoryHandler = new FileSystemMemoryToolHandler(sandboxRoot);
+
+MessageCreateParams createParams = MessageCreateParams.builder()
+    .model(&quot;claude-opus-5&quot;)
+    .maxTokens(4096L)
+    .addTool(BetaMemoryTool20250818.builder().build())
+    .addUserMessage(&quot;Remember that my favorite color is blue&quot;)
+    .build();
+
+BetaToolRunner toolRunner = client.beta().messages().toolRunner(
+    ToolRunnerCreateParams.builder()
+        .betaMemoryToolHandler(memoryHandler)
+        .initialMessageParams(createParams)
+        .build());
+
+for (BetaMessage message : toolRunner) {
+    System.out.println(message);
+}
+</code></pre>
+<p>See the <a href="../../shared/tool-use-concepts.html">shared memory tool concepts</a> for more details on the memory tool.</p>
+<h3>Non-Beta Tool Declaration (manual JSON schema)</h3>
+<p><code>Tool.InputSchema.Properties</code> is a freeform <code>Map&lt;String, JsonValue&gt;</code> wrapper - build property schemas via <code>putAdditionalProperty</code>. <code>type: "object"</code> is the default. The builder has a direct <code>.addTool(Tool)</code> overload that wraps in <code>ToolUnion</code> automatically.</p>
+<pre><code class="language-java">import com.anthropic.core.JsonValue;
+import com.anthropic.models.messages.Tool;
+
+Tool tool = Tool.builder()
+    .name(&quot;get_weather&quot;)
+    .description(&quot;Get the current weather in a given location&quot;)
+    .inputSchema(Tool.InputSchema.builder()
+        .properties(Tool.InputSchema.Properties.builder()
+            .putAdditionalProperty(&quot;location&quot;, JsonValue.from(Map.of(&quot;type&quot;, &quot;string&quot;)))
+            .build())
+        .required(List.of(&quot;location&quot;))
+        .build())
+    .build();
+
+MessageCreateParams params = MessageCreateParams.builder()
+    .model(Model.CLAUDE_SONNET_4_6)
+    .maxTokens(16000L)
+    .addTool(tool)
+    .addUserMessage(&quot;Weather in Paris?&quot;)
+    .build();
+</code></pre>
+<p>For manual tool loops, handle <code>tool_use</code> blocks in the response, send <code>tool_result</code> back, loop until <code>stop_reason</code> is <code>"end_turn"</code>. See <a href="../../shared/tool-use-concepts.html">shared tool use concepts</a>.</p>
+<h3>Building <code>MessageParam</code> with Content Blocks (Tool Result Round-Trip)</h3>
+<p><code>MessageParam.Content</code> is an inner union class (string | list). Use the builder's <code>.contentOfBlockParams(List&lt;ContentBlockParam&gt;)</code> alias - there is NO separate <code>MessageParamContent</code> class with a static <code>ofBlockParams</code>:</p>
+<pre><code class="language-java">import com.anthropic.models.messages.MessageParam;
+import com.anthropic.models.messages.ContentBlockParam;
+import com.anthropic.models.messages.ToolResultBlockParam;
+
+List&lt;ContentBlockParam&gt; results = List.of(
+    ContentBlockParam.ofToolResult(ToolResultBlockParam.builder()
+        .toolUseId(toolUseBlock.id())
+        .content(yourResultString)
+        .build())
+);
+
+MessageParam toolResultMsg = MessageParam.builder()
+    .role(MessageParam.Role.USER)
+    .contentOfBlockParams(results)   // builder alias for Content.ofBlockParams(...)
+    .build();
+</code></pre>
+<hr />
+<h2>Structured Output</h2>
+<p>The class-based overload auto-derives the JSON schema from your POJO and gives you a typed <code>.text()</code> return - no manual schema, no manual parsing.</p>
+<pre><code class="language-java">import com.anthropic.models.messages.StructuredMessageCreateParams;
+
+record Book(String title, String author) {}
+record BookList(List&lt;Book&gt; books) {}
+
+StructuredMessageCreateParams&lt;BookList&gt; params = MessageCreateParams.builder()
+    .model(Model.CLAUDE_SONNET_4_6)
+    .maxTokens(16000L)
+    .outputConfig(BookList.class)  // returns a typed builder
+    .addUserMessage(&quot;List 3 classic novels&quot;)
+    .build();
+
+client.messages().create(params).content().stream()
+    .flatMap(cb -&gt; cb.text().stream())
+    .forEach(typed -&gt; {
+        // typed.text() returns BookList, not String
+        for (Book b : typed.text().books()) System.out.println(b.title());
+    });
+</code></pre>
+<p>Supports Jackson annotations: <code>@JsonPropertyDescription</code>, <code>@JsonIgnore</code>, <code>@ArraySchema(minItems=...)</code>. Manual schema path: <code>OutputConfig.builder().format(JsonOutputFormat.builder().schema(...).build())</code>.</p>
+<hr />
+<h2>Anthropic-Defined Tools</h2>
+<p>Version-suffixed types; <code>name</code>/<code>type</code> auto-set by builder. Direct <code>.addTool()</code> overloads exist for most tool types; where one is missing (newer or less-common tools - see the advisor note below), wrap via the union type's static factory: <code>.addTool(BetaToolUnion.of&lt;ToolName&gt;(builder...build()))</code>. Web search and code execution are server-executed; bash and text editor are client-executed (you handle the <code>tool_use</code> locally - see <code>shared/tool-use-concepts.md</code>).</p>
+<pre><code class="language-java">import com.anthropic.models.messages.WebSearchTool20260209;
+import com.anthropic.models.messages.ToolBash20250124;
+import com.anthropic.models.messages.ToolTextEditor20250728;
+import com.anthropic.models.messages.CodeExecutionTool20260120;
+
+.addTool(WebSearchTool20260209.builder()
+    .maxUses(5L)                              // optional
+    .allowedDomains(List.of(&quot;example.com&quot;))   // optional
+    .build())
+.addTool(ToolBash20250124.builder().build())
+.addTool(ToolTextEditor20250728.builder().build())
+.addTool(CodeExecutionTool20260120.builder().build())
+</code></pre>
+<p>Also available: <code>WebFetchTool20260209</code>, <code>MemoryTool20250818</code>, <code>ToolSearchToolBm25_20251119</code>. For the advisor tool, use <code>BetaAdvisorTool20260301</code> in the beta namespace with <code>.addBeta("advisor-tool-2026-03-01")</code> (server-side; advisor model &gt;= executor model). There is no direct <code>.addTool(BetaAdvisorTool20260301)</code> overload on the beta builder - wrap it via the <code>BetaToolUnion</code> static factory for the advisor type; if <code>javac</code> rejects the specific factory method name, <code>javap com.anthropic.models.beta.messages.BetaToolUnion | grep -i advisor</code> shows the exact one.</p>
+<h3>Beta namespace (MCP, compaction)</h3>
+<p>For beta-only features use <code>com.anthropic.models.beta.messages.*</code> - class names have a <code>Beta</code> prefix AND live in the beta package. The beta <code>MessageCreateParams.Builder</code> has direct <code>.addTool(BetaToolBash20250124)</code> overloads AND <code>.addMcpServer()</code>:</p>
+<pre><code class="language-java">import com.anthropic.models.beta.messages.MessageCreateParams;
+import com.anthropic.models.beta.messages.BetaToolBash20250124;
+import com.anthropic.models.beta.messages.BetaCodeExecutionTool20260120;
+import com.anthropic.models.beta.messages.BetaRequestMcpServerUrlDefinition;
+
+MessageCreateParams params = MessageCreateParams.builder()
+    .model(Model.CLAUDE_OPUS_4_8)
+    .maxTokens(16000L)
+    .addBeta(&quot;mcp-client-2025-11-20&quot;)
+    .addTool(BetaToolBash20250124.builder().build())
+    .addTool(BetaCodeExecutionTool20260120.builder().build())
+    .addMcpServer(BetaRequestMcpServerUrlDefinition.builder()
+        .name(&quot;my-server&quot;)
+        .url(&quot;https://example.com/mcp&quot;)
+        .build())
+    .addUserMessage(&quot;...&quot;)
+    .build();
+
+client.beta().messages().create(params);
+</code></pre>
+<p><code>BetaTool*</code> types are NOT interchangeable with non-beta <code>Tool*</code> - pick one namespace per request.</p>
+<p><strong>Reading server-tool blocks in the response:</strong> <code>ServerToolUseBlock</code> has <code>.id()</code>, <code>.name()</code> (enum), and <code>._input()</code> returning raw <code>JsonValue</code> - there is NO typed <code>.input()</code>. For code execution results, unwrap two levels:</p>
+<pre><code class="language-java">for (ContentBlock block : response.content()) {
+    block.serverToolUse().ifPresent(stu -&gt; {
+        System.out.println(&quot;tool: &quot; + stu.name() + &quot; input: &quot; + stu._input());
+    });
+    block.codeExecutionToolResult().ifPresent(r -&gt; {
+        r.content().resultBlock().ifPresent(result -&gt; {
+            System.out.println(&quot;stdout: &quot; + result.stdout());
+            System.out.println(&quot;stderr: &quot; + result.stderr());
+            System.out.println(&quot;exit: &quot; + result.returnCode());
+        });
+    });
+}
+</code></pre>
+<hr /></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

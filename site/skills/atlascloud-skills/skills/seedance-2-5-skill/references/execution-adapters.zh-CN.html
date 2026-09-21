@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>execution-adapters.zh-CN · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/seedance-2-5-skill/references/execution-adapters.zh-CN.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Atlas 执行适配层</h1>
+<p>创作规划与模型配置相互独立。默认使用 Seedream 5.0 Pro 生图、Seedance 2.0 生视频。任何计费生成前，都先核实所选模型支持需要的路线。</p>
+<h2>智能体默认路线</h2>
+<p>在智能体对话中，<strong>Atlas Cloud Skill</strong> 是默认的直接生成路线。用它查询模型、检查参数、上传本地素材、提交图片或视频任务、轮询并获取结果。只有 Skill 实际提交了任务，才报告 <code>Execution: atlas-skill</code>。</p>
+<p>提交后，必须每 2 秒用同一 ID 重复执行 Skill 的预测结果查询步骤，直到任务进入终态。</p>
+<p>若它不可用，先协助安装：</p>
+<pre><code class="language-bash">npx skills add AtlasCloudAI/atlas-cloud-skills
+</code></pre>
+<p>如果宿主需要，再刷新 Skill 注册表。</p>
+<h2>明确选择的替代路线</h2>
+<table>
+<thead>
+<tr>
+<th>选择</th>
+<th>使用时机</th>
+<th>可用性检查</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>atlas-skill</code></td>
+<td>智能体交互生成的默认选择</td>
+<td>Atlas Cloud Skill 能在当前客户端提交媒体任务</td>
+</tr>
+<tr>
+<td><code>atlas-mcp</code></td>
+<td>用户明确选择 MCP</td>
+<td>当前客户端暴露 Atlas MCP 生成工具</td>
+</tr>
+<tr>
+<td><code>atlas-cli</code></td>
+<td>用户明确选择终端、脚本、CI 或批量执行</td>
+<td><code>atlas auth status</code>，再执行 <code>atlas models get</code></td>
+</tr>
+<tr>
+<td><code>atlas-rest</code></td>
+<td>使用内置 Node 脚本或受控兼容执行</td>
+<td><code>ATLASCLOUD_API_KEY</code> 和在线模型核验</td>
+</tr>
+<tr>
+<td><code>manual</code></td>
+<td>没有已认证执行通道</td>
+<td>只输出提示词、模型 ID 和素材清单</td>
+</tr>
+</tbody>
+</table>
+<p>MCP 服务端本身不维护后台轮询循环。走 <code>atlas-mcp</code> 时，智能体必须每 2 秒用同一预测 ID 调用一次 <code>atlas_get_prediction</code>，直到任务进入终态。</p>
+<p>不要声称 Node 脚本调用了 MCP 或智能体 Skill；两者都属于智能体层路线。也不要因为 CLI 已安装就让脚本静默切换到 CLI。</p>
+<h2>API Key 检查与配置</h2>
+<p>必须在真正提交任务的进程中检查凭据。REST 脚本按以下顺序读取：</p>
+<ol>
+<li><code>process.env.ATLASCLOUD_API_KEY</code></li>
+<li>兼容变量 <code>process.env.ATLAS_CLOUD_API_KEY</code></li>
+</ol>
+<p>不要根据另一个服务商、插件或进程的配置状态推断 Atlas 凭据。每个执行通道可能拥有独立的凭据作用域。</p>
+<p>如果执行进程读不到 Key，引导用户前往 <code>https://www.atlascloud.ai/console/api-keys?utm_source=github&amp;utm_campaign=awesome-seedance-2.5-prompts-skills</code> 获取。不要要求用户在对话中粘贴或展示 Key。可以指导用户临时设置当前终端：</p>
+<pre><code class="language-bash">export ATLASCLOUD_API_KEY=&quot;&lt;your-key&gt;&quot;
+</code></pre>
+<p>也可以写入宿主应用提供的安全环境变量或密钥设置。修改持久配置后，必要时刷新或重启执行会话。如果 Key 已存在于宿主或父进程配置，但实际提交任务的进程不可见，应报告“环境作用域不一致”，并改用能继承该环境的执行进程，不能说用户没有 Key。</p>
+<h2>内置脚本约定</h2>
+<p><code>scripts/generate.mjs</code> 只实现 <code>atlas-rest</code> 和显式 <code>atlas-cli</code>。未设置 <code>execution.adapter</code> 时默认 <code>atlas-rest</code>。旧值 <code>"auto"</code> 仍可使用，但固定解析为 <code>atlas-rest</code>，不再探测或选择 CLI。这样本机安装状态不会悄悄改变用户的执行路径或计费出口。</p>
+<pre><code class="language-json">{
+  &quot;execution&quot;: {
+    &quot;adapter&quot;: &quot;atlas-rest&quot;,
+    &quot;apiKeyEnv&quot;: &quot;ATLASCLOUD_API_KEY&quot;,
+    &quot;verifyModels&quot;: true
+  },
+  &quot;modelProfile&quot;: &quot;seedance-default&quot;
+}
+</code></pre>
+<p>只有明确选择 CLI 时才设置 <code>adapter</code> 为 <code>atlas-cli</code>。<code>atlas-skill</code> 和 <code>atlas-mcp</code> 会被 Node 脚本明确拒绝，让智能体直接执行，避免错误报告执行通道。</p>
+<p>R2V 任务的 Storyboard 参考图必须符合在线服务当前接受的图片限制。若超出限制，只重新排布同一套有序分镜，不要为此改变用户希望的视频画幅。</p>
+<p>如果脚本提交后本地轮询进程中断，把已有 Atlas 预测 ID 按阶段键写入 <code>execution.resumePredictionIds</code>，例如：</p>
+<pre><code class="language-json">{
+  &quot;execution&quot;: {
+    &quot;resumePredictionIds&quot;: {
+      &quot;grid&quot;: &quot;existing-image-prediction-id&quot;,
+      &quot;seg1&quot;: &quot;existing-video-prediction-id&quot;
+    }
+  }
+}
+</code></pre>
+<p>脚本会恢复轮询和下载，不会再次提交计费任务。<code>starting</code>、<code>queued</code>、<code>pending</code>、<code>processing</code> 是进行中状态；<code>completed</code>、<code>succeeded</code> 是成功终态；<code>failed</code>、<code>timeout</code>、<code>canceled</code> 是失败终态。推理时间缺失、本地轮询窗口结束、对话中断或临时查询失败都不能授权创建替代任务。只有任务明确进入失败终态并作出明确重试决定后，才可以创建新预测任务。</p>
+<p>本工作流的四种 Atlas 执行路线都使用 2 秒状态查询周期。<code>atlas-skill</code> 和 <code>atlas-mcp</code> 的循环由智能体负责，其中 MCP 调用 <code>atlas_get_prediction</code>；内置 REST 和 CLI 适配器则在代码中强制执行。REST/CLI 的进度日志仍每 32 秒输出一次，默认本地轮询窗口仍为 900 秒。若底层通用示例使用其他周期，以本工作流的 2 秒规则为准。</p>
+<h2>CLI 路线</h2>
+<p>当用户明确选择 CLI 且本机未安装时，使用官方安装方式，然后登录：</p>
+<pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/AtlasCloudAI/cli/main/install.sh | sh
+atlas auth login
+</code></pre>
+<p>请交互式执行 <code>atlas auth login</code>。适配器不会替你用命令行参数传 API key 去登录，
+因为命令行参数可被本机其他进程读取。若必须在单用户机器上自动化，可设置
+<code>ATLAS_CLI_ALLOW_ARGV_TOKEN=1</code> 并接受该暴露；否则请优先使用
+<code>execution.adapter: "atlas-rest"</code>，它只在 HTTPS 请求头中发送 key。</p>
+<p>生成前核实模型：</p>
+<pre><code class="language-bash">atlas models search seedance --type video --json
+atlas models get &lt;model-id&gt; --json
+atlas generate cost video &lt;model-id&gt; -p &quot;&lt;prompt&gt;&quot; --json
+</code></pre>
+<p>CLI 适配器通过 <code>atlas generate image|video &lt;model&gt; -p &lt;prompt&gt;</code> 非阻塞提交并轮询。当地文件使用 <code>@/absolute/path</code>，数据 URL 和远程 URL 直接传递。它会映射图片、参考图、首尾帧、时长、分辨率、画幅、音频和额外模型参数。</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

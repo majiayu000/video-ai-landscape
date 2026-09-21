@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>transitions.zh-CN · AtlasCloud 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/seedance-2-5-skill/references/transitions.zh-CN.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>转场</h1>
+<p>两个决定，按这个顺序：</p>
+<ol>
+<li><strong>这个转场该不该由模型生成</strong>，还是该由剪辑来做？</li>
+<li>如果由模型，<strong>在切点写明类型</strong>。</li>
+</ol>
+<h2>先问：这个该由剪辑做吗</h2>
+<p>一次生成要花钱，而且比时间线给你的控制少。几种常见转场在任何剪辑软件里都是两秒钟的事：</p>
+<table>
+<thead>
+<tr>
+<th>转场</th>
+<th>该在哪做</th>
+<th>为什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>硬切</td>
+<td>剪辑</td>
+<td>没有东西需要生成</td>
+</tr>
+<tr>
+<td>淡入淡出黑／白</td>
+<td>剪辑</td>
+<td>精确、可调、免费</td>
+</tr>
+<tr>
+<td>叠化</td>
+<td>剪辑</td>
+<td>同上，而且时间点更好控</td>
+</tr>
+<tr>
+<td>闪白／闪黑</td>
+<td>剪辑</td>
+<td>那里是帧精确的，这里只是近似</td>
+</tr>
+<tr>
+<td>擦除／推移</td>
+<td>剪辑</td>
+<td>这是几何效果，不是被拍下来的事件</td>
+</tr>
+</tbody>
+</table>
+<p>值得生成的是那些<strong>被拍摄下来的事件</strong>——剪辑无法从两条成片里凭空造出来的：</p>
+<table>
+<thead>
+<tr>
+<th>转场</th>
+<th>是什么</th>
+<th>适合</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>遮罩</strong></td>
+<td>镜头前进直到某个物体填满画面，下一镜从中拉出</td>
+<td>空间与时间的跳跃</td>
+</tr>
+<tr>
+<td><strong>相似物</strong></td>
+<td>前一镜末帧的形状、轮廓或颜色变成下一镜的首帧</td>
+<td>蒙太奇、概念性连接</td>
+</tr>
+<tr>
+<td><strong>动作／甩镜</strong></td>
+<td>快速运镜糊掉，在下一场景中解析出来</td>
+<td>速度、动作、旅行</td>
+</tr>
+<tr>
+<td><strong>动态接力</strong></td>
+<td>主体的动作跨镜延续：从一侧出画，在下一镜延续着入画</td>
+<td>换装、地点跳跃</td>
+</tr>
+<tr>
+<td><strong>推拉穿越</strong></td>
+<td>一个细节被放大到成为下一场景，或反过来</td>
+<td>尺度切换、世界中的世界</td>
+</tr>
+<tr>
+<td><strong>材质蔓延</strong></td>
+<td>一种媒介——墨、烟、光——铺满画面，下一场景从中浮现</td>
+<td>风格化与文化特定的作品</td>
+</tr>
+</tbody>
+</table>
+<p>这些需要生成，因为转场期间<strong>镜头和主体必须真的做点什么</strong>。这也是它们读起来像手艺而不是效果的原因。</p>
+<h2>然后：在切点写明类型</h2>
+<p>骨架只有一行：</p>
+<pre><code class="language-text">在切点使用&lt;转场类型&gt;。
+</code></pre>
+<p>如果这个转场需要调度，再写清机制——什么触发它、往哪个方向动、下一镜开在什么状态：</p>
+<pre><code class="language-text">在切点使用遮罩转场。摄影机向前推进，直到一个人的背影填满画面、画面转暗；
+下一镜从黑暗中拉出，露出展厅内部。
+</code></pre>
+<p>对较难的几类，要写明：<strong>触发动作 → 运镜 → 视觉变形 → 到达状态</strong>。到达状态是最常被省略的一项，也正是它防止转场完成之后新镜头继续漂。</p>
+<h2>不要默认挂「禁止硬切」</h2>
+<p><code>禁止硬切</code> 和 <code>禁止物体凭空出现</code> 是<strong>延长与续写的默认值</strong>。在那个上下文里它们是对的：接缝断裂和物体凭空冒出来是续写已有素材的两个典型翻车。</p>
+<p>在别处，硬切和凭空出现是<strong>手法</strong>——闪现、跳惊、魔法显形、喜剧节奏。全局挂上等于把你可能想用的工具删掉。</p>
+<p>按场景 opt-in：</p>
+<ul>
+<li>延长或接龙一个连续动作 → <strong>开</strong></li>
+<li>刻意制造不连续 → <strong>关</strong></li>
+<li>其余情况 → 每片一决定</li>
+</ul>
+<p>这条实例化的通则是：<strong>在一个作用域里正确的默认值，不是全局规则。</strong> 同一个错误的另一副面孔是「每一拍都必须以运镜收尾」——在某条以运镜为命题的片子里成立，当普适规则就错了。</p>
+<h2>让模型自己挑</h2>
+<p>片子风格一致、但没有具体转场要求时，<strong>给一个受限菜单</strong>比沉默或硬指定都好：</p>
+<pre><code class="language-text">每个切点从遮罩、相似物、动作、材质蔓延中选择最适合本片的一种。
+</code></pre>
+<p>沉默会得到一个随意的转场；硬指定可能跟素材打架。菜单把选择限制在你已经认可的集合里。</p>
+<h2>多镜头支持是模型相关的</h2>
+<p>以上全部假设模型能在一次生成里产出带切点的有序镜头。有些模型总是用运动把镜头连起来。围绕切点搭 spec 之前先核实——见 <a href="model-profile.zh-CN.html">model-profile.zh-CN.md</a> 与 <a href="capabilities.zh-CN.html">capabilities.zh-CN.md</a>。</p>
+<p>多镜头不可用时，一镜一次请求，切点在剪辑台上完成。那也顺带把上面那五种「剪辑该做的」转场放回了它们该在的地方。</p>
+<h2>关联</h2>
+<ul>
+<li><a href="editing-and-extension.zh-CN.html">editing-and-extension.zh-CN.md</a> — 接缝约束该用在哪</li>
+<li><a href="cinematography.zh-CN.html">cinematography.zh-CN.md</a> — 运镜词汇</li>
+<li><a href="troubleshooting.zh-CN.html">troubleshooting.zh-CN.md</a> — 接缝跳动或转场生硬</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>realtime-server-side · ElevenLabs 插件</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/speech-to-text/references/realtime-server-side.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>Server-Side Real-Time Streaming</h1>
+<p>Transcribe audio streams in real-time from your server with ultra-low latency.</p>
+<h2>Installation</h2>
+<pre><code class="language-bash"># Python
+pip install --upgrade elevenlabs python-dotenv pydub
+
+# JavaScript
+npm install @elevenlabs/elevenlabs-js@latest dotenv
+</code></pre>
+<blockquote>
+<p><strong>Warning:</strong> Do not use <code>npm install elevenlabs</code> - that's an outdated v1.x package. Always use <code>@elevenlabs/elevenlabs-js</code>.</p>
+</blockquote>
+<h2>Configuration</h2>
+<p>Store your API key in a <code>.env</code> file:</p>
+<pre><code>ELEVENLABS_API_KEY=&lt;your_api_key_here&gt;
+</code></pre>
+<h2>Realtime Session Options</h2>
+<table>
+<thead>
+<tr>
+<th>Purpose</th>
+<th>Python / WebSocket</th>
+<th>JavaScript</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Limit language detection to expected additional languages</td>
+<td><code>secondary_languages</code></td>
+<td><code>secondaryLanguages</code></td>
+</tr>
+<tr>
+<td>Return detected language in delayed final events</td>
+<td><code>include_language_detection</code></td>
+<td><code>includeLanguageDetection</code></td>
+</tr>
+<tr>
+<td>Detect entities in committed segments</td>
+<td><code>entity_detection</code></td>
+<td><code>entityDetection</code></td>
+</tr>
+<tr>
+<td>Reduce false activation from background speech and noise</td>
+<td><code>filter_background_audio</code></td>
+<td><code>filterBackgroundAudio</code></td>
+</tr>
+<tr>
+<td>Disable history and logging for an enterprise zero-retention session</td>
+<td><code>enable_logging=False</code></td>
+<td><code>enableLogging: false</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>secondary_languages</code> accepts additional ISO-639-1 or ISO-639-3 codes. Entity detection accepts
+<code>all</code>, a supported entity type or category, or a list of them. Background audio filtering cannot be
+combined with timestamp output.</p>
+<h2>Stream from URL</h2>
+<h3>Python</h3>
+<pre><code class="language-python">from dotenv import load_dotenv
+import os
+import asyncio
+from elevenlabs import ElevenLabs
+from elevenlabs import RealtimeEvents, RealtimeUrlOptions
+
+load_dotenv()
+
+async def main():
+    elevenlabs = ElevenLabs(api_key=os.getenv(&quot;ELEVENLABS_API_KEY&quot;))
+    stop_event = asyncio.Event()
+
+    connection = await elevenlabs.speech_to_text.realtime.connect(RealtimeUrlOptions(
+        model_id=&quot;scribe_v2_realtime&quot;,
+        url=&quot;https://npr-ice.streamguys1.com/live.mp3&quot;,
+        include_timestamps=True,
+        keyterms=[&quot;ElevenLabs&quot;, &quot;Scribe&quot;],
+        no_verbatim=True,
+    ))
+
+    def on_partial_transcript(data):
+        print(f&quot;Partial: {data.get('text', '')}&quot;)
+
+    def on_committed_transcript(data):
+        print(f&quot;Committed: {data.get('text', '')}&quot;)
+
+    def on_error(error):
+        print(f&quot;Error: {error}&quot;)
+        stop_event.set()
+
+    def on_close():
+        print(&quot;Connection closed&quot;)
+
+    connection.on(RealtimeEvents.PARTIAL_TRANSCRIPT, on_partial_transcript)
+    connection.on(RealtimeEvents.COMMITTED_TRANSCRIPT, on_committed_transcript)
+    connection.on(RealtimeEvents.ERROR, on_error)
+    connection.on(RealtimeEvents.CLOSE, on_close)
+
+    try:
+        await stop_event.wait()
+    except KeyboardInterrupt:
+        print(&quot;\nStopping transcription...&quot;)
+    finally:
+        await connection.close()
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())
+</code></pre>
+<h3>JavaScript</h3>
+<pre><code class="language-javascript">import &quot;dotenv/config&quot;;
+import { ElevenLabsClient, RealtimeEvents } from &quot;@elevenlabs/elevenlabs-js&quot;;
+
+const elevenlabs = new ElevenLabsClient();
+
+const connection = await elevenlabs.speechToText.realtime.connect({
+  modelId: &quot;scribe_v2_realtime&quot;,
+  url: &quot;https://npr-ice.streamguys1.com/live.mp3&quot;,
+  includeTimestamps: true,
+  keyterms: [&quot;ElevenLabs&quot;, &quot;Scribe&quot;],
+  noVerbatim: true,
+});
+
+connection.on(RealtimeEvents.PARTIAL_TRANSCRIPT, (transcript) =&gt; {
+  console.log(&quot;Partial transcript&quot;, transcript);
+});
+
+connection.on(RealtimeEvents.COMMITTED_TRANSCRIPT, (transcript) =&gt; {
+  console.log(&quot;Committed transcript&quot;, transcript);
+});
+
+connection.on(RealtimeEvents.ERROR, (error) =&gt; {
+  console.log(&quot;Error&quot;, error);
+});
+
+connection.on(RealtimeEvents.CLOSE, () =&gt; {
+  console.log(&quot;Connection closed&quot;);
+});
+</code></pre>
+<h2>Manual Audio Chunking</h2>
+<p>For local files or custom audio streams, convert to PCM format and send in chunks.</p>
+<h3>Python</h3>
+<pre><code class="language-python">import asyncio
+import base64
+import os
+from dotenv import load_dotenv
+from pathlib import Path
+from elevenlabs import ElevenLabs
+from elevenlabs import AudioFormat, CommitStrategy, RealtimeEvents, RealtimeAudioOptions
+from pydub import AudioSegment
+
+load_dotenv()
+
+def load_and_convert_audio(audio_path: str | Path, target_sample_rate: int = 16000) -&gt; bytes:
+    if str(audio_path).lower().endswith('.pcm'):
+        with open(audio_path, 'rb') as f:
+            return f.read()
+
+    audio = AudioSegment.from_file(audio_path)
+    if audio.channels &gt; 1:
+        audio = audio.set_channels(1)
+    if audio.frame_rate != target_sample_rate:
+        audio = audio.set_frame_rate(target_sample_rate)
+    audio = audio.set_sample_width(2)
+    return audio.raw_data
+
+async def main():
+    elevenlabs = ElevenLabs(api_key=os.getenv(&quot;ELEVENLABS_API_KEY&quot;))
+    transcription_complete = asyncio.Event()
+
+    connection = await elevenlabs.speech_to_text.realtime.connect(RealtimeAudioOptions(
+        model_id=&quot;scribe_v2_realtime&quot;,
+        audio_format=AudioFormat.PCM_16000,
+        sample_rate=16000,
+        commit_strategy=CommitStrategy.MANUAL,
+        include_timestamps=True,
+    ))
+
+    def on_session_started(data):
+        print(f&quot;Session started: {data}&quot;)
+        asyncio.create_task(send_audio())
+
+    def on_partial_transcript(data):
+        transcript = data.get('text', '')
+        if transcript:
+            print(f&quot;Partial: {transcript}&quot;)
+
+    def on_committed_transcript(data):
+        transcript = data.get('text', '')
+        print(f&quot;\nCommitted transcript: {transcript}&quot;)
+
+    def on_committed_transcript_with_timestamps(data):
+        print(f&quot;Timestamps: {data.get('words', '')}&quot;)
+        transcription_complete.set()
+
+    def on_error(error):
+        print(f&quot;Error: {error}&quot;)
+        transcription_complete.set()
+
+    def on_close():
+        print(&quot;Connection closed&quot;)
+        transcription_complete.set()
+
+    connection.on(RealtimeEvents.SESSION_STARTED, on_session_started)
+    connection.on(RealtimeEvents.PARTIAL_TRANSCRIPT, on_partial_transcript)
+    connection.on(RealtimeEvents.COMMITTED_TRANSCRIPT, on_committed_transcript)
+    connection.on(RealtimeEvents.COMMITTED_TRANSCRIPT_WITH_TIMESTAMPS, on_committed_transcript_with_timestamps)
+    connection.on(RealtimeEvents.ERROR, on_error)
+    connection.on(RealtimeEvents.CLOSE, on_close)
+
+    async def send_audio():
+        audio_file_path = Path(&quot;audio.mp3&quot;)
+        audio_data = load_and_convert_audio(audio_file_path)
+        chunk_size = 32000  # 1 second of audio at 16kHz
+        chunks = [audio_data[i:i + chunk_size] for i in range(0, len(audio_data), chunk_size)]
+
+        for i, chunk in enumerate(chunks):
+            chunk_base64 = base64.b64encode(chunk).decode('utf-8')
+            await connection.send({&quot;audio_base_64&quot;: chunk_base64, &quot;sample_rate&quot;: 16000})
+
+            if i &lt; len(chunks) - 1:
+                await asyncio.sleep(1)
+
+        await asyncio.sleep(0.5)
+        await connection.commit()
+
+    try:
+        await transcription_complete.wait()
+    except KeyboardInterrupt:
+        print(&quot;\nStopping...&quot;)
+    finally:
+        await connection.close()
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())
+</code></pre>
+<h3>JavaScript</h3>
+<pre><code class="language-javascript">import &quot;dotenv/config&quot;;
+import * as fs from &quot;node:fs&quot;;
+import { ElevenLabsClient, RealtimeEvents, AudioFormat } from &quot;@elevenlabs/elevenlabs-js&quot;;
+
+const elevenlabs = new ElevenLabsClient();
+
+const connection = await elevenlabs.speechToText.realtime.connect({
+  modelId: &quot;scribe_v2_realtime&quot;,
+  audioFormat: AudioFormat.PCM_16000,
+  sampleRate: 16000,
+  includeTimestamps: true,
+});
+
+connection.on(RealtimeEvents.SESSION_STARTED, (data) =&gt; {
+  console.log(&quot;Session started&quot;, data);
+  sendAudio();
+});
+
+connection.on(RealtimeEvents.PARTIAL_TRANSCRIPT, (transcript) =&gt; {
+  console.log(&quot;Partial transcript&quot;, transcript);
+});
+
+connection.on(RealtimeEvents.COMMITTED_TRANSCRIPT, (transcript) =&gt; {
+  console.log(&quot;Committed transcript&quot;, transcript);
+});
+
+connection.on(RealtimeEvents.COMMITTED_TRANSCRIPT_WITH_TIMESTAMPS, (transcript) =&gt; {
+  console.log(&quot;Committed with timestamps&quot;, transcript);
+});
+
+connection.on(RealtimeEvents.ERROR, (error) =&gt; {
+  console.log(&quot;Error&quot;, error);
+});
+
+connection.on(RealtimeEvents.CLOSE, () =&gt; {
+  console.log(&quot;Connection closed&quot;);
+});
+
+async function sendAudio() {
+  const pcmFilePath = &quot;audio.pcm&quot;;
+  const chunkSize = 32000;
+  const audioBuffer = fs.readFileSync(pcmFilePath);
+  const chunks: Buffer[] = [];
+
+  for (let i = 0; i &lt; audioBuffer.length; i += chunkSize) {
+    const chunk = audioBuffer.subarray(i, i + chunkSize);
+    chunks.push(chunk);
+  }
+
+  for (let i = 0; i &lt; chunks.length; i++) {
+    const chunk = chunks[i];
+    const chunkBase64 = chunk.toString(&quot;base64&quot;);
+
+    connection.send({
+      audioBase64: chunkBase64,
+      sampleRate: 16000,
+    });
+
+    if (i &lt; chunks.length - 1) {
+      await new Promise((resolve) =&gt; setTimeout(resolve, 1000));
+    }
+  }
+
+  await new Promise((resolve) =&gt; setTimeout(resolve, 500));
+  connection.commit();
+}
+</code></pre>
+<h2>Direct WebSocket Connection</h2>
+<p>For cases where the SDK cannot be used:</p>
+<pre><code>wss://api.elevenlabs.io/v1/speech-to-text/realtime?model_id=scribe_v2_realtime
+</code></pre>
+<p>Add repeated <code>keyterms</code> query parameters to bias recognition toward specific terms, and set
+<code>no_verbatim=true</code> to remove filler words, false starts, and disfluencies. Add repeated
+<code>secondary_languages</code> parameters with ISO-639-1 or ISO-639-3 codes when the audio may contain
+additional languages:</p>
+<pre><code>wss://api.elevenlabs.io/v1/speech-to-text/realtime?model_id=scribe_v2_realtime&amp;keyterms=ElevenLabs&amp;keyterms=Scribe&amp;secondary_languages=es&amp;secondary_languages=fr&amp;no_verbatim=true
+</code></pre>
+<h3>Entity Detection</h3>
+<p>Add <code>entity_detection</code> to detect entities in committed segments. It accepts <code>all</code>, one entity type
+or category, or a comma-separated list. Categories include <code>pii</code>, <code>phi</code>, <code>pci</code>, <code>other</code>, and
+<code>offensive_language</code>:</p>
+<pre><code>wss://api.elevenlabs.io/v1/speech-to-text/realtime?model_id=scribe_v2_realtime&amp;entity_detection=pii,pci
+</code></pre>
+<p>Each committed segment is followed by a <code>committed_transcript_entities</code> event containing the
+detected entity text, type, and character offsets. See the
+<a href="https://elevenlabs.io/docs/eleven-api/guides/how-to/speech-to-text/batch/entity-detection">entity detection guide</a>
+for specific entity types.</p>
+<h3>Message Format</h3>
+<pre><code class="language-json">{
+  &quot;message_type&quot;: &quot;input_audio_chunk&quot;,
+  &quot;audio_base_64&quot;: &quot;&lt;base64-encoded-audio&gt;&quot;,
+  &quot;commit&quot;: false,
+  &quot;sample_rate&quot;: 16000
+}
+</code></pre>
+<h3>Commit Message</h3>
+<pre><code class="language-json">{
+  &quot;message_type&quot;: &quot;commit&quot;
+}
+</code></pre>
+<h2>Audio Requirements</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Format</td>
+<td>PCM 16-bit</td>
+</tr>
+<tr>
+<td>Sample Rate</td>
+<td>16000 Hz (recommended)</td>
+</tr>
+<tr>
+<td>Channels</td>
+<td>Mono</td>
+</tr>
+<tr>
+<td>Chunk Size</td>
+<td>32,000 bytes = 1 second</td>
+</tr>
+</tbody>
+</table>
+<p>Supported sample rates: 8kHz to 48kHz</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

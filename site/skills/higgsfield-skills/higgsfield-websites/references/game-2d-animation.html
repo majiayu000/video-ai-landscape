@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>game-2d-animation · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-websites/references/game-2d-animation.md</span><button onclick="t()">🌓</button></nav>
+<main><h1>2D Sprite Animation (video-to-spritesheet pipeline)</h1>
+<blockquote>
+<p><strong>Asset reference for game-generation.</strong> Use for ANY animated 2D asset —
+characters, objects, effects — delivered as a spritesheet. The pipeline:
+key-pose image → <code>higgsfield generate create</code> (<strong><code>seedance1_5</code></strong>) → frame extraction
+(ffmpeg) → frame selection → per-frame background removal → spritesheet
+assembly. Style: the key-pose prompt embeds the STYLE FORMULA per
+<code>stylization.md</code> — open it first, as for every asset.</p>
+</blockquote>
+<p>Why video instead of generating frames directly: an image model drawing N
+frames independently cannot hold the character identical across frames —
+limbs, proportions and details drift, and the animation "boils". A video
+model animates ONE image, so every frame is the same character by
+construction. We then sample the video back into frames. This trades prompt
+control for temporal coherence — the right trade for game sprites.</p>
+<h2>Native AutoSprite route — preferred</h2>
+<p>Use <code>autosprite</code> when present in the live model catalog. It owns animation, frame
+selection, background removal, and sheet assembly:</p>
+<pre><code class="language-bash">higgsfield model get autosprite
+higgsfield upload create ./character.png --json
+higgsfield generate create autosprite \
+  --image_url &quot;&lt;stable URL from upload output&gt;&quot; \
+  --kind walk \
+  --video_tier turbo \
+  --frame_count 12 \
+  --frame_size 256 \
+  --remove_bg default \
+  --with_sound false \
+  --is_humanoid true \
+  --wait \
+  --json
+</code></pre>
+<p>Supported standard kinds and isometric directions come from <code>higgsfield model get
+autosprite</code>. For <code>kind=custom</code>, pass both <code>--prompt</code> and <code>--name</code>; omit both for
+standard kinds. Use the manual pipeline below only when AutoSprite is unavailable or
+the project requires explicit control over extracted frames.</p>
+<hr />
+<h2>Pipeline at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Stage</th>
+<th>Tool</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Source image</td>
+<td>manifest / user / <code>stylization.md</code> pipeline</td>
+<td>character or object image</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Key-pose image</td>
+<td><code>higgsfield generate create</code> → <code>flux_2</code></td>
+<td>full-body pose at the action's mid/peak phase</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Animation video</td>
+<td><code>higgsfield generate create</code> → <strong><code>seedance1_5</code></strong></td>
+<td>4 s, 720p, AR = key-pose ratio (explicit); loop: start = end frame</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Raw frames</td>
+<td>ffmpeg</td>
+<td>every frame of the video as PNG</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Frame selection</td>
+<td>local script</td>
+<td><code>frame_count</code> frames (2–64, default 25), evenly spaced, first + last always kept</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Alpha</td>
+<td><code>image_background_remover</code>, per frame</td>
+<td>transparent-background PNGs</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Spritesheet</td>
+<td>local assembly</td>
+<td>grid PNG, metadata encoded in the filename</td>
+</tr>
+</tbody>
+</table>
+<p>Hard rules (each one is a known failure when violated):</p>
+<ul>
+<li><strong>The subject is NEVER cropped.</strong> Full body in frame at every stage, with
+  visible empty margin above the head and below the feet. A key pose, a video
+  frame, or a sheet cell that clips the subject is a rejected asset —
+  regenerate, do not "fix in post".</li>
+<li><strong>The video model is <code>seedance1_5</code> exactly.</strong> Not <code>seedance_2_0</code>, not the
+  current default of <code>higgsfield generate create</code>. Verify availability via
+  <code>higgsfield model list</code> if a call errors, but do not silently substitute a model.</li>
+<li><strong>start = end only for loops.</strong> Looping actions pass the SAME image as both
+  start frame and end frame. One-shot actions (attack, death, hit, cast) pass
+  only the start frame — forcing them back to the start pose ruins the action.</li>
+<li><strong>First and last extracted frames are always kept</strong> in the selection. For
+  loops the last frame is then dropped at sheet assembly (see stage 7) —
+  kept during selection, excluded from the sheet.</li>
+<li><strong>Background removal runs on FRAMES, one by one</strong> — never on the video.</li>
+</ul>
+<hr />
+<h2>Stage 1 — Source image</h2>
+<p>What goes in: the character/asset image from the manifest (generated per
+<code>stylization.md</code>, FORMULA embedded) or supplied by the user. Character,
+object, or both in one shot — the pipeline does not care what the subject is,
+only that it is fully visible.</p>
+<p>If the source already crops the subject (feet cut by the canvas, head at the
+edge), it cannot enter stage 2 as-is — regenerate or outpaint it to full body
+first. A cropped input guarantees a cropped animation.</p>
+<h2>Stage 2 — Key-pose generation (<code>flux_2</code>)</h2>
+<p><strong>What:</strong> produce the subject in the <em>mid/peak phase</em> of the requested action.
+The video model animates <em>around</em> the image it is given; starting from the
+action's characteristic phase is what makes 4 seconds of video read as that
+action.</p>
+<ul>
+<li><code>idle</code> → slight lean / relaxed breathing stance</li>
+<li><code>walk</code> / <code>run</code> → mid-stride, one leg forward</li>
+<li><code>attack</code> → wind-up (weapon raised / fist drawn back)</li>
+<li><code>jump</code> → crouched anticipation</li>
+<li><code>cast</code> / <code>effect</code> → energy gathered at the hands / pre-release</li>
+<li>flames, water, props → the shape at its most typical, not its extreme</li>
+</ul>
+<p><strong>How:</strong> <code>higgsfield generate create</code> with model <code>flux_2</code>, the source image as media
+reference, the STYLE FORMULA verbatim in the prompt, plus the pose
+instruction. The prompt MUST demand:</p>
+<ul>
+<li><em>full body / full object in frame</em> — head to feet visible;</li>
+<li><em>empty margin above and below the subject</em> — the motion needs headroom and
+  footroom (a jump goes up, a stride extends down; without reserve space the
+  video model crops);</li>
+<li>a <em>clean, uniform, uncluttered background</em> — it is removed per-frame later,
+  and a busy background degrades the matte. <strong>The background color must NOT
+  appear anywhere on the subject</strong> — pick it by looking at the subject's
+  palette first (green character → magenta background, red/pink character →
+  green, neutral subject → any saturated key color per <code>stylization.md</code>).
+  A shared color is how the remover eats holes into the subject or leaves
+  background patches stuck to it.</li>
+</ul>
+<p><strong>Why a separate key pose at all:</strong> feeding the neutral source straight into
+video gives generic swaying. The key pose is the steering wheel — it is the
+single biggest lever on what action the video actually performs.</p>
+<p>Gate: subject fully inside the frame with visible margin top and bottom,
+nothing clipped, style matches the FORMULA. Cropped or off-style → reroll
+(regeneration budget per SKILL.md: 2 attempts, then best-of).</p>
+<pre><code class="language-bash">higgsfield generate create flux_2 \
+  --image ./source-character.png \
+  --prompt &quot;&lt;STYLE FORMULA&gt;. &lt;single key-pose instruction&gt;. Full body in frame with empty margin above the head and below the feet. Clean uniform &lt;key color&gt; background.&quot; \
+  --aspect_ratio 1:1 \
+  --resolution 1k \
+  --wait \
+  --json
+</code></pre>
+<h2>Stage 3 — Video generation (<code>seedance1_5</code>)</h2>
+<p><strong>Fixed parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>model</td>
+<td><code>seedance1_5</code></td>
+</tr>
+<tr>
+<td>duration</td>
+<td>4 s</td>
+</tr>
+<tr>
+<td>resolution</td>
+<td>720p</td>
+</tr>
+<tr>
+<td>aspect_ratio</td>
+<td><strong>= the key-pose image's ratio, passed EXPLICITLY on every call</strong> — never omitted</td>
+</tr>
+<tr>
+<td>start frame</td>
+<td>the stage-2 key pose — always</td>
+</tr>
+<tr>
+<td>end frame</td>
+<td>the SAME image — <strong>looping actions only</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Aspect ratio is read off the key-pose file and passed explicitly</strong> (a 1:1
+pose → <code>aspect_ratio: "1:1"</code>, and so on). "Auto" does not exist as a real
+parameter value: omitting the parameter does NOT mean "follow the input" —
+it silently falls back to the TOOL's default (shipped failure: an unset
+ratio on a 1:1 key pose came back as 3:4). A mismatched ratio reframes the
+input, eats the top/bottom margins the key pose was built with, and is the
+cheapest way to violate the "subject is never cropped" hard rule.</p>
+<p><strong>Why start = end for loops:</strong> the video model is forced to return to the
+exact starting pose, so frame 1 and the final frame are identical and the
+cycle closes seamlessly. Without it the loop visibly "jumps" at the wrap
+point. <strong>Why not for one-shots:</strong> an attack that must end where it began
+turns the strike into a rubber-band; one-shot actions get only the start
+frame and play once (<code>once</code> in the filename, see stage 7).</p>
+<p><strong>Prompt = ONE action + a mandatory negative block.</strong> The positive part
+describes the MOTION and nothing else — not the subject (the image already
+is the subject), not the mood, not the scene: "smooth idle breathing cycle,
+subtle weight shift", "full walk cycle in place", "single sword slash, fast
+wind-up, sharp strike, follow-through". Exactly one action per video; any
+second verb in the prompt is a defect.</p>
+<p><strong>The negative block is NOT optional and is appended to EVERY animation
+prompt</strong>, because the model fills the fixed 4 seconds with improvisation
+wherever the prompt leaves freedom — a positive instruction alone only says
+what to do and stays silent about everything else. Two parts:</p>
+<ol>
+<li><em>Camera lock (always):</em> <code>camera locked, no camera movement, no zoom,
+   subject stays fully in frame, plain static background</code> — camera drift and
+   zoom are the top causes of unusable frames.</li>
+<li><em>Prop &amp; action inertia (always; expand when the subject holds anything):</em>
+   <code>the character performs ONLY this action, nothing else happens</code>. If the
+   subject carries a prop with an obvious action of its own (weapon, tool,
+   instrument), name the prop and freeze it explicitly: <code>the &lt;prop&gt; stays
+   inert and is never used — no firing, no muzzle flash, no swinging, no
+   raising it</code>. Props carry their own learned scenarios (a raised pistol
+   "wants" to fire, a bat "wants" to swing); an unfilled cycle duration plus
+   an unconstrained prop is exactly how a run cycle gains a gunshot
+   mid-video. Shipped failure: a 4 s "run cycle in place" where the model
+   fired the held pistol twice — the negative block above is what prevents
+   it.</li>
+<li><em>Facing lock (always):</em> <code>the subject keeps facing the SAME direction for
+   the entire video — never turns around, never rotates toward or away from
+   the camera, no head turns past the shoulder</code>. Game sprites are generated
+   facing ONE direction (the engine mirrors them for the other side); a
+   mid-video turn poisons every frame after it — half the selected frames
+   face the wrong way and the sheet is garbage. Turning is the model's
+   favorite filler for loopable actions (idle "look around", walk "glance
+   back"), so the lock is mandatory even when the action seems
+direction-neutral. The ONLY exception: the requested action IS a turn —
+   then it is a one-shot (start frame only, <code>once</code>), never a loop.</li>
+</ol>
+<p>Loop example (omit <code>--end-image</code> for a one-shot):</p>
+<pre><code class="language-bash">higgsfield generate create seedance1_5 \
+  --start-image ./key-pose.png \
+  --end-image ./key-pose.png \
+  --prompt &quot;&lt;one action&gt;. Camera locked, no camera movement, no zoom, subject stays fully in frame, plain static background. The character performs ONLY this action; nothing else happens. The subject keeps facing the same direction for the entire video.&quot; \
+  --duration 4 \
+  --resolution 720p \
+  --aspect_ratio 1:1 \
+  --generate_audio false \
+  --wait \
+  --json
+</code></pre>
+<p>Gate before moving on: scrub the video — subject never leaves the frame or
+gets clipped, no camera motion, <strong>facing direction is identical in the first
+and last frame and never flips in between</strong>, loop wrap is invisible (for
+loops). Fail → regenerate the video (adjust the motion prompt) before
+burning time on frames.</p>
+<h2>Stage 4 — Frame extraction (ffmpeg)</h2>
+<p>Download the result video into the workspace, then dump every frame:</p>
+<pre><code class="language-bash">ffmpeg -i anim.mp4 -vsync 0 raw/%04d.png
+</code></pre>
+<p>4 s at native fps yields ~96–120 PNGs. Extract ALL of them — selection
+happens in stage 5 on the full set, never via ffmpeg's own fps filter (it
+cannot guarantee the exact first/last frames are kept).</p>
+<h2>Stage 5 — Frame selection (<code>frame_count</code>)</h2>
+<p><strong>What:</strong> pick <code>frame_count</code> frames, evenly spaced across the full range,
+<strong>always including the first and the last</strong> extracted frame.</p>
+<pre><code class="language-python">import numpy as np
+idx = np.unique(np.round(np.linspace(1, total, frame_count)).astype(int))
+</code></pre>
+<p>(<code>linspace</code> endpoints guarantee first + last; <code>unique</code> guards tiny counts.)</p>
+<p><strong>Range:</strong> 2–64. <strong>Default: 25</strong> when nothing in the context says otherwise.</p>
+<p><strong>Choosing by context</strong> — the question is "how much does the silhouette
+change per beat of this action":</p>
+<table>
+<thead>
+<tr>
+<th>Action / context</th>
+<th>frame_count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>idle, breathing, hover, flame flicker</td>
+<td>8–16</td>
+</tr>
+<tr>
+<td>walk / run cycle — pixel art</td>
+<td>8–12</td>
+</tr>
+<tr>
+<td>walk / run cycle — HD sprites</td>
+<td>16–24</td>
+</tr>
+<tr>
+<td>attack, hit, jump, one-shot actions</td>
+<td>10–20</td>
+</tr>
+<tr>
+<td>fluid motion: cape, water, fire burst, magic FX (HD)</td>
+<td>24–48</td>
+</tr>
+<tr>
+<td>unclear / no signal</td>
+<td>25</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why fewer is often better:</strong> every frame is a sheet cell — memory, texture
+size, and background-removal calls all scale linearly with it. A walk cycle
+reads perfectly at 8 frames (the entire 8/16-bit era proves it); 60 frames of
+walk is waste. Spend frames only where the silhouette genuinely changes fast.</p>
+<h2>Stage 6 — Background removal (per frame)</h2>
+<p>Each selected frame: pass its local path to <code>image_background_remover</code>; the CLI
+uploads it automatically and the completed job returns the transparent PNG:</p>
+<pre><code class="language-bash">higgsfield generate create image_background_remover \
+  --image ./selected/0001.png \
+  --wait \
+  --json
+</code></pre>
+<p><strong>Why per-frame and not the whole video:</strong> the per-image matte is computed
+independently and cleanly per frame; the video path optimizes for temporal
+smoothness and smears edges across frames — on sprites that shows up as a
+halo that flickers. Frames it is, accepting the N calls.</p>
+<p>Submit the frames in parallel, poll all to completion (fire-and-forget does
+NOT apply — the sheet needs every frame). Gate: spot-check 3–4 frames at
+2× zoom — no leftover background patches, no eaten thin parts (blades, hair,
+flame tips). A bad matte on the same spot across frames means the stage-2
+background was too busy or <strong>shared a color with the subject</strong> → fix there
+(change the key color), not by hand-editing mattes.</p>
+<h2>Stage 7 — Spritesheet assembly</h2>
+<p>All transparent frames are composed into ONE grid PNG:</p>
+<ol>
+<li><strong>Union bounding box.</strong> Compute the bounding box of non-transparent pixels
+   across ALL frames, take the union, crop every frame to that SAME box. This
+   anchors the subject identically in every cell — per-frame cropping makes
+   the sprite jitter in-game.</li>
+<li><strong>Uniform cell.</strong> Pad the union box to a uniform cell size; anchor
+   bottom-center (feet stay planted on the ground line across frames).</li>
+<li><strong>Loop de-duplication.</strong> For looping animations drop the LAST frame from
+   the sheet — it is identical to frame 1 (start = end), and playing both
+   makes the loop stall for one beat at the wrap. One-shot animations keep
+   every frame.</li>
+<li><strong>Grid, not strip.</strong> Lay frames into a near-square grid (24 frames →
+   5×5 with the tail row partial). A horizontal strip of 64 cells exceeds
+   GPU texture limits. <strong>Total sheet dimension ≤ 4096 px on either side</strong> —
+   if it does not fit, downscale the cells, never drop frames.</li>
+<li><strong>PNG with alpha</strong>, no compression artifacts.</li>
+</ol>
+<p><strong>Metadata lives in the filename</strong> — no sidecar JSON. The consumer (stage-3
+game code) parses everything it needs from the name:</p>
+<pre><code>{asset}_{action}_f{count}_{cellW}x{cellH}_g{cols}x{rows}_fps{n}_{loop|once}.png
+
+knight_idle_f15_192x256_g4x4_fps12_loop.png
+slime_attack_f12_160x160_g4x3_fps14_once.png
+torch_flame_f10_96x192_g4x3_fps10_loop.png
+</code></pre>
+<p><code>f</code> = frames actually in the sheet (after loop de-dup); <code>g</code> = grid; cells
+fill left-to-right, top-to-bottom; trailing cells of the last row are empty
+and transparent.</p>
+<p><strong>Playback fps</strong> is a recommendation baked into the name: pixel art 8–12,
+HD sprites 12–24, <strong>default 12</strong>. Note fps is decoupled from <code>frame_count</code> —
+15 frames at 12 fps is a 1.25 s loop; pick fps for the feel of the motion,
+not to "use up" the frames.</p>
+<hr />
+<h2>Pixel-art sprites — the quality envelope</h2>
+<p>Small pixel sprites pass through the same pipeline but only look good
+<strong>inside these limits</strong> — choose parameters from them, not from the HD
+defaults:</p>
+<ul>
+<li>The video is still generated at 720p from a full-size key pose; the
+  pixel-art look is applied at the END — downscale the assembled cells with
+  <strong>nearest-neighbor</strong> (no smoothing, no anti-aliasing) to the target size
+  from the manifest (e.g. 32/48/64 px).</li>
+<li><strong>frame_count 8–16, no more.</strong> At small sizes extra frames add shimmer,
+  not smoothness — sub-pixel drift between video frames turns into visible
+  pixel crawl.</li>
+<li><strong>Subtle, readable motions</strong> survive the downscale (sway, bob, stride,
+  blink). Fine detail motion (fingers, facial expression, thin particles)
+  dies below ~64 px — do not request it.</li>
+<li>fps 8–12. Higher framerates at small sizes read as noise.</li>
+</ul>
+<p>If the manifest asks for a pixel sprite whose action violates this envelope
+(e.g. a 32 px character with a 48-frame cloth simulation), simplify the
+action to fit the envelope — that is a planning fix, not a generation fix.</p>
+<hr />
+<h2>Failure recovery</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Subject clipped in the video</td>
+<td>key pose lacked top/bottom margin, or camera drifted</td>
+<td>back to stage 2: more margin; add "camera locked" to the video prompt</td>
+</tr>
+<tr>
+<td>Loop visibly jumps at wrap</td>
+<td>end frame not passed, or model ignored it</td>
+<td>re-check start=end were both set; regenerate video</td>
+</tr>
+<tr>
+<td>One-shot looks rubber-banded</td>
+<td>end frame was passed on a non-loop action</td>
+<td>drop the end frame, regenerate</td>
+</tr>
+<tr>
+<td>Sprite jitters in-game</td>
+<td>per-frame cropping instead of union bbox</td>
+<td>reassemble the sheet with the union box</td>
+</tr>
+<tr>
+<td>Flickering halo around edges</td>
+<td>busy key-pose background</td>
+<td>back to stage 2: flat uniform background</td>
+</tr>
+<tr>
+<td>Holes in the subject / background patches stuck to it</td>
+<td>background color also present on the subject</td>
+<td>back to stage 2: pick a key color absent from the subject's palette</td>
+</tr>
+<tr>
+<td>Subject turns around / changes facing mid-video</td>
+<td>facing lock missing from the negative block, or the action invites turning</td>
+<td>regenerate with the facing lock; rephrase the action to be direction-neutral ("walk in place" not "walk around")</td>
+</tr>
+<tr>
+<td>Pixel sprite shimmers</td>
+<td>too many frames / AA downscale</td>
+<td>cut frame_count to 8–12; nearest-neighbor only</td>
+</tr>
+<tr>
+<td>Loop stalls one beat at wrap</td>
+<td>duplicated last frame left in the sheet</td>
+<td>drop the final frame (loops only)</td>
+</tr>
+</tbody>
+</table>
+<p>Regeneration budget per SKILL.md: 2 attempts per stage, then take the best
+and compensate downstream.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>
