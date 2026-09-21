@@ -484,3 +484,109 @@ Gemini 3.8 Flash 静态低分辨率 ≈ $0.005（980 in + 1K out token）；agen
 - [[远程] PixVerseAI/cli 仓库（退出码 0-7、task wait/status、capabilities.json、npm 分发）](https://github.com/PixVerseAI/cli)
 
 ---
+
+## 资本路数图（money-map，2026-09-22 补跑回收）
+
+**摘要**：2026-09-22 视频生成生态资本路数：a) fal：Series D（$140M，Sequoia 领投，2025-12-09 官宣，估值 $4.5B）为最后官方轮；$8B 的 Series E-2 截至 2026-09-22 仍只是 The Information 2026-03-19 报道的"谈判中"（$300–350M），官方博客无 Series E 公告；ARR $400M 为二手单一来源（ARR Club，2026-03）。b) 可灵：快手已于 2026-05-12 在港交所发自愿性公告，官方确认"董事会正评估重组可灵 AI 相关资产及业务以获取外部财务资源"并拟议独立上市，但明确"仍处初步阶段、未签最终协议"；媒体传估值最高 $20B/近 1560 亿港元、最早 2027 挂牌；WSJ 2026-07-03 报已完成约 28 亿美元融资（标题 slug 与中文站金额口径有差异）；无 HKEX A1 备案证据；2025Q4 可灵收入 RMB 3.4 亿（36kr 引快手财报）。c) Replicate：2025-11-17 被 Cloudflare 收购（双方官方博客），对价未披露；官方承诺 5 万+模型迁入 Workers AI、微调能力并入、API 不变；头部创作者 fofr 截至核查日仍活跃（Qwen 系微调、face-swap-with-ideogram 39.3K runs 等），但交易对创作者分成机制的影响未披露，独立"中立托管"品类实质消失。d) RunComfy：法律实体与融资历史无任何公开记录（官网隐私页 404）；其 GitHub 关联组织 genmedia-labs 自述发布 runcomfy-agent-skills（Claude agent 技能分发），说明其转向 agent 层。e) PixVerse/爱诗科技：2026-03 完成 $300M C 轮，2026-07-14 完成 $439M C 轮扩展、估值突破 $2B，2026-04 传考虑最快年内赴港上市（传闻级）。f) HeyGen 无 2026 新轮（Latka 9 月报 ARR $200M）；Lightricks 停在 $335M/D 轮无新动作；Decart 2026-05 完成 $300M C 轮（Radical Ventures 领投、Nvidia 参与，估值口径 $3.1B vs 近 $4B 存分歧）；Moonvalley 最近官方轮为 2025-07 $84M（General Catalyst 领投，CAA/Comcast Ventures 参与）。g) 国内：MiniMax 已于 2026-01-09 港股挂牌（首日收盘 +109%、市值破千亿港元）；智谱 2026-06 完成科创板辅导验收并同日开源 GLM-5.2；阶跃星辰 2026-01 完成 50 亿+元 B+ 轮、2026-04-13 Reuters 报拆境外架构备战港股 IPO、2026-05 证券时报报即将完成 25 亿美元新融资（华勤技术等产业资本入场）。整体格局：云厂吞并中立托管（Cloudflare–Replicate）、港股 AI 上市窗口打开（MiniMax 打样、可灵/PixVerse/阶跃排队）、中立推理层估值重估（fal $4.5B→$8B 谈判）、资金从纯 VC 转向战略/产业/好莱坞资本。
+
+### 90 天时间线（全部带源）
+
+- **2026-06-17/18** — 智谱完成科创板上市辅导验收（2026-02 撤回 2025-04 辅导备案改道科创板），并同日开源 GLM-5.2（适配昇腾/寒武纪等国产芯片）——A股大模型第一股进程推进  
+  来源：<https://www.sohu.com/a/1038033180_120988576>
+- **2026-07-03** — WSJ 报道可灵完成约 28 亿美元融资并计划从快手分拆（标题 slug 为 raises-2-billion，金额口径存在 20 亿/28 亿美元差异）  
+  来源：<https://cn.wsj.com/articles/kling-raises-2-billion-amid-planned-spinoff-from-kuaishou-9fdf9b5b>
+- **2026-07-14** — PixVerse/爱诗科技完成 4.39 亿美元 C 轮扩展融资，估值突破 20 亿美元  
+  来源：<https://aiproducthub.cn/newsflash/pixverse-aisphere-439-million-series-c-extension-2-billion-valuation/>
+- **2026-09-10** — Latka 数据显示 HeyGen ARR 达 2 亿美元（上年约 1 亿），但仍无新股权融资披露  
+  来源：<https://getlatka.com/companies/heygen>
+- **2026-09 前后（核查日确认）** — fofr 在 Replicate 的主页仍持续更新 Qwen 系列微调与工具模型（face-swap-with-ideogram 39.3K runs 等）——Cloudflare 收购后社区创作生态仍在运转  
+  来源：<https://replicate.com/fofr>
+
+### 资金面信号（将要做/正在发生）
+
+- 港股 AI 上市窗口正式打开：MiniMax 2026-01-09 挂牌（0100.HK），发行价 HK$165、收盘 +109%、市值破千亿港元——为可灵/PixVerse/阶跃/智谱提供估值锚与退出模板，后续 6-12 个月将出现视频生成公司递表潮  
+  置信度：多源交叉（新华社系 cnfin + 澎湃 + 雪球） ｜ 来源：<https://www.cnfin.com/gs-lb/detail/20260109/4363154_1.html>
+- 可灵资本事件升级为官方确认：快手 2026-05-12 港交所自愿性公告确认评估重组+外部融资+独立上市（从传闻升为官方源），叠加媒体传 $20B 估值/最早 2027/约 28 亿美元新融资——若落地将是视频生成史上最大单体资本事件  
+  置信度：官方源（公告确认评估中）+ 单一/多源媒体（估值与时间表仍为传闻） ｜ 来源：<https://www.stcn.com/article/detail/3904906.html>
+- 中立推理层估值重估：fal 官方估值 $4.5B（2025-12 Sequoia 轮）→ $8B 谈判（2026-03，The Information 单一来源）+ 传闻 ARR $400M + 2026-05 与 AWS 达成官方合作——超大规模云厂把中立层当接入件合作而非竞品，验证 API 分发层的战略价值  
+  置信度：官方源（Series D/AWS 合作）+ 单一来源（$8B 谈判） ｜ 来源：<https://www.theinformation.com/articles/video-hosting-startup-fal-funding-talks-8-billion-valuation>
+- 基础设施层垂直整合成为主线：Cloudflare 收购 Replicate 后把 5 万+模型、Cog 打包微调、微调能力全部并入 Workers AI——独立模型托管品类被云厂吸收，类似整合（bfl/模型方自建、云厂自研）将持续  
+  置信度：官方源 ｜ 来源：<https://blog.cloudflare.com/replicate-joins-cloudflare/>
+- 资金结构从纯 VC 转向战略/产业资本：Decart C 轮 Nvidia 参与（2026-05）、Moonvalley 轮含 CAA+Comcast Ventures（好莱坞+传媒）、阶跃星辰新轮含华勤技术（终端硬件）——产业资本在为'模型+场景'绑定定价  
+  置信度：多源交叉 ｜ 来源：<https://venturecapitaltracker.com/2026-decart-300m-series-c-world-models-ai>
+- 一级估值跳跃过快的回调风险：fal 三个月 $4.5B→$8B、Decart 估值口径 $3.1B 与近 $4B 并存、可灵 20 亿 vs 28 亿美元融资口径不一——若港股窗口收紧或收入倍数证伪，依赖头部 infra 的中小层将面临供应商重定价与集中度风险  
+  置信度：多源交叉（分歧本身即为证据） ｜ 来源：<https://uristocrat.com/decart-raises-300-million-at-nearly-4-billion-valuation/>
+
+### 做得好的（资本面健康信号）
+
+- 真实收入锚已出现：可灵 2025Q4 收入 RMB 3.4 亿（36kr 引快手财报）、HeyGen ARR $200M（Latka）、fal 传闻 ARR $400M——视频生成从 demos 转向有公开收入口径的可比生意
+- 港股退出通道被 MiniMax 实测走通（首日 +109%、市值破千亿港元），模型层与视频层公司有了确定性 IPO 模板与估值参照系
+- 社区/微调生态韧性强：Replicate 被收购后 fofr 等头部创作者仍在高频发布（Qwen 微调、39K+ runs 级别模型），证明创作者-分发网络是可迁移资产
+- 产业资本入口多元：Nvidia（Decart）、CAA/Comcast（Moonvalley）、华勤技术（阶跃）等非 VC 钱进场，生态对单一风投周期敏感度下降
+
+### 空位与机会（可占位）
+
+- **Cloudflare 吞并 Replicate 后，独立中立模型托管品类消失，社区创作者变现机制归属不明**  
+  证据：官方博客（blog.cloudflare.com/replicate-joins-cloudflare/，2025-11-17）承诺 5 万+模型迁入 Workers AI、微调并入、API 不变，但对价未披露、未说明创作者分成与微调收益机制在 Cloudflare 体系内是否延续；fofr 主页显示其仍在高频发布 Qwen 微调，但已出现与 FlyMy.ai 联名 LoRA 的多平台漂移  
+  切入：跨供应商的'创作者变现+微调分发'中立层（视频版 OpenRouter/Hugging Face 联盟位）出现真空；若 Cloudflare 把 Workers AI 深度集成置于创作者生态之上，该真空会被放大——早期承接 fofr 类头部创作者的多平台分发合约是低成本卡位点
+- **可灵从快手分拆将重构中国视频生成 API 生态的分发格局**  
+  证据：快手 2026-05-12 港交所公告确认评估重组可灵资产以获取外部融资并独立上市（证券时报 3904906 转述+雪球公告转载）；WSJ 报约 28 亿美元融资；分拆后可灵需独立 P&L，将更激进商业化 API 与海外分发  
+  切入：围绕独立可灵的服务层（API 聚合、评测、合规出海、工作流）尚未有人卡位；风险是可灵直连大客户绕过分销商——中立层需在 2027 挂牌窗口前锁定集成关系
+- **RunComfy 等工作流/agent 层资金面完全不透明，是唯一未被大额资本定价的环节**  
+  证据：runcomfy.com 官网隐私政策页 404、无工商实体与融资公开记录（本次多轮检索未发现任何轮次报道）；其 GitHub 关联组织 genmedia-labs 的 skills 仓库 README 自述 runcomfy-agent-skills 经 npx 分发（github.com/genmedia-labs/skills），显示其已转向 Claude/agent 技能生态  
+  切入：工作流+agent 分发层估值洼地：要么被 fal/Cloudflare/bfl 等基础设施方收购作为入口，要么以 agent 技能分发成为新一代中立层——对中立层定位者，这是并购标的或被并购前的合作窗口
+- **港股上市潮将引发模型 API 价格战，压缩纯转售型中间商毛利**  
+  证据：MiniMax 已上市（首日 +109%、市值破千亿港元，cnfin/thepaper）、可灵分拆评估中、PixVerse 传年内递表、阶跃拆架构备战 IPO、智谱科创板辅导验收——公开公司须冲收入增长，API 降价是最直接手段；MiniMax 发行价与首日收盘的巨大价差（HK$165→345）说明一二级估值差极大，上市后放量动力强  
+  切入：中立层价值必须从'转售'迁移到'路由+SLA+统一 API+成本优化'，赚取价格离散度与可用性红利；只做简单转发的中间商将被模型方直供挤出
+- **应用层中段融资冻结，成为潜在并购标的池**  
+  证据：HeyGen 无 2026 新轮（Latka 2026-09 仅更新 ARR $200M，总融资停于 $74.6M）；Lightricks 无 2026 轮（Tracxn 停在 $335M/D 轮）；Moonvalley 最近官方轮为 2025-07 $84M（businesswire/Variety）  
+  切入：上市募资后的现金充裕方（MiniMax、分拆后的可灵）可能低价整合视频应用层；中立层可反向收购垂类应用锁定分发场景
+- **一级市场资金向头部模型公司极度集中，视频工具层融资窗口收窄**  
+  证据：阶跃星辰 2026-01 完成 50 亿+元 B+ 轮、2026-05 传即将完成 25 亿美元新融资（证券时报 3899768、腾讯新闻），智谱完成科创板辅导验收、MiniMax 上市吸走公募资金——同期能讲出差异化叙事（版权数据如 Moonvalley、世界模型如 Decart）的团队才拿到钱  
+  切入：纯'套壳/工作流'叙事融资难度上升；中立层应绑定'版权数据+企业合规+多云路由'等战略资本认可的叙事来融资或出售
+
+### 未决问题
+
+- fal 的 Series E-2 @ $8B 是否已交割、金额与投资方（官方博客截至 2026-09-22 仅有 Series D 公告）
+- 可灵：WSJ 标题 slug（2-billion）与中文站标题（约 28 亿美元）的融资额口径差异；HKEX A1 是否已递交（截至核查日无记录）
+- Replicate 交易对价，以及创作者分成/微调收益机制在 Cloudflare Workers AI 体系内是否延续
+- RunComfy 的法律实体注册地与融资历史（官网无公开信息，需查工商数据库）
+- Decart 估值口径：Tracxn $3.1B vs Uristocrat 近 $4B，且未见官方新闻稿确认
+- 阶跃星辰 25 亿美元新融资是否已交割及最终投资方名单
+- PixVerse 是否已递交港股 A1 申请（目前仅'考虑最快年内'的传闻级报道）
+
+### 来源
+
+- [Cloudflare 官方博客：Replicate is joining Cloudflare（2025-11-17，官方源）](https://blog.cloudflare.com/replicate-joins-cloudflare/)
+- [Replicate 官方博客：加入 Cloudflare 公告](https://replicate.com/blog/replicate-cloudflare)
+- [fofr 的 Replicate 主页（头部社区创作者现状，核查日抓取）](https://replicate.com/fofr)
+- [fal 官方博客：Our Series D — Scaling fal（$140M，Sequoia，官方源）](https://blog.fal.ai/our-series-d-scaling-fal/)
+- [TechCrunch：fal 融资 $140M、估值升至 $4.5B（2025-12-09）](https://techcrunch.com/2025/12/09/fal-nabs-140m-in-fresh-funding-led-by-sequoia-tripling-valuation-to-4-5b/)
+- [The Information：fal 就 $8B 估值融资谈判（2026-03-19，单一来源）](https://www.theinformation.com/articles/video-hosting-startup-fal-funding-talks-8-billion-valuation)
+- [ARR Club：fal ARR $400M（2026-03，二手单一来源）](https://www.arr.club/fal)
+- [WSJ 中文：可灵融资约 28 亿美元、计划自快手分拆（2026-07-03）](https://cn.wsj.com/articles/kling-raises-2-billion-amid-planned-spinoff-from-kuaishou-9fdf9b5b)
+- [am730：The Information 传可灵估值最高 200 亿美元、快手称仍处初步阶段](https://www.am730.com.hk/article/1030009)
+- [etnet 经济通：快手拟分拆可灵 AI 独立上市、估值近 1560 亿港元、最早 2027（2026-05-12）](https://www.etnet.com.hk/www/tc/stocks/ipo-news-article/20260512270/%E3%80%90%E6%96%B0%E8%82%A1%E4%B8%8A%E5%B8%82%E3%80%91%E5%BF%AB%E6%89%8B%E6%93%9A%E5%A0%B1%E6%93%AC%E5%88%86%E6%8B%86%E5%8F%AF%E9%9D%88AI%E7%8D%A8%E7%AB%8B%E4%B8%8A%E5%B8%82%EF%BC%8C%E4%BC%B0%E5%80%BC%E9%81%941560%E5%84%84%E6%B8%AF%E5%85%83)
+- [证券时报：快手港交所自愿性公告回应可灵分拆传闻（2026-05-12，官方公告之官媒转述）](https://www.stcn.com/article/detail/3904906.html)
+- [雪球：快手港交所公告全文转载（2026-05-12）](https://xueqiu.com/1441939548/388711865)
+- [36氪：可灵融资计划与 2025Q4 收入 RMB 3.4 亿（引快手财报）](https://www.36kr.com/p/3805932727328520)
+- [今日头条：快手注册北京可灵科技等子公司（2026-04，单一来源）](https://www.toutiao.com/article/7640006409668592138/)
+- [搜狐：爱诗科技完成 $300M C 轮（2026-03-12）](https://www.sohu.com/a/995552270_118792)
+- [AIProductHub：PixVerse 完成 $439M C 轮扩展、估值突破 $2B（2026-07-14）](https://aiproducthub.cn/newsflash/pixverse-aisphere-439-million-series-c-extension-2-billion-valuation/)
+- [今日头条：传 PixVerse 考虑最快年内赴港上市（2026-04-22，传闻）](https://www.toutiao.com/article/7631486646289990207/)
+- [GetLatka：HeyGen ARR $200M、总融资 $74.6M（2026-09-10 更新）](https://getlatka.com/companies/heygen)
+- [Tracxn：Lightricks 融资历史（$335M / Series D）](https://tracxn.com/d/companies/lightricks/__IU9J-nySk6KriJ7GpDdUVhDMOgIclcOla-oeaCk4KLc/funding-and-investors)
+- [VentureCapitalTracker：Decart $300M Series C、Radical Ventures 领投（2026-05）](https://venturecapitaltracker.com/2026-decart-300m-series-c-world-models-ai)
+- [Uristocrat：Decart 以近 $4B 估值融资 $300M（2026-05-29）](https://uristocrat.com/decart-raises-300-million-at-nearly-4-billion-valuation/)
+- [Variety：Moonvalley 融 $84M、Comcast/CAA 参与（2025-07，官方 PR 之媒体版）](https://variety.com/2025/digital/news/moonvalley-comcast-caa-funding-investment-ai-video-1236459594/)
+- [Businesswire：Moonvalley 官方新闻稿 $84M（2025-07-14，官方源）](https://www.businesswire.com/news/home/20250714518340/en/)
+- [新华社中国金融信息网：MiniMax 港股上市首日收盘 +109%、市值破千亿港元（2026-01-09）](https://www.cnfin.com/gs-lb/detail/20260109/4363154_1.html)
+- [澎湃新闻：MiniMax 港交所挂牌（2026-01-09）](https://www.thepaper.cn/newsDetail_forward_32349190)
+- [东方财富：MiniMax 通过港交所聆讯（2025-12-21，转述）](https://finance.eastmoney.com/a/202512213597628565.html)
+- [搜狐：智谱完成科创板上市辅导验收、同日开源 GLM-5.2（2026-06-17）](https://www.sohu.com/a/1038033180_120988576)
+- [搜狐：智谱 IPO 辅导进展详情（2026-06-18）](https://www.sohu.com/a/1038031220_122884248)
+- [Reuters：阶跃星辰拆解除境外架构为 IPO 铺路（2026-04-13）](https://www.reuters.com/world/china/chinese-ai-startup-stepfun-unwind-offshore-structure-pave-way-ipo-sources-say-2026-04-13/)
+- [证券时报：阶跃星辰即将完成 25 亿美元新融资、华勤技术等参与（2026-05-08）](https://www.stcn.com/article/detail/3899768.html)
+- [腾讯新闻：阶跃星辰 170 亿元融资报道（2026-05-22）](https://news.qq.com/rain/a/20260522A0B7AK00)
+- [今日头条：阶跃星辰完成 50 亿+元 B+ 轮（2026-01）](https://www.toutiao.com/article/7612568461013565987/)
+- [GitHub：genmedia-labs/skills README 自述 runcomfy-agent-skills（RunComfy 关联组织，官方源）](https://github.com/genmedia-labs/skills)
