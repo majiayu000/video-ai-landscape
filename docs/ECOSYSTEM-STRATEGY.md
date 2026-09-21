@@ -75,7 +75,7 @@ L0 算力/电力        CoreWeave 积压订单 $99.4B 但 GPU 年折旧 30-40%�
 
 资产盘点：contract-first 视频 CLI（在建）+ 调研报告与 103 个 SKILL.md 源码级分析（内容与信誉）+ 双语与中国市场位置。
 
-1. **本周 · 冲 skills.sh 占位**（成本≈0）：每厂商一个 skill + 一个总路由 skill，`npx skills add` 一次铺 ~20 个 agent。开发类技能已饱和，**视频类目尚空**。技能是漏斗不是产品。
+1. **本周 · 冲 skills.sh 差异化占位**（成本≈0）：~~视频类目尚空~~ **[2026-09-22 修正：类目已有大玩家]**——genmedia-labs（video-edit 598K 全站 #48、seedance-2-5、wan-3-0）、prime-skills/runcomfy（kling-3-0 396K）、heygen/hyperframes（general-video 324K）均已是 25-60 万安装量级。**剩余空位**：veo/sora/runway/luma/fal 厂商级技能全部缺席；Topics 无视频类目；现有玩家全是第三方单点包装，无"跨厂商中立矩阵 + 编排层"技能。每厂商一个 skill + 一个总路由 skill，`npx skills add` 一次铺 ~20 个 agent，以"官方调研级质量 + 编排契约"差异化。技能是漏斗不是产品。
 2. **一个月内 · 吃 Sora 迁移潮**（时间敏感，API 9-24 物理消失）："Sora → 多模型"兼容 shim + 选型文档，复用 provider 契约层；错过窗口转长期多模型兼容层。
 3. **3-6 月主线 · CLI 契约层三件套**：成本感知路由（同级差价 10 倍+）+ 可用率工程（N 选 1 自动判片——"挑片"才是用户真实成本大头）+ 跨厂商一致性资产格式（可导出中立格式 = 聚合层不愿维护的护城河）。
 4. **不要做**：计费抽象、通用聚合站、框架级重抽象、押注世界模型、绑定单一平台/厂商。
@@ -97,3 +97,13 @@ L0 算力/电力        CoreWeave 积压订单 $99.4B 但 GPU 年折旧 30-40%�
 AAIF (aaif.io) · MCP 官方博客 (blog.modelcontextprotocol.io) · OpenAI Deprecations (developers.openai.com) · OpenAI 帮助中心 (help.openai.com) · Anthropic Agent Skills 公告 (anthropic.com) · agentskills.io · skills.sh · Google Developers Blog（Antigravity 迁移） · Linux Foundation（A2A） · 网信办实施意见 (cac.gov.cn) · GB/Z 185—2026 解读（21经济网） · Vercel skills 文档 · Snyk ToxicSkills 报告 · The Information / TechCrunch / NBC（Sora 关停报道） · a16z（LLMflation / 基础设施配置） · 各厂商官方定价页
 
 > 完整逐条来源见各研究路的结构化输出（workflow run: wf_328d5117 / wf_b3382967）。二手转述的商业数字已标注，未经审计。
+
+## 7. 新鲜度日志（Freshness Log）
+
+本生态的数据半衰期以**天**计，本文所有时效性判断以此日志为准持续修正：
+
+- **2026-09-21**：5 路生态研究（wf_328d5117）完成，形成初版分析。
+- **2026-09-22 上午**：直接验证 Sora 关停（官方源确认，见第 5 节）；**实测 skills.sh 榜单，推翻"视频类目空着"的初判**——genmedia-labs / runcomfy / heygen 三组发行商已有 25-60 万安装量级玩家；剩余空位修正为"厂商级技能缺口（veo/sora/runway/luma/fal）+ 编排层 + Topics 类目缺位"。行动建议第 1 张牌已同步改写。
+- **待深挖回收**（wf_b3382967，4 路进行中）：Sora 事件全程取证、迁移潮规模实据、后 Sora 格局变动、skills.sh 发布策略——回收后更新对应章节。
+
+**方法论修正**：在这类生态里，任何"窗口判断"必须在行动前 24 小时内用一手数据（榜单实抓、官方页面实抓）复核一次，不能依赖研究汇总。
