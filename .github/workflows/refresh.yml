@@ -23,6 +23,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: 数据新鲜度检查（>30 天未更新标黄，不阻塞）
+        if: always()
+        run: |
+          python3 - << 'EOF'
+          import json, os, datetime as dt, pathlib
+          today = dt.date.today()
+          lines = ["### data/ 新鲜度", ""]
+          stale = 0
+          for f in sorted(pathlib.Path("data").glob("*.json")):
+              if f.name.startswith("_"):
+                  continue
+              try:
+                  as_of = json.loads(f.read_text()).get("as_of")
+              except Exception as e:
+                  lines.append(f"- ⚠️ `{f}` 解析失败：{e}"); stale += 1; continue
+              if not as_of:
+                  lines.append(f"- 🟡 `{f}` 尚无 as_of（数据未实采）"); stale += 1; continue
+              age = (today - dt.date.fromisoformat(as_of)).days
+              mark = "🟢" if age <= 30 else "🟡"
+              if age > 30: stale += 1
+              lines.append(f"- {mark} `{f}` as_of {as_of}（{age} 天前）")
+          lines.insert(1, "---")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as s:
+              s.write("\n".join(lines) + "\n")
+          EOF
+
       - uses: astral-sh/setup-uv@v5
 
       - name: 按 pinned SHA 克隆厂商仓库

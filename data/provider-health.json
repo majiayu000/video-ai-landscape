@@ -1,0 +1,6 @@
+{
+  "$schema": null,
+  "as_of": null,
+  "note": "供应商健康信号。字段设计参照 Sora 全周期退场的可量化前置信号：changelog 频率骤降、招聘方向转向、deprecation 公告、仓库停更、资金/战略转向。status 取值：active | stagnating | deprecating | dead。",
+  "providers": []
+}

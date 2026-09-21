@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "video-generation-capabilities",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "as_of": { "type": ["string", "null"], "format": "date" },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "vendor": { "type": "string" },
+          "model": { "type": "string" },
+          "first_last_frame": { "type": "string", "description": "首尾帧支持：yes/no/first-only/last-only + 参数说明" },
+          "extend": { "type": "string", "description": "视频延长：yes/no + 限制" },
+          "reference": { "type": "string", "description": "参考生视频：@图/视频/音频 及数量上限" },
+          "audio_joint": { "type": "string", "description": "音画同生：yes/no + 默认行为" },
+          "resolution": { "type": "string" },
+          "duration": { "type": "string" },
+          "region_limits": { "type": "string", "description": "CN/Global 端点差异、区域不可用能力" },
+          "webhook": { "type": "string", "description": "webhook 支持：yes/no/partial，纯轮询写 polling-only" },
+          "url_validity": { "type": "string" },
+          "billing_mode": { "type": "string", "description": "按秒/按条/按 token/积分" },
+          "source_url": { "type": "string", "format": "uri" }
+        },
+        "required": ["vendor", "model", "source_url"]
+      }
+    },
+    "fragmentation_notes": { "type": "string", "description": "哪些字段跨厂商最碎片化、统一契约字段命名建议" },
+    "sources": {
+      "type": "array",
+      "items": { "type": "object", "properties": { "title": { "type": "string" }, "url": { "type": "string" } }, "required": ["title", "url"] }
+    }
+  },
+  "required": ["as_of", "entries", "sources"]
+}
