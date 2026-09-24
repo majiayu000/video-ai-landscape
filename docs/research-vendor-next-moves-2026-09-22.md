@@ -196,46 +196,31 @@ AtlasCloud 近 90 天的重心很清晰：模型目录自动化扩张（52 天�
 
 ---
 
-## Higgsfield + Runway
+> 注（2026-09-24）：原“Higgsfield + Runway”为合并对比小节，现拆分为 **Higgsfield** / **Runway** / **两家共同的空位** 三节。内容为纯重排（逐条按归属归档），未改写任何句子；时间线在原报告中按日期两家交织，拆分后各保留自家时间线（日期仍可对照）。
 
-90 天窗口内两家走向明显分化：Higgsfield 的"UX 剧本"技能路线仍在加码（higgsfield-ai/skills 7/8–9/11 高频迭代出 websites/game/brandkit/explainer/Ad Multiplier 一整套"应用工厂"技能，MCP 以免 API key 方式铺进 ChatGPT/GPT-6 Astra/Claude/Cursor 等 7+ 客户端），但重心已从 CLI 转向 ChatGPT 分发和无代码 app，计费"坑"没修反而更碎（credits、All Unlimited、Bonus Seconds、MCP 专属 credits、console API 五套面并存，官方 9 月连发两篇解释文）；CLI 仓库 8 月零提交、release 多为 docs 空转，进入维护态。Runway 则把 Developer Platform 做成明示主线：8/28 skills 仓库重构让 runway-dev-* 成为唯一集成路径、MCP 服务器 7 月连获远程 HTTP/模型目录/媒体预览更新、API changelog 90 天 15+ 次上新（Model Router→容量回退→路由历史三连击、Task Cost API、ACEScg/ProRes 专业交付），同时招聘 Founding DX Lead 与 Dev Platform 产品/设计岗，域名迁 runway.com 并向企业（SSO/审计/Team Plan）、Adobe 插件和日本市场扩张。最大空位在"契约层"：Runway 无官方 CLI 且开源 MCP 只有 9 个工具、高频弃用无迁移工具；Higgsfield 技能无版本化、计费无编程化查询接口；两家都没有确定性评测基准和产物契约——这正是一个契约优先多厂商 CLI 的立足点。
+## Higgsfield
+
+Higgsfield 的"UX 剧本"技能路线仍在加码（higgsfield-ai/skills 7/8–9/11 高频迭代出 websites/game/brandkit/explainer/Ad Multiplier 一整套"应用工厂"技能，MCP 以免 API key 方式铺进 ChatGPT/GPT-6 Astra/Claude/Cursor 等 7+ 客户端），但重心已从 CLI 转向 ChatGPT 分发和无代码 app，计费"坑"没修反而更碎（credits、All Unlimited、Bonus Seconds、MCP 专属 credits、console API 五套面并存，官方 9 月连发两篇解释文）；CLI 仓库 8 月零提交、release 多为 docs 空转，进入维护态。
 
 ### 近 90 天时间线
 
-- **2026-07-02** — Runway 上线 Agent Skills：一条命令生成广告 campaign、商业片等；7/8 开放 Custom Agent Skills（用户可自建并共享技能）——技能路线写入产品主 changelog（https://runway.com/changelog）
 - **2026-07-04** — Higgsfield Unlimited Models Marketplace 扩展至 Team/Scale（按席位购买、不可转让）——计费面继续增项（https://higgsfield.ai/changelog）
 - **2026-07-07** — Higgsfield Apps 发布：无代码生成完整 generative app，可经 MCP 从 Claude/Cursor 构建；同日 App Contest 明确'第三方 API 接入生成取消参赛资格'，说明 API 与平台双轨（https://higgsfield.ai/changelog）
 - **2026-07-08** — Higgsfield skills 仓库进入高频迭代期：higgsfield-websites 技能持续重构（动画默认、deploy-first、反 slop、hermes 同步），7/16 新增浏览器游戏技能与 CLI video explainer 技能（https://github.com/higgsfield-ai/skills/commits/main/）
 - **2026-07-13** — Higgsfield After Effects 插件接入 Supercomputer 与 MCP（bridge.higgsfield.ai/mcp），agent 可直接操作合成/图层/关键帧（https://higgsfield.ai/changelog）
-- **2026-07-16** — Runway 开源 MCP 服务器两天两更：新增远程 HTTP 传输、模型目录与按工具覆盖、内联媒体预览、MCP_TOOL_TIMEOUT 配置（https://github.com/runwayml/runway-api-mcp-server/commits/main/）
 - **2026-07-20** — Higgsfield 上线 All Unlimited 通行证（图像/视频/音频顶级模型一张通行证、共享并发、一次一任务）（https://higgsfield.ai/changelog）
-- **2026-07-23** — Runway 发布 Model Router API：configId 保存路由配置、成本/延迟/质量偏好、允许/拒绝列表、每模态 credit 上限、dryRun；7/30 追加并发达上限时自动回退次优模型，7/30 同日上线 Task Cost API（响应内含每任务 credit 成本）（https://docs.dev.runwayml.com/api-details/api_changelog/）
-- **2026-07-28** — Runway 新增企业端点：org usage 与 audit_logs API（https://docs.dev.runwayml.com/api-details/api_changelog/）
-- **2026-08-03** — Runway Model Router 路由历史上线：记录每次路由决策及原因，可经公开 API 获取——'多模型调度层'三周内三连击（https://runway.com/changelog）
 - **2026-08-03** — Higgsfield skills 新增 Brandkit 与 YouTube Thumbnail 技能；8/7 将 game-generation 并入 higgsfield-websites（游戏定为第三种产品类型）（https://github.com/higgsfield-ai/skills/commits/main/）
-- **2026-08-05** — Runway 开启第三方模型高频聚合：90 天内陆续上新 Hailuo 3.0、Grok Imagine、WAN 3.0、Seedance 2.5、MiniMax H3 Max、GPT Image 2.5 等 15+ 次模型更新（https://docs.dev.runwayml.com/api-details/api_changelog/）
 - **2026-08-14** — Higgsfield Seedance 2.5 推出 Bonus Seconds：按秒计费的独立池、不扣 credits、30 天有效——计费体系再添一层（https://higgsfield.ai/changelog）
-- **2026-08-17** — Runway org 入库 runway-api-mcp-server 与 avatars-sdk-react（代号 GWM-1）（https://github.com/orgs/runwayml/repositories）
 - **2026-08-19** — Higgsfield for Enterprise：SOC 2 与 SSO、无限席位、按团队分配 credits（https://higgsfield.ai/changelog）
-- **2026-08-20** — Runway MCP 支持工作流：agent 可列出/编辑/运行 Workflows；同日 Ruby SDR→HDR 调色模型覆盖 Tool Mode、Workflows 与 Runway Dev（https://runway.com/changelog）
 - **2026-08-22** — Higgsfield Grok Bot 进 MCP：新用户验卡得 3 天试用 + 100 个 MCP 专属 credits，未取消自动续为月付 Plus——'MCP 专属 credits'与平台 credits 并存（https://higgsfield.ai/changelog）
 - **2026-08-26** — Higgsfield Supercomputer 免费模型 Ox Alpha 被证实为智谱 GLM-5.3 Flash 并转为消耗 credits；8/27 MCP 调用故障修复（https://higgsfield.ai/changelog）
-- **2026-08-28** — Runway skills 仓库同日三个 commit（#19/#20/#21）：新增 MCP-aware Dev Platform 集成技能，并将 runway-dev-*（models/model-routers/characters/recipes/workflows）定为唯一集成路径（https://github.com/runwayml/skills/commits/main/）
-- **2026-08-31** — Runway 专业交付格式连续上线：ACEScg OpenEXR 序列（8/31）、video_to_hdr 支持 alpha 通道（9/11）、帧率增强（9/17）——瞄准专业制片管线（https://docs.dev.runwayml.com/api-details/api_changelog/）
 - **2026-09-07** — Higgsfield MCP 登陆 GPT-6 Astra 并发布 Games 2.0（changelog 9/4 已先上线 GPT-6 Astra 与 3D Jutsu）——分发重心转向 ChatGPT 生态（https://higgsfield.ai/blog）
 - **2026-09-10** — Higgsfield 连发《Why Your AI Video Credits Run Out Faster Than You Expect》（9/10）与《Credits vs Unlimited Plans》（9/15）——官方下场解释计费混乱（https://higgsfield.ai/blog）
 - **2026-09-11** — Higgsfield skills 默认模型统一切到 GPT Image 2.5 / Seedance 2.5（直接改 main，无版本号）；同日 higgsfield-ai/cli 最后一次功能性 commit 也只是 docs 模型默认值更新，8 月该仓库零提交（https://github.com/higgsfield-ai/skills/commits/main/）
 - **2026-09-16** — Higgsfield 首波 API 公开推送：同日发布《Meet the Higgsfield API》《How To Generate AI Videos Straight From the Higgsfield API》《Inside Higgsfield #2: Supercomputer》三篇（https://higgsfield.ai/blog）
-- **2026-09-04** — Runway 上线自助 Team Plan（每席位 6,900 credits 共享池、最多 9 人）；9/8 发布 Runway Plugins for Adobe（Premiere/After Effects 面板）；9/4 sdk-python/sdk-node 更新；9/10 入库 runway-characters-meet（https://runway.com/changelog）
-- **2026-09-22（窗口内持续）** — Runway 招聘确认 Dev Platform 主线：Founding Developer Experience Lead、Dev Platform 产品总监/资深 PM/资深产品设计师、MTS Backend API、EM API，另有 Robotics Engineer (Research) 与 GM Japan（https://runway.com/careers）
 
 ### Roadmap 信号
 
-- **Runway 把 Developer Platform 确立为公司下一主线：在招 Founding Developer Experience Lead（founding 级）、Dev Platform 产品总监 + 资深 PM + 资深产品设计师、MTS Backend API、EM API——一个子系统同时招齐 DX、产品、设计、工程四条线**（置信：官方明示；https://runway.com/careers）
-- **Runway 技能路线收敛到 Dev MCP 优先：8/28 三个 commit 把 runway-dev-* 定为唯一集成路径并标注 MCP-aware，未来 skills 生态将围绕 Dev Platform MCP 而非裸 REST 教程展开**（置信：官方明示；https://github.com/runwayml/skills/commits/main/）
-- **Runway 正在把自己建成'多模型调度层'：Model Router（7/23）→ 容量自动回退（7/30）→ 路由历史 API（8/3）三周三连击，下一步大概率是路由策略市场/跨厂商路由（已聚合 7+ 第三方模型）**（置信：官方明示；https://docs.dev.runwayml.com/api-details/api_changelog/）
-- **Runway 向企业+国际化扩张：SSO 默认化、配置告警、Team Plan 自助化、GM Japan + Founding Deployment Lead Japan 在招、域名迁移 runway.com**（置信：官方明示；https://runway.com/changelog）
-- **Runway 在角色/虚拟人/实体方向埋点：avatars-sdk-react（代号 GWM-1）8/17 入库、runway-characters-meet 9/10 入库、Robotics Engineer (Research) 在招、Runway Studios 创意岗位扩张——可能孵化独立角色产品线**（置信：推断；https://github.com/orgs/runwayml/repositories）
 - **Higgsfield 分发押注 ChatGPT/GPT-6 Astra：MCP 上 GPT-6 Astra（9/7）、ChatGPT 内直接生成视频（8/14）、Grok Bot 常驻（8/22）、3D Jutsu 捆绑 GPT-6 Astra（9/4）——多篇文章与 changelog 交叉印证'宿主 agent 承载 UI'路线**（置信：多源交叉；https://higgsfield.ai/blog）
 - **Higgsfield 产品重心从'视频效果'转向'应用工厂'：websites/game/explainer/brandkit/Apps/3D Jutsu 连续落地，Supercomputer 升级为中枢（Projects 共享工作区 8/23、GPT-6 Astra 多步工作流 9/4）**（置信：多源交叉；https://higgsfield.ai/changelog）
 - **Higgsfield 开始公开经营 API 招牌：9/16 同日三篇 API 文章（产品介绍+教程+基建幕后），console.higgsfield.ai 以'50+ 模型一个 API'独立售卖——API 会成为下一阶段的显性产品线**（置信：多源交叉；https://higgsfield.ai/blog）
@@ -247,6 +232,67 @@ AtlasCloud 近 90 天的重心很清晰：模型目录自动化扩张（52 天�
 - Higgsfield 技能迭代速度惊人：两个月内从 websites 到 game、brandkit、YouTube thumbnail、Ad Multiplier 铺出完整'应用工厂'技能矩阵（skills 仓库 1.1k stars、89 commits），且每个技能都对应可展示的成品而非 API 文档
 - Higgsfield MCP 零门槛分发：mcp.higgsfield.ai/mcp 免 API key 直连，覆盖 ChatGPT/Claude Code/Cursor/Grok Bot/OpenClaw/Hermes 等 7+ 客户端，把分发做成了默认动作；Adobe AE、Blender、DaVinci 三套创意工具桥接也全部走 MCP
 - Higgsfield 用营销闭环养技能：$1M 电影节、$100k App Contest、Create in Public credits 资助，让技能产出有真实受众和传播素材
+
+### 空位与切入姿势
+
+- **Higgsfield 技能无版本化、无机器可读契约**
+  - 证据：higgsfield-ai/skills 89 个 commit 直接改 main 的 SKILL.md，无 semver、无 CHANGELOG；9/11 一次 commit 把全库默认模型切到 GPT Image 2.5/Seedance 2.5，`npx skills add higgsfield-ai/skills` 拉的是漂移中的 main 头——技能产出不可复现
+  - 切入：做技能注册表 + 版本锁：fork 官方技能集并打语义版本与参数 schema（类似 package-lock），提供'锁定版技能集'供 CI 消费；对漂移出 diff 报告。这与'契约优先'定位天然同构
+- **Higgsfield 计费碎片化且无编程化查询接口**
+  - 证据：90 天 changelog 中计费类条目 12+ 条：All Unlimited（7/20）、存储按 1GB=2.5 credits（7/8）、Bonus Seconds 独立池（8/14）、MCP 专属 credits + 自动转付费 Plus（8/22）、免费模型 GLM 转收费（8/26）、Scale 无限（9/3）；/cli 页宣称'同一 credit 体系'但 MCP 又有专属 credits；无公开 balance/usage API，官方需连发两篇博文（9/10、9/15）向用户解释
+  - 切入：做统一计费聚合器：一个本地 ledger/CLI 子命令，把订阅 credits、Bonus Seconds、MCP credits、console API 余额汇总查询、用量预警和成本归因（哪个 agent 会话烧掉了多少）——多厂商 CLI 的天然模块，Higgsfield 自身不会做（暴露内部池不利营销）
+- **Higgsfield 订阅与 console API 双轨依旧，且互相对立**
+  - 证据：console.higgsfield.ai 独立售卖'50+ 模型一个 API、最优价格'；官方 changelog 无任何 API 条目；7/7 App Contest 明文'经第三方 API 接入生成取消参赛资格'，说明 API 用户与平台用户是两个世界；9/16 才发第一波 API 教程
+  - 切入：做双轨路由与实测对比：同一 prompt/参数在订阅 credits（MCP/CLI）与 console API 两条轨上跑成本/延迟/质量实测并发布对比数据，CLI 里做 `--track subscription|api` 自动选便宜轨——帮开发者把'坑'变成可计算的决策
+
+### 未解问题
+
+- Higgsfield《Higgsfield Unlimited MCP》（7/28 博文）的具体权益边界（覆盖哪些模型、是否限速、与 All Unlimited 的关系）未能验证——目标 URL 404，真实 slug 未知
+- Higgsfield console API 与订阅 credits 是否完全隔离、有无互通额度或促销，未从一手定价文档确认（pricing 页 JS 渲染抓不到）
+- Higgsfield CLI 8 月零提交是团队人力转移还是单纯稳定期，无法从外部仓库证据区分；若为前者，CLI 生态位可能被官方进一步边缘化
+
+### 来源
+
+- [Higgsfield 产品 Changelog（计费/MCP/CLI 条目）](https://higgsfield.ai/changelog)
+- [higgsfield-ai/cli 仓库](https://github.com/higgsfield-ai/cli)
+- [higgsfield-ai/cli 提交历史（8 月空窗）](https://github.com/higgsfield-ai/cli/commits/main/)
+- [higgsfield-ai/cli Releases（v1.1.17–v1.1.26）](https://github.com/higgsfield-ai/cli/releases)
+- [higgsfield-ai/skills 仓库（应用工厂技能矩阵）](https://github.com/higgsfield-ai/skills)
+- [higgsfield-ai/skills 提交历史（7/8–9/11）](https://github.com/higgsfield-ai/skills/commits/main/)
+- [Higgsfield MCP 页（免 API key、7+ 客户端、FAQ 计费）](https://higgsfield.ai/mcp)
+- [Higgsfield CLI 页（'same credit system' 表述、35 技能）](https://higgsfield.ai/cli)
+- [Higgsfield Blog（9/16 API 三连发、9/10 与 9/15 计费解释文、9/7 GPT-6 Astra）](https://higgsfield.ai/blog)
+
+
+## Runway
+
+Runway 则把 Developer Platform 做成明示主线：8/28 skills 仓库重构让 runway-dev-* 成为唯一集成路径、MCP 服务器 7 月连获远程 HTTP/模型目录/媒体预览更新、API changelog 90 天 15+ 次上新（Model Router→容量回退→路由历史三连击、Task Cost API、ACEScg/ProRes 专业交付），同时招聘 Founding DX Lead 与 Dev Platform 产品/设计岗，域名迁 runway.com 并向企业（SSO/审计/Team Plan）、Adobe 插件和日本市场扩张。
+
+### 近 90 天时间线
+
+- **2026-07-02** — Runway 上线 Agent Skills：一条命令生成广告 campaign、商业片等；7/8 开放 Custom Agent Skills（用户可自建并共享技能）——技能路线写入产品主 changelog（https://runway.com/changelog）
+- **2026-07-16** — Runway 开源 MCP 服务器两天两更：新增远程 HTTP 传输、模型目录与按工具覆盖、内联媒体预览、MCP_TOOL_TIMEOUT 配置（https://github.com/runwayml/runway-api-mcp-server/commits/main/）
+- **2026-07-23** — Runway 发布 Model Router API：configId 保存路由配置、成本/延迟/质量偏好、允许/拒绝列表、每模态 credit 上限、dryRun；7/30 追加并发达上限时自动回退次优模型，7/30 同日上线 Task Cost API（响应内含每任务 credit 成本）（https://docs.dev.runwayml.com/api-details/api_changelog/）
+- **2026-07-28** — Runway 新增企业端点：org usage 与 audit_logs API（https://docs.dev.runwayml.com/api-details/api_changelog/）
+- **2026-08-03** — Runway Model Router 路由历史上线：记录每次路由决策及原因，可经公开 API 获取——'多模型调度层'三周内三连击（https://runway.com/changelog）
+- **2026-08-05** — Runway 开启第三方模型高频聚合：90 天内陆续上新 Hailuo 3.0、Grok Imagine、WAN 3.0、Seedance 2.5、MiniMax H3 Max、GPT Image 2.5 等 15+ 次模型更新（https://docs.dev.runwayml.com/api-details/api_changelog/）
+- **2026-08-17** — Runway org 入库 runway-api-mcp-server 与 avatars-sdk-react（代号 GWM-1）（https://github.com/orgs/runwayml/repositories）
+- **2026-08-20** — Runway MCP 支持工作流：agent 可列出/编辑/运行 Workflows；同日 Ruby SDR→HDR 调色模型覆盖 Tool Mode、Workflows 与 Runway Dev（https://runway.com/changelog）
+- **2026-08-28** — Runway skills 仓库同日三个 commit（#19/#20/#21）：新增 MCP-aware Dev Platform 集成技能，并将 runway-dev-*（models/model-routers/characters/recipes/workflows）定为唯一集成路径（https://github.com/runwayml/skills/commits/main/）
+- **2026-08-31** — Runway 专业交付格式连续上线：ACEScg OpenEXR 序列（8/31）、video_to_hdr 支持 alpha 通道（9/11）、帧率增强（9/17）——瞄准专业制片管线（https://docs.dev.runwayml.com/api-details/api_changelog/）
+- **2026-09-04** — Runway 上线自助 Team Plan（每席位 6,900 credits 共享池、最多 9 人）；9/8 发布 Runway Plugins for Adobe（Premiere/After Effects 面板）；9/4 sdk-python/sdk-node 更新；9/10 入库 runway-characters-meet（https://runway.com/changelog）
+- **2026-09-22（窗口内持续）** — Runway 招聘确认 Dev Platform 主线：Founding Developer Experience Lead、Dev Platform 产品总监/资深 PM/资深产品设计师、MTS Backend API、EM API，另有 Robotics Engineer (Research) 与 GM Japan（https://runway.com/careers）
+
+### Roadmap 信号
+
+- **Runway 把 Developer Platform 确立为公司下一主线：在招 Founding Developer Experience Lead（founding 级）、Dev Platform 产品总监 + 资深 PM + 资深产品设计师、MTS Backend API、EM API——一个子系统同时招齐 DX、产品、设计、工程四条线**（置信：官方明示；https://runway.com/careers）
+- **Runway 技能路线收敛到 Dev MCP 优先：8/28 三个 commit 把 runway-dev-* 定为唯一集成路径并标注 MCP-aware，未来 skills 生态将围绕 Dev Platform MCP 而非裸 REST 教程展开**（置信：官方明示；https://github.com/runwayml/skills/commits/main/）
+- **Runway 正在把自己建成'多模型调度层'：Model Router（7/23）→ 容量自动回退（7/30）→ 路由历史 API（8/3）三周三连击，下一步大概率是路由策略市场/跨厂商路由（已聚合 7+ 第三方模型）**（置信：官方明示；https://docs.dev.runwayml.com/api-details/api_changelog/）
+- **Runway 向企业+国际化扩张：SSO 默认化、配置告警、Team Plan 自助化、GM Japan + Founding Deployment Lead Japan 在招、域名迁移 runway.com**（置信：官方明示；https://runway.com/changelog）
+- **Runway 在角色/虚拟人/实体方向埋点：avatars-sdk-react（代号 GWM-1）8/17 入库、runway-characters-meet 9/10 入库、Robotics Engineer (Research) 在招、Runway Studios 创意岗位扩张——可能孵化独立角色产品线**（置信：推断；https://github.com/orgs/runwayml/repositories）
+
+### 做得好的
+
 - Runway 把成本做成 API 一等公民：Task Cost API（7/30）在响应里直接返回每任务 credit 成本（运行中估算+完成时终值），Model Router 路由历史可 API 拉取审计——这是两家唯一把'可预测成本'产品化的
 - Runway skills 仓库工程化最规范：runway-dev-* 家族结构清晰（models/routers/characters/recipes/workflows），8/28 敢于做破坏性收敛（'唯一集成路径'），MIT 许可 + 双安装通道（npx skills add / claude plugin marketplace）
 - Runway API 聚合节奏行业最快：90 天 15+ 次模型上新，第三方模型（Seedance/WAN/Hailuo/Grok/GPT Image）全部经统一 API 暴露，同时保住 HDR/ACEScg/ProRes 专业交付差异化
@@ -263,29 +309,11 @@ AtlasCloud 近 90 天的重心很清晰：模型目录自动化扩张（52 天�
 - **Runway 高频上新+弃用但零迁移工具**
   - 证据：90 天内 Gen-3 Alpha Turbo/Gen-4 Aleph 弃用（7/30）、默认模型反复切换、15+ 模型上新；docs 只有按日流水 changelog，无弃用 RSS/webhook、无参数兼容矩阵、无 codemod——依赖它的自动化管线每次都要人工扫 changelog
   - 切入：做跨厂商模型目录 diff 与弃用告警服务：定期快照各厂商模型目录（模型/参数/价格/弃用状态），机器可读 diff + webhook 通知 + 旧→新参数映射建议，直接嵌入用户 CLI 的 CI 流程
-- **Higgsfield 技能无版本化、无机器可读契约**
-  - 证据：higgsfield-ai/skills 89 个 commit 直接改 main 的 SKILL.md，无 semver、无 CHANGELOG；9/11 一次 commit 把全库默认模型切到 GPT Image 2.5/Seedance 2.5，`npx skills add higgsfield-ai/skills` 拉的是漂移中的 main 头——技能产出不可复现
-  - 切入：做技能注册表 + 版本锁：fork 官方技能集并打语义版本与参数 schema（类似 package-lock），提供'锁定版技能集'供 CI 消费；对漂移出 diff 报告。这与'契约优先'定位天然同构
-- **Higgsfield 计费碎片化且无编程化查询接口**
-  - 证据：90 天 changelog 中计费类条目 12+ 条：All Unlimited（7/20）、存储按 1GB=2.5 credits（7/8）、Bonus Seconds 独立池（8/14）、MCP 专属 credits + 自动转付费 Plus（8/22）、免费模型 GLM 转收费（8/26）、Scale 无限（9/3）；/cli 页宣称'同一 credit 体系'但 MCP 又有专属 credits；无公开 balance/usage API，官方需连发两篇博文（9/10、9/15）向用户解释
-  - 切入：做统一计费聚合器：一个本地 ledger/CLI 子命令，把订阅 credits、Bonus Seconds、MCP credits、console API 余额汇总查询、用量预警和成本归因（哪个 agent 会话烧掉了多少）——多厂商 CLI 的天然模块，Higgsfield 自身不会做（暴露内部池不利营销）
-- **Higgsfield 订阅与 console API 双轨依旧，且互相对立**
-  - 证据：console.higgsfield.ai 独立售卖'50+ 模型一个 API、最优价格'；官方 changelog 无任何 API 条目；7/7 App Contest 明文'经第三方 API 接入生成取消参赛资格'，说明 API 用户与平台用户是两个世界；9/16 才发第一波 API 教程
-  - 切入：做双轨路由与实测对比：同一 prompt/参数在订阅 credits（MCP/CLI）与 console API 两条轨上跑成本/延迟/质量实测并发布对比数据，CLI 里做 `--track subscription|api` 自动选便宜轨——帮开发者把'坑'变成可计算的决策
-- **两家都没有确定性评测与回归基准**
-  - 证据：Runway/Higgsfield 的 changelog 与博客全是能力宣传：无公开 eval 集、无 seed 复现说明、无参数稳定性承诺、无模型间横向基准；Higgsfield skills 的'质量'靠 anti-slop 提示词约定，Runway 靠 recipes 人工经验
-  - 切入：建跨厂商提示词回归集：固定 prompt+seed+参数定期跑分，发布横向对比报告（成本/时长/一致性），以 CLI 插件形式让用户在自家场景上跑私有基准——评测是厂商不便自证、第三方最有话语权的空位
-- **两家技能层都缺 agent 输入校验与产物契约**
-  - 证据：Runway skills 要求预充值 $10 + 环境变量即用，无输入 schema 校验层；Higgsfield 技能直接产出网站/游戏成品但无产物 manifest（部署 URL、资产清单、成本记录均不落盘）——agent 管线断点恢复和审计无从做起
-  - 切入：把 JSON contract 层做成两家 skills 之上的公共包装器：统一输入校验、产物 manifest、断点恢复与重放——这正是把已有工程实践（agent 输入/恢复/产物契约硬化）产品化为跨厂商中间层
 
 ### 未解问题
 
-- Higgsfield《Higgsfield Unlimited MCP》（7/28 博文）的具体权益边界（覆盖哪些模型、是否限速、与 All Unlimited 的关系）未能验证——目标 URL 404，真实 slug 未知
 - runway-characters-meet 仓库的实际用途（是新角色产品 GWM-1 的落地页还是开源工具）未读取内容，角色方向信号目前仅靠入库时间与 avatars-sdk-react 代号推断
-- Higgsfield console API 与订阅 credits 是否完全隔离、有无互通额度或促销，未从一手定价文档确认（pricing 页 JS 渲染抓不到）
 - Runway skills 安装要求的 '$10 prepay' 是最低充值还是月费、RUNWAYML_API_SECRET 与平台订阅 credits 的关系未验证
-- Higgsfield CLI 8 月零提交是团队人力转移还是单纯稳定期，无法从外部仓库证据区分；若为前者，CLI 生态位可能被官方进一步边缘化
 - Runway 开源 MCP（runway-api-mcp-server）与闭源产品内 Agent MCP 的功能边界（Workflows 仅在后者）未来是否会收敛，无官方表态
 
 ### 来源
@@ -297,15 +325,17 @@ AtlasCloud 近 90 天的重心很清晰：模型目录自动化扩张（52 天�
 - [runwayml/runway-api-mcp-server（9 工具 MCP）](https://github.com/runwayml/runway-api-mcp-server)
 - [runwayml org 仓库列表（63 仓库）](https://github.com/orgs/runwayml/repositories)
 - [Runway Careers（Founding DX Lead、Dev Platform、Robotics、Japan）](https://runway.com/careers)
-- [Higgsfield 产品 Changelog（计费/MCP/CLI 条目）](https://higgsfield.ai/changelog)
-- [higgsfield-ai/cli 仓库](https://github.com/higgsfield-ai/cli)
-- [higgsfield-ai/cli 提交历史（8 月空窗）](https://github.com/higgsfield-ai/cli/commits/main/)
-- [higgsfield-ai/cli Releases（v1.1.17–v1.1.26）](https://github.com/higgsfield-ai/cli/releases)
-- [higgsfield-ai/skills 仓库（应用工厂技能矩阵）](https://github.com/higgsfield-ai/skills)
-- [higgsfield-ai/skills 提交历史（7/8–9/11）](https://github.com/higgsfield-ai/skills/commits/main/)
-- [Higgsfield MCP 页（免 API key、7+ 客户端、FAQ 计费）](https://higgsfield.ai/mcp)
-- [Higgsfield CLI 页（'same credit system' 表述、35 技能）](https://higgsfield.ai/cli)
-- [Higgsfield Blog（9/16 API 三连发、9/10 与 9/15 计费解释文、9/7 GPT-6 Astra）](https://higgsfield.ai/blog)
+
+## 两家共同的空位
+
+最大空位在"契约层"：Runway 无官方 CLI 且开源 MCP 只有 9 个工具、高频弃用无迁移工具；Higgsfield 技能无版本化、计费无编程化查询接口；两家都没有确定性评测基准和产物契约——这正是一个契约优先多厂商 CLI 的立足点。
+
+- **两家都没有确定性评测与回归基准**
+  - 证据：Runway/Higgsfield 的 changelog 与博客全是能力宣传：无公开 eval 集、无 seed 复现说明、无参数稳定性承诺、无模型间横向基准；Higgsfield skills 的'质量'靠 anti-slop 提示词约定，Runway 靠 recipes 人工经验
+  - 切入：建跨厂商提示词回归集：固定 prompt+seed+参数定期跑分，发布横向对比报告（成本/时长/一致性），以 CLI 插件形式让用户在自家场景上跑私有基准——评测是厂商不便自证、第三方最有话语权的空位
+- **两家技能层都缺 agent 输入校验与产物契约**
+  - 证据：Runway skills 要求预充值 $10 + 环境变量即用，无输入 schema 校验层；Higgsfield 技能直接产出网站/游戏成品但无产物 manifest（部署 URL、资产清单、成本记录均不落盘）——agent 管线断点恢复和审计无从做起
+  - 切入：把 JSON contract 层做成两家 skills 之上的公共包装器：统一输入校验、产物 manifest、断点恢复与重放——这正是把已有工程实践（agent 输入/恢复/产物契约硬化）产品化为跨厂商中间层
 
 ---
 
