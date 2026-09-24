@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>视频 AI 生态全域调研与战略 · 完整报告（2026-09-23）</title>
+<style>
+body{font-family:-apple-system,'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;max-width:880px;margin:0 auto;padding:48px 24px;line-height:1.75;color:#1a1a1a;background:#fdfdfb}
+h1{font-size:1.9em;border-bottom:3px solid #1a1a1a;padding-bottom:12px;margin-top:1.6em}
+h1:first-of-type{margin-top:0}
+h2{font-size:1.45em;border-bottom:1px solid #ddd;padding-bottom:6px;margin-top:2em}
+h3{font-size:1.15em;margin-top:1.5em}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.92em}
+th,td{border:1px solid #ccc;padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#f0efe9}
+blockquote{border-left:4px solid #b5a642;margin:1em 0;padding:.5em 1em;background:#faf8f0;color:#444}
+code{background:#f0efe9;padding:2px 5px;border-radius:3px;font-size:.9em}
+pre{background:#1e1e1e;color:#d4d4d4;padding:16px;border-radius:6px;overflow-x:auto}
+pre code{background:none;color:inherit}
+a{color:#0b6623}
+hr{border:none;border-top:1px solid #ddd;margin:2.5em 0}
+@media print{body{max-width:100%;padding:0;font-size:11pt}h2{page-break-after:avoid}table{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+<h1 id="ai">视频 AI 生态全域调研与战略 · 完整报告</h1>
+<p><strong>版本</strong>：2026-09-23（v1）· <strong>方法</strong>：35 路 schema 约束 agent 真实网络调研（4 轮）+ 历史案例研究（35 案例 → 33 定律）+ 交叉合成
+<strong>配套</strong>：机器可读数据 <code>data/</code>（价格 34 条 / 能力矩阵 13 条 / schema / CI 新鲜度检查）· 逐路原始发现 <code>docs/research-*.md</code> 5 份
+<strong>置信度标注</strong>：[官方源] &gt; [多源交叉] &gt; [单一来源] &gt; 推断；商业数字均注明未经审计</p>
+<hr />
+<h2 id="_1">卷首 · 这份报告怎么读</h2>
+<table>
+<thead>
+<tr>
+<th>你有 5 分钟</th>
+<th>读第一部分（执行摘要）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>你要理解打法背后的逻辑</td>
+<td>读第三部分（战略纲领）</td>
+</tr>
+<tr>
+<td>你要决定做什么</td>
+<td>读第五部分（机会地图）+ 第六部分（执行计划）+ §7.3 待拍板决策</td>
+</tr>
+<tr>
+<td>你要核实任何一条结论</td>
+<td>按标注溯源到 <code>docs/research-*.md</code> 对应研究路</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="_2">第一部分 · 执行摘要</h1>
+<h2 id="11">1.1 五个核心判断（全部有一手证据链）</h2>
+<ol>
+<li><strong>接入层形态已定型</strong>：SKILL.md + MCP + CLI 三件套。PixVerse（中国唯一全做齐）、Tavus、Runway（官方托管视频 MCP 第一家）已亲自验证——这是既成事实，不再是判断。</li>
+<li><strong>厂商集体收缩回围墙</strong>：fal 全押自家 Agent、Higgsfield 转向 ChatGPT 宿主、HeyGen 收拢渲染并日落 v1/v2 API、Pika 砍旧 API。每家只覆盖自己，<strong>跨厂商公共层无人做</strong>。</li>
+<li><strong>纯路由/聚合正在失去护城河</strong>：Runway Model Router、VideoRouter、Hedra 三方挤压；OpenRouter（无状态路由的标杆）2026-08-19 官宣被 Stripe 收编——融资后 82 天，终局实证。</li>
+<li><strong>价值沿栈上移，L5 三个空位结构性无人能做</strong>：跨厂商任务契约、生成后判片闭环、角色一致性资产——厂商做有利益冲突（无法自评），聚合站做无立场（只会路由）。需求侧已验证：90 天内 GitHub 出现 ≥8 个自建轮询/续跑仓库。</li>
+<li><strong>窗口以月计</strong>：视频开发者波相位 ≈ LLM 波 2023 年 2-4 月；独立中间件窗口逐代减半（云 8 年→移动 4-5 年→LLM 约 12 个月），<strong>视频波估计 6-12 个月</strong>。</li>
+</ol>
+<h2 id="12">1.2 纲领一句话</h2>
+<p><strong>「格式免费，验收收费」</strong>——契约 schema 捐成开放标准；商业价值押在标准无法覆盖的三件事：验收执行、角色资产、跨厂商一致性；以"帮厂商卖"的增量关系存活；按 4-6 年周期规划穿越一次死亡谷。</p>
+<h2 id="13">1.3 一张表看机会（完整版见第五部分）</h2>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>代表</th>
+<th>我们的用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>做得好（9 家可借力）</td>
+<td>PixVerse 契约语义、Runway 价格表内置、Seedance 2.0 任务契约、HeyGen 免费入口漏斗</td>
+<td>照抄范式，升级为跨厂商层</td>
+</tr>
+<tr>
+<td>将要做（7 个可搭车）</td>
+<td>Runway Dev Platform 主线化、fal Agent GA、腾讯 TokenHub、HeyGen 10-31 日落、智谱 Managed Agents</td>
+<td>迁移窗口、适配器真空期、判片大脑供给</td>
+</tr>
+<tr>
+<td>没做（10 个可占位）</td>
+<td>统一任务契约 / 判片闭环 / 角色资产 / 计费可信 / 寿命预警 / 提示词编译器 / 审核中间件 / LoRA manifest / license CLI / 分镜契约</td>
+<td>前三项已有付费证据，构成 CLI 三支柱</td>
+</tr>
+</tbody>
+</table>
+<h2 id="14">1.4 下一步</h2>
+<p>执行计划 M0（本周）：skills.sh 厂商级技能矩阵 6 件 + 中立 CLI 立项。里程碑 M0-M4 至 2027-03，详见第六部分。待拍板：载体、发布账号、首批厂商、判片 VLM（§7.3）。</p>
+<hr />
+<h1 id="_3">第二部分 · 方法论</h1>
+<h2 id="21-2026-09-21-09-23-35">2.1 调研结构（2026-09-21 → 09-23，四轮 35 路）</h2>
+<table>
+<thead>
+<tr>
+<th>轮次</th>
+<th>路</th>
+<th>回答的问题</th>
+<th>产出</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1 生态维度 + Sora 深挖</td>
+<td>5+4</td>
+<td>标准层/分发层/聚合层现状；Sora 退场真伪</td>
+<td>迁移潮=弱证据；skills.sh 哑铃型；榜单毒性实证</td>
+</tr>
+<tr>
+<td>R2 厂商前瞻 + 全域扩展</td>
+<td>5+6</td>
+<td>每家厂商 90 天路线；LLM/训练设施跨界</td>
+<td>fal $8B 勘误（谈判中）；七家训练设施全缺位；中国"一家独走四家缺位"</td>
+</tr>
+<tr>
+<td>R2 深挖二（8 路）</td>
+<td>comps/recipes/judge/compliance/prices/caps/money</td>
+<td>竞品拆解；一致性配方；判片设计；合规；<strong>价格与能力实采</strong>；资本路数</td>
+<td>data/ 入库；verdict schema 设计输入；资金面信号表</td>
+</tr>
+<tr>
+<td>R3 需求与前沿（8 路）</td>
+<td>需求×2/行业×3/前沿×1/开源×2</td>
+<td>谁在付钱骂什么；行业纵深；能力跳变；开源权力转移</td>
+<td>三支柱获付费证据；目标用户收窄；契约设计 5 条硬约束</td>
+</tr>
+<tr>
+<td>R4 战略理论（6 路）</td>
+<td>幸存者/吞噬史/价值转移/标准战争/终局/时点</td>
+<td>抽象层何时幸存；平台何时杀人；利润去哪；标准怎么赢；终局概率；相位判断</td>
+<td>35 案例 33 定律 → 战略纲领</td>
+</tr>
+</tbody>
+</table>
+<p>合计 35 路（含 2 路限流补跑、1 路网络故障补跑），<strong>全程零编造</strong>：搜不到即如实记 open_questions。</p>
+<h2 id="22">2.2 纪律</h2>
+<ul>
+<li>每条关键结论带 source_url + 置信度；商业数字注明未经审计。</li>
+<li>只收 90 天内信号（历史案例研究除外）；任何"窗口判断"行动前 24h 内一手复核。</li>
+<li>价格记录原始单位不换汇；<code>data/*.json</code> 超 30 天由 CI 自动标黄。</li>
+<li>勘误留痕：fal $8B 由"已融资"改"谈判中[单一来源]"；迁移潮由"确定性"降"弱证据"。</li>
+</ul>
+<hr />
+<h1 id="_4">第三部分 · 战略纲领（为什么这么打）</h1>
+<h2 id="31-2">3.1 七条第一性原理（每条 ≥2 个历史案例背书）</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>定律</th>
+<th>杀手证据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1</td>
+<td>碎片化定律：抽象层价值 ∝ 下层碎片化；碎片化是计时器不是结构</td>
+<td>Docker 在 OCI+K8s 收敛后失去平台；OpenRouter 红利期仅约 3 年</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>状态定律：无状态转发必被吞或归零；状态资产才有生存权</td>
+<td>OpenRouter $1.3B→82 天被 Stripe 收编 vs Zapier $1.3M 融资独立 14 年</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>增量定律：帮下层卖则共存；裁决截流必招杀</td>
+<td>Plaid 被 Chase 定性 "massively taxing" 后被迫签受控付费协议</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>商品化方向定律：利润流向"对结果负责"的互补品层</td>
+<td>LLM 推理价 3 年跌 ~1000x；Veo 5.5 个月跌 8x；利润沉向算力/应用/数据</td>
+</tr>
+<tr>
+<td>P5</td>
+<td>标准定律：捐出的 schema 永远不是护城河，护城河在执行与认证</td>
+<td>Docker 捐 OCI 格式永生公司出局；SmartBear 捐 OpenAPI 靠工具存活</td>
+</tr>
+<tr>
+<td>P6</td>
+<td>官方化定律：平台官方做你这层=死刑判决，纯路由先死</td>
+<td>Twitter 2012 埋雷 2023 执行；厂商官方 MCP/skills 正在视频领域重演</td>
+</tr>
+<tr>
+<td>P7</td>
+<td>时间定律：窗口逐代减半（8y→4-5y→12m→视频波 6-12m）；必有一次死亡谷</td>
+<td>三波复盘；Stripe $95B→$50B、Twilio 两轮裁员、Plaid 腰斩</td>
+</tr>
+</tbody>
+</table>
+<h2 id="32">3.2 位置与仪表盘</h2>
+<p><strong>当前相位 ≈ LLM 波 2023 年 2-4 月</strong>；强度判定=<strong>全力冲刺但方向限定</strong>。
+四盏灯：①聚合层密集上线 ☑ ②比价表出现 ☑ ③应用层自建仓库爆炸 ☑ ④<strong>官方内置验收/角色功能 ☐——亮即从扩张转向收租</strong>（接入执行计划 M4 决策点）。</p>
+<h2 id="33-x-y">3.3 九条决策启发式（遇到 X 永远选 Y）</h2>
+<ol>
+<li>统一转发 vs 状态资产 → <strong>状态资产</strong></li>
+<li>厂商投资/排他合作 → <strong>拒绝</strong>（可做厂商付费的兼容性认证）</li>
+<li>"帮用户少付厂商钱"的功能 → <strong>不做（自杀线）</strong></li>
+<li>schema 何时捐 → <strong>触发器即捐</strong>（≥2 中立路由商+1 厂商采纳，或中立性被质疑；schema+商标打包，保留执行器商业权——MCP 发布 12.5 个月捐入中立基金会，剧本现成）</li>
+<li>重的部分（托管/算力）→ <strong>外包或 BYO 收费</strong></li>
+<li>开源 vs 云端 → <strong>自托管一等公民</strong>（开放权重拉平价格地板时滞仅 1 周-3 月）</li>
+<li>计费 → 向"按验收通过的结果计量"演进，<strong>绝不按秒转售</strong></li>
+<li>用户身份与关系 → <strong>归开发者</strong>，不做任何厂商客户端</li>
+<li>节奏 → <strong>按季度交付外部可见资产</strong>；连续两季度无 = 落后</li>
+</ol>
+<h2 id="34">3.4 终局与反纲领</h2>
+<p><strong>终局</strong>：独立盈利存续=主路线（契约与验收是纯软件，成本必须永远轻）；被收购=期权非目标（买家排序：云平台&gt;模型厂&gt;Agent 平台；保持多买方竞价）；IPO≈0 不作设计目标。<strong>三筹码现在就攒</strong>：书面中立承诺、可完整导出+OSS 兜底、干净账本。</p>
+<p><strong>反纲领（什么会杀死我们，每季复核）</strong>：被收编成渠道 / 做成客户端 / 依赖免费配额 / 价值押在格式上 / 在路由上耗资源 / 按旧波浪速度排期 / 成本变重 / 错过第四盏灯。</p>
+<hr />
+<h1 id="_5">第四部分 · 生态全景（看到了什么）</h1>
+<h2 id="41">4.1 六层栈</h2>
+<pre><code>L5 编排/验收层   ← 结构性空位且经需求验证：任务契约/判片/角色资产（本报告第五部分）
+L4 分发/信任层   ← skills.sh 哑铃型 + 榜单毒性（genmedia-labs 13★/60 万安装刷量嫌疑；Zenity 170 万恶意家族）
+L3 标准层 ✅ 定局  MCP（已捐中立基金会）/ SKILL.md（~48 产品采纳，治理悬置）/ AGENTS.md
+L2 聚合/路由层   ← 竞争烈度骤升：fal（官方末轮 $4.5B，$8B 谈判中）、OpenRouter→Stripe、Runway Model Router、VideoRouter、Hedra、腾讯代销
+L1 模型层        美国两强（Veo/Grok）+ 中国两强（Kling/Seedance）+ 开源只剩 Wan2.2 一家活跃（H3 开放权重后加入）
+L0 算力          4090 Community $0.34/hr；Wan2.2 LoRA 24GB 可训——个人可承受
+</code></pre>
+<h2 id="42-90">4.2 90 天三条主线</h2>
+<ol>
+<li><strong>厂商官方下场密集化</strong>：Runway 官方托管 MCP、ComfyUI 官方 MCP+skills、Higgsfield 铺 7+ 宿主、Synthesia 入场——第三方单点包装窗口关闭中，跨厂商窗口开着。</li>
+<li><strong>平台死亡与断契约常态化</strong>：Sora 12 个月全周期退场[官方源]；Pika 砍 dk_；HeyGen 10-31 日落 v1/v2——每起都是"契约层把供应商死亡当常态假设"的论据。</li>
+<li><strong>中国"一家独走、四家缺位"</strong>：PixVerse 三件套独走；火山/阿里/腾讯/智谱官方视频 MCP/Skill 数量为零——"官方没有的第一方体验"是被验证的空位。</li>
+</ol>
+<h2 id="43-money-map-2026-09-23">4.3 资本面（money-map 路，2026-09-23 回收）</h2>
+<p>港股通道实测走通（MiniMax 1-9 挂牌首日 +109%）；可灵分拆升为快手港交所公告官方确认（评估中，WSJ 报 ~$2.8B 融资）；PixVerse $439M C 扩展估值破 $2B；Cloudflare 吞并 Replicate → <strong>中立托管品类消失</strong>；产业资本入场（Nvidia/CAA/华勤）。风险：上市潮→API 价格战→纯转售中间商被挤出。</p>
+<hr />
+<h1 id="_6">第五部分 · 机会地图（在哪打）</h1>
+<h2 id="51-9">5.1 做得好——可借力（9 家）</h2>
+<table>
+<thead>
+<tr>
+<th>谁</th>
+<th>做了什么</th>
+<th>怎么借</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PixVerse</td>
+<td>全球最完整单厂商 agent 三件套（execution-contract / capabilities --json / 超时≠失败语义）</td>
+<td>契约语义照抄，升级为五厂商统一层</td>
+</tr>
+<tr>
+<td>Tavus</td>
+<td>llms.txt + openapi.yaml + skill.md 机器可读全家桶</td>
+<td>CLI 内置 --discover，发现不依赖注册表</td>
+</tr>
+<tr>
+<td>Runway（skills）</td>
+<td>SKILL.md 内置价格表、输出带成本、余额前置检查</td>
+<td>计费透明一等公民的范本</td>
+</tr>
+<tr>
+<td>火山 Seedance 2.0</td>
+<td>任务契约最完整（callback / 任务保留 7 天 / return_last_frame 串联）</td>
+<td>统一任务层的目标契约形态</td>
+</tr>
+<tr>
+<td>ComfyUI 官方</td>
+<td>comfy-mcp（本地 40 工具）+ comfy-skills</td>
+<td>本地路径的官方对齐对象</td>
+</tr>
+<tr>
+<td>HeyGen HyperFrames</td>
+<td>免费本地渲染 52K stars / 60 万安装</td>
+<td>免费入口→计费升级漏斗（100:1）</td>
+</tr>
+<tr>
+<td>Vidu</td>
+<td>唯一"提交前成本预估"</td>
+<td>dry-run 报价跨厂商化</td>
+</tr>
+<tr>
+<td>fal 双 MCP</td>
+<td>Run/Platform 分权</td>
+<td>agent 权限分层参考</td>
+</tr>
+<tr>
+<td>Higgsfield frontmatter</td>
+<td>Use when / NOT for / Chain with</td>
+<td>技能间路由最优写法</td>
+</tr>
+</tbody>
+</table>
+<h2 id="52-7">5.2 将要做——可搭车（7 个信号）</h2>
+<p>Runway Dev Platform 主线化（四线同招）· fal Agent GA（文档树备全）· 腾讯 TokenHub 迁移（真空期适配器）· HeyGen 10-31 日落（迁移窗口）· Google agentic 视频理解（判片大脑供给）· 智谱 Managed Agents + cogvideox-3 洼地（4K/60fps 无人接）· MCP Tasks 扩展（异步任务标准归宿）。
+资金面：MiniMax 打样港股、可灵分拆评估中、阶跃/智谱 IPO 进程（详见 research-deep-dive-2）。</p>
+<h2 id="53-10">5.3 没做——可占位（10 项，按确定性排序）</h2>
+<ol>
+<li><strong>跨厂商统一任务契约</strong>——✅ 已验证（≥8 个自建轮子仓库 + 四家商业聚合同向）</li>
+<li><strong>判片/验收闭环</strong>——✅ 已验证（C1~C20 机检先例 + FIRM-Video 使自动化可行；VBench≠物理正确证实多判器融合）</li>
+<li><strong>角色一致性资产</strong>——✅ 已验证（Asset-First 4-View 资产板、Soul Cinema 外购、漂移诊断器全是手工先例）</li>
+<li><strong>计费可信层</strong>——✅ 已验证（fal +82% 溢价实测；重生成成本放大 10 倍帖反复出现）</li>
+<li><strong>供应商寿命预警</strong>——✅ 证据扩展到开源（WanVideoWrapper 6708★ 零提交/1282 issues）</li>
+<li><strong>skills.sh 厂商级技能矩阵</strong>——哑铃型空端；别追安装数</li>
+<li>中国厂商国际接入规范层</li>
+<li>分镜 JSON 契约</li>
+<li>合规字段（《标识办法》实测：API 水印默认关、隐式元数据无人做——责任在调用方）</li>
+<li><strong>不做清单</strong>：纯路由/聚合、薄包装、低代码编排、slop 变现（YouTube 7 月去货币化）、绑定单一厂商、押注世界模型</li>
+</ol>
+<h2 id="54">5.4 第三轮新增占位</h2>
+<p>提示词编译器（否定改写/跨模型语法分流）· 审核预检/合规转译中间件 · 音轨后期管线（换台词不重渲）· LoRA 可移植 manifest · license 合规 CLI。
+<strong>目标用户</strong>：电商素材批量管道（AI UGC $1-11/条 vs 真人 $185-2000——唯一证实规模的赚钱工作流）+ 中文 AIGC 短剧工坊（Q1 新微短剧 ~95% AI 生成，98.7% 未回本→工具刚需在译配/授权/回本预测）。</p>
+<h2 id="55-12-36">5.5 前沿 → 契约设计五条硬约束（12-36 月）</h2>
+<p>① 5s 基座→2min 外推 → 时长改两段式字段；② 22-30FPS 实时 → latency_budget+分块在线判片；③ 世界模型双产物 → 契约加 2D+3D 双轨；④ 深伪检测近随机 → 真伪靠 provenance 元数据；⑤ 音画一体全双工 → audio_track/lip_sync_tolerance 字段，无声视频+后期配音契约淘汰。</p>
+<hr />
+<h1 id="_7">第六部分 · 执行计划（怎么打）</h1>
+<h2 id="61">6.1 北极星与用户</h2>
+<p><strong>北极星</strong>：一条命令把视频生成任务（含重试与验收）跨 ≥3 家厂商跑通并本地归档，行为一致。
+<strong>第一批用户</strong>：电商素材批量管道 + 中文 AIGC 短剧工坊。</p>
+<h2 id="62">6.2 里程碑</h2>
+<table>
+<thead>
+<tr>
+<th>里程碑</th>
+<th>日期</th>
+<th>交付</th>
+<th>验收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>M0 占位</strong></td>
+<td>09-30</td>
+<td>skills.sh 厂商级技能矩阵 6 件 + 中立 CLI 立项（契约 v0 草案含 5 家字段对照）</td>
+<td>技能可安装</td>
+</tr>
+<tr>
+<td><strong>M1 任务契约层</strong></td>
+<td>10-31</td>
+<td>统一句柄 submit/poll/<strong>resume</strong>/归档 + 计费可信 v0，先接 2 家</td>
+<td>杀进程后 resume 拿回同一产物；dry-run 报价</td>
+</tr>
+<tr>
+<td><strong>M2 判片闭环</strong></td>
+<td>11-30</td>
+<td>verdict schema + 抽帧判片 + 驱动重试 + 预算熔断</td>
+<td>10s 端到端自动重试；判片 ≈$0.02-0.05/次</td>
+</tr>
+<tr>
+<td><strong>M3 角色资产</strong></td>
+<td>12-31</td>
+<td>character_id + Wan2.2 LoRA 训练串联（$8-18/次）+ license/合规字段</td>
+<td>同一角色资产 ≥2 端点一致性达标</td>
+</tr>
+<tr>
+<td><strong>M4 公开 1.0</strong></td>
+<td>2027-03</td>
+<td>三支柱 GA + 寿命预警 + 中国厂商接入</td>
+<td>北极星 ≥3 厂商；数据新鲜度 CI 绿</td>
+</tr>
+</tbody>
+</table>
+<h2 id="63">6.3 风险对冲</h2>
+<p>厂商断契约（契约层本身是解+寿命预警）· 编排撞车（不碰编排只做契约）· 价格战（不做转售赚信息红利）· 榜单毒性（技能是漏斗不是产品）· 一人带宽（串行+每阶段独立可发布）· 前推翻转（契约字段预留+每季对照复核）。</p>
+<h2 id="64">6.4 成本</h2>
+<p>M0 ≈ $0；M2 判片 ≈ $0.02-0.05/次；M3 训练 $8-18/次（spot）；预算由 B4 熔断自管。</p>
+<hr />
+<h1 id="_8">第七部分 · 数据资产与附录</h1>
+<h2 id="71">7.1 仓库结构</h2>
+<pre><code>video-ai-landscape/
+├── docs/
+│   ├── REPORT-2026-09-23.md      ← 本报告（完整版）
+│   ├── STRATEGY-DOCTRINE.md      ← 战略纲领（金字塔顶层）
+│   ├── ECOSYSTEM-STRATEGY.md     ← 战略 v2（机会地图+窗口推演）
+│   ├── EXECUTION-PLAN.md         ← 执行计划 M0-M4
+│   └── research-*.md × 5         ← 35 路原始发现（逐条带源）
+├── data/
+│   ├── prices.json               ← 34 条价格实采（as_of 2026-09-22）
+│   ├── capabilities.json         ← 13 条能力矩阵
+│   ├── schema/*.json             ← JSON Schema
+│   └── README.md                 ← 活数据纪律
+└── .github/workflows/refresh.yml ← 周更新 + 数据新鲜度检查（&gt;30 天标黄）
+</code></pre>
+<h2 id="72">7.2 研究笔记索引</h2>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>research-vendor-next-moves-2026-09-22.md</td>
+<td>5 路：fal/atlascloud/higgsfield-runway/tier2/demand</td>
+</tr>
+<tr>
+<td>research-ecosystem-expansion-2026-09-22.md</td>
+<td>6 路：video-cn/oss/apps + llm-labs/training-infra/llm-x-video</td>
+</tr>
+<tr>
+<td>research-deep-dive-2-2026-09-22.md</td>
+<td>8 路：comps/recipes/judge/compliance/prices/caps/patterns/money</td>
+</tr>
+<tr>
+<td>research-round3-2026-09-22.md</td>
+<td>8 路：需求侧×2/行业×3/前沿/开源×2</td>
+</tr>
+<tr>
+<td>research-round4-strategy-2026-09-23.md</td>
+<td>6 路：35 案例 33 定律（战略理论）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="73">7.3 待拍板决策</h2>
+<ul>
+<li><strong>D1 载体</strong>：独立中立二进制（推荐，立场干净）vs 在 atlas 内做多 provider</li>
+<li><strong>D2 技能发布账号</strong>：skills.sh 用个人号还是新组织</li>
+<li><strong>D3 首批两家厂商</strong>：推荐 Seedance 2.0 + Kling 国际 API（备选 Wan 全链路自控）</li>
+<li><strong>D4 判片默认 VLM</strong>：建议可插拔+内置比价，默认哪家</li>
+</ul>
+<h2 id="74">7.4 方法与来源声明</h2>
+<ul>
+<li>检索手段：官方文档/公告、GitHub API、HN Algolia API、HuggingFace API、HKEX 公告、财报转引、浏览器实测（skills.sh）。</li>
+<li>置信度分级：官方源（一手文档/公告）&gt; 多源交叉（≥2 独立来源互证）&gt; 单一来源 &gt; 推断。</li>
+<li>商业数字（估值/ARR/融资额）多为媒体报道，未经审计，已逐条标注。</li>
+<li>已知勘误留痕：fal $8B=谈判中非已交割；"迁移潮"=弱证据；H3 下载量两口径（377 万 API 实测 / 404 万页面自报）并存。</li>
+<li>工作流运行记录：wf_328d5117 / wf_b3382967 / wf_30803c52 / wf_354c2d89 / wf_1b079cd9 / wf_924b570c / wf_ff44befa（可 resume 复现）。</li>
+</ul>
+<hr />
+<p><em>报告生成：2026-09-23 · 任何"窗口判断"在行动前 24h 内需一手复核 · 数据超 30 天 CI 自动标黄</em></p>
+</body>
+</html>
