@@ -64,7 +64,7 @@
   footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
 </style></head>
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/anthropic-cli.md</span><button onclick="t()">🌓</button></nav>
-<main><h1>Anthropic CLI (<code>ant</code>)</h1>
+<main class="md"><h1>Anthropic CLI (<code>ant</code>)</h1>
 <p>The <code>ant</code> CLI exposes every Claude API resource as a shell subcommand. Compared to <code>curl</code>: request bodies are built from typed flags or piped YAML instead of hand-written JSON, <code>@path</code> inlines file contents into any string field, <code>--transform</code> extracts fields with a GJSON path (no <code>jq</code>), list endpoints auto-paginate (cap total results with <code>--max-items N</code>; <code>--limit</code> only sets the server page size), and the <code>beta:</code> prefix auto-sets the right <code>anthropic-beta</code> header.</p>
 <h2>When to use the CLI vs the SDK</h2>
 <p><strong>CLI for the control plane, SDK for the data plane.</strong> Agents and environments are relatively static resources you define, configure, and debug with <code>ant</code> - check the YAML into your repo, apply from CI, inspect from a terminal. Sessions are dynamic and driven by your application through the SDK - create per task, stream events, react to tool calls, integrate into your product. Both hit the same API; the split is about where the call lives, not what's possible.</p>

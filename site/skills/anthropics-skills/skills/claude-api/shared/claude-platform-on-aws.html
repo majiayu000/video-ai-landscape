@@ -64,7 +64,7 @@
   footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
 </style></head>
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/claude-platform-on-aws.md</span><button onclick="t()">🌓</button></nav>
-<main><h1>Claude Platform on AWS</h1>
+<main class="md"><h1>Claude Platform on AWS</h1>
 <p><strong>Anthropic-operated</strong> access to the Claude Developer Platform through AWS infrastructure - SigV4 authentication, AWS IAM access control, and AWS Marketplace billing. Because Anthropic operates it, <strong>the API surface matches first-party with same-day parity</strong> - for per-feature exceptions, see <code>shared/platform-availability.md</code> (the single source of truth; do not rely on an inline exception list here). Model IDs are the bare first-party strings (<code>claude-opus-5</code>, <code>claude-sonnet-5</code>) - <strong>no provider prefix</strong>.</p>
 <blockquote>
 <p><strong>Not the same as Amazon Bedrock.</strong> Bedrock is partner-operated (AWS runs the service; release schedules vary, feature subset, <code>anthropic.</code>-prefixed model IDs). Claude Platform on AWS and Bedrock coexist; pick by whether you need AWS-native IAM/billing with full Anthropic API parity (this page) vs. Bedrock's own ecosystem.</p>

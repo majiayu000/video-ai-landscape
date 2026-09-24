@@ -64,7 +64,7 @@
   footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
 </style></head>
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-generate/references/marketing-products.md</span><button onclick="t()">🌓</button></nav>
-<main><h1>Products</h1>
+<main class="md"><h1>Products</h1>
 <p>Two ways to register a product: URL fetch (auto-imports title, description, images) or manual (provide your own).</p>
 <h2>URL fetch (default)</h2>
 <pre><code class="language-bash">ID=$(higgsfield marketing-studio products fetch --url https://shop.example.com/sneakers --wait --json | jq -r .id)

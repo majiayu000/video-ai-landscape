@@ -64,7 +64,7 @@
   footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
 </style></head>
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/go/managed-agents/README.md</span><button onclick="t()">🌓</button></nav>
-<main><h1>Managed Agents - Go</h1>
+<main class="md"><h1>Managed Agents - Go</h1>
 <blockquote>
 <p><strong>Bindings not shown here:</strong> This README covers the most common managed-agents flows for Go. If you need a class, method, namespace, field, or behavior that isn't shown, WebFetch the Go SDK repo <strong>or the relevant docs page</strong> from <code>shared/live-sources.md</code> rather than guess. Do not extrapolate from cURL shapes or another language's SDK.</p>
 <p><strong>Agents are persistent - create once, reference by ID.</strong> Store the agent ID returned by <code>agents.New</code> and pass it to every subsequent <code>sessions.New</code>; do not call <code>agents.New</code> in the request path. <strong>Recommended:</strong> define agents and environments as version-controlled YAML applied with the <code>ant</code> CLI - see <code>shared/anthropic-cli.md</code> (its live-docs URL is in <code>shared/live-sources.md</code>). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.</p>

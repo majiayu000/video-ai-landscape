@@ -64,7 +64,7 @@
   footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
 </style></head>
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/managed-agents-overview.md</span><button onclick="t()">🌓</button></nav>
-<main><h1>Managed Agents - Overview</h1>
+<main class="md"><h1>Managed Agents - Overview</h1>
 <p>Managed Agents provisions a container per session as the agent's workspace. The agent loop runs on Anthropic's orchestration layer; the container is where the agent's <em>tools</em> execute - bash commands, file operations, code. You create a persisted <strong>Agent</strong> config (model, system prompt, tools, MCP servers, skills), then start <strong>Sessions</strong> that reference it. The session streams events back to you; you send user messages and tool results in.</p>
 <h2>Warning: THE MANDATORY FLOW: Agent (once) -&gt; Session (every run)</h2>
 <p><strong>Why agents are separate objects: versioning.</strong> An agent is a persisted, versioned config - every update creates a new immutable version, and sessions pin to a version at creation time. This lets you iterate on the agent (tweak the prompt, add a tool) without breaking sessions already running, roll back if a change regresses, and A/B test versions side-by-side. None of that works if you <code>agents.create()</code> fresh on every run.</p>

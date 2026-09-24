@@ -108,7 +108,7 @@ def page(title, crumb_repo, body, meta="", crumb_file="", search=False):
 <html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{htmllib.escape(title)}</title>{search_head}<style>{CSS}</style></head>
 <body><nav class="topbar">{crumb}<button onclick="t()">🌓</button></nav>
-<main>{search_box}{meta}{body}</main>
+<main class="md">{search_box}{meta}{body}</main>
 <footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
 <script>{JS}{search_init}</script></body></html>"""
 

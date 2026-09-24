@@ -35,7 +35,7 @@ def doc_page(title, crumb_file, body):
 <html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{htmllib.escape(title)}</title><style>{CSS}</style></head>
 <body><nav class="topbar">{crumb}<button onclick="t()">🌓</button></nav>
-<main>{body}</main>
+<main class="md">{body}</main>
 <footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 研究文档 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
 <script>{JS}</script></body></html>"""
 

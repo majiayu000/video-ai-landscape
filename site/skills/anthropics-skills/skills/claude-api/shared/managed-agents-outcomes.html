@@ -64,7 +64,7 @@
   footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
 </style></head>
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/managed-agents-outcomes.md</span><button onclick="t()">🌓</button></nav>
-<main><h1>Managed Agents - Outcomes</h1>
+<main class="md"><h1>Managed Agents - Outcomes</h1>
 <p>An <strong>outcome</strong> elevates a session from <em>conversation</em> to <em>work</em>: you state what "done" looks like, and the harness runs an iterate -&gt; grade -&gt; revise loop until the artifact meets the rubric, hits <code>max_iterations</code>, or is interrupted. A separate <strong>grader</strong> (independent context window) scores each iteration against your rubric and feeds per-criterion gaps back to the agent.</p>
 <p>The SDK sets the <code>managed-agents-2026-04-01</code> beta header automatically on all <code>client.beta.sessions.*</code> calls; no additional header is required for outcomes.</p>
 <hr />
