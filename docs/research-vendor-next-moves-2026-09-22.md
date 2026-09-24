@@ -339,6 +339,30 @@ Runway 则把 Developer Platform 做成明示主线：8/28 skills 仓库重构�
 
 ---
 
+### 附：什么是「机器可读契约层」（名词解释，2026-09-24）
+
+**一句话**：全行业的技能生态里，没有任何一家提供"程序能直接校验的规格说明"——技能的全部信息都只是写给人（和 AI）看的 Markdown 文章。
+
+**「契约」指机器能读、能校验、能执行的规格**，工程里的成熟先例：
+
+| 契约形式 | 管什么 |
+|---|---|
+| OpenAPI / Swagger | 这个 API 接什么参数、返回什么结构——调用前就能自动验证，不用等线上炸了才知道 |
+| JSON Schema | 数据长什么样，程序可自动判对错 |
+| package-lock + semver | 今天装的依赖和上周一模一样——可复现、可回退 |
+
+**「止步于 Markdown」的三种具体事故**（本调研实锤）：
+
+1. **参数没有 schema，错了没人拦。** "支持 4K、时长 5 或 10 秒"是自然语言。agent 理解错（如传 `duration: 7`），没有任何东西在调用前拦截——直接打到 API，钱花了才知道。有契约层，一个 JSON Schema 就能在发请求前判死刑。
+2. **技能没有版本号，今天装的和上月不同。** Higgsfield 89 个 commit 直接改 main 的 SKILL.md，无 semver、无 CHANGELOG；9/11 一次 commit 把全库默认模型切成 GPT Image 2.5 / Seedance 2.5——`npx skills add` 拉到的是漂移中的 main 头，同一技能周一和周五行为不同且无法回退。
+3. **产物没有 manifest，下游没法自动化。** 技能跑完，部署 URL、资产清单、花费金额没有一样结构化落盘。想接"批量出片→筛选→下游处理"管线时，断点恢复、审计、重放全部无从做起。
+
+**为什么是"空位"**：所有厂商结构上不会自己补（等于承认自家技能不可靠，且无竞争压力），但重度用户人人撞墙——典型的第三方最有话语权的位置，即"契约优先多厂商 CLI"的立足点。
+
+**videokit 已落地的胚胎形态**：每个 SKILL.md 带 YAML frontmatter（name/version/allowed-tools，CI 的 validate.py 程序化校验）；技能级 semver 0.1.0（对照 Higgsfield 的裸奔 main）；价格表带 as_of 日期 +【未核实-缺口】标记。完整版契约层（输入 JSON Schema、产物 manifest、技能 lock 文件）是 M1+ 候选。
+
+---
+
 ## 第二梯队（Pika / MiniMax / Vidu / Kling / Luma / ElevenLabs）
 
 90 天内六家分成三个梯队：MiniMax 与 ElevenLabs 已建成官方全栈 agent 面（MCP+CLI+skills，且 ElevenLabs 完成“本地 MCP→托管 MCP、REST 示例→CLI”的架构切换）；可灵与 Vidu 是最关键的刚入场者——可灵 6/15 才建 skills 仓、8 月 10 天内连发 Claude/Cursor/WorkBuddy 三端官方 plugin 并上线托管 MCP（klingai.com/mcp，官方优先推荐 CLI），Vidu 7 月推出 OpenClaw 系官方 Vidu Agent 并高频维护 vidu-skills（但官方 vidu-mcp 已停更 15 个月）；Luma 停在 API+官方 CLI 层（CLI 默认分支自 6/9 停更），其“Luma Skills”是产品内工作流而非可安装 agent 技能，全站无 MCP；Pika 转型 API Club 聚合门户（OpenAPI 3.1+llms.txt+/agent 提示词页），无任何协议级集成。统一 CLI 的下一步方向：provider 适配器优先对准“官方 API 强、agent 面空白”的 Luma Agents API 与国际版 Kling API。最大空位：可灵的 agent 集成被锁在中国消费者会员生态（klingai.com 中文+会员计费），国际开发者门户 kling.ai/document-api 零 agent 集成；且全行业没有跨厂商统一契约——成本预估仅 Vidu 一家实现，这正是 contract-first 多厂商 CLI 的入口。
