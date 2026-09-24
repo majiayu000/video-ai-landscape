@@ -57,3 +57,51 @@
 - `api.github.com/repos/higgsfield-ai/skills/contributors`（5 人）与 `/commits?since=2026-06-24`（skills 59 / cli 21）
 - `skills.sh/api/search?q=higgsfield`（安装量实时）
 - 本库 `docs/research-vendor-next-moves-2026-09-22.md`（时间线与分化判断）· `docs/research-deep-dive-2-2026-09-22.md`（evals/计费/版本化考古）
+## 5. 横评快照 · skills.sh 全景与玩法拆解（2026-09-24 探索追加）
+
+### 5.1 官方技能安装量对比（skills.sh API 实时）
+
+| 厂商 | 官方技能最高安装 | 生态状态 |
+|---|---|---|
+| Higgsfield | 178,706（generate） | 9 技能 ≈ 98 万，视频类绝对第一 |
+| Runway | 527（rw-generate-video） | 全系几百量级；开发者重心在 SDK/MCP，不在技能 |
+| fal | 919（fal-image-edit，官方） | 官方存在感弱；第三方 nexu-io 系每个约 2.5k |
+| PixVerse | 826 | 契约设计最强（考古结论），分发最小 |
+| AtlasCloud | 649（atlas-cloud） | 工作库对应厂商，同量级 |
+| ElevenLabs | 官方仅 96；第三方 prime-skills 361,275 | **第三方反超官方 3759 倍**——唯一反向案例 |
+| Anthropic（基线） | canvas-design 110,396 | 标准制定者 |
+| Google（基线） | agents-cli 家族每个 ≈ 329k | 大厂自灌安装 |
+
+**结论 1**：视频类技能在 skills.sh = Higgsfield 一家独大，其他视频厂商全部没上心（几百 vs 十几万）。Runway/fal 的开发者注意力在 SDK 与 MCP——**"开发者向视频技能"这一层既没有第二梯队，也没有认真的竞争者**。
+**结论 2**：ElevenLabs 案例证明技能分发上官方身份不是必需，触发词质量与实效才是——**个人账号发布（D2 选 majiayu000）不构成劣势**。
+
+### 5.2 GitHub skills 仓库对照（2026-09-24）
+
+| 仓库 | stars | 最后 push | 备注 |
+|---|---|---|---|
+| anthropics/skills | 177,863 | 09-22 | 官方标准 |
+| higgsfield-ai/skills | 1,117 | 09-14 | 厂商中最大 |
+| elevenlabs/skills | 459 | 09-16 | |
+| fal-ai-community/skills | 246 | 05-13 | **停更 4 个月** |
+| runwayml/skills | 69 | 08-28 | |
+| PixVerseAI/skills | 61 | 09-10 | 契约最强，社区最小 |
+
+### 5.3 HN 热度：接近零
+
+近 90 天 higgsfield 相关 story 最高 5 pts，无一条进入主流视野（唯一相关提问："Why Suddenly higgsfield made its core repo Opensource?"，1 pt，9-17）。它的营销主场在 TikTok/创作者侧，开发者社区声量 ≈ 0。
+**含义**：98 万安装里几乎不含"HN 型开发者"——其用户画像与我们的电商素材/短剧工坊管道用户重叠度，高于与硅谷开发者重叠度。技能渠道触达的正是我们要的人。
+
+### 5.4 COOKBOOK 拆解：它的玩法是"跨技能剧本"
+
+Recipe 统一格式 = What it does / Why powerful / **What you say**（用户原话）/ What the agent does（bash 链）。旗舰配方：创始人一张头像 → soul-id 训练 → product-photoshoot 出 5 个场景 → generate（kling3_0）把最好的 2 条动画化——一次会话产出整套品牌内容，自述对标"创意公司第一个 sprint"。
+
+两个发现：
+
+1. **它本质是"带 UX 的聚合层"**：generate 底层跑的是 Kling / Seedance / Veo / Grok / Gemini 等别人家的模型——技能只是它聚合生意的前端皮肤。这解释了为什么它不做契约层（每接一家新模型只需换皮）；也再次确认我们的位置（契约、验收、角色资产）它结构性做不了。
+2. **INSTALL_FOR_AGENTS.md 是成熟样例**：开篇即 "You are an AI coding agent. Follow this exactly."，CLI 安装→OAuth 验证→按平台路径装技能（Claude/Cursor/Codex 各一行）全流程写给 agent 执行。我们 M0 的 INSTALL 照此写。
+
+### 5.5 本轮探索待办
+
+- [ ] Higgsfield API（9-16 首发）定价页与计费口径实测——待外部搜索额度恢复
+- [ ] prime-skills/elevenlabs-music-generation（361k）拆解：第三方如何打赢官方——可反哺我们的触发词写法
+- [ ] nexu-io fal 系技能（2.5k 级）拆解：小团队技能的安装量天花板样本
