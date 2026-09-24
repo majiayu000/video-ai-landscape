@@ -89,6 +89,6 @@
 ## 7. 待拍板决策点
 
 - **D1 载体**：新起独立中立二进制（推荐，立场干净）vs 在 atlas 内做多 provider（快但品牌立场冲突）。
-- **D2 技能发布账号**：skills.sh 用哪个 GitHub 账号/组织发布（个人 majiayu000 vs 新组织）。
+- **D2 技能发布账号**：**已了结（2026-09-24）**——用户拍板「用谁的号都无所谓」，不指定账号，此决策点撤销、不再构成阻塞。待执行动作（已记录，尚未执行）：push `tools/videokit-skills`（b3faa88）到 GitHub → skills.sh 发布 → 跑通 M0「技能可安装」验收，M0 即完全闭环。
 - **D3 首批两家厂商**：推荐 Seedance 2.0（契约最完整，2A 目标形态）+ Kling 国际 API（文档成熟、Unit 计价清晰）；备选 Wan（开源侧可全链路自控）。
 - **D4 判片默认 VLM**：三选一（Gemini Flash / GLM-Flash / DeepSeek Flash），建议做成可插拔 + 内置比价。
