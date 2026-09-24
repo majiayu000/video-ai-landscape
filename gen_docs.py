@@ -16,6 +16,8 @@ OUT = ROOT / "site" / "docs"
 
 # 公开调研文档白名单（内部战略/执行文档不上站）: (文件名, 展示标题)
 DOCS = [
+    # 绝对路径 = 外源文档（videokit 仓库），相对路径 = 本库 docs/
+    ("/Users/lifcc/Desktop/code/AI/tools/videokit/docs/CONTRACT-v0.md", "videokit 契约 v0 · 跨厂商任务层（草案）"),
     ("higgsfield-skill-anatomy-2026-09-24.md", "Higgsfield Skills 完整解剖"),
     ("higgsfield-ecosystem-assessment-2026-09-24.md", "Higgsfield 生态与效果评估"),
     ("higgsfield-prompt-enhancer-finding-2026-09-24.md", "PromptEnhancer：CLI 效果依赖调研"),
@@ -45,27 +47,31 @@ def build():
         shutil.rmtree(OUT)
     items = []
     for fname, title in DOCS:
-        src = ROOT / "docs" / fname
+        src = Path(fname)
+        if not src.is_absolute():
+            src = ROOT / "docs" / fname
         if not src.exists():
             print(f"SKIP (missing): {fname}")
             continue
         _, body_html = render_md(src.read_text(encoding="utf-8"))
-        slug = fname.removesuffix(".md")
-        write(OUT / f"{slug}.html", doc_page(title, fname, body_html))
+        slug = src.stem
+        write(OUT / f"{slug}.html", doc_page(title, src.name, body_html))
         date = slug.rsplit("-", 1)[-1] if slug[-8:].replace("-", "").isdigit() else ""
-        items.append((slug, title, date, fname))
-        print(f"OK: {fname} -> /docs/{slug}.html")
+        src_label = f"videokit/docs/{src.name}" if Path(fname).is_absolute() else f"docs/{fname}"
+        items.append((slug, title, date, src_label))
+        print(f"OK: {src_label} -> /docs/{slug}.html")
 
     cards = "".join(
         f'<div class="card" style="flex:1 1 280px;border:1px solid var(--border);border-radius:12px;'
         f'padding:16px 18px;background:var(--surface)">'
         f'<h4 style="margin:0 0 6px;font-size:14.5px"><a href="{slug}.html" style="color:var(--ink);text-decoration:none">'
         f'{htmllib.escape(title)}</a></h4>'
-        f'<div style="font-size:12px;color:var(--muted)">{date} · docs/{fname}</div></div>'
+        f'<div style="font-size:12px;color:var(--muted)">{date} · {fname}</div></div>'
         for slug, title, date, fname in items)
     intro = ('<div class="meta"><div class="m-name">研究文档</div>'
              '<div class="m-desc">全景报告之外的过程性调研与厂商拆解：调研轮次记录、'
-             'Higgsfield 技能解剖与生态评估、PromptEnhancer 服务端依赖发现等。'
+             'Higgsfield 技能解剖与生态评估、PromptEnhancer 服务端依赖发现等，'
+             '以及 videokit 契约 v0 草案（跨厂商统一任务句柄的机器可读契约）。'
              '内部战略与执行文档不在本站公开。</div></div>')
     write(OUT / "index.html", doc_page("研究文档 · 视频厂商调研", "", intro + f'<div class="cards" style="display:flex;flex-wrap:wrap;gap:14px">{cards}</div>'))
     print(f"OK: {len(items)} docs + index -> {OUT}")

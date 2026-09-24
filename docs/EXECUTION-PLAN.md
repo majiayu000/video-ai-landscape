@@ -38,7 +38,9 @@
 
 ### M0（本周）· 占位与漏斗 — 成本≈0
 - **A1 技能矩阵**：`veo / kling / seedance / wan / cogvideo` 各一 + 总路由技能一。写法照抄三个范本：Runway 价格表内置 + 余额前置检查（计费透明一等公民）、Higgsfield frontmatter（Use when / NOT for / Chain with）、PixVerse 失败语义（超时≠失败、非零退出可带部分成功）。免费技能做漏斗入口（HyperFrames 模型：免费:计费安装量 = 100:1）。
-- **A2 中立 CLI 立项**：新仓库 + `docs/CONTRACT-v0.md` 契约草案——统一句柄（submit/poll/cancel/resume/artifact manifest）+ 幂等键 + unresolved 状态机 + 到期归档字段。目标形态 = Seedance 2.0 契约（callback_url、任务 ID 保留 7 天、return_last_frame 串联）；兼容 MCP Tasks 扩展方向。
+  **→ 状态（2026-09-24）**：代码层完成——`tools/videokit-skills` b3faa88，6 技能 CI validate 全过、22 项料单全勾；skills.sh 安装验收待 D2 发布账号。
+- **A2 中立 CLI 立项**：新仓库 + `docs/CONTRACT-v0.md` 契约草案——统一句柄（submit/poll/cancel/resume/artifact manifest）+ 幂等键 + unresolved 状态机 + 到期归档字段。目标形态 = Seedance 2.0 契约（callback_url、任务超时 execution_expires_after 48h——原记「ID 保留 7 天」未核实已更正、return_last_frame 串联）；兼容 MCP Tasks 扩展方向。
+  **→ 状态（2026-09-24）**：完成——`tools/videokit` 仓库首提交，`docs/CONTRACT-v0.md` 含统一状态机 / 幂等键两层去重 / manifest v0 / 5 家字段对照表；已上 research 站 `/docs/`。
 - **验收**：技能安装可用；契约草案有 5 家厂商字段对照表（数据源：`data/capabilities.json`）。
 
 ### M1（10 月）· 任务契约层 — CLI 的地基

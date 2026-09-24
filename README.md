@@ -51,3 +51,5 @@ npx -y pagefind --site site
 ## 快照信息
 
 调研日期 2026-09-21。7 个仓库的克隆 SHA 固定在 `setup.sh`，厂商后续更新不影响本报告的可复现性。
+
+厂商商业对比，以及阿特拉斯技能、命令行、MCP 的做法，写在 [`docs/atlas-ecosystem-plan.md`](docs/atlas-ecosystem-plan.md)。
