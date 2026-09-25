@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PromptEnhancer：CLI 效果依赖调研</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 全景报告</a><span class="crumb">/</span><a href="/docs/">研究文档</a><span class="crumb">/</span><span class="crumb">higgsfield-prompt-enhancer-finding-2026-09-24.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Higgsfield PromptEnhancer 调研：CLI 效果对服务端增强的依赖（2026-09-24）</h1>
+<blockquote>
+<p>方法：克隆 <code>higgsfield-ai/skills</code>（HEAD, 2026-09-24）全文 grep "enhance" + 逐文件核对调用链。
+用户问题：hig 的 skill 在 CLI 过程中是否用到他们的 promptenhancer 服务？单纯用 CLI 是不是做不出效果？</p>
+</blockquote>
+<h2>结论速览</h2>
+<table>
+<thead>
+<tr>
+<th>技能</th>
+<th>enhancer 形态</th>
+<th>效果依赖服务端？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>product-photoshoot</td>
+<td><strong>服务端</strong> PromptEnhancer（10 模式摄影词汇+结构模板）</td>
+<td><strong>是</strong>——官方承认裸调 noticeably worse</td>
+</tr>
+<tr>
+<td>marketplace-cards</td>
+<td><strong>服务端</strong>（backend prompt enhancement + hidden templates）</td>
+<td><strong>是</strong></td>
+</tr>
+<tr>
+<td>generate（含视频）</td>
+<td>无</td>
+<td>否——prompt 由 agent 直写，裸调就是正常用法</td>
+</tr>
+<tr>
+<td>brandkit（logo）</td>
+<td><strong>技能内契约</strong>（client-side，"you apply this contract yourself"）</td>
+<td>否——白盒 prompt 工程</td>
+</tr>
+<tr>
+<td>video-explainer</td>
+<td>无（preset 从服务端拉取，prompt 自写）</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+<h2>证据（原文引用）</h2>
+<ol>
+<li><code>higgsfield-product-photoshoot/SKILL.md:27</code>：
+   "The CLI calls a backend prompt enhancer that holds mode-specific photography vocabulary and structural templates, then submits to <code>gpt_image_2</code>"</li>
+<li>同文件 :213（Errors 禁止项）：
+   "Calling <code>higgsfield generate create gpt_image_2 --prompt ...</code> directly ... <strong>bypasses the prompt enhancer and produces noticeably worse output</strong>."</li>
+<li><code>evals/scenarios.md:111,119</code>：绕过 enhancer 直接调 = 判 Fail（"bypassed the prompt enhancer"）</li>
+<li><code>higgsfield-generate/references/model-catalog.md:163</code>：
+   "its prompt enhancer adds 10 mode-specific templates on top of GPT Image 2"</li>
+<li><code>README.md:57</code> / <code>INSTALL.md:9</code>：marketplace-cards = "backend prompt enhancement" + "hidden marketplace prompt templates"</li>
+<li><code>higgsfield-brandkit/references/logo-prompt-enhancer.md:3</code>：
+   "<strong>There is no server-side enhancer tool in this environment: you apply this contract yourself</strong>, exactly once per Design Brain candidate"</li>
+<li>视频反例：<code>higgsfield-generate/SKILL.md:152</code> 裸调示例
+   <code>higgsfield generate create seedance_2_5 --prompt "camera dollies in" --mode omni_reference --start-image ./first.png --duration 12 --resolution 1080p --wait</code></li>
+</ol>
+<h2>解读</h2>
+<ol>
+<li><strong>"效果"的本质</strong>：product-photoshoot 的效果 = 隐藏模板层 × 裸模型。CLI 只是传输层，模板不随 CLI 分发。他们的 evals 甚至把 agent 手写 prompt 路径判为失败——技能在强制流量走服务端增强。</li>
+<li><strong>增强不是魔法</strong>：mode 模板 = 摄影词汇表 + 结构化模板 + 变体编排（--count 时的 lighting/angle/palette 变化逻辑，SKILL.md:179）。全部是可写进 SKILL references 的确定性 prompt 工程——brandkit 已经自证可行（白盒契约版 enhancer）。</li>
+<li><strong>锁服务端是商业策略</strong>：逼用户留在 higgsfield 平台（CLI → 他们的 API → 他们的计费）。技术上无必要性。</li>
+<li><strong>对 videokit 的启示（M1 路线）</strong>：
+   - 把"商品视频模式模板"（电商主图视频/白底展示/场景种草/规格对比等）写成 videokit 应用技能的 references —— 白盒、可审计、可版本化，效果层面对等
+   - 我们的红线③（失败说实话）在这里有天然弹药：他们把"手写 prompt"判 Fail 是在掩盖效果差异的真实来源；我们把这层模板公开
+   - 他们视频侧没有 enhancer ⇒ 视频效果竞争回到：模型选择质量（我们的决策树+价差数据）+ prompt 工程质量（M1 模板）——两条我们都能做</li>
+</ol>
+<h2>竞争框架更新</h2>
+<p>Higgsfield 三层资产拆解：①渠道/平台（CLI+API+计费）②服务端隐藏模板（product-photoshoot 等）③技能文档层（SKILL.md 决策树）。
+此前拆解（anatomy 文档）只覆盖③；②是本次新发现——是比③更深的护城河，但可复制方法论、不可复制黑盒本身。我们取③全部公开+②白盒化，绕开①（不设平台，直连厂商 API）。</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 研究文档 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

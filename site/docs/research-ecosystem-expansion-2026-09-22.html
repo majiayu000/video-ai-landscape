@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生态扩展调研</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 全景报告</a><span class="crumb">/</span><a href="/docs/">研究文档</a><span class="crumb">/</span><span class="crumb">research-ecosystem-expansion-2026-09-22.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>扩展调研 · 视频全厂商 + 大模型 + 训练设施（2026-09-22）</h1>
+<blockquote>
+<p>方法：6 路 schema 约束 agent 真实网络调研（应用层路经一次限流补跑回收）。
+规则：以 2026-09-22 为"现在"，只看近 90 天动作 + 未来信号；gaps 为核心产出。
+原始结构化输出：workflow run wf_354c2d89-361。</p>
+</blockquote>
+<hr />
+<h2>中国模型系视频（火山/阿里/腾讯/智谱/PixVerse）</h2>
+<p>90 天窗口内（2026-06-22 至 2026-09-22），中国视频生成厂商的 Agent 接入面呈现"一家独走、四家缺位"格局：火山/阿里/腾讯/智谱四大厂均无官方视频生成 MCP 或 Agent Skill（mcp.so 上即梦/CogVideo/DashScope/混元相关条目全为第三方，部分甚至用逆向接口），唯一例外是 PixVerse（爱诗科技）——它同时维护官方 CLI（MIT，npm 1.4.5，2026-09-20 仍更新）、官方 MCP 和官方 SKILL.md（v1.28.0，含 execution-contract/prompt-contract、11 个工作流、离线 capabilities 查询），直接验证了"契约优先 CLI + Agent Skill"路线可行且已有人占位。闭源侧模型快速迭代：阿里百炼已到 wan2.7-t2v（快照 2026-06-12，强制异步、task_id 24 小时有效）并出现 wan3.0-video 与 happyhorse-1.1 全家桶；火山 Seedance 2.0 支持音画同生、多模态参考（9 图+3 视频+3 音频）、视频延长/编辑、draft 样片模式与 flex 半价离线队列；腾讯混元正迁往 TokenHub（OpenAI 兼容协议 + submit/query 异步对），且混元生视频 API 直接代销 Vidu 与 Kling 全系列；智谱视频线 90 天内零更新（cogvideox-3 停在 2025-07），转而主推 Managed Agents 的 Skill/MCP 托管基建。最大空位：官方异步任务契约五家五套、有效期 24h-7 天不等、计费单价普遍不在 API 文档里，且无人提供统一的等待/恢复/产物持久化/能力矩阵层；开源侧只剩 Wan2.2（Apache-2.0）仍在活跃维护，CogVideo 已停更 10 个月。</p>
+<h3>近 90 天时间线</h3>
+<ul>
+<li><strong>2026-09-21</strong> — 阿里 Wan-Video/Wan2.2 开源仓库仍有推送（17,580 stars，Apache-2.0），开源线持续维护（https://api.github.com/repos/Wan-Video/Wan2.2）</li>
+<li><strong>2026-09-20</strong> — PixVerse 官方 CLI（PixVerseAI/cli，MIT）更新推送，npm 多包名同步发布 1.4.5；README 明确面向 Claude Code/Cursor/Codex/LangChain 等 Agent，并支持 --model seedance-2.5（4-30 秒整数时长）（https://github.com/PixVerseAI/cli）</li>
+<li><strong>2026-09-18</strong> — 火山引擎 volcengine/mcp-server 仓库更新（327 stars、362 commits），但其 100+ MCP server 中没有任何视频生成 server（https://github.com/volcengine/mcp-server）</li>
+<li><strong>2026-09-22</strong> — 阿里云百炼 wan2.7 文生视频 API 文档当日更新：wan2.7-t2v（快照 2026-06-12）确认强制 X-DashScope-Async 异步两步协议、按秒计费、task_id 与视频 URL 有效期 24 小时；模型列表页另出现 wan3.0-video、happyhorse-1.1 系、happyoyster-1.0-acting（邀测）（https://help.aliyun.com/zh/model-studio/text-to-video-api-reference）</li>
+<li><strong>2026-09-10</strong> — PixVerse 官方 Agent Skill 仓库（PixVerseAI/skills，含 SKILL.md，当前版本 1.28.0）更新推送——90 天窗口内唯一在维护的官方视频生成 Agent Skill（https://github.com/PixVerseAI/skills）</li>
+<li><strong>2026-08-26</strong> — 智谱发布 GLM-5.3-Flash（原生多模态、混合注意力）；90 天内智谱无任何视频生成模型更新（cogvideox-3 停在 2025-07-15）（https://docs.bigmodel.cn/cn/update/new-releases）</li>
+<li><strong>2026-08-19</strong> — 智谱发布 GLM-5.3 旗舰模型（编程/安全方向）；同期其 Managed Agents 平台提供完整 Skill/MCP API（创建/版本/部署），但未接入视频生成（https://docs.bigmodel.cn/cn/update/new-releases）</li>
+<li><strong>2026-09-22 前后（窗口内核实）</strong> — 腾讯云混元生视频 API 全景确认：SubmitHunyuanToVideoJob/DescribeHunyuanToVideoJob 之外，平台直接代销 Vidu（文生/图生/参考生视频）与 Kling（文生/图生/动作控制/视频编辑/视频延长）接口；购买指南载明混元大模型能力将逐步迁至 TokenHub、原平台停止新增模型能力（https://cloud.tencent.com/document/api/1616/107795）</li>
+</ul>
+<h3>Roadmap 信号</h3>
+<ul>
+<li><strong>腾讯混元模型能力将逐步迁至 TokenHub，原平台停止新增模型能力（多源交叉：购买指南迁移公告 + TokenHub 独立产品文档含视频生成调用/模型价格/Claude Code 接入指南 + 新模型命名 yt-video-2.0）</strong>（置信：多源交叉；https://cloud.tencent.com/document/product/1616/79753）</li>
+<li><strong>Seedance 2.5 疑似已发布或灰度：PixVerse 官方 CLI 已支持 --model seedance-2.5（4-30 秒），第三方 mcp.so 条目约 4 个月前亦提及 Seedance 2.5，但火山官方页面未见 2.5 字样</strong>（置信：多源交叉；https://github.com/PixVerseAI/cli）</li>
+<li><strong>阿里闭源线持续加代：百炼模型列表已出现 wan3.0-video、happyhorse-1.1 系（t2v/i2v/r2v/video-edit）、happyoyster-1.0-acting（邀测），wan2.5/2.6 已从列表消失（版本快速迭代、旧版下线）</strong>（置信：官方明示；https://help.aliyun.com/zh/model-studio/models）</li>
+<li><strong>PixVerse 持续加码 Agent 生态：skills 仓库窗口内更新至 v1.28.0，CLI README 直接点名 Claude Code/Cursor/Codex/LangChain/custom agents 为目标用户，并用 npx skills add 分发——把 AI Agent 当一等分发渠道</strong>（置信：官方明示；https://github.com/PixVerseAI/skills）</li>
+<li><strong>智谱 Managed Agents 平台提供全套 Skill/MCP/部署/凭据 API，为'模型能力 Agent 化托管'铺路，视频生成尚未接入但基建已就绪</strong>（置信：官方明示；https://docs.bigmodel.cn/cn/managed-agents/skills）</li>
+<li><strong>火山 Seedance 2.0 明示走'音视频联合 + 多模态参考一致性 + 生成/编辑/延长三模式'路线，generate_audio 默认开启、多参考输入上限高（9 图 + 3 视频 + 3 音频）</strong>（置信：官方明示；https://www.volcengine.com/docs/82379/1520757）</li>
+<li><strong>开源线让位闭源 API 的行业趋势：zai-org/CogVideo 停更约 10 个月（2025-11-04）、Tencent-Hunyuan/HunyuanVideo-1.5 停更约 5 个月（2026-04-10），仅 Wan-Video/Wan2.2 仍活跃——开源只剩阿里一家在坚持</strong>（置信：推断；https://api.github.com/repos/zai-org/CogVideo）</li>
+<li><strong>腾讯/智谱/PixVerse 三方都在做'他家模型代销'（腾讯代销 Vidu+Kling、智谱代销 Vidu 系、PixVerse 代销 Seedance 2.5/MiniMax/ElevenLabs/Google Lyria 3 Pro）——平台聚合分发成为中国市场显性路线</strong>（置信：官方明示；https://cloud.tencent.com/document/api/1616/107795）</li>
+</ul>
+<h3>做得好的</h3>
+<ul>
+<li>PixVerse（爱诗科技）的 Agent 三件套是全球级范本：官方 CLI（MIT）+ 官方 MCP + 官方 SKILL.md，且 SKILL 内置 execution-contract.md / prompt-contract.md、17 个 capabilities 能力文件、11 个工作流（含 storyboard-to-video 四镜头分镜、batch-creation）；pixverse capabilities --json 提供离线机器可读能力查询，--no-wait + 保留任务 ID + "超时不等于失败/非零退出可带部分成功结果" 的恢复语义，与契约优先 CLI 的设计完全同构</li>
+<li>火山 Seedance 2.0 任务契约设计最完整：异步任务 + callback_url 回调、execution_expires_after 可配（默认 48h，1h~3 天）、任务 ID 保留 7 天、priority 0-9 队列、service_tier flex 离线半价、draft 样片低成本试错模式、return_last_frame 末帧返回以串联多镜头、generate_audio 默认开启（音视频联合生成）、0-9 图 + 0-3 视频 + 0-3 音频多模态参考、支持生成/编辑/延长三种模式</li>
+<li>阿里的开源/闭源双轨与文档透明度：Wan2.2 以 Apache-2.0 持续维护且 ComfyUI 官方集成；wan2.7 API 文档把异步协议、按秒计费、时长 2-15s 整数、双地域端点、查询 RPS 20、24h 有效期写得最直白，并建议异步回调</li>
+<li>腾讯的聚合接口设计：混元生视频 API 平台直接代销 Vidu 与 Kling 全系列（含动作控制、视频编辑、视频延长），配合 AigcElement 主体管理接口实现跨模型主体一致性；TokenHub 改用 OpenAI Chat Completions 兼容协议 + 小写下划线参数，显著降低接入成本</li>
+<li>智谱的 Agent 基建 API 化程度最高：Managed Agents 把 Agent/Skill/版本/部署/记忆/Vault 凭据库全部做成一等 REST API；视频接口用 image_url 数组一张接口同时支持图生视频与首尾帧（第二张图即尾帧）</li>
+<li>各家对限流与错误码的文档较透明：腾讯每个接口标注 QPS（20-30 次/秒，按 API+地域+子账号维度），DashScope 标注查询 RPS 20 并给出 429 处理建议</li>
+</ul>
+<h3>空位与切入姿势</h3>
+<ul>
+<li><strong>官方视频生成 MCP / Agent Skill 几乎全军缺位（PixVerse 是唯一例外）</strong></li>
+<li>证据：volcengine/mcp-server 100+ 个 server 无一视频生成；mcp.so 上即梦相关 3 个全是第三方（其一明示用逆向接口）、cogvideo 搜索 0 结果、dashscope/hunyuan 均无官方条目；智谱有 Skill 基建但文档明示模板不接受 Skill/MCP 接入视频</li>
+<li>切入：为 DashScope/Ark/TokenHub/bigmodel 四家做'官方没有的第一方体验'：契约优先 CLI + 官方级 SKILL.md + MCP 包装，把异步任务、重试、产物落盘封装成 Agent 可直接调用的工具——这正是读者项目的定位，且 PixVerse 已验证该模式能被厂商官方采纳</li>
+<li><strong>异步任务契约碎片化且有效期短：五家五种协议</strong></li>
+<li>证据：DashScope：POST/GET + X-DashScope-Async 头，task_id 与视频 URL 仅 24h 有效；Ark：/contents/generations/tasks，execution_expires_after 默认 48h、任务 ID 保留 7 天；TokenHub：/v1/api/video/submit + /query，status queued→completed；BigModel：/paas/v4/videos/generations 轮询；腾讯：SubmitXxxJob/DescribeXxxJob 成对接口，各家状态机、参数命名、轮询频率限制互不兼容</li>
+<li>切入：统一任务层：本地 task store + 断线 resume + 到期前自动把产物迁移到用户自有存储（S3/R2/本地），把'24 小时后 URL 失效'变成不会发生的痛点；一份 capabilities.json 描述五家差异</li>
+<li><strong>计费透明度差：闭源侧几乎查不到提交前单价</strong></li>
+<li>证据：百炼模型列表页无任何单价（wan2.7 仅知按秒计费，wan3.0-video 无价格）；智谱视频 API 文档零计费信息；TokenHub 视频生成页无单价；腾讯购买指南只覆盖风格化/跳舞/唱演，不含文生/图生视频单价</li>
+<li>切入：CLI 内置成本估算器：提交前按 分辨率×时长×模型单价表 展示预估费用与余额检查（火山 Seedance 2.0 开通还要求账户余额≥200 元，这类门槛最该在提交前提示）</li>
+<li><strong>长任务等待/恢复体验未被厂商产品化</strong></li>
+<li>证据：官方文档只建议'轮询或配回调'，无 CLI 友好方案；DashScope 任务耗时 1-5 分钟、 Ark 最长 3 天；只有 PixVerse 做了 --no-wait/超时语义但仅覆盖自家订阅体系（CLI 需订阅、走 credits，不适合纯 API 开发者）</li>
+<li>切入：跨厂商的 wait/resume/断点恢复 + 部分成功保留语义（非零退出可带已完成产物），配 --json 机器可读输出——把 PixVerse 的单厂商契约升级为五厂商统一契约</li>
+<li><strong>能力矩阵无跨厂商机器可读标准</strong></li>
+<li>证据：首尾帧（智谱 image_url 双图、腾讯 Kling 系、PixVerse transition）、视频延长（Ark 官方支持、腾讯 Kling 接口、PixVerse create extend）、参考生视频（Seedance 2.0 多模态、Vidu reference、腾讯/智谱代销版）、音频联合（Seedance generate_audio）——能力各家都有但名称/参数/限制完全不同，且 PixVerse 的 capabilities --json 只描述自己</li>
+<li>切入：定义开源的 video-capabilities 规范（模型×能力×参数域×区域限制×单价×有效期），做五厂商的适配器矩阵——聚合之上的聚合，读者 CLI 的护城河所在</li>
+<li><strong>智谱视频线 90 天停滞，与 Agent 基建投入严重不对称</strong></li>
+<li>证据：更新日志窗口内全是 LLM（GLM-5.3 2026-08-19、GLM-5.3-Flash 2026-08-26）；cogvideox-3 停在 2025-07-15，但其 4K/60fps/首尾帧/10s 时长在国产闭源 API 中仍是差异化参数；CogVideo 开源仓库停更 10 个月</li>
+<li>切入：cogvideox-3 是'能力强但无 Agent 接入'的洼地：接入成本最低（OpenAI 风格 REST + 单接口首尾帧），适合作为多厂商 CLI 的第一批适配目标之一</li>
+<li><strong>开源/云端混合路由无人做</strong></li>
+<li>证据：Wan2.2（Apache-2.0，17.6k stars，ComfyUI 官方集成，TI2V-5B 可跑 RTX 4090）仍在活跃维护，而百炼闭源 wan2.7/wan3.0 按秒收费；CogVideo/混元开源线停更后本地路线只剩 Wan</li>
+<li>切入：CLI 支持 --provider local-comfyui 与云端同构调用：草稿用本地 Wan2.2 5B、成片用云端 wan2.7/Seedance，同一契约下按成本/质量路由</li>
+<li><strong>中文区域限制散落且文档化不足</strong></li>
+<li>证据：PixVerse SKILL 明示 CN 区不支持独立 voice/music、模型可用性有差异（需 PIXVERSE_REGION）；百炼 cn-beijing 与 ap-southeast-1 双端点行为差异需自行阅读；火山实人信息限制（真人面部输入受限）藏在参数说明里</li>
+<li>切入：区域感知的能力矩阵与运行时检查（region×model×capability 三维），避免 Agent 在 CN 区提交注定失败的任务</li>
+</ul>
+<h3>未解问题</h3>
+<ul>
+<li>Seedance 2.5 是否已官方 GA：火山官方文档只写到 2.0 系（2-0-260128、1.5 pro、1.0 pro），2.5 目前仅见于 PixVerse CLI 参数与第三方 MCP 描述，火山产品动态页因 JS 渲染无法抓取核实</li>
+<li>腾讯混元生视频文生/图生视频的具体单价：'计费概述（混元生视频）'页未抓到正文；yt-video-2.0 与混元视频版本的对应关系、TokenHub 视频任务的产物 URL 保留期均未披露</li>
+<li>wan3.0-video 的 GA 状态、价格及与 wan2.7 的分工；happyhorse（快马？）/happyoyster 的定位与发布日期；wan2.5/2.6 是否已从百炼下线</li>
+<li>Tencent-Hunyuan/HunyuanVideo 原始仓库的 GitHub API 返回缺失，仅核实了 HunyuanVideo-1.5 仓库（2026-04-10 后无推送）；是否有 HunyuanVideo 2.x 未确认</li>
+<li>即梦（Dreamina）消费端的 Agent 化进展无第一手资料（仅第三方逆向接口 MCP 存在）；火山方舟是否会在 Coze/Trae 生态内做视频生成 Skill 亦无公开信息</li>
+<li>智谱视频生成 API 是否计划接入其 Managed Agents Skill 体系（当前文档明示 Inline template 不接受 MCP/Tools/Skills override）</li>
+</ul>
+<h3>来源</h3>
+<ul>
+<li><a href="https://github.com/PixVerseAI/cli">PixVerse 官方 CLI（GitHub）</a></li>
+<li><a href="https://github.com/PixVerseAI/skills">PixVerse 官方 Agent Skill 仓库（含 SKILL.md v1.28.0）</a></li>
+<li><a href="https://raw.githubusercontent.com/PixVerseAI/cli/main/README.md">PixVerse CLI README（Agent 集成与命令面）</a></li>
+<li><a href="https://raw.githubusercontent.com/PixVerseAI/skills/main/skills/SKILL.md">PixVerse SKILL.md 原文（execution/prompt contract、11 工作流）</a></li>
+<li><a href="https://github.com/PixVerseAI/PixVerse-MCP">PixVerse 官方 MCP server</a></li>
+<li><a href="https://www.volcengine.com/docs/82379/1520757">火山方舟 Seedance 2.0 API 参考（异步任务/回调/样片/flex）</a></li>
+<li><a href="https://github.com/volcengine/mcp-server">volcengine/mcp-server（无视频生成 server）</a></li>
+<li><a href="https://help.aliyun.com/zh/model-studio/text-to-video-api-reference">阿里云百炼 万相2.7 文生视频 API 参考</a></li>
+<li><a href="https://help.aliyun.com/zh/model-studio/models">阿里云百炼 模型列表（wan3.0-video / happyhorse / happyoyster）</a></li>
+<li><a href="https://api.github.com/repos/Wan-Video/Wan2.2">Wan-Video/Wan2.2 开源仓库（GitHub API 数据）</a></li>
+<li><a href="https://cloud.tencent.com/document/api/1616/107795">腾讯云混元生视频 API 概览（含 Vidu/Kling 代销接口）</a></li>
+<li><a href="https://cloud.tencent.com/document/product/1616/79753">腾讯云混元生视频 购买指南（含 TokenHub 迁移公告）</a></li>
+<li><a href="https://cloud.tencent.com/document/product/1823/130081">腾讯云 TokenHub 视频生成调用指南（yt-video-2.0，submit/query）</a></li>
+<li><a href="https://cloud.tencent.com/document/product/1823">腾讯云 TokenHub 产品文档</a></li>
+<li><a href="https://docs.bigmodel.cn/api-reference/%E6%A8%A1%E5%9E%8B-api/%E8%A7%86%E9%A2%91%E7%94%9F%E6%88%90%E5%BC%82%E6%AD%A5">智谱 视频生成异步 API（cogvideox-3 / Vidu 系）</a></li>
+<li><a href="https://docs.bigmodel.cn/cn/update/new-releases">智谱 产品更新日志（GLM-5.3 等）</a></li>
+<li><a href="https://docs.bigmodel.cn/cn/managed-agents/skills">智谱 Managed Agents Skills 文档</a></li>
+<li><a href="https://api.github.com/repos/Tencent-Hunyuan/HunyuanVideo-1.5">Tencent-Hunyuan/HunyuanVideo-1.5（GitHub API 数据）</a></li>
+<li><a href="https://api.github.com/repos/zai-org/CogVideo">zai-org/CogVideo（GitHub API 数据，停更）</a></li>
+<li><a href="https://mcp.so/search?q=jimeng">mcp.so 即梦搜索（全第三方）</a></li>
+<li><a href="https://mcp.so/search?q=cogvideo">mcp.so CogVideo 搜索（0 结果）</a></li>
+<li><a href="https://mcp.so/search?q=dashscope">mcp.so DashScope 搜索（无官方）</a></li>
+<li><a href="https://mcp.so/search?q=hunyuan">mcp.so Hunyuan 搜索（无官方视频 MCP）</a></li>
+<li><a href="https://registry.npmjs.org/-/v1/search?text=pixverse">npm registry PixVerse CLI 包（1.4.5）</a></li>
+</ul>
+<hr />
+<h2>西方与开源视频（LTX/Decart/Genmo/Stability/Moonvalley/ComfyUI）</h2>
+<p>西方/开源视频模型近 90 天呈双轨收敛:开源侧 Lightricks(LTX-2.5,162 万月下载,&lt;$10M ARR 免费商用)+ ComfyUI 官方构成生态主场,云 API 侧 Decart(四语言 SDK、llms.txt、秒级透明定价)开发者体验最成熟;Genmo 的 Mochi 开源线已死(仓库一年无实质维护、无 release),Stability 视频线停滞转向音频与版权合作,Moonvalley 的 Marey(合规模型)API 仍 waitlist-only,Odyssey 转向世界模型。方向已被官方亲自验证:Comfy-Org 于 2026-07-01 创建 comfy-mcp(本地 40 工具)+ Comfy Cloud MCP + comfy-skills(Claude Code 插件),最大社区桥 artokun/comfyui-mcp 随即宣布弃档——"给本地 ComfyUI 做 MCP 桥"这个空位已关闭。真正的空位在桥之上的一层:除 MiniMax/Comfy 外所有西方厂商(Lightricks、Moonvalley、Decart、Stability、Odyssey)都没有官方 MCP/Skill/CLI;"成本即合约"(dry-run 报价 + 硬顶 + 降级建议)只有 168★ 的 vibeframe 在做;Marey 类"版权可控"能力没有出现在任何接口层的合约字段里。对 contract-first 多供应商 CLI,最优切入:云 API 与本地 ComfyUI 同一契约、license_tier/commercial_safe 与 max-cost 做成协议一等公民、补齐跨本地/云的异步任务等待与恢复。</p>
+<h3>近 90 天时间线</h3>
+<ul>
+<li><strong>2026-07-01</strong> — ComfyUI 官方组织创建 comfy-mcp:本地优先的 MCP server,约 40 个工具,基于 comfy-cli 构建,双许可(AGPL-3.0 或商业许可),2026-09-20 仍在活跃推送(234★)（https://api.github.com/repos/Comfy-Org/comfy-mcp）</li>
+<li><strong>2026-08~09(README 现状)</strong> — Comfy 官方形成三件套:comfy-mcp(本地)+ Comfy Cloud MCP(远程 cloud.comfy.org/mcp)+ comfy-skills(Claude Code 插件,/comfy-cloud:generate-video);README 明确本地视频生成在消费级 GPU(8-24GB VRAM)上 slow or infeasible（https://github.com/Comfy-Org/comfy-mcp）</li>
+<li><strong>2026-09(公告,归档定于 2026-10-09)</strong> — 最大社区桥 artokun/comfyui-mcp(759★)宣布不再维护,原因直指官方 Comfy Agent + Comfy MCP 上线——社区桥让位于官方的时代信号（https://github.com/artokun/comfyui-mcp）</li>
+<li><strong>2026-08-25</strong> — Stability AI 完成 Series B(本轮 $76M,累计 $232M),投资方为 EA/索尼音乐/环球/华纳;官网近期新闻只有 Stable Audio 3.0,/stable-video 仍停留在 SVD——视频生成线实质停滞（https://stability.ai）</li>
+<li><strong>2026-09-15</strong> — Odyssey 官宣基础世界模型 Odyssey-3,称 coming weeks 内公开发布;原 Explorer 产品已从官网下架,无 API(注:该页可核实性存疑,见 open_questions)（https://odyssey.systems/introducing-odyssey-3）</li>
+<li><strong>2026-08-26</strong> — Lightricks 开源栈持续推进:LTX-2 官方 Python 推理/LoRA 训练包(9,491★,带 CLI)与 LTX-Desktop 开源桌面端(2,015★,Apache-2.0)同日推送;ComfyUI-LTXVideo(4,138★)2026-09-17 再推送（https://api.github.com/orgs/Lightricks/repos）</li>
+<li><strong>2026-09-11 前后(6-11 天前)</strong> — LTX-2.5(22B DiT + Gemma 4 12B 编码器,音视频同步)IC-LoRA 家族密集更新:像素空间放大器 5.84k 下载、Ingredients、Day-To-Night 等;主模型月下载 162.7 万,diffusers 支持需装 GitHub main(未进正式版),ComfyUI 官方模板 day-1 跟进且 int8 量化仅 ComfyUI 可用（https://huggingface.co/Lightricks/LTX-2.5）</li>
+<li><strong>2026-08-05 前后</strong> — 社区 uncensored 微调 Sulphur-2-base(基于 LTX-2.3,9B,t2v+i2v)上线,月下载 18.3 万、2.07k likes,数周内衍生出 20 个量化版 + adapter + merge——开放权重的衍生速度标杆（https://huggingface.co/SulphurAI/Sulphur-2-base）</li>
+<li><strong>2026-09(趋势页现状)</strong> — HF text-to-video 趋势榜被 MiniMax-H3 衍生品霸榜:Turbo-LoRA 21.3 万月下载、ComfyUI 适配器(drbaph)20.1 万月下载且约 3 天前刚更新、alibaba-pai Acc-LoRA 9.6 万 + ControlNet-Union 1.57 万、FastH3 蒸馏与 GGUF 快速跟进——ComfyUI 集成速度明显快于 diffusers 正式打包（https://huggingface.co/models?pipeline_tag=text-to-video&amp;sort=trending）</li>
+<li><strong>2026-09(文档现状)</strong> — Decart 平台矩阵成型:Lucy 2.5(30FPS 实时)、Oasis 3、DOS;JS/Python/Swift/Android 四 SDK 均含 Realtime(WebRTC)/Process/Queue 三 API;Queue 仅轮询无 webhook;定价透明到秒(lucy-2.5 实时 $0.02/s、视频 $0.04/s、oasis-3-preview $0.02/s),但无成本预估工具、无 MCP(仅 Coding Agents 文档页)（https://docs.platform.decart.ai/getting-started/pricing）</li>
+<li><strong>2026-07-26</strong> — vibeframe(多供应商生成媒体 CLI + MCP,Seedance/Runway/Veo/Kling,BYOK,'Your keys, your bill, your ceiling')最后一次推送:--dry-run 无 key 报价、--max-cost 硬顶(COST_CAP_EXCEEDED + retryWith 更便宜替代)、免费本地路径(Kokoro + 无头 Chrome + FFmpeg)（https://github.com/vericontext/vibeframe）</li>
+<li><strong>2026-09-08</strong> — Generative-Media-Skills(4,316★,MIT)推送:真正的 SKILL.md 合集('recipes, not bash wrappers',支持 Claude Code/Cursor/Gemini CLI)+ muapi mcp serve(19 工具),但硬绑 muapi.ai 聚合器(utm 追踪 + Stripe 充值)（https://github.com/SamurAIGPT/Generative-Media-Skills）</li>
+<li><strong>2026-09(页面现状)</strong> — Moonvalley Marey 公开 API 仍为 waitlist-only,无定价/文档/SDK/MCP;'FULLY LICENSED, Commercially safe' 主打不变;实际可用路径只有 ComfyUI Partner Nodes 与 fal.ai(均为 2025 年老集成)（https://moonvalley.com/api）</li>
+</ul>
+<h3>Roadmap 信号</h3>
+<ul>
+<li><strong>ComfyUI 本地/云双轨 MCP 将成为 agent 接入视频生成的默认方式,社区通用桥被官方取代</strong>（置信：多源交叉(官方仓库 2026-07-01 创建 + 官方 skills 插件 + 最大社区桥 artokun/comfyui-mcp 因官方入场而宣布弃档)；https://github.com/Comfy-Org/comfy-mcp）</li>
+<li><strong>Odyssey-3 将在未来数周公开发布(基础世界模型,非视频 API)</strong>（置信：官方明示(官网 'we're excited to release it publicly in the coming weeks';但该页可核实性存疑,见 open_questions)；https://odyssey.systems/introducing-odyssey-3）</li>
+<li><strong>Moonvalley Marey 公开 API 将开放(当前 waitlist 收单中),开放后主打企业合规视频生成</strong>（置信：官方明示 waitlist 机制存在;开放时点未知；https://moonvalley.com/api）</li>
+<li><strong>Stability 重心已转音频/版权合作,视频生成(SVD 线)不再投入,自托管 licensing 仍是其企业路径</strong>（置信：多源交叉(官网新闻只有 Stable Audio 3.0;新投资方为 EA/索尼/环球/华纳等内容巨头;/stable-video 无更新)；https://stability.ai）</li>
+<li><strong>LTX-2.5 的 diffusers 正式版打包在即;ComfyUI 将继续优先获得官方量化/模板支持</strong>（置信：推断(模型卡明说 diffusers 需装 GitHub main;'int8 仅 ComfyUI'暗示与 ComfyUI 深度绑定)；https://huggingface.co/Lightricks/LTX-2.5）</li>
+<li><strong>LTX 开源生态将继续裂变:官方 IC-LoRA 家族持续更新,社区 uncensored 微调(Sulphur-2)与量化生态跟随每个新基座</strong>（置信：多源交叉(官方 LoRA 6-11 天前更新 + Sulphur-2 月下载 18.3 万 + ComfyUI-LTXVideo 2026-09-17 推送)；https://huggingface.co/Lightricks）</li>
+<li><strong>Decart 从创意视频工具转向实时世界模型/具身场景(Oasis 3、Lucy 2.5 30FPS 实时、驾驶合作)</strong>（置信：推断(产品命名与定价结构均指向实时/交互;融资叙事围绕 Oasis)；https://www.decart.ai）</li>
+<li><strong>MiniMax 系开源权重生态(H3 基座 + LoRA/ControlNet/量化)将持续主导 HF 开源视频下载量,且官方已发 MCP(与并行研究组交叉)</strong>（置信：多源交叉(HF 趋势榜 + MiniMax-AI/MiniMax-MCP 官方仓库 2026-08-20)；https://huggingface.co/models?pipeline_tag=text-to-video&amp;sort=trending）</li>
+</ul>
+<h3>做得好的</h3>
+<ul>
+<li>Comfy-Org 把'agent 接入'当产品做:comfy-mcp(本地 40 工具)+ Comfy Cloud MCP(远程)+ comfy-skills(Claude Code 插件)三件套,且 comfy-cli 作为公共底座被官方 MCP 复用——官方下场定义了这一层的形态</li>
+<li>Lightricks 的开源-商业化双轨最完整:开放权重(月下载 162 万)+ ComfyUI 官方模板 day-1 + diffusers + 开源桌面端 LTX-Desktop + 官方 API(console.ltx.io)+ status 页 + 清晰 license($10M ARR 以下免费商用)+ 官方 LoRA 训练包,IC-LoRA 家族持续供给下游能力(放大/.ingredients/风格)</li>
+<li>Decart 的开发者体验标杆:JS/Python/Swift/Android 四语言 SDK、OpenAPI、llms.txt、Realtime/Process/Queue 三种 API 形态、定价透明到秒并给出可复算的成本示例——是'API 契约完整性'的参照系</li>
+<li>vibeframe 的成本即合约设计:--dry-run 无 key 也能报价、--max-cost 硬顶触发 COST_CAP_EXCEEDED 并附 retryWith 更便宜的替代模型、--skip-video 省钱路径、免费本地降级——这是多供应商 CLI 该有的费控形态</li>
+<li>Nomi 的'本地 ComfyUI 就是一个 provider'抽象:Electron GUI + 23 个 MCP 工具,导入 ComfyUI workflow 并对 /object_info 做依赖 diff 找缺节点/缺模型,内置 66 项各家 provider 认证配置但明确'不代理不转售推理'——本地/云统一的先例</li>
+<li>HF 社区的量化/蒸馏快反链条:新基座权重(LTX-2.3、MiniMax-H3)数周内出现 GGUF/FP8/蒸馏 LoRA/ComfyUI 适配器,长尾 GPU 被快速覆盖,ComfyUI 集成始终快于 diffusers 正式包</li>
+</ul>
+<h3>空位与切入姿势</h3>
+<ul>
+<li><strong>除 MiniMax 与 Comfy 官方外,所有西方视频厂商都没有官方 MCP/Agent Skill/CLI:Lightricks(只有 API+桌面 GUI)、Moonvalley(连 API 都 waitlist)、Decart(只有 llms.txt 和 Coding Agents 文档页)、Stability、Odyssey 全部缺位</strong></li>
+<li>证据：GitHub org 全量扫描:Lightricks org 无 MCP/skill/API-tool 仓库;Decart docs 无 MCP 章节;moonvalley.com/api 仅 waitlist;对比 MiniMax-AI/MiniMax-MCP(1,585★)与 Comfy-Org/comfy-mcp 的官方入场</li>
+<li>切入：做 contract-first 的统一 CLI/MCP:同一套 submit/wait/cancel/dry-run 契约下同时路由云 API(LTX/Decart/fal 上的 Marey)与本地 ComfyUI;厂商不做桥,第三方统一层有真实需求(GitHub 'comfyui mcp' 329 结果、'video generation mcp' 376 结果全是零散社区桥)</li>
+<li><strong>'成本即合约'几乎无人做:只有 168★ 的 vibeframe 实现 dry-run 报价 + max-cost 硬顶 + retryWith 降级;LTX 有定价页但无预估器,Decart 定价透明但要求自己算秒数,Comfy 本地路径无成本概念(只看 VRAM)</strong></li>
+<li>证据：vibeframe README:'Estimated cost $10.93 exceeds --max-cost $3.00.' + COST_CAP_EXCEEDED 错误码 + retryWith 字段,'Your keys, your bill, your ceiling';docs.platform.decart.ai 只有单价与两个手算示例</li>
+<li>切入：把成本做成协议一等公民:--dry-run 全供应商报价(本地路径报显存/时长预估)、--max-cost 硬顶、机器可读的 COST_CAP_EXCEEDED + 更便宜替代(降分辨率/换模型/转本地),这对 agent 自动化调用是刚需——agent 不该在不知道价格的情况下扣用户的卡</li>
+<li><strong>跨本地/云的异步任务体验断裂:Decart Queue API 只有轮询无 webhook;Comfy 官方承认消费级 GPU 本地视频 slow or infeasible;没有任何工具统一'本地跑不动自动落云、断点恢复、同一 job id 两栖'</strong></li>
+<li>证据：docs.platform.decart.ai Queue 章节:'Poll this endpoint to check if your job has completed';Comfy-Org/comfy-mcp README 本地视频 slow or infeasible 且 Apple GPU 不推荐;Nomi 只做 provider 抽象不做任务迁移</li>
+<li>切入：长任务编排层:统一 job id + 状态机(submit/poll/webhook 自适配)、崩溃后 resume、本地显存不足或超时自动 retryWith 云端同款模型——这正是 coding agent 场景里 MCP 工具最缺的 wait/resume 语义</li>
+<li><strong>'版权可控'没有出现在任何接口合约里:Marey 主打 FULLY LICENSED 但无法直连(waitlist、无 SDK/MCP);LTX license 按 $10M ARR 分层;Stability 靠自托管 license;没有任何 CLI/MCP 用字段表达 commercial-safe 档位</strong></li>
+<li>证据：moonvalley.com/api:'FULLY LICENSED, Commercially safe' 但无文档;HF Lightricks/LTX-2.5 license 标签为 ltx-2.x-community-license-agreement(免费线 &lt;$10M 营收);stability.ai /license 面向自托管;vibeframe/Nomi 等现有多供应商工具均无合规件字段</li>
+<li>切入：在多供应商契约里定义 license_tier/commercial_safe 字段并做路由:commercial_safe=true 时自动限定到 Marey(经 fal 或 ComfyUI Partner Nodes)/LTX 社区许可(校验用户营收档)/Stability 自托管;企业 agent 集成(广告、游戏、影视预演)愿意为'可审计的训练数据来源'付溢价——这是模型厂商各自讲了但没人统一表达的层</li>
+<li><strong>Agent Skill 生态被聚合器把持:最大的 SKILL.md 合集(4.3k★)硬绑 muapi.ai 聚合器,带 utm_source 追踪和 Stripe 充值漏斗,用户的 key 和账单被中间层抽成</strong></li>
+<li>证据：SamurAIGPT/Generative-Media-Skills README:视频工具 muapi_video_generate(13 模型)/muapi_video_from_image(16 模型)全部走 muapi.ai,<code>muapi mcp serve</code> 需其 API key + 顶部充值</li>
+<li>切入：做纯净 BYOK 的 skill/CLI 合集:自己的 key、自己的账单、无抽成(继承 vibeframe 理念),再叠加成本合约与合规档位——4.3k★ 证明需求真实,聚合器模式证明用户反感点也真实</li>
+<li><strong>开源模型选型风险高、生态更替快:Mochi 开源线已死(无 release、README 新闻停在 2024-11、org 最后推送 2025-11);Pixelle-MCP(1,116★)、joenorton/comfyui-mcp-server(410★)等社区桥停滞;新基座(Sulphur-2)甚至无明确 license 标签</strong></li>
+<li>证据：github.com/genmoai/mochi:3.7k★、63 commits、零 release、最新新闻 2024-11-26;GitHub API 显示 org 最后 push 2025-11-14;genmo.ai 官网只剩 Mochi 1 和联系邮箱,无 API/定价</li>
+<li>切入：CLI 的模型层设计成可插拔契约(model_id + 能力声明 + license 元数据),模型换代只改配置不改代码;给每个 provider/model 标 maintenance_status(官方活跃/社区停滞/已死)和 license 字段,把 Mochi 式的'生态突然死亡'变成可预期风险而非事故</li>
+</ul>
+<h3>未解问题</h3>
+<ul>
+<li>LTX 官方 API 具体定价与计费粒度:确认存在 docs.ltx.io/pricing 与 console.ltx.io,但两次抓取均未取到定价正文(ltx.io 曾报 Header overflow)</li>
+<li>Comfy Cloud MCP 与 Comfy Agent 的官方发布公告日期:blog.comfy.org 渲染不出文章列表;comfy-mcp 创建于 2026-07-01 可作下界</li>
+<li>Decart 宣称的 $3 亿融资:官网 raise 页面未标日期,TechCrunch 报道(2026-06-10 Oasis 驾驶)与 2025-08 $1 亿@$31 亿估值为多源交叉,轮次细节未核实</li>
+<li>Odyssey-3 官宣页的可核实性:WebFetch 小模型对 introducing-odyssey-3 页面链接真实性提出质疑,'coming weeks' 的确切时点与发布形态(开源权重?产品?API?)未知</li>
+<li>MiniMax-H3 基座权重本身是否官方开源、归属哪条产品线(HF 趋势被衍生品霸榜)——属并行研究组(海螺/MiniMax)的深挖范围,此处仅交叉引用</li>
+<li>Genmo 现状:官网只有 Mochi 1 介绍与 hi@genmo.ai,是否还有存活的 API/世界模型产品线无法从公开页面确认</li>
+<li>Moonvalley 公开 API 的开放时间表、定价与是否附 SDK/MCP——waitlist 之外无任何信息</li>
+</ul>
+<h3>来源</h3>
+<ul>
+<li><a href="https://api.github.com/repos/Comfy-Org/comfy-mcp">Comfy-Org/comfy-mcp(官方本地 MCP,2026-07-01 创建)</a></li>
+<li><a href="https://github.com/Comfy-Org/comfy-skills">Comfy-Org/comfy-skills(Comfy Cloud skills 与 Claude Code 插件)</a></li>
+<li><a href="https://github.com/artokun/comfyui-mcp">artokun/comfyui-mcp(社区桥因官方入场弃档)</a></li>
+<li><a href="https://api.github.com/orgs/Lightricks/repos">Lightricks org 仓库全量(API,含 LTX-2/LTX-Desktop/ComfyUI-LTXVideo 推送时间)</a></li>
+<li><a href="https://github.com/Lightricks/LTX-2">Lightricks/LTX-2(官方推理与 LoRA 训练包,含 CLI)</a></li>
+<li><a href="https://huggingface.co/Lightricks/LTX-2.5">Lightricks/LTX-2.5 模型卡(162 万月下载,社区许可,ComfyUI/diffusers 集成现状)</a></li>
+<li><a href="https://huggingface.co/Lightricks">Lightricks HF org(IC-LoRA 家族)</a></li>
+<li><a href="https://ltx.io">LTX 官网(API/控制台/定价页/状态页/许可)</a></li>
+<li><a href="https://stability.ai">Stability AI 官网(Series B、产品线现状)</a></li>
+<li><a href="https://moonvalley.com/api">Moonvalley Marey API(waitlist-only)</a></li>
+<li><a href="https://blog.comfy.org/p/marey-realism-v15-in-comfyui-built">ComfyUI 官方博客:Marey Realism v1.5 native Partner Nodes(2025-07-08,窗口外交叉引用)</a></li>
+<li><a href="https://docs.platform.decart.ai/getting-started/pricing">Decart 平台定价(Lucy 2.5/Oasis 3,秒级单价)</a></li>
+<li><a href="https://www.decart.ai">Decart 官网(产品矩阵与融资叙事)</a></li>
+<li><a href="https://odyssey.systems/introducing-odyssey-3">Odyssey-3 官宣(可核实性存疑)</a></li>
+<li><a href="https://github.com/genmoai/mochi">genmoai/mochi(开源线死亡证据)</a></li>
+<li><a href="https://www.genmo.ai">Genmo 官网(无 API/定价)</a></li>
+<li><a href="https://github.com/vericontext/vibeframe">vericontext/vibeframe(成本即合约 CLI+MCP)</a></li>
+<li><a href="https://github.com/SamurAIGPT/Generative-Media-Skills">SamurAIGPT/Generative-Media-Skills(SKILL.md 合集,muapi 聚合器绑定)</a></li>
+<li><a href="https://github.com/aqm857886159/Nomi">aqm857886159/Nomi(本地 ComfyUI 即 provider 的 GUI+MCP)</a></li>
+<li><a href="https://huggingface.co/models?pipeline_tag=text-to-video&amp;sort=trending">HuggingFace text-to-video 趋势榜(MiniMax-H3 衍生生态)</a></li>
+<li><a href="https://huggingface.co/SulphurAI/Sulphur-2-base">SulphurAI/Sulphur-2-base(LTX-2.3 社区 uncensored 微调,18.3 万月下载)</a></li>
+<li><a href="https://github.com/MiniMax-AI/MiniMax-MCP">MiniMax-AI/MiniMax-MCP(官方 MCP,交叉引用)</a></li>
+</ul>
+<hr />
+<h2>视频应用层（HeyGen/Synthesia/D-ID/Captions/Tavus/InVideo/Hedra）</h2>
+<p>七家应用层厂商的 agent 面已明显分层：HeyGen 与 Tavus 各自具备官方托管 MCP + CLI + Agent Skills 全套（HeyGen 另有 60 万级安装的开源渲染技能 HyperFrames，Tavus 则有 llms.txt/openapi.yaml/skill.md 机器可读全家桶），Synthesia 于 8 月底才入场（首个 skills 仓库 + Billing/Interactive Avatar API），D-ID 只有挂在文档域名上的 MCP 且 SDK 页仍是一张表单，InVideo 完全没有公开 API。下一步方向清晰：Tavus 正把 PAL 升级为可委派任意第三方 MCP 服务器的 agent 平台，HeyGen 正把全部渲染收拢到 Hyperframes 并准备 2026-10-31 日落 v1/v2 API，Hedra 已把开发者平台转型为 75+ 模型的推理聚合 API（api.hedra.com v3）。最大空位有四个：除 HeyGen 外无人提供"超时可恢复"的异步任务契约；第三方注册表（mcp.so）同时缺失 Tavus 与 D-ID 的官方 MCP；Captions/Hedra 文档在本环境不可达、无人做机器可读转译；免费本地渲染技能（60-63 万安装）与计费 API 技能（1-3 千安装）之间两个数量级的鸿沟无人布局——这些正是独立开发者契约优先多厂商 CLI 的切入口。</p>
+<h3>近 90 天时间线</h3>
+<ul>
+<li><strong>2026-09-21</strong> — HeyGen hyperframes 仓库最后推送（52.1K stars，Apache-2.0）：HTML→确定性 MP4 的 agent 渲染层，npx hyperframes init/preview/render，云渲染 + AWS Lambda（https://api.github.com/repos/heygen-com/hyperframes）</li>
+<li><strong>2026-09-20</strong> — heygen-cli 仓库最后推送（Go CLI）：JSON stdout、退出码 0-4、--wait 指数退避、超时以退出码 4 输出可恢复的部分资源、免鉴权拉取 --request-schema/--response-schema（https://api.github.com/repos/heygen-com/heygen-cli）</li>
+<li><strong>2026-09-18</strong> — Tavus 发布动态问候（dynamic greeting）+ MCP connectors：PAL 可委派 Gmail/GCal/Slack/Linear 及任意第三方 MCP 服务器（https://docs.tavus.io/sections/changelog/changelog.md）</li>
+<li><strong>2026-09-16</strong> — Tavus Memory Stores API 上线；transcript 增加 participant_name 字段（https://docs.tavus.io/sections/changelog/changelog.md）</li>
+<li><strong>2026-09-16</strong> — Synthesia skills 仓库最后推送（2026-08-28 创建）：唯一技能 synthesia-interactive-avatar，面向 LiveKit Agent 集成，支持 Claude Code/Cursor/Codex（https://api.github.com/repos/synthesia-ai/skills）</li>
+<li><strong>2026-09-14~18（近似）</strong> — Synthesia 上线 Billing API（工作区账期+积分余量）与 Interactive Avatar API（实时对口型头像、回合与打断内建），并配套官方 livekit-plugins-synthesia Python 插件；.md 页面无精确日期，仅导航显示约 4 天前（https://docs.synthesia.io/changelog/interactive-avatar-api.md）</li>
+<li><strong>2026-09-12</strong> — Tavus 增加 Microsoft Teams 加入支持（此前 7-31 已支持 Zoom）（https://docs.tavus.io/sections/changelog/changelog.md）</li>
+<li><strong>2026-09-10</strong> — Tavus 上线 50 个 Phoenix-4.5 内置面孔；同期 16 个内置声音（9-9）；tavus-examples 仓库同日推送（https://api.github.com/repos/Tavus-Engineering/tavus-examples）</li>
+<li><strong>2026-09</strong> — HeyGen v3 密集迭代：场景级编辑（edit_plan）、Look Packs API、API key 自省、企业突发并发（1.5× 计费）、专业级声音克隆（0.6 积分/分钟）（https://developers.heygen.com/changelog）</li>
+<li><strong>2026-09-02</strong> — Tavus Phoenix-4.5 面部模型发布（9-9 起设为默认），支持卡通/动漫/皮克斯等动画风格（https://docs.tavus.io/sections/changelog/changelog.md）</li>
+<li><strong>2026-08-28</strong> — Tavus 企业 SSO 上线；移除 Publish PAL 端点（patch 直接推送上线，含 force-push 语义）（https://docs.tavus.io/sections/changelog/changelog.md）</li>
+<li><strong>2026-08</strong> — HeyGen Brand Kits/Glossaries API 系列上线：从网站导入品牌资产、品牌术语表扩展到 Avatar/图片视频/翻译（https://developers.heygen.com/changelog）</li>
+<li><strong>2026-07-31</strong> — Tavus 上线 EU AI Act 披露控制（disclosure_type，verbal/visual，policy:eu）+ Zoom 加入（https://docs.tavus.io/sections/changelog/changelog.md）</li>
+<li><strong>2026-07</strong> — HeyGen 规模化基建：批量 API（单请求最多 100 条视频/翻译/口型）、Studio 模板 API、Studio 场景合成；Video Agent 全部场景改用 Hyperframes 渲染（https://developers.heygen.com/changelog）</li>
+<li><strong>2026-07-14</strong> — HeyGen skills 仓库最后推送：heygen-avatar→heygen-video→heygen-translate 技能链，官方 MCP 端点 mcp.heygen.com/mcp/v1/（消耗套餐积分，与 API key 分账）（https://api.github.com/repos/heygen-com/skills）</li>
+<li><strong>2026-07-11</strong> — 第三方聚合技能库 calesthio/generative-media-skills 创建（含 hedra-character-video 技能，64 安装）——在 Hedra 文档不可达的背景下由社区补位（https://api.github.com/repos/calesthio/generative-media-skills）</li>
+</ul>
+<h3>Roadmap 信号</h3>
+<ul>
+<li><strong>HeyGen v1/v2 API 将于 2026-10-31 日落，changelog 已开始发布 brand_voice 迁移映射等过渡端点</strong>（置信：官方明示；https://developers.heygen.com/docs/quick-start）</li>
+<li><strong>HeyGen Video Agent 已全面切换到 Hyperframes 渲染，HyperFrames 云渲染 + AWS Lambda 持续扩展，渲染层成为其 agent 战略核心</strong>（置信：官方明示；https://developers.heygen.com/changelog）</li>
+<li><strong>Tavus PAL 正升级为通用 agent 平台：MCP connectors 让 PAL 委派任意第三方 MCP 服务器（Gmail/GCal/Slack/Linear），叠加 Memory Stores、Objectives、Guardrails、Skills API</strong>（置信：官方明示；https://docs.tavus.io/sections/changelog/changelog.md）</li>
+<li><strong>Synthesia 正在铺设 agent 面：8 月底建首个 skills 仓库，Billing API + Interactive Avatar API 近期上线并配套官方 LiveKit Python 插件，方向从'生成视频'转向'可交互实时化身'</strong>（置信：官方明示（日期为近似）；https://api.github.com/repos/synthesia-ai/skills）</li>
+<li><strong>Hedra 开发者平台已转型为多模型推理聚合（api.hedra.com v3：75+ 模型、13 家供应商、11 种模态，含 Kling V3/Veo 3.1/Sora 2 Pro 及自有 Character 3），页脚出现 'Agent documentation' 入口，正在与 fal/AtlasCloud 类聚合器正面竞争</strong>（置信：多源交叉（官网页面内容+聚合生态动向；具体上线日期与 agent 文档内容本环境无法核实）；https://www.hedra.com/developers）</li>
+<li><strong>D-ID 'Upcoming SDK' 自 2025-09 起仅为一张 Google 表单，至今无语言/日期信息，推断其开发者投入收缩、agent 面停滞</strong>（置信：推断（低置信）；https://docs.d-id.com/upcoming-sdk/）</li>
+<li><strong>应用层先于模型层布局 agent 面的趋势将持续：HeyGen/Tavus 已有完整 MCP+CLI+Skills，而纯模型厂商（Luma/Kling 等，见 9-21 前期报告）尚无对等物；免费本地渲染技能与计费 API 技能的安装量鸿沟（63 万 vs 2.5 千）表明入口在'免费可执行'一侧</strong>（置信：多源交叉；https://skills.sh/heygen）</li>
+</ul>
+<h3>做得好的</h3>
+<ul>
+<li>HeyGen CLI 的异步契约设计是行业孤例：JSON stdout、结构化退出码 0-4、--wait 指数退避、超时（默认 20 分钟）时以退出码 4 在 stdout 输出可恢复的部分资源；--request-schema/--response-schema 免鉴权可拉，agent 无需 key 即可自描述</li>
+<li>HeyGen 计费透明度最高：文档明示 API key 用量单独计费、MCP 消耗既有套餐积分，两条通路分账清晰</li>
+<li>Tavus 机器可读文档全家桶：llms.txt、llms-full.txt、openapi.yaml（自称 HTTP API 唯一真源）、skill.md、docs MCP 五件套齐备；tavus-cli 与 mcp.tavus.io 共享同一后端客户端，双入口行为一致（tavus pal build = tavus_pal_build_and_verify）</li>
+<li>Tavus 变更日志条条带精确日期，主动声明弃用项与迁移路径，是厂商 changelog 的范本</li>
+<li>HeyGen changelog 按月成文、Added/Changed 动词分类、字段级弃用标注明确</li>
+<li>HyperFrames 开源（Apache-2.0，52K stars）把确定性渲染交给 agent 本地可控执行——'Write HTML. Render video. Built for agents.' 定位精准，免费层造就 60 万级安装</li>
+<li>官方 skills 仓库按宿主（Claude Code/Cursor/Codex/Goose/Warp 等）逐一给出安装命令，skills.sh 安装计数公开可审计</li>
+</ul>
+<h3>空位与切入姿势</h3>
+<ul>
+<li><strong>D-ID 无 CLI、无 SDK、无 Agent Skills，开发者面整体停滞</strong></li>
+<li>证据：'Upcoming SDK' 页面自 2025-09 起只是一张 Google 表单；文档索引无 skills/CLI 章节；90 天窗口内未找到任何带日期的开发者发布</li>
+<li>切入：独立开发者可做契约优先的 D-ID CLI 包装：Realtime WebRTC（Agents/Agent Sessions）与异步 Videos 两族端点分别处理，补齐其缺失的 agent 面，并以其 llms.txt 为 schema 源</li>
+<li><strong>Synthesia 无官方 MCP、无 CLI</strong></li>
+<li>证据：mcp.so 与 smithery.ai 均无 Synthesia 官方 MCP；skills 仓库仅一个 LiveKit 集成技能，不覆盖内容生成工作流</li>
+<li>切入：写一个桥接 Video API 轮询/webhook + Billing API 积分查询的 MCP 服务器，让 agent 在生成前自查余额、超时后凭 job 句柄续查——直接补上其异步体验断点</li>
+<li><strong>Captions 长期无可核验的开发者界面，Hedra 文档域不可达</strong></li>
+<li>证据：developer.captions.ai 与 docs.hedra.com 从本环境 WebFetch/web_reader/curl/Playwright 四路均连接失败（ERR_CONNECTION_CLOSED/Socket is closed）</li>
+<li>切入：第三方 MCP/技能层（calesthio 已示范：hedra-character-video 64 安装）；把不可达或非机器可读的厂商文档转译为 llms.txt/skill.md 是可复用生意</li>
+<li><strong>InVideo 完全没有公开 API，是封闭生态</strong></li>
+<li>证据：invideo.io/api 为消费者营销页（页脚明示底层用 Veo 3.1/Sora 2/Kling/ElevenLabs）；developer.invideo.io 返回 404</li>
+<li>切入：无 API 空间，不建议投入；应在选型文档中明确标注其封闭性，引导用户转向有 API 的同层厂商</li>
+<li><strong>除 HeyGen 外没有任何厂商提供'超时可恢复'的异步任务契约</strong></li>
+<li>证据：heygen-cli 退出码 4 输出部分资源是孤例；Synthesia/Tavus/D-ID 文档只有 poll/webhook，无 CLI 级 resume 语义</li>
+<li>切入：多厂商 CLI 统一实现：超时输出 job 句柄 + resume 子命令 + 结构化错误信封 + 稳定退出码表，作为横切所有厂商的差异化卖点</li>
+<li><strong>第三方注册表盲区：mcp.so 同时缺失 Tavus 与 D-ID 的官方 MCP 服务器</strong></li>
+<li>证据：两家官方 MCP 只存在于自家文档域名（mcp.tavus.io/mcp、docs.d-id.com/mcp），mcp.so/smithery 搜索均无官方条目</li>
+<li>切入：发现层不能依赖注册表：契约优先 CLI 应内置 --discover，直接从各厂商 llms.txt/openapi.yaml/skill.md 拉取自描述（Tavus 已示范该做法可行）</li>
+<li><strong>免费本地技能与计费 API 技能之间两个数量级的安装量鸿沟无人系统布局</strong></li>
+<li>证据：skills.sh：hyperframes 系 50-63 万安装 vs heygen-video 2.5K、heygen-avatar 2.1K、Tavus 官方技能仅 59 安装</li>
+<li>切入：独立开发者应把免费/本地可执行能力（如 HTML→MP4）做成入口技能积累安装量，把计费 API 包装做成可选升级层，而非直接卖 API 包装</li>
+<li><strong>Synthesia changelog 的 .md 页面不带日期，时间溯源困难</strong></li>
+<li>证据：billing-api.md 与 interactive-avatar-api.md 内容完整但无日期，仅站点导航显示相对时间（约 4 天前）</li>
+<li>切入：厂商变更日志时间戳规范化（Tavus 已示范精确日期做法）；独立聚合器可给各厂商 changelog 补时间戳并输出机器可读 diff 流</li>
+</ul>
+<h3>未解问题</h3>
+<ul>
+<li>developer.captions.ai 的 API/MCP/CLI/SDK 现状无法核实：本环境 WebFetch、web_reader、curl、Playwright 四路访问均连接失败（Socket is closed / ERR_CONNECTION_CLOSED）</li>
+<li>docs.hedra.com（含 changelog）同样四路不可达；api.hedra.com v3 的上线日期、定价，以及官网页脚 'Agent documentation' 的具体内容（是否含 MCP/SKILL.md）无法核实</li>
+<li>Synthesia 各 changelog 条目缺精确日期（.md 页无日期，仅导航相对时间'约 4 天前'≈2026-09-18）；Interactive Avatar API 是 GA 还是 beta 未标明</li>
+<li>D-ID 90 天窗口内是否发生过任何面向开发者的发布：未找到带日期证据，本身即是一种发现，但无法绝对排除</li>
+<li>Captions/Hedra 官方是否已提供 MCP/CLI 无法核实；skills.sh 搜索 'captions' 前列为 remotion-captions 等无关技能（Remotion 出品），未见 Captions.ai 官方技能，但搜索结果被截断，非穷尽确认</li>
+</ul>
+<h3>来源</h3>
+<ul>
+<li><a href="https://developers.heygen.com/changelog">HeyGen Developers Changelog</a></li>
+<li><a href="https://developers.heygen.com/docs/quick-start">HeyGen Quick Start（MCP/CLI/错误码/v1-v2 日落）</a></li>
+<li><a href="https://github.com/heygen-com/hyperframes">heygen-com/hyperframes（GitHub）</a></li>
+<li><a href="https://github.com/heygen-com/heygen-cli">heygen-com/heygen-cli（GitHub）</a></li>
+<li><a href="https://github.com/heygen-com/skills">heygen-com/skills（GitHub）</a></li>
+<li><a href="https://github.com/heygen-com/liveavatar-agent-skills">heygen-com/liveavatar-agent-skills（GitHub）</a></li>
+<li><a href="https://github.com/synthesia-ai/skills">synthesia-ai/skills（GitHub）</a></li>
+<li><a href="https://docs.synthesia.io/changelog/billing-api.md">Synthesia Changelog: Billing API</a></li>
+<li><a href="https://docs.synthesia.io/changelog/interactive-avatar-api.md">Synthesia Changelog: Interactive Avatar API</a></li>
+<li><a href="https://docs.synthesia.io/reference/introduction.md">Synthesia API Reference Introduction</a></li>
+<li><a href="https://docs.tavus.io/sections/changelog/changelog.md">Tavus Changelog</a></li>
+<li><a href="https://docs.tavus.io/agents-and-automation">Tavus MCP 服务器与 Agents-and-Automation 文档</a></li>
+<li><a href="https://docs.tavus.io/skill.md">Tavus skill.md（官方 Agent Skill）</a></li>
+<li><a href="https://github.com/Tavus-Engineering/tavus-skills">Tavus-Engineering/tavus-skills（GitHub）</a></li>
+<li><a href="https://docs.d-id.com/mcp">D-ID 官方远程 MCP 服务器</a></li>
+<li><a href="https://docs.d-id.com/upcoming-sdk/">D-ID Upcoming SDK（Google 表单占位）</a></li>
+<li><a href="https://invideo.io/api">InVideo API（消费者营销页）</a></li>
+<li><a href="https://www.hedra.com/developers">Hedra Developer API（多模型聚合）</a></li>
+<li><a href="https://github.com/calesthio/generative-media-skills">calesthio/generative-media-skills（GitHub，第三方）</a></li>
+<li><a href="https://skills.sh/heygen">skills.sh 技能目录（HeyGen 系安装计数）</a></li>
+</ul>
+<hr />
+<h2>大模型厂商（OpenAI/Anthropic/Google/Meta/xAI/Mistral + 中国阵营）</h2>
+<p>近 90 天 11 家厂商的动作集中在三条线：通用 agent 编排基础设施（OpenAI Agents API 托管 Codex harness、Google ADK 2.x 声明式 YAML 图工作流 + 模型故障转移、xAI Grok Build Workflows、DeepSeek Harness 预览、字节 Coze Loop 观测评测）、编码 CLI 军备竞赛（qwen-code 日更 + TS SDK、kimi-code、智谱 ZCode，且 DeepSeek 直接提供 Anthropic 兼容端点）、以及视觉/视频原生模型（GLM-5.3-Flash 原生理解图像视频、DeepSeek-V4.1-Flash 原生视觉、xAI Imagine Video 1.5 References、Seedance 2.5"一镜到底"、Meta Muse Video）。下一步最值得借力的是 Google——唯一把"agentic video understanding（判片）"与 Veo 生成放在同一官方文档中，可作为判片环节的一等公民后端；分镜规划与 prompt 扩写可用各家旗舰 agent 模型承担，契约与状态机由读者自己的 CLI 持有。核心判断经逐家核验后仍然成立：没有任何厂商提供"视频生成编排层"——所有编排产品都面向 coding/通用任务，视频模型全是无状态单点调用，判片无标准 JSON schema、分钟级异步任务无统一恢复语义、无单条视频全成本账单，这正是契约优先多厂商 CLI 的最大空位。中外生态差异上，中国阵营以"Anthropic 兼容端点 + 复刻 Claude Code 形态的自建 CLI"快速对齐，但官方 MCP server 与 SKILL.md 生态几乎空白，互操作桥是第二大空位。</p>
+<h3>近 90 天时间线</h3>
+<ul>
+<li><strong>2026-06-16</strong> — 智谱发布 GLM-5.2 旗舰：1M 无损上下文，开源编码/长程任务 SOTA（https://docs.bigmodel.cn/cn/update/new-releases.md）</li>
+<li><strong>2026-06-24</strong> — Mistral 加强 connectors（MCP）控制力，企业可管 MCP 工具接入（https://mistral.ai/news/more-control-over-connectors/）</li>
+<li><strong>2026-07-09</strong> — Mistral 把 Prompts 与 Skills 做成 Studio 'system of record'，agent 资产管理产品化（https://mistral.ai/news/manage-prompts-and-skills-in-studio/）</li>
+<li><strong>2026-07-23</strong> — xAI 在 Grok Build 推出 Workflows：编排脚本把任务扇出到数百个并行 agent、验证结果、后台跑完一次性汇报——编排思路最激进但限于编码场景（https://x.ai/news）</li>
+<li><strong>2026-07-27</strong> — 月之暗面创建 MoonshotAI/Kimi-K3 开源仓库（'Open Frontier Intelligence'），K3 旗舰进入开源轨道（https://github.com/MoonshotAI/Kimi-K3）</li>
+<li><strong>2026-07-31</strong> — 字节 Seed 发布 Seedance 2.5：'一镜到底创作、灵活参考'，直指多镜头一致性痛点（https://seed.bytedance.com/）</li>
+<li><strong>2026-07-31</strong> — xAI 发布 Imagine Video 1.5 with References：文本/图像/语音参考生成视频，最高 1080p；配套 Grok Imagine API 已商用（https://x.ai/news）</li>
+<li><strong>2026-08 中旬（页面日期 8/11-8/12）</strong> — xAI 发布 Grok Bot（常驻 agent，'有自己的电脑、7x24 干活'）与 Grok 4.6（主打 long-running agents 与视觉任务）（https://x.ai/news）</li>
+<li><strong>2026-08-15 至 09-17</strong> — openai-agents-python v0.21.0→v0.22.3：v0.22.0 运行时硬化——被拦截的工具输出从可回放状态脱敏、失败响应抛 ModelBehaviorError、RunState 检查点间用量隔离（https://github.com/openai/openai-agents-python/releases）</li>
+<li><strong>2026-08-17 至 09-18</strong> — google/adk-python v2.7.1→v2.9.2：v2.8.0 完成 1.x→2.x 大版本切换；破坏性变更——失败工作流节点在 resume 时会重跑，要求业务幂等（https://github.com/google/adk-python/releases）</li>
+<li><strong>2026-08-19</strong> — 智谱发布 GLM-5.3 旗舰：编码较 5.2 提升 50%，安全测试中涌现漏洞挖掘能力（发现 2436 个漏洞）（https://docs.bigmodel.cn/cn/update/new-releases.md）</li>
+<li><strong>2026-08-20</strong> — Mistral 发布 Agentic Search：面向 agent 系统的'导航-阅读-验证'检索层（https://mistral.ai/news/agentic-search/）</li>
+<li><strong>2026-08-26</strong> — 智谱发布 GLM-5.3-Flash：原生多模态（理解图像/视频、截图 GUI 观察迭代），320B 总参/18B 激活，混合线性+稀疏注意力（https://docs.bigmodel.cn/cn/update/new-releases.md）</li>
+<li><strong>2026-09-01</strong> — Anthropic 发布 Claude Fable 5.1 与 Mythos 5.1；窗口内未见 agent 生态/视频多模态专项公告，但 claude-agent-sdk-python 保持近日常更新（9/1 v0.2.151→9/18 v0.2.156）（https://github.com/anthropics/claude-agent-sdk-python/releases）</li>
+<li><strong>2026-09-08</strong> — Mistral 完成 30 亿欧元融资，定位主权开源权重前沿模型（https://mistral.ai/news/mistral-makes-sovereign-open-weight-ai-to-frontier/）</li>
+<li><strong>2026-09-10</strong> — OpenAI 发布 Agents API：托管云 agent 服务，'由 Codex harness 驱动，负责编排、长时会话与工具调用'；同日 GPT Live 1 语音进 API（https://openai.com/index/introducing-the-agents-api）</li>
+<li><strong>2026-09-10</strong> — Google ADK 2.9.0：自动模型故障转移、声明式 YAML 图工作流、MCP SDK 2.x 兼容——通用编排原语成型（https://github.com/google/adk-python/releases）</li>
+<li><strong>2026-09-10</strong> — DeepSeek 发布 V4.1-Flash：原生视觉理解、KV cache 成本工程（HBM 1/4、SSD 1/8）、错峰时段半价；官方明示'cache 命中计费是 agent 成本大头'；V4-Pro 于 9/14 全量切流至 V4.1-Flash（https://api-docs.deepseek.com/news/news260910）</li>
+<li><strong>2026-09-10</strong> — DeepSeek 官宣 'DeepSeek Harness' agent harness 开发者预览，并同时暴露 Anthropic 兼容端点（api.deepseek.com/anthropic）与 OpenAI 兼容端点（https://api-docs.deepseek.com/news/）</li>
+<li><strong>2026-09-16</strong> — xAI Grok Build 上线 Memory（持久记忆），补全 Skills→Workflows→Grok Bot→Memory 的 agent 栈（https://x.ai/news）</li>
+<li><strong>2026-09-21</strong> — Qwen Code v0.24.3 + TypeScript SDK + 桌面版同日发布；qwen-code 以近日常节奏迭代（Web Shell 结构化执行结果、逐轮 token/时延轨迹面板），Qwen-Agent 主仓库自 2025-05 起停更，agent 开发已迁入 qwen-code（https://github.com/QwenLM/qwen-code/releases）</li>
+<li><strong>2026-09-22（实测）</strong> — 月之暗面开发者平台由 platform.moonshot.ai 301 迁移至 platform.kimi.ai；kimi-k3 定价已上线（$3/$15 每百万 token、1M 上下文、5min/1h 双 TTL 缓存计价 + Token 计算 API），kimi-cli 已归档并由 Kimi Code CLI 接替（活跃推送至 9/21）（https://platform.kimi.ai/docs/pricing/chat）</li>
+</ul>
+<h3>Roadmap 信号</h3>
+<ul>
+<li><strong>OpenAI 把长任务 agent 托管产品化：Agents API 官方定义为'由 Codex harness 驱动，负责编排、长时会话与工具调用'的托管服务，伙伴案例（Devin/Perplexity/Hex on Astra）密集跟进</strong>（置信：官方明示；https://openai.com/index/introducing-the-agents-api）</li>
+<li><strong>Google 编排路线定型为'声明式 YAML 图 + 模型故障转移 + MCP SDK 2.x 兼容'，且官方文档将 agentic video understanding 与 Veo 生成并置——判片→生成闭环是 Google 明示方向</strong>（置信：官方明示；https://ai.google.dev/gemini-api/docs/video-understanding）</li>
+<li><strong>DeepSeek 自建 agent harness（DeepSeek Harness 开发者预览）+ Anthropic 兼容端点双轨：中国头部厂商正式接入 Claude Code 形态工具生态</strong>（置信：官方明示；https://api-docs.deepseek.com/news/）</li>
+<li><strong>智谱 GLM-5.3-Flash 原生多模态（图像/视频理解 + GUI 观察），官方定位延伸至 Office 文档与金融研究工作流——国产判片模型候选</strong>（置信：官方明示；https://docs.bigmodel.cn/cn/update/new-releases.md）</li>
+<li><strong>xAI agent 栈全线铺开：Skills（5 月）→ Grok Build Workflows（编排）→ Grok Bot（常驻 agent）→ Memory（9 月），配合 Imagine Video 1.5 References，但所有编排均限 coding/通用任务</strong>（置信：官方明示；https://x.ai/news）</li>
+<li><strong>中国厂商集体转向 Claude Code 形态：qwen-code（近日常发版 + TS SDK + 桌面端）、MoonshotAI/kimi-code（kimi-cli 已归档接替）、zai-org/ZCode 三条 CLI 线同期高频推送，叠加 DeepSeek 的 Anthropic 兼容端点</strong>（置信：多源交叉；https://github.com/QwenLM/qwen-code/releases）</li>
+<li><strong>Kimi K3 旗舰开源并商用：GitHub 仓库 7/27 创建（'Open Frontier Intelligence'）+ platform.kimi.ai 定价页 kimi-k3 上线（1M 上下文）双源印证；K2.5 时期官方定位即'Open Visual Agentic Intelligence'</strong>（置信：多源交叉；https://platform.kimi.ai/docs/pricing/chat）</li>
+<li><strong>字节 agent 平台化：Coze Loop（观测/评测）9 月仍活跃推送，Seed 页预告 Seed2.1 '下一代 real-world productivity agent'，预计将与火山方舟/Coze 打通</strong>（置信：多源交叉；https://github.com/coze-dev/coze-loop）</li>
+<li><strong>'判片'（VLM 视频评审）将成为视频流水线标准环节：Google 官方文档 + GLM-5.3-Flash/DeepSeek-V4.1-Flash 视觉原生 + Seedance 2.5 参考生成同时就位，但无任何厂商定义统一评审契约——独立开发者定义该契约的窗口期正在打开</strong>（置信：推断；https://ai.google.dev/gemini-api/docs/video-understanding）</li>
+<li><strong>Mistral 融资 30 亿欧元押注主权开源，Agentic Search + Studio 技能管理构成'非美 agent 技术栈'完整叙事，欧洲市场合规型视频流水线可借其底座</strong>（置信：推断；https://mistral.ai/news/mistral-makes-sovereign-open-weight-ai-to-frontier/）</li>
+</ul>
+<h3>做得好的</h3>
+<ul>
+<li>Google：唯一把视频理解一等公民化的厂商——'agentic video understanding' 与 Veo 生成放在同一官方文档，判片环节可直接复用；ADK 2.9 的 YAML 声明式图 + 自动模型故障转移是最接近'可借力的编排原语'</li>
+<li>OpenAI：Agents API 把 Codex harness 变成托管长任务服务，方向直指'agent 即基础设施'；SDK 层的安全硬化细节（回放状态脱敏被拦截工具输出、RunState 用量隔离）值得任何 CLI 抄作业</li>
+<li>DeepSeek：成本工程最透明的厂商——错峰半价、明示 cache 命中是 agent 成本大头、KV cache 压缩降本，且 Anthropic 兼容端点让现有 Claude 生态工具零改造接入</li>
+<li>智谱：唯一公开带日期的产品级 changelog（new-releases.md），第三方核查成本全场最低；GLM-5.3-Flash 原生视觉 + GUI 截图观察，判片与 GUI agent 双线可用</li>
+<li>中国阵营编码 CLI 军备竞赛：qwen-code（日更 + TS SDK + 桌面端 + 逐轮 token/时延观测面板）、kimi-code、ZCode 全部高频开源发版，工程实现可直接参考</li>
+<li>字节：Seedance 2.5 的'一镜到底 + 灵活参考'正面回应多镜头一致性；Coze Loop 把 agent 观测/评测开源化（coze-studio 21.6k stars、coze-loop 5.7k stars），是评测环节现成参考</li>
+<li>xAI：Grok Build Workflows（数百并行 agent + 验证 + 一次性汇报）是编排执行模型上最激进的实现样本；Grok Bot 的常驻 agent 形态验证了'长任务托管'需求真实存在</li>
+<li>Mistral：最早把 prompts/skills 做成 Studio 'system of record' 管理，Agentic Search 补检索层——agent 资产管理与检索产品化的先行者，读者 CLI 的'技能/模板管理面'可对标</li>
+</ul>
+<h3>空位与切入姿势</h3>
+<ul>
+<li><strong>没有任何厂商提供'视频生成编排层'——所有编排产品都面向 coding/通用任务</strong></li>
+<li>证据：90 天内全部编排动作核验：OpenAI Agents API（托管通用云 agent）、ADK 2.9 YAML 图（工作流通用原语）、Grok Build Workflows（编码任务扇出）、Mistral Workflows/Agentic Search（检索/通用）、Coze Loop（观测评测）无一涉及视频；Google 虽把视频理解与 Veo 放同一文档，却只给'理解+生成'两个孤立 API，没有分镜→生成→评审→重试的编排接口；xAI 同时握有 Imagine Video API 和 Workflows 却未打通两者</li>
+<li>切入：读者的契约优先 CLI 恰好是这个缺失层：用各家旗舰模型（Astra/Fable/GLM-5.3/K3）做分镜规划与 prompt 扩写的'大脑'，CLI 持有镜头级任务契约与状态机，把视频 API（Veo/Imagine/Seedance/CogVideoX）当作可替换执行器——多厂商契约正是对冲各家模型快速迭代（ADK 1.x→2.x 破坏性变更即例证）的正确姿势</li>
+<li><strong>分钟级异步视频任务的等待/恢复语义碎片化，agent 框架与生成 API 之间无统一任务句柄</strong></li>
+<li>证据：ADK 2.9.0 破坏性变更：失败工作流节点在 resume 时重跑、要求业务幂等；openai-agents v0.22.0 才刚补上 RunState 检查点用量隔离与回放状态脱敏；各视频生成 API 各有各的轮询/回调风格，崩溃恢复后成本不可对账</li>
+<li>切入：CLI 层定义统一 job 模型：任务 ID、幂等 resume、断点续跑、崩溃后逐镜头成本对账——这正是通用 agent 框架没做、视频场景刚需的接缝</li>
+<li><strong>计费透明度参差，无'单条视频全成本'视图，错峰价被浪费</strong></li>
+<li>证据：DeepSeek 官方明示错峰半价且指出 cache 命中是 agent 成本大头；Kimi 公布双 TTL 缓存计价 + Token 计算 API；但 OpenAI/Anthropic/Google 窗口内无等价的 agent 成本构成披露，Meta Muse Video 详情页甚至 404，视频类调用（秒级时长计费/分辨率计费）与 agent 推理 token 成本从不合并展示</li>
+<li>切入：CLI 输出逐条成本账单（分镜推理 token + 生成 API 费 + 重试浪费），内置错峰调度开关（错峰时段自动提交批量生成任务，直接吃 DeepSeek 式半价）</li>
+<li><strong>视频判片（VLM judging）无标准 schema，各家视频输入规格/帧采样/成本口径不一</strong></li>
+<li>证据：Google 有自家 agentic video understanding 规格；GLM-5.3-Flash 说'理解视频'、DeepSeek-V4.1-Flash 只说'native visual understanding'（未确认视频输入）、OpenAI GPT-6 Astra 公告强调 computer use/coding/安全/科学而未确认视频输入；没有任何厂商定义'镜头合规/瑕疵/prompt 偏离度'的结构化评审输出</li>
+<li>切入：定义判片 JSON 契约（镜头一致性、瑕疵清单、prompt 偏离评分），支持多 VLM 交叉评审（Google/Gemini、GLM-5.3-Flash、DeepSeek-V4.1-Flash 各投一票），把'评判'从提示词工程升级为可版本化的契约</li>
+<li><strong>中外 agent 生态互操作桥缺位：中国阵营官方 MCP server 与 SKILL.md 生态几乎空白</strong></li>
+<li>证据：DeepSeek 直接暴露 Anthropic 兼容端点、kimi-code/qwen-code/ZCode 复刻 Claude Code 形态，但智谱官方 changelog 无任何 MCP 发布条目、Kimi 平台文档未见 skills 体系、Qwen-Agent 主仓库自 2025-05 停更；海外 MCP/Skills 生态与国产 CLI 之间没有官方桥</li>
+<li>切入：读者 CLI 同时说 OpenAI 与 Anthropic 两种 wire 协议：国内厂商走 anthropic-compat 端点接入（DeepSeek 已验证可行），海外走原生 API——一份工具生态吃两边，这正是 fal/AtlasCloud 之外第二阵营的接入层空白</li>
+<li><strong>SKILL.md/Agent Skills 生态没有视频类技能，agent 资产管理与视频场景脱节</strong></li>
+<li>证据：Mistral Studio 已把 prompts/skills 做成 system of record、xAI Grok 有 Skills 入口（5 月）、Anthropic Agent Skills 生态成型（docs 区域封锁致细节未能核全），但没有任何官方'分镜规划/prompt 扩写/判片'技能；中国五家厂商均无 SKILL.md 迹象</li>
+<li>切入：发布开源 SKILL.md 三件套（分镜/扩写/判片），在 Mistral Studio、Grok Skills、Claude Skills 三处分发，低成本占位成为'视频生成技能'的默认答案</li>
+<li><strong>agent SDK 全部 Python/TS 优先且版本震荡极快，直接依赖风险高</strong></li>
+<li>证据：openai-agents-python 8/15-9/17 一个月内 v0.21→v0.22.3；ADK 完成 1.x→2.x 大版本切换且带破坏性变更；claude-agent-sdk-python 近日更节奏；对独立 CLI 而言，跟版成本与破坏风险随发版频率线性上升</li>
+<li>切入：以子进程 + 版本化 JSON 契约隔离各 SDK（契约里显式声明 resume 幂等、用量核算、错误分类），把'SDK 震荡'关在适配层内——契约优先架构在这一点上天然占优</li>
+</ul>
+<h3>未解问题</h3>
+<ul>
+<li>docs.claude.com 在当前网络环境区域封锁，Anthropic Agent Skills / SKILL.md 最新规格未能一手核验（GitHub 侧 anthropics/skills 仓库无 release 提供日期线索）</li>
+<li>Anthropic 2026 年 6-7 月新闻空白：newsroom 仅翻到第 2 页，窗口早期是否有 agent/多模态发布未确认</li>
+<li>OpenAI GPT-6 Astra API 是否支持视频输入（用于判片）未获一手确认；官方公告强调 computer use/coding/网络安全/科学，无视频字样</li>
+<li>xAI 站点标题已显示 'SpaceXAI'（x.ai/news 页面标题一手可见），但 xAI 与 SpaceX 主体合并的官方公告页未检索到，公司主体与 API 品牌延续性待证</li>
+<li>Meta Muse Video 详情页 404（ai.meta.com/blog/muse-image-and-muse-video/），API 可用性、分辨率与时长规格未知，仅有博客列表级信息（Muse Image/Muse Video 7/7、Muse Spark 1.1 7/9）</li>
+<li>platform.moonshot.ai → platform.kimi.ai 的 301 迁移无官方公告；kimi-k3 的 GitHub 建仓日（7/27）与 API 正式上线日可能存在差异</li>
+<li>火山方舟（豆包 API 平台）文档未直接核查，字节侧仅覆盖 Seed 团队页与 Coze 开源仓库；豆包品牌模型在窗口内的 API 级动作不明</li>
+<li>Qwen 官方博客整体迁往 qwen.ai 后 JS 渲染无法抓取，90 天内 Qwen 官方新闻列表缺失，Qwen 侧仅以 qwen-code GitHub 时间线（近日常发版）与 Qwen3-VL 仓库为据，官方模型发布（如有 Qwen3-VL 新版）未覆盖</li>
+</ul>
+<h3>来源</h3>
+<ul>
+<li><a href="https://openai.com/index/introducing-the-agents-api">OpenAI Agents API（托管云 agent，Codex harness）</a></li>
+<li><a href="https://openai.com/news/rss.xml">OpenAI 新闻 RSS（90 天动作清单）</a></li>
+<li><a href="https://github.com/openai/openai-agents-python/releases">openai-agents-python Releases</a></li>
+<li><a href="https://www.anthropic.com/news">Anthropic Newsroom</a></li>
+<li><a href="https://github.com/anthropics/claude-agent-sdk-python/releases">claude-agent-sdk-python Releases</a></li>
+<li><a href="https://ai.google.dev/gemini-api/docs/video-understanding">Gemini API 视频理解文档（agentic video understanding + Veo）</a></li>
+<li><a href="https://github.com/google/adk-python/releases">google/adk-python Releases（ADK 2.x）</a></li>
+<li><a href="https://mistral.ai/news">Mistral News</a></li>
+<li><a href="https://mistral.ai/news/agentic-search/">Mistral Agentic Search</a></li>
+<li><a href="https://api-docs.deepseek.com/news/news260910">DeepSeek-V4.1-Flash 发布公告</a></li>
+<li><a href="https://api-docs.deepseek.com/news/">DeepSeek 新闻页（DeepSeek Harness 预览 + Anthropic 兼容端点）</a></li>
+<li><a href="https://x.ai/news">xAI News（Grok 4.6 / Grok Bot / Workflows / Imagine Video 1.5）</a></li>
+<li><a href="https://docs.bigmodel.cn/cn/update/new-releases.md">智谱发布记录（GLM-5.2 / GLM-5.3 / GLM-5.3-Flash 带日期 changelog）</a></li>
+<li><a href="https://platform.kimi.ai/docs/pricing/chat">Kimi 开放平台计价（kimi-k3、双 TTL 缓存）</a></li>
+<li><a href="https://github.com/MoonshotAI/Kimi-K3">MoonshotAI/Kimi-K3 仓库（2026-07-27 创建）</a></li>
+<li><a href="https://github.com/QwenLM/qwen-code/releases">QwenLM/qwen-code Releases（v0.24.x + TS SDK + 桌面版）</a></li>
+<li><a href="https://seed.bytedance.com/">ByteDance Seed 最新动态（Seedance 2.5 等）</a></li>
+<li><a href="https://github.com/coze-dev/coze-loop">coze-dev/coze-loop（字节 agent 观测/评测开源）</a></li>
+<li><a href="https://ai.meta.com/blog/">Meta AI Blog（Muse Image / Muse Video / Muse Spark 1.1）</a></li>
+<li><a href="https://qwenlm.github.io/blog/">Qwen 旧博客（已确认停更、迁往 qwen.ai 的证据）</a></li>
+</ul>
+<hr />
+<h2>训练/微调基础设施（Together/RunPod/Replicate/Modal/Fireworks/Lambda/硅基流动）</h2>
+<p>七家训练/推理基础设施厂商在最近 90 天里把「视频生成托管」卷得很凶——Together 聚合了 Seedance 2.5/2.0、Wan 2.7、Kling、Vidu 并按条计价，RunPod 上架 Wan 2.2/2.6 端点（含可外挂 LoRA 权重的变体），Replicate 拥有最大视频目录（Sora-2、Veo 3.1、Kling v3、Wan 3 等），硅基流动托管 Wan2.2——但「视频微调 as a service」在全部七家全面缺位：所有微调产品都止步于 LLM（+VLM/生图），视频角色一致性只以三种零散形态存在（Modal 自管代码示例、RunPod 端点吃外部 LoRA URL、厂商 reference-image API）。Agent 集成在推理侧已经内卷（RunPod 双 MCP+官方 skills 插件、Together 12 个 SKILL.md+docs MCP、Replicate remote MCP+code mode、Fireworks firectl+docs MCP），训练侧的 agent 化只有苗头（Fireworks agentic RL、Lambda 研究线）。对你的 contract-first 多供应商视频 CLI 而言，最大空位非常清晰：没有任何一家提供「一条命令完成角色视频 LoRA 训练→权重托管→agent 可调用」的服务，且视频侧的长任务恢复、URL 过期归档、成本归一化语义普遍比 LLM 侧落后一代。</p>
+<h3>近 90 天时间线</h3>
+<ul>
+<li><strong>2026-08-31</strong> — Fireworks 宣布 Training API 正式 GA（SFT/DPO/RFT/蒸馏，任务级 create/resume/cancel/metrics 端点），但仅覆盖 LLM，无图像/视频生成模型训练（https://fireworks.ai/blog）</li>
+<li><strong>2026-07-15</strong> — Fireworks 宣布 Series D 融资与 $1B ARR；7/26 发文推广 Kimi K3 LoRA 训练、7/30 讨论 LoRA vs FullFT 选型——训练叙事全部围绕 LLM（https://fireworks.ai/blog）</li>
+<li><strong>2026-06-24</strong> — Fireworks 把自用前沿实验室训练基础设施开放为 GLM 5.2 托管训练服务——「训练即托管服务」路线明确但限于大语言模型（https://fireworks.ai/blog）</li>
+<li><strong>2026-08-04</strong> — Replicate 上架 FLUX 3（Black Forest Labs 首个音视频一体模型）并发布使用指南；整个 90 天窗口 Replicate 博客仅 2 篇，2025-11 并入 Cloudflare 后发布节奏显著放缓（https://replicate.com/blog）</li>
+<li><strong>2026-09（页面未标日期，推断 90 天内）</strong> — Together 上架 Seedance 2.5（$0.115/条）、Seedance 2.0（$0.16/条）、MiniMax H3（$0.1391/条）、FLUX 3，另有 Wan-AI/Kuaishou/Vidu 各 5 个模型，并配 Wan 2.7 与 Seedance 2.5 官方 quickstart——多供应商视频聚合成型（https://www.together.ai/models）</li>
+<li><strong>2026-07-16 ~ 07-29</strong> — Modal 连发「1M 并发沙箱」（7/16）、「Devin Outposts 驻场」（7/21）、「Modal is a computer」（7/9）、「Hugging Face agent 事件回应」（7/29）——全面转向 agent 基础计算层叙事，90 天内无视频模型相关动作（https://modal.com/blog）</li>
+<li><strong>2026-06-23</strong> — Modal 发布 Auto Endpoints（自动伸缩推理端点）；7/6 发文「How to price serverless GPUs」把定价透明当卖点；训练产品（Training）已在产品线但 90 天无视频相关更新（https://modal.com/blog）</li>
+<li><strong>2026-09-03</strong> — RunPod 上架 Pruna P-Video-Edit 公共端点教程（视频编辑推理）；RunPod 90 天博客无任何视频 LoRA 训练/微调内容（https://www.runpod.io/blog）</li>
+<li><strong>2026-09-01 ~ 09-14</strong> — RunPod 三连：ISO 27001 认证（9/1）、私有 GPU 池与预留容量（9/11）、Global Volumes beta（9/14）——面向 agent 工作负载的基础设施成熟化（https://www.runpod.io/blog）</li>
+<li><strong>2026-09-02</strong> — RunPod 发文「Designing MCP tools that don't blow up your agent's context window」——官方下场讨论 agent 工具设计（https://www.runpod.io/blog）</li>
+<li><strong>2026-09-10</strong> — Lambda 发布 OpenResearcher（可复现的 deep research agent 训练流水线）；8/25 发布 AgentFlow（「当 agent 的工作流自己学习」）——训练侧 agent 化最密集的研究输出（https://lambda.ai/blog）</li>
+<li><strong>2026-09-17</strong> — Lambda 发文「Closing the loop: agentic evaluation for image editing foundation models」——用 agent 评估闭环反哺图像基础模型训练，是最接近「agent 驱动训练」的信号（https://lambda.ai/blog）</li>
+<li><strong>2026-08-12 ~ 08-27</strong> — Lambda 完成 $926M 投资级抵押 term loan（8/12 定价、8/27 交割）扩 GPU 产能——算力扩张但无视频/托管推理产品动作（https://lambda.ai/blog）</li>
+<li><strong>2026-09（文档无日期，推断近期）</strong> — RunPod Wan 2.2 端点支持外挂 high/low-noise LoRA 权重（传 safetensors URL，$0.35-0.56/条，URL 7 天过期）——「自带 LoRA 来推理」路线，但没人帮用户训练（https://docs.runpod.io/public-endpoints/models/wan-2-2-i2v-lora.md）</li>
+</ul>
+<h3>Roadmap 信号</h3>
+<ul>
+<li><strong>Fireworks 训练平台化是其明确主航道：Training API GA（8/31）+ agentic RL cookbook + 为 GLM 5.2 提供托管训练 + 训练成本估算器；但其训练目前严格限于 LLM</strong>（置信：官方明示；https://fireworks.ai/blog）</li>
+<li><strong>Together 明确走多供应商视频聚合：Seedance/Wan/Kling/Vidu/MiniMax 全上、按条计价、Wan 2.7 与 Seedance 2.5 配 quickstart、skills 和 docs MCP 均覆盖视频域；视频训练能力未见任何布局</strong>（置信：官方明示；https://www.together.ai/models）</li>
+<li><strong>RunPod 押注「agent 原生 GPU 云」：MCP×2 + 官方 skills 插件 + agent-setup 专页 + ISO 27001 + 预留容量/Global Volumes；下一步大概率是把更多生成媒体端点（已见 Wan/Pruna 系列）纳入公共端点目录</strong>（置信：官方明示；https://docs.runpod.io/get-started/agent-skills.md）</li>
+<li><strong>Lambda 正沿「agentic 训练/评估」研究线密集输出（OpenResearcher 9/10、AgentFlow 8/25、图像编辑基础模型 agentic 评估 9/17），有把 agent 驱动训练产品化的势头，但截至今日无任何产品公告</strong>（置信：多源交叉（研究线密集，产品化为推断）；https://lambda.ai/blog）</li>
+<li><strong>Replicate 自 2025-11 宣布并入 Cloudflare 后进入明显维护期：90 天仅 2 篇博客、官方 CLI 至今无 release、视频 trainer 生态停更——其「社区模型+训练分发」心智正被让出</strong>（置信：多源交叉；https://replicate.com/blog）</li>
+<li><strong>厂商侧把角色一致性推向「大模型 reference API」而非用户自训 LoRA：Replicate 上架 bytedance/dreamactor-m2.0、Together 建了 reference-and-keyframes 文档、Kling omni 系列扩展——open-weight LoRA 路线被留给第三方基础设施商</strong>（置信：多源交叉；https://replicate.com/collections/text-to-video）</li>
+<li><strong>推断：若 Fireworks 或 Together 把训练 API 扩展到生成媒体（图像/视频 LoRA），上述空位将在产品层面被碾平；从 Fireworks 训练路线全在 LLM 看，窗口期约为 6-12 个月量级</strong>（置信：推断；https://docs.fireworks.ai/llms.txt）</li>
+</ul>
+<h3>做得好的</h3>
+<ul>
+<li>RunPod 的 agent 集成是七家里最完整的：官方双 MCP server（API 管理类走 OAuth 托管在 mcp.getrunpod.io + 免鉴权文档检索类在 docs.runpod.io/mcp）、一行命令装官方 skills 插件（npx skills add runpod/runpod-plugins-official，6 个技能+内置路由）、runpodctl 甚至有 billing 子命令、SDK 覆盖 Python/JS/Go——独立 CLI 可直接借鉴它的技能路由结构和 Claude Code 安装命令写法</li>
+<li>Together 的 12 个官方 SKILL.md 技能按领域拆分（chat/images/video/audio/fine-tuning/batch/evals/sandboxes 等）并明确定义技能间 hand-off 边界使 agent 能链式调用，遵循 agentskills.io 开放规范——这是 SKILL.md 设计的最佳范本，可照抄其结构做你自己的 CLI 技能</li>
+<li>Replicate 的 remote MCP（mcp.replicate.com）宣称覆盖全部 HTTP API（含 trainings），还实验性提供 code mode：在 Deno 沙箱里让模型直接写 TypeScript 调 API 以省上下文——多步骤 agent 工作流的正确方向，值得在 CLI 的 agent 接入层复用</li>
+<li>Fireworks 的训练任务生命周期契约最完整：jobs REST API 有 create/resume/cancel/metrics 端点，SDK 有 TrainerJobManager/WeightSyncer 等抽象，还有训练成本估算器——长异步任务的「恢复」语义可直接参考它的 API 形状</li>
+<li>Together 和 RunPod 的推理响应都内嵌 cost 字段（Together 示例 "cost": 0.28；RunPod output.cost）——计费可观测已是现成好实践，contract-first CLI 应把 cost 当一等公民字段归一化</li>
+<li>Modal 的 music-video-gen 示例证明视频角色 LoRA 技术配方已成熟：4-8 张照片+trigger token，几分钟训练，7×H100 并行约 5 分钟产出 30 秒成片，finetune-id 资产化管理——只差有人把它从 clone-and-run 代码封装成服务</li>
+<li>Replicate 的训练计费最透明：训练按秒计费且文档直接给出单价（8×H100 = $0.0122/秒，一次 FLUX 微调约 $1.46）——跨厂商成本对比页可以拿它当锚点</li>
+</ul>
+<h3>空位与切入姿势</h3>
+<ul>
+<li><strong>「视频 LoRA 训练 as a service」在全部七家缺位：所有微调产品止步于 LLM（Fireworks SFT/DPO/RFT、Together LoRA/DPO/VLM、硅基流动对话+生图微调），没有任何一家接受视频训练数据；Replicate 的视频微调自 2025-01（HunyuanVideo）后再无产品级更新</strong></li>
+<li>证据：Together 微调文档只提文本与视觉语言模型；Fireworks llms.txt 训练页面全部为文本 SFT/DPO/RFT；硅基流动微调文档原话「选择对话模型微调或者生图模型微调」；Replicate text-to-video 合集与 fofr 等高产出创作者页面均无视频 trainer；RunPod 文档索引无任何 LoRA 训练指南</li>
+<li>切入：你的 CLI 串联「Modal/RunPod spot GPU 跑开源 Wan LoRA 训练配方（diffusion-pipe/musubi-tuner 类）→ 权重托管（HF repo/RunPod volume）→ RunPod LoRA 端点或 Replicate 模型推理」为一条命令；训练配方本身（超参、数据格式、触发词）作为可分发的 contract 资产——这是所有厂商都不敢做轻资产服务的空位</li>
+<li><strong>角色一致性当前是三条互不相通的断路：a) 厂商 reference API（每次推理带参考图/关键帧，无持久角色资产）b) RunPod 端点外挂 LoRA URL（用户必须自己去别处训练）c) Modal 开源示例（自己跑 JupyterLab 训练，非服务）</strong></li>
+<li>证据：Together 有「Reference images and keyframes」文档页、Replicate 上架 bytedance/dreamactor-m2.0（角色表演视频模型）；RunPod WAN 2.2 端点要求 input.high_noise_loras[].path 自备 safetensors 文件；Modal music-video-gen 是 clone 仓库自管代码（4-8 张照片→训练数分钟→7×H100 并行出片），文档明说「it's just code and containers」</li>
+<li>切入：把「角色资产」抽象成跨厂商可复用的契约：一个 character_id = 训练数据集 + LoRA 权重引用 + trigger 词 + 一致性评测集 + 各家端点适配器；训练一次、随处推理（RunPod 端点/Replicate 社区模型/自建 Modal 应用），并生成一致性对比报告</li>
+<li><strong>训练侧 agent 化刚萌芽且全部指向 LLM：Fireworks 的 agentic RL 是「训练 agent」而非「agent 驱动训练」；RunPod 官方六技能能让 agent 开 Pod/部署函数，但没有任何训练配方技能；Together 12 技能中的 fine-tuning 只覆盖 LoRA/DPO/VLM；无人提供「agent 整理数据→发起视频训练→评估→注册推理端点」闭环</strong></li>
+<li>证据：Fireworks llms.txt 训练 cookbook 含 agentic-rl 与 Remote Agent Quickstart（均面向 LLM RL）；RunPod 技能列表为 runpod/runpod-mcp/runpodctl/flash/companion-clis/runpod-usage/runpod-migrate，零训练技能；Together skills 覆盖页明确 fine-tuning 范围是 LoRA/DPO/VLM（文本域）</li>
+<li>切入：做一个「视频角色训练 skill」（SKILL.md + CLI 子命令）：agent 读角色图集→自动 caption/trigger 词→发起训练→用 VLM 评角色一致性→产出成本与质量报告→把权重注册到推理端点；与你已有的 generate JSON contract 天然衔接</li>
+<li><strong>视频长任务体验比 LLM 侧落后一代：Together 视频依赖客户端每 60 秒轮询、文档无 webhook、输出 URL 过期需「立即下载」；RunPod 视频 URL 7 天过期且 LoRA 端点只文档化了 runsync 同步路由；七家里只有 Replicate 有完整 webhook 文档、Fireworks 有训练任务 resume 端点</strong></li>
+<li>证据：Together 视频文档原话「Video generation is asynchronous: you create a job, receive a job ID, and poll for completion」及「Download videos immediately after completion」；RunPod Wan 端点文档「Video URLs expire after 7 days」且仅示例 /runsync；docs.together.ai 索引中无 webhook 页</li>
+<li>切入：CLI 提供统一异步契约：轮询/webhook 自适应 + 任务句柄可跨进程恢复（Fireworks resume 思路推广到推理）+ 结果自动归档到对象存储防 URL 过期——把「过期 URL」这类所有厂商文档都在警告的坑变成产品差异点</li>
+<li><strong>计费透明度严重不均：硅基流动视频文档无任何价格链接，Lambda 走销售询价模式，Together 视频费率不在文档页（仅响应内 cost 字段），只有 Replicate（训练 $0.0122/秒、约 $1.46/次）和 RunPod（$0.35-0.56/条、响应带 output.cost）直白；Fireworks 有成本估算器但仅限 LLM 训练</strong></li>
+<li>证据：硅基流动 docs 导航无 pricing（只有 misc_finance FAQ）；Together 视频文档唯一价格线索是示例响应 "cost": 0.28；Replicate fine-tune 指南给出精确单价与总价；RunPod Wan 端点文档列出分时长单价</li>
+<li>切入：CLI 归一化各厂商 cost 字段为统一货币视图 + 预算护栏（agent 自动化时代训练+推理链路必须有美元上限与中断保护）；顺手做跨厂商视频生成价格追踪器作为引流内容</li>
+<li><strong>Replicate 被收购后社区训练生态停摆：「社区模型+一键训练」心智无人接盘——90 天仅 2 篇博客、官方 CLI 无 release、视频目录全是官方/厂商模型而社区 trainer 缺位，头部创作者 fofr 的训练类模型只剩 44 次运行的实验仓库</strong></li>
+<li>证据：replicate.com/blog 90 天窗口仅 FLUX 3 指南（8/4）与 Krea 2（6/23）两篇；text-to-video 合集零 trainer；fofr 页面训练类仅 qwen-black-goya-training（5 runs）与 flux-training-experiments（44 runs）</li>
+<li>切入：接住空出的「训练配方分发」位置：CLI 内建配方市场/模板仓库（Wan/Hunyuan/LTX 微调配方+评测集），一键在不同基础设施（Modal/RunPod）复现——正是原 Replicate 社区生态的核心体验，如今无人维护</li>
+</ul>
+<h3>未解问题</h3>
+<ul>
+<li>Replicate 当前是否仍有可运行的视频模型 trainer（HunyuanVideo 之后无公开产品更新，2026 目录中未发现 Wan/Hunyuan trainer）？</li>
+<li>Together 视频 API 是否提供 webhook/回调，还是只有客户端轮询？视频模型的公开费率表在哪个页面？</li>
+<li>硅基流动视频生成的具体定价是多少？是否支持传入自定义 LoRA 权重？</li>
+<li>Modal 是否计划推出官方平台级 MCP server（文档索引只有用户自建 FastMCP 的示例，无平台管理 MCP）？</li>
+<li>Lambda 是否仍维护独立 CLI 与托管推理 API（docs.lambda.ai 首页只列 GPU 云/私有云/托管 K8s/Slurm，未列 CLI 与推理 API）？</li>
+<li>Fireworks Training API 是否会扩展到图像/视频生成模型，有无时间表？</li>
+<li>Modal music-video-gen 示例的底模是否仍是 Wan2.1（示例卡片如此标注，但正文已不点名模型版本）？</li>
+</ul>
+<h3>来源</h3>
+<ul>
+<li><a href="https://replicate.com/blog">Replicate Blog（90 天仅 2 篇；并入 Cloudflare 公告）</a></li>
+<li><a href="https://replicate.com/collections/text-to-video">Replicate Text-to-Video 模型合集（Sora-2/Veo 3.1/Kling v3/Wan 3/DreamActor 等，无 trainer）</a></li>
+<li><a href="https://replicate.com/docs/reference/mcp">Replicate 官方 MCP Server 文档（remote mcp.replicate.com + code mode）</a></li>
+<li><a href="https://replicate.com/docs/get-started/fine-tune-with-flux">Replicate 微调入门（fast-flux-trainer、按秒计费 $0.0122/s）</a></li>
+<li><a href="https://github.com/replicate/cli">Replicate 官方 CLI（GitHub，含 training/train 命令）</a></li>
+<li><a href="https://replicate.com/fofr">Replicate 创作者 fofr 模型页（无视频 trainer）</a></li>
+<li><a href="https://modal.com/blog">Modal Blog（atom feed，90 天动作：沙箱/agent/定价透明）</a></li>
+<li><a href="https://modal.com/docs/examples/music-video-gen">Modal 示例：Fine-tune Wan2.1 video models on your face（music-video-gen）</a></li>
+<li><a href="https://modal.com/docs/examples">Modal 示例总目录（LTX/FLUX LoRA/长训练任务/MCP 示例）</a></li>
+<li><a href="https://modal.com/docs/llms.txt">Modal 文档 llms.txt（CLI 全套；无平台 MCP；多节点训练 Beta）</a></li>
+<li><a href="https://www.together.ai/models">Together AI 模型库（Seedance 2.5/2.0、MiniMax H3、Wan/Kuaishou/Vidu 系列，按条计价）</a></li>
+<li><a href="https://docs.together.ai/docs/fine-tuning-overview">Together 微调总览（LLM+VLM，tg CLI，轮询无 webhook，无视频微调）</a></li>
+<li><a href="https://docs.together.ai/docs/inference/videos/overview.md">Together 视频生成文档（异步 job + 轮询、cost 字段、URL 过期警告）</a></li>
+<li><a href="https://docs.together.ai/docs/agent-skills.md">Together Coding Agent Setup（12 个 SKILL.md 技能 + docs MCP）</a></li>
+<li><a href="https://docs.together.ai/llms.txt">Together 文档索引 llms.txt（视频/CLI/batch/Queue API 全目录）</a></li>
+<li><a href="https://fireworks.ai/blog">Fireworks Blog（Training API GA、Series D、$1B ARR、Kimi K3 LoRA 训练）</a></li>
+<li><a href="https://docs.fireworks.ai/llms.txt">Fireworks 文档索引 llms.txt（firectl 训练命令、SFT/DPO/RFT/agentic RL；无视频生成）</a></li>
+<li><a href="https://www.runpod.io/blog">RunPod Blog（ISO 27001、Global Volumes、MCP 工具设计、P-Video-Edit）</a></li>
+<li><a href="https://docs.runpod.io/llms.txt">RunPod 文档索引 llms.txt（runpodctl/Flash CLI/SDK 三语言/Wan 端点/agent-skills）</a></li>
+<li><a href="https://docs.runpod.io/get-started/mcp-servers.md">RunPod 官方 MCP Servers 文档（API MCP + Docs MCP，OAuth）</a></li>
+<li><a href="https://docs.runpod.io/get-started/agent-skills.md">RunPod Agent Skills 文档（6 技能+路由，npx skills add 安装）</a></li>
+<li><a href="https://docs.runpod.io/public-endpoints/models/wan-2-2-i2v-lora.md">RunPod WAN 2.2 LoRA 端点文档（外挂 LoRA URL、$0.35-0.56/条、URL 7 天过期）</a></li>
+<li><a href="https://lambda.ai/blog">Lambda Blog（OpenResearcher/AgentFlow/agentic eval、$926M term loan）</a></li>
+<li><a href="https://docs.lambda.ai">Lambda 文档（GPU 云/托管 K8s/Slurm；Mochi 视频微调教程；无 CLI/MCP）</a></li>
+<li><a href="https://www.siliconflow.cn/models">硅基流动模型广场（无视频模型在列，视频为独立过滤类目）</a></li>
+<li><a href="https://docs.siliconflow.cn/en/">硅基流动文档（视频 submit/status 两步 API；微调仅对话+生图；无 CLI/MCP/价格）</a></li>
+<li><a href="https://docs.siliconflow.cn/docs/userguide/capabilities/video">硅基流动视频生成用户指南（Wan2.2-T2V/I2V-A14B，异步提交+取链接）</a></li>
+<li><a href="https://docs.siliconflow.cn/docs/userguide/guides/fine-tune">硅基流动微调指南（对话/生图二选一，无视频微调）</a></li>
+</ul>
+<hr />
+<h2>LLM × 视频交叉（编排/判片/分镜契约/MCP 化）</h2>
+<p>LLM 当视频流水线"大脑"已成厂商共识，但 90 天实况是：大脑全都关在自家围墙里——fal Agent（选模/批量/失败修复）、Runway Dev MCP + Model Router、Google agentic video understanding，全部是平台内或聊天内能力，没有一个把"判片"做成独立 API。多模态原材料已经就绪且成本骤降：Gemini 9/1 上线 agentic 视频理解（长视频省 88% token）、Omni Flash 把对话式视频编辑/扩展/插值做进 API、Qwen3-VL 开源提供秒级时间戳定位，"每条生成结果过一遍 VLM"在经济上已可行。最大的空位正是判片/验收层：不是有人做了没声量，而是产品化 API 层面真没人做——fal 官方文档明说对比卡"不给结论，用户自己决定"，Runway 的 quality 路由是静态模型排名而非逐条评分，行业评测仍靠 Artificial Analysis 人肉投票和 VBench 学术基准。对独立开发者的直接含义：prompt 遵循度/连贯性/运动质量的结构化判片 + 判片驱动重试，是当前唯一"厂商都没做且原材料已备齐"的层，恰好适合以 contract-first CLI 形态切入。</p>
+<h3>近 90 天时间线</h3>
+<ul>
+<li><strong>2026-06-30</strong> — Gemini Omni Flash 公开预览（gemini-omni-flash-preview）：对话式视频生成与编辑模型进入 Gemini API，经 Interactions API 生成 3-10 秒 720p 视频——视频生成开始变成'对话循环'（https://ai.google.dev/gemini-api/docs/changelog）</li>
+<li><strong>2026-06-18 至 2026-09-20</strong> — MCP 官方注册表视频类 server 从 1 个增至 13 个独立条目（6/18 DemoMagic、8/12 Saifs、8/30 Automated Video、9/4 MakeAIVideo 1.2.0、9/15-17 Tegas 1.1.1 与 FilmeeAi 1.1.1、9/20 CopyTheVideo），全部为第三方小包装，无一家头部视频厂商提交官方 server（https://registry.modelcontextprotocol.io/v0/servers?search=video）</li>
+<li><strong>2026-07-08 / 2026-07-31</strong> — 第三方 runapi-builder 连发 runway-mcp v0.1.5 和 runway-aleph-mcp v0.1.7（create tasks / poll status / check pricing）——第三方在把 Runway 异步 API 包成 MCP 等官方动作（https://registry.modelcontextprotocol.io/v0/servers?search=runway）</li>
+<li><strong>2026-08-26</strong> — Lightricks LTX-2 仓库（音视频一体开源生成模型的 Python 推理+LoRA 训练包）同日推送更新，开源桌面应用 LTX-Desktop 同步活跃——开源侧音视频一体模型在 90 天窗口内保持迭代（https://github.com/Lightricks/LTX-2）</li>
+<li><strong>2026-08-27</strong> — Gemini Omni Flash GA（gemini-omni-1.1-flash）：新增视频扩展（extend task 在片尾生成续段）与首尾帧插值（imag 任两张图过渡）——对话式视频编辑原语 API 化（https://ai.google.dev/gemini-api/docs/changelog）</li>
+<li><strong>2026-09-01</strong> — Agentic video understanding 发布（Gemini 3.7 Flash、3.6 Flash 等）：模型按 prompt 动态导航视频时间线、选择性加载转写/帧/音频，官方称长视频内容省 88% token、质量提升约 7%——VLM 判片的成本障碍被官方拆掉（https://ai.google.dev/gemini-api/docs/changelog）</li>
+<li><strong>2026-09-02</strong> — Gemini 3.8 Flash GA（gemini-3.8-flash）：面向长程软件工程与自主 agent 的 Flash 旗舰——'agent 大脑'与视频能力在同一 API 内对齐（https://ai.google.dev/gemini-api/docs/changelog）</li>
+<li><strong>2026-09-08</strong> — ElevenLabs 官方 MCP（io.elevenlabs/mcp v1.0.0）进入官方注册表：语音代理管理+语音/音乐/音效/图像生成——音频厂商第一个把官方 MCP 提交注册表，视频厂商无一跟进（https://registry.modelcontextprotocol.io/v0/servers?search=elevenlabs）</li>
+<li><strong>2026-09-17（文档最后更新）</strong> — Gemini 视频理解文档更新 agentic 细节：1M 上下文模型最长约 3 小时视频（低分辨率），66/258 token 每帧+32 token 每秒音频，MM:SS 时间戳引用，start/end_offset 裁剪；同页披露 YouTube URL 输入免费预览（https://ai.google.dev/gemini-api/docs/video-understanding）</li>
+</ul>
+<h3>Roadmap 信号</h3>
+<ul>
+<li><strong>VLM 判片的经济障碍已被 Google 官方拆除：agentic video understanding（9/1 发布）按需加载帧/转写而非固定 1FPS，官方称省 88% token——'每条生成结果过一遍 VLM 打分'从烧钱变成可选项，做判片层的时间窗口就是现在</strong>（置信：官方明示；https://ai.google.dev/gemini-api/docs/changelog）</li>
+<li><strong>视频生成正在'对话化'：Omni Flash（6/30 预览→8/27 GA，节奏很快）把生成/编辑/扩展/插值统一进对话式模型+Interactions API；对话循环里'机器验收'是缺不了的环节，Google 做了理解侧、没做评价侧——下一步很可能由它自己补（官方文档把'描述、分段、提取'并列，唯独没有评价动词）</strong>（置信：推断；https://ai.google.dev/gemini-api/docs/video-understanding）</li>
+<li><strong>MCP 成视频 agent 分发默认面：Runway 双官方 MCP、fal 官方 MCP+ChatGPT/Codex 插件、ElevenLabs 官方 MCP 进注册表；第三方（runapi-builder、AceDataCloud 一家包了 Luma/Kling/Veo/Sora/MiniMax/Hailuo 六家）已经在抢官方缺位——中小厂商官方 MCP 会在 6-12 个月内补齐</strong>（置信：多源交叉；https://registry.modelcontextprotocol.io/v0/servers?search=video）</li>
+<li><strong>fal 在把'规划-执行-修复'闭环产品化（Agent 计划卡、失败诊断修复最多 3 次、spending caps 按 USD 封顶、custom skills 开放 GitHub 安装）——下一步顺理成章是把 Agent 的修复/判断能力从聊天暴露成 API；它今天明确不做的'给结论'，明天可能变成增值付费点</strong>（置信：官方明示（能力存在）+ 推断（API 化时间）；https://fal.ai/docs/documentation/agent/models-and-generation.md）</li>
+<li><strong>Runway 走'平台聚合器'路线：Dev API 里同时挂 Gen 4.5、Aleph 2.0、Seedance 2.5、GPT Image 2 并配 Model Router 按偏好自动路由——厂商中立路由层被平台自己做了，独立开发者的'路由'空位收窄，但'路由依据'（quality 打分）依然没人提供</strong>（置信：官方明示；https://docs.dev.runwayml.com/_llms-txt/model-routers.txt）</li>
+<li><strong>开源音视频一体模型持续迭代（LTX-2 仓库 8 月仍活跃，含 LoRA 训练），本地/私有判片+生成闭环的原料在齐——面向'不愿上云'用户的本地 pipeline 工具是差异化方向</strong>（置信：多源交叉；https://github.com/Lightricks/LTX-2）</li>
+</ul>
+<h3>做得好的</h3>
+<ul>
+<li>fal：agent-first 文档三件套（llms.txt 全量索引 + 每页 .md 原文 + llms-small.txt 精简版），并官方维护 MCP（mcp.fal.ai/mcp，11 个工具含 recommend_model 模型推荐）、开源 CLI（genmedia，JSON 输出、--help --json 自描述、genmedia init 直接往 .claude/skills/ 装 skill）——'让 agent 能用'被写成平台战略而非附赠品</li>
+<li>fal：异步可靠性栈完整——队列 + 自动重试（503/504/连接错误/429 最多 10 次智能退避）+ 模型 fallback + 备份域名，且 5xx 失败不计费、get_pricing 可在执行前查价，计费透明度业界最佳</li>
+<li>Runway Dev：官方双 MCP（dev.runwayml.com/mcp 管任务和 Model Router、mcp.runwayml.com 管生成，纯 OAuth 免贴 key）；Model Router 把'选模型'做成一等 API 概念（cost/latency/quality 三偏好 + 按模态设每条 credit 上限 + 响应回报实际用了哪个模型花了多少）；ai-context.md 号称几千 token 读完全 API——agent 可用性设计最认真</li>
+<li>Runway：异步等待封装进 SDK（Node waitForTaskOutput / Python wait_for_task_output）+ 类型化 TaskFailedError 携带 taskDetails，失败信息结构化</li>
+<li>Google：agentic video understanding 把长视频理解成本砍 88%，等于官方替'逐条判片'打平了经济账；Omni Flash 的 extend/插值原语让'判片后局部重生成'有了 API 支点；视频还能直接喂给 Nano Banana 转帧和多模态 embedding（gemini-embedding-2 支持视频输入，统一向量空间）</li>
+<li>OpenAI Sora API：异步体验最规范——轮询建议 + webhook 事件（video.completed/video.failed）+ Batch API + 语义化编辑原语（Characters/Extensions 最多 6 段共 120 秒/Edits），.thumbnail 和 .spritesheet 附赠产物对后续逐帧判片很友好</li>
+<li>Qwen3-VL：Apache-2.0 全尺寸开源（2B~235B-A22B），256K→1M 上下文、'小时级视频+秒级索引'、Text-Timestamp Alignment、Visual Agent——想自建判片 VLM 的开发者有免费弹药</li>
+</ul>
+<h3>空位与切入姿势</h3>
+<ul>
+<li><strong>判片/验收层完全没有产品化 API——这是最大且被反复证实的空位</strong></li>
+<li>证据：fal Agent 官方文档原话：模型对比卡 'The card does not give a verdict. You decide.'；最接近判片的功能是 Agent 聊天里的 'Review a generation'（限 250MB、4 分钟超时、仅聊天内、非 API）；Runway Model Router 的 quality 偏好是静态模型排名，不逐条评分；行业评测靠 Artificial Analysis 人肉投票竞技场（'You're judging the sound too'）和 VBench 学术基准（1785 star，2024 年后无新 release，仅维护）；OpenAI/Sora API 无任何评测端点。即：有人做了'理解'，没人做'评价'的产品化</li>
+<li>切入：独立开发者的 contract-first CLI 正好卡这层：定义一个 VideoVerdict JSON contract（prompt 遵循度/主体一致性/运动质量/文字正确性/瑕疵列表+时间戳/每项置信度），底层挂 Gemini agentic video understanding（省 88% token）或本地 Qwen3-VL，输入 prompt+生成结果输出结构化验收单；接各家 webhook（Sora video.completed、fal webhook_url、Runway 轮询兜底）做成'生成→判→重试'闭环中间件，这是厂商围墙外唯一没人占的地基</li>
+<li><strong>失败重试决策停在语法层，语义级重试（判片驱动）没人做</strong></li>
+<li>证据：fal 平台自动重试只覆盖 503/504/连接错误/429（最多 10 次退避），语义失败（手畸形、错字、不连贯）不触发；fal Agent 的'诊断+修复最多 3 次'（缩图重建输入、瞬态重试一次）只存在于聊天产品，API/CLI 均无；Runway SDK 只有类型化 TaskFailedError；Sora webhook 只有 completed/failed 两个裸事件</li>
+<li>切入：把判片结果映射成重试策略表：按瑕疵类型决定动作（构图崩→换 seed、文字错→LLM 改 prompt 重跑、风格漂移→锁 reference、持续失败→Model-Router 式换模型），并给出成本护栏（每条最高 N 次重试预算）——fal 证明了该逻辑受欢迎，但只在它自家围墙内</li>
+<li><strong>LLM 分镜在消费端产品泛滥、在 API 端缺席</strong></li>
+<li>证据：Sora API 官方文档明确 no storyboard feature（只有 input_reference/Characters/Extensions/Edits）；Runway 的 Multi-Shot Video 是不可编程的固定 Recipe（'model selection, prompt engineering, and post-processing packaged in'）；分镜类产品（LTX Studio、Flow 时间线、Sora 分镜——均为 2025 下半年旧闻）都不开放分镜编程接口</li>
+<li>切入：LLM 分镜→逐镜生成→自动拼接的开源管线：用 fal-ai/any-llm（fal 官方 LLM 端点）做分镜规划，逐镜调各家异步 API，用 Omni Flash extend/插值做镜头衔接；以 CLI+JSON 分镜契约交付，正好是用户在做的东西的上游输入</li>
+<li><strong>官方 MCP 注册表里没有任何头部视频厂商，视频类 server 质量参差</strong></li>
+<li>证据：注册表 13 个视频 server 全为第三方小包装：多数 0.x 版本（NoonAI 0.1.12 迭代 8 次）、描述营销化（'CopyTheVideo 找 Facebook MP4'）、同质化（MakeAIVideo/Tegas/FilmeeAi 都是'一句话转成片'）；Luma/Kling/Veo/Sora/MiniMax/Hailuo 仅有 AceDataCloud 一家的第三方包；AtlasCloud、Higgsfield、Vidu、Pika 完全无 server；Runway/fal 官方 MCP 存在但都绕过注册表只挂自家文档</li>
+<li>切入：两个切入位：(1) 给中小/聚合商（如 AtlasCloud 类）做合规官方级 MCP 包装+统一工具 schema（搜索/查价/提交/查询/取消/取件六件套，对齐 fal 的 11 工具形态）；(2) 更大的——'视频 MCP 网关'：一个 server 后面聚合 N 家异步 API，统一化各家参差的轮询/计费/错误语义</li>
+<li><strong>CLI 与长任务恢复体验普遍缺失，fal 一家独苗</strong></li>
+<li>证据：官方 CLI 只有 fal genmedia（开源、agent-first：JSON 自描述、--async 提交即返 request_id、status/result/cancel 子命令、genmedia init 装 .claude/skills）；Runway/OpenAI/Google 视频均无官方 CLI；异步恢复上 Runway 文档只提轮询（无 webhook），Sora 建议 10-20 秒轮询+URL 一小时过期需自行搬存储，fal MCP 的 run_model 只等 45 秒就要转 check_job 轮询——'挂断后回来接着等'没有任何一家做</li>
+<li>切入：多厂商统一 CLI + 本地任务账本（request_id 持久化、断点恢复等待、webhook 内网穿透兜底、产物自动归档避开 URL 过期坑）——用户正在自研的 contract-first 多供应商 CLI 直击此空位，判片层是它区别于 genmedia 的差异化武器</li>
+<li><strong>计费透明度与预算护栏厂商间差距大</strong></li>
+<li>证据：最好水平是 fal（执行前 get_pricing、5xx 不计费、Agent spending caps 按 USD 封顶）和 Runway Model Router（每模态每条 credit 上限、响应回报实际花费）；最差是 Google（视频输入按 token 计价但文档页无单价，YouTube 输入'pricing likely to change'）和第三方聚合包装（基本不披露失败是否计费）</li>
+<li>切入：CLI 层做跨厂商成本预算器：统一'每条视频预算'抽象（对齐 Runway 的 per-generation cap 概念），执行前换算各家报价、失败退款语义归一化——判片还能反过来省钱（低分即停，避免为废片付费）</li>
+</ul>
+<h3>未解问题</h3>
+<ul>
+<li>Kling/Vidu/海螺/Pika 的 app 内 prompt 优化与分镜功能 90 天内是否已 API 化——属并行研究轨道，待交叉确认（注册表中 Vidu 连第三方 server 都没有）</li>
+<li>fal Agent 的上线日期、定价分层与保留策略细节——agent-plans-and-retention.md 页面本次未抓取成功</li>
+<li>mcp.runwayml.com 生成 MCP 的完整工具列表（文档仅一句话描述'creates media in chat'）</li>
+<li>Gemini Omni Flash 的定价与 Interactions API 完整原语集（extend/interpolate 之外是否还有编辑指令集）</li>
+<li>LTX Studio 官网从本环境 TCP 层不可达（ltxstudio.ai 连接被重置），其 90 天产品更新与 LTX-2 集成状态无法验证</li>
+<li>GPT-5.x 在 ChatGPT 消费端是否支持视频输入（API 侧确认无 video-understanding 指南；消费端未查）</li>
+<li>Runway Dev API 是否有 webhook（本次抓取的 llms-small/首页均未提及，不能断言'没有'）</li>
+</ul>
+<h3>来源</h3>
+<ul>
+<li><a href="https://ai.google.dev/gemini-api/docs/changelog">Gemini API Changelog（Omni Flash 预览/GA、agentic video understanding、Gemini 3.8 Flash GA 等带日期记录）</a></li>
+<li><a href="https://ai.google.dev/gemini-api/docs/video-understanding">Gemini API — Video understanding（agentic 导航、token 计价规则、时间戳、YouTube 输入）</a></li>
+<li><a href="https://developers.openai.com/api/docs/guides/video-generation">OpenAI — Video generation guide（sora-2/pro、Extensions、webhook、Batch、无分镜无 prompt 增强）</a></li>
+<li><a href="https://developers.openai.com/api/docs/guides">OpenAI API Guides 索引（只有 Image/Vision/Video generation，无视频输入理解指南）</a></li>
+<li><a href="https://github.com/QwenLM/Qwen3-VL">Qwen3-VL GitHub（256K→1M 上下文、秒级索引、Visual Agent、全尺寸开源）</a></li>
+<li><a href="https://docs.dev.runwayml.com/llms.txt">Runway Dev 文档索引（llms.txt：ai-context、Model Routers、Recipes、MCP 指南）</a></li>
+<li><a href="https://docs.dev.runwayml.com/guides/mcp">Runway — Connect Dev MCP（dev.runwayml.com/mcp + mcp.runwayml.com 双 server、OAuth）</a></li>
+<li><a href="https://docs.dev.runwayml.com/_llms-txt/model-routers.txt">Runway — Model Routers（cost/latency/quality 路由、每模态 credit 上限）</a></li>
+<li><a href="https://docs.dev.runwayml.com/_llms-txt/recipes.txt">Runway — Recipes（Multi-Shot Video 等封装工作流）</a></li>
+<li><a href="https://fal.ai/docs/llms.txt">fal — llms.txt 全文档索引（Agent/MCP/genmedia/webhooks/reliability 全貌）</a></li>
+<li><a href="https://fal.ai/docs/documentation/setting-up/mcp">fal — Run MCP（mcp.fal.ai/mcp、11 工具含 recommend_model）</a></li>
+<li><a href="https://fal.ai/docs/documentation/agent/models-and-generation.md">fal Agent — Models and generation（对比卡'不给结论'、失败修复最多 3 次）</a></li>
+<li><a href="https://fal.ai/docs/documentation/agent/tools/video-understanding.md">fal Agent — Video understanding（聊天内判片：250MB、4 分钟超时、Review a generation）</a></li>
+<li><a href="https://fal.ai/docs/documentation/setting-up/genmedia">fal — genmedia CLI（开源、agent-first、genmedia init 装 .claude/skills）</a></li>
+<li><a href="https://fal.ai/docs/documentation/model-apis/inference/webhooks.md">fal — Webhooks（队列完成回调）</a></li>
+<li><a href="https://fal.ai/docs/documentation/model-apis/inference/reliability.md">fal — Reliability（10 次自动重试、模型 fallback、备份域名、5xx 不计费）</a></li>
+<li><a href="https://fal.ai/docs/examples/video-generation/deploy-text-to-video-model.md">fal — Deploy a Text-to-Video Model 示例（官方演示 LLM prompt 扩写+多模型安全检查进视频管线）</a></li>
+<li><a href="https://registry.modelcontextprotocol.io/v0/servers?search=video">MCP 官方注册表 — video 检索（13 个独立视频 server，全第三方）</a></li>
+<li><a href="https://registry.modelcontextprotocol.io/v0/servers?search=runway">MCP 官方注册表 — runway 检索（仅第三方包装，无官方条目）</a></li>
+<li><a href="https://registry.modelcontextprotocol.io/v0/servers?search=elevenlabs">MCP 官方注册表 — elevenlabs 检索（io.elevenlabs/mcp 官方条目 2026-09-08）</a></li>
+<li><a href="https://github.com/Lightricks/LTX-2">Lightricks/LTX-2（开源音视频一体模型推理+LoRA 训练包，2026-08-26 活跃）</a></li>
+<li><a href="https://github.com/Lightricks/LTX-Video">Lightricks/LTX-Video（开源图生视频，10969 star）</a></li>
+<li><a href="https://github.com/Vchitect/VBench">Vchitect/VBench（学术评测基准：无产品化、2024 后无新 release、仍在维护）</a></li>
+<li><a href="https://artificialanalysis.ai/video">Artificial Analysis — Video Arena（人肉投票竞技场：T2V/I2V/Video Editing 三榜）</a></li>
+<li><a href="https://flow.google.com/">Google Flow（标题已变为 'AI Creative Studio for Video, Images &amp; Custom Tools'，产品页需登录）</a></li>
+</ul>
+<hr /></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 研究文档 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

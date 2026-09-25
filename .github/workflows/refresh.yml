@@ -84,6 +84,7 @@ jobs:
         run: |
           uv run --with markdown python build_skills_site.py
           uv run --with markdown python gen_appendix.py
+          uv run --with markdown python build_research_summary_page.py
           cp index.html site/index.html
           npx -y pagefind --site site
 

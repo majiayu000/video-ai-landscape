@@ -289,6 +289,8 @@
   <a href="#s9">⑨ 时间线</a>
   <a href="#s10">⑩ 坑与警示</a>
   <a href="#s11">⑪ 借鉴清单</a>
+  <a href="docs/">⑫ 研究文档</a>
+  <a href="docs/skills-construction-2026-09-25.html">⑬ 技能研究</a>
 </nav>
 
 <!-- ══════════════ 1. 核心结论 ══════════════ -->
@@ -547,28 +549,28 @@
       <h4>CLI 即运行时</h4>
       <div class="p-sub">skills 只是 CLI 的说明书</div>
       <p>「所有其他 skill 都通过 genmedia 命令执行，不直接调 HTTP API」。6 条 Critical Rules：agent 读输出必带 <code>--json</code>、永不编造 endpoint ID、自定义参数前必查 schema、下载用 <code>--download</code> 不用 curl。</p>
-      <div class="p-kicker">✦ 独有：智能路由 <code>run "&lt;prompt&gt;"</code> 自动分类模态；index.json 带 SHA256 防篡改</div><a class="open-src" href="skills/fal-community-skills/skills/genmedia.html">打开源文件 →</a>
+      <div class="p-kicker">✦ 独有：智能路由 <code>run "&lt;prompt&gt;"</code> 自动分类模态；index.json 带 SHA256 防篡改</div><a class="open-src" href="skills/fal-community-skills/skills/genmedia/SKILL.html">打开源文件 →</a>
     </div>
     <div class="phil">
       <div class="p-no">PHILOSOPHY 02 · HIGGSFIELD</div>
       <h4>UX 剧本</h4>
       <div class="p-sub">管到 agent 怎么说话</div>
       <p>325 行的行为规范：用用户语言回复、不暴露原始 ID/JSON、不预先估价、一次只问一个问题。核心是巨大的模型路由决策树（默认视频 = Seedance 2.5，广告 = Marketing Studio）。</p>
-      <div class="p-kicker">✦ 独有：evals/ 测试场景；INSTALL_FOR_AGENTS.md 是写给 agent 看的自装剧本</div><a class="open-src" href="skills/higgsfield-skills/higgsfield-generate.html">打开源文件 →</a>
+      <div class="p-kicker">✦ 独有：evals/ 测试场景；INSTALL_FOR_AGENTS.md 是写给 agent 看的自装剧本</div><a class="open-src" href="skills/higgsfield-skills/higgsfield-generate/SKILL.html">打开源文件 →</a>
     </div>
     <div class="phil">
       <div class="p-no">PHILOSOPHY 03 · RUNWAY</div>
       <h4>脚本即技能</h4>
       <div class="p-sub">不依赖任何 CLI，自带可执行脚本</div>
       <p>技能内嵌 <code>scripts/generate_video.py</code>，<code>uv run</code> 执行；frontmatter 白名单收窄执行面。key 只从环境变量读（禁止 CLI 参数防 history 泄露）、产物视为不可信输入、固定文件名时间戳约定。</p>
-      <div class="p-kicker">✦ 独有：技能分两族——rw-generate-*（执行）与 runway-dev-*（教 agent 做集成开发）</div><a class="open-src" href="skills/runwayml-skills/skills/rw-generate-video.html">打开源文件 →</a>
+      <div class="p-kicker">✦ 独有：技能分两族——rw-generate-*（执行）与 runway-dev-*（教 agent 做集成开发）</div><a class="open-src" href="skills/runwayml-skills/skills/rw-generate-video/SKILL.html">打开源文件 →</a>
     </div>
     <div class="phil">
       <div class="p-no">PHILOSOPHY 04 · ATLASCLOUD</div>
       <h4>技能即文档</h4>
       <div class="p-sub">574 行嵌入式 API 参考 + 一个方法论瑰宝</div>
       <p>无 SDK/CLI 依赖，agent 照抄 curl/Python 模板即可运行；14 个 MCP 工具逐一说明。真正有价值的是 <strong>universal-video-prompt-skill</strong>：写一次模型无关 spec，再编译到任意模型——三桶模型（Global/Locks/Time）× 可验证性改写 × 能力降级规则，完整中英双语。</p>
-      <div class="p-kicker">✦ 独有：跨模型 prompt 工程范式；seedance skill 带双后端 providers 适配层</div><a class="open-src" href="skills/atlascloud-skills/atlas-cloud.html">打开源文件 →</a>
+      <div class="p-kicker">✦ 独有：跨模型 prompt 工程范式；seedance skill 带双后端 providers 适配层</div><a class="open-src" href="skills/atlascloud-skills/atlas-cloud/SKILL.html">打开源文件 →</a>
     </div>
   </div>
 
@@ -580,7 +582,7 @@
 <!-- ══════════════ 6. 本地技能库 ══════════════ -->
 <section id="s6">
   <h2><span class="no">06</span>本地技能库清单</h2>
-  <p class="section-sub">全部克隆至 <code>/Users/lifcc/Desktop/code/AI/tools/video-ai-landscape/</code>。所有技能文档已渲染为在线版本，点开即可阅读。</p>
+  <p class="section-sub">全部克隆至 <code>本地调研快照</code>。所有技能文档已渲染为在线版本，点开即可阅读。</p>
   <a class="btn" href="skills/">📚 在线阅读全部 466 篇技能文档 →</a>
   <div class="tbl-scroll"><table>
     <thead><tr><th>本地目录</th><th>来源仓库</th><th>SKILL.md</th><th>大小</th><th>执行模型</th><th>亮点</th></tr></thead>
@@ -865,7 +867,7 @@ window.addEventListener('DOMContentLoaded', function () {
     <div>platform.vidu.com · kling.ai · help.aliyun.com/zh/model-studio</div>
     <div>replicate.com/docs · glama.ai/mcp/servers · skills.sh</div>
   </div>
-  <div style="margin-top:14px">本地技能库：<code>/Users/lifcc/Desktop/code/AI/tools/video-ai-landscape/</code> · 报告生成：2026-09-21 · 调研方式：6 路并行 agent 调研 + 本地仓库源码深读</div>
+  <div style="margin-top:14px">本地技能库：<code>本地调研快照</code> · 报告生成：2026-09-21 · 调研方式：6 路并行 agent 调研 + 本地仓库源码深读</div>
 </footer>
 
 </div>

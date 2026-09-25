@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Higgsfield 生态与效果评估</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style></head>
+<body><nav class="topbar"><a href="/">← 全景报告</a><span class="crumb">/</span><a href="/docs/">研究文档</a><span class="crumb">/</span><span class="crumb">higgsfield-ecosystem-assessment-2026-09-24.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Higgsfield 生态与效果评估</h1>
+<blockquote>
+<p>评估日期：2026-09-24 · 数据：GitHub API / skills.sh API 一手拉取（当日）+ 本库三轮调研（103 SKILL.md 考古、厂商动向路）
+口径：商业数字（融资/收入）未进调研库一手确认的，一律不给数。外部新闻佐证待补（当日搜索额度已满）。</p>
+</blockquote>
+<h2>1. 生态：分发很广，但是"官方独角戏"</h2>
+<h3>1.1 分发面（强，一手数据）</h3>
+<table>
+<thead>
+<tr>
+<th>渠道</th>
+<th>数据</th>
+<th>置信</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>skills.sh</td>
+<td>9 个官方技能 ≈ 98 万安装，平台最大厂商账号；头部 generate 178,706 / product-photoshoot 158,496 / soul-id 157,350</td>
+<td>官方 API 实时</td>
+</tr>
+<tr>
+<td>GitHub skills 仓库</td>
+<td>1,117 ★ / 216 fork（2026-04-09 创建，5 个半月）</td>
+<td>官方 API</td>
+</tr>
+<tr>
+<td>GitHub cli 仓库</td>
+<td>579 ★；<strong>8 月零提交</strong>，进维护态（9-18 恢复 push，伴随 API 首发）</td>
+<td>官方 API</td>
+</tr>
+<tr>
+<td>MCP 分发</td>
+<td>免 API key 铺进 ChatGPT / GPT-6 Astra / Claude / Cursor 等 7+ 客户端</td>
+<td>官方 changelog</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>After Effects 插件（7-13）；Enterprise SOC 2 + SSO（8-19）</td>
+<td>官方 changelog</td>
+</tr>
+</tbody>
+</table>
+<h3>1.2 生态空心三信号</h3>
+<ol>
+<li><strong>贡献者 5 人</strong>：前两名 49+32 commits——内部团队仓库，不是社区生态。第三方仿写技能最好 395 安装 vs 官方 178,706，差 <strong>450 倍</strong>：没有第三方在它上面长出来。</li>
+<li><strong>CLI 被自己放弃</strong>：重心转向 ChatGPT 分发与无代码 App（Apps，7-07；GPT-6 Astra，9-07），开发者侧入口停在维护态。</li>
+<li><strong>工程卫生一般</strong>：版本号全仓库一个（VERSION 0.12.0）、改模型默认值直接 commit main（9-11 无版本号变更）、game-generation 并入 websites 后 skills.sh 索引未清。</li>
+</ol>
+<p><strong>定性：广播型生态（官方→用户单向灌），不是平台型生态（第三方共建）。</strong></p>
+<h2>2. 效果：产品需求真，工程与账是软肋</h2>
+<h3>2.1 被验证有效的</h3>
+<table>
+<thead>
+<tr>
+<th>项</th>
+<th>证据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>锁脸/一致性招牌</td>
+<td>soul-id 157k 安装；Soul 系列（2.0/Cinema/Location/Cast）分工明确</td>
+</tr>
+<tr>
+<td>URL 导商品→广告链</td>
+<td>Marketing Studio 被复购的工作流形态；Click-to-Ad（URL 驱动）</td>
+</tr>
+<tr>
+<td>UX 剧本路线</td>
+<td>websites/brandkit/explainer 被视为最完整的"应用工厂"技能族</td>
+</tr>
+<tr>
+<td>工程自觉性中上</td>
+<td>evals/ 10 场景+评分 rubric+3 轮稳定制；CI 校验 frontmatter/版本同步/引用（103 SKILL.md 考古结论：头部水准）</td>
+</tr>
+</tbody>
+</table>
+<h3>2.2 被验证翻车的</h3>
+<table>
+<thead>
+<tr>
+<th>项</th>
+<th>证据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>计费黑箱（最大差评点）</td>
+<td>五套计费面并存（credits / All Unlimited / Bonus Seconds / MCP 专属 credits / console API）；官方 9-10、9-15 连发两篇文解释"钱为何用得快"；<strong>根因已定位：UX 规则第 5 条 "Don't pre-estimate cost" 写进技能</strong></td>
+</tr>
+<tr>
+<td>无限套餐体验</td>
+<td>忙时降速、共享并发、一次一任务（7-20 changelog 自述）</td>
+</tr>
+<tr>
+<td>API 太新 + 工具停更</td>
+<td>API 9-16 首发即仅 8 天；计费口径仍在抖；CLI 维护态——新 API 配旧工具</td>
+</tr>
+<tr>
+<td>版本不可追溯</td>
+<td>技能级无版本，用户侧副本无从知道内容变过</td>
+</tr>
+<tr>
+<td>质量验证缺位</td>
+<td>evals 测 agent 行为，无生成产物质量评测；无确定性验收</td>
+</tr>
+</tbody>
+</table>
+<h2>3. 对我们的战略含义</h2>
+<ol>
+<li><strong>需求与渠道双重验证</strong>：锁脸、商品图、广告有人抢着用（98 万安装）；技能分发渠道有效。</li>
+<li><strong>软肋即我们的差异化四件事</strong>：价格先报 / 技能级版本号 / 失败说实话 / 跨厂商不锁平台——每一条都对应它的一个已实证差评。</li>
+<li><strong>它正在腾位置</strong>：主动离开开发者 CLI 阵地（转 ChatGPT/无代码），M0 六个开发者向技能正好补位。同台竞争时，它的差评就是我们的对比卖点。</li>
+<li><strong>广播型生态的空位</strong>：无第三方在长——谁能先把"第三方可共建"的结构（跨厂商、中立）立起来，谁拿走平台型生态。</li>
+</ol>
+<h2>4. 附：数据快照方法</h2>
+<ul>
+<li><code>api.github.com/repos/higgsfield-ai/{skills,cli}</code>（stars/forks/issues/pushed_at）</li>
+<li><code>api.github.com/repos/higgsfield-ai/skills/contributors</code>（5 人）与 <code>/commits?since=2026-06-24</code>（skills 59 / cli 21）</li>
+<li><code>skills.sh/api/search?q=higgsfield</code>（安装量实时）</li>
+<li>本库 <code>docs/research-vendor-next-moves-2026-09-22.md</code>（时间线与分化判断）· <code>docs/research-deep-dive-2-2026-09-22.md</code>（evals/计费/版本化考古）</li>
+</ul>
+<h2>5. 横评快照 · skills.sh 全景与玩法拆解（2026-09-24 探索追加）</h2>
+<h3>5.1 官方技能安装量对比（skills.sh API 实时）</h3>
+<table>
+<thead>
+<tr>
+<th>厂商</th>
+<th>官方技能最高安装</th>
+<th>生态状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Higgsfield</td>
+<td>178,706（generate）</td>
+<td>9 技能 ≈ 98 万，视频类绝对第一</td>
+</tr>
+<tr>
+<td>Runway</td>
+<td>527（rw-generate-video）</td>
+<td>全系几百量级；开发者重心在 SDK/MCP，不在技能</td>
+</tr>
+<tr>
+<td>fal</td>
+<td>919（fal-image-edit，官方）</td>
+<td>官方存在感弱；第三方 nexu-io 系每个约 2.5k</td>
+</tr>
+<tr>
+<td>PixVerse</td>
+<td>826</td>
+<td>契约设计最强（考古结论），分发最小</td>
+</tr>
+<tr>
+<td>AtlasCloud</td>
+<td>649（atlas-cloud）</td>
+<td>工作库对应厂商，同量级</td>
+</tr>
+<tr>
+<td>ElevenLabs</td>
+<td>官方仅 96；第三方 prime-skills 361,275</td>
+<td><strong>第三方反超官方 3759 倍</strong>——唯一反向案例</td>
+</tr>
+<tr>
+<td>Anthropic（基线）</td>
+<td>canvas-design 110,396</td>
+<td>标准制定者</td>
+</tr>
+<tr>
+<td>Google（基线）</td>
+<td>agents-cli 家族每个 ≈ 329k</td>
+<td>大厂自灌安装</td>
+</tr>
+</tbody>
+</table>
+<p><strong>结论 1</strong>：视频类技能在 skills.sh = Higgsfield 一家独大，其他视频厂商全部没上心（几百 vs 十几万）。Runway/fal 的开发者注意力在 SDK 与 MCP——<strong>"开发者向视频技能"这一层既没有第二梯队，也没有认真的竞争者</strong>。
+<strong>结论 2</strong>：ElevenLabs 案例证明技能分发上官方身份不是必需，触发词质量与实效才是——<strong>个人账号发布（D2 选 majiayu000）不构成劣势</strong>。</p>
+<h3>5.2 GitHub skills 仓库对照（2026-09-24）</h3>
+<table>
+<thead>
+<tr>
+<th>仓库</th>
+<th>stars</th>
+<th>最后 push</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>anthropics/skills</td>
+<td>177,863</td>
+<td>09-22</td>
+<td>官方标准</td>
+</tr>
+<tr>
+<td>higgsfield-ai/skills</td>
+<td>1,117</td>
+<td>09-14</td>
+<td>厂商中最大</td>
+</tr>
+<tr>
+<td>elevenlabs/skills</td>
+<td>459</td>
+<td>09-16</td>
+<td></td>
+</tr>
+<tr>
+<td>fal-ai-community/skills</td>
+<td>246</td>
+<td>05-13</td>
+<td><strong>停更 4 个月</strong></td>
+</tr>
+<tr>
+<td>runwayml/skills</td>
+<td>69</td>
+<td>08-28</td>
+<td></td>
+</tr>
+<tr>
+<td>PixVerseAI/skills</td>
+<td>61</td>
+<td>09-10</td>
+<td>契约最强，社区最小</td>
+</tr>
+</tbody>
+</table>
+<h3>5.3 HN 热度：接近零</h3>
+<p>近 90 天 higgsfield 相关 story 最高 5 pts，无一条进入主流视野（唯一相关提问："Why Suddenly higgsfield made its core repo Opensource?"，1 pt，9-17）。它的营销主场在 TikTok/创作者侧，开发者社区声量 ≈ 0。
+<strong>含义</strong>：98 万安装里几乎不含"HN 型开发者"——其用户画像与我们的电商素材/短剧工坊管道用户重叠度，高于与硅谷开发者重叠度。技能渠道触达的正是我们要的人。</p>
+<h3>5.4 COOKBOOK 拆解：它的玩法是"跨技能剧本"</h3>
+<p>Recipe 统一格式 = What it does / Why powerful / <strong>What you say</strong>（用户原话）/ What the agent does（bash 链）。旗舰配方：创始人一张头像 → soul-id 训练 → product-photoshoot 出 5 个场景 → generate（kling3_0）把最好的 2 条动画化——一次会话产出整套品牌内容，自述对标"创意公司第一个 sprint"。</p>
+<p>两个发现：</p>
+<ol>
+<li><strong>它本质是"带 UX 的聚合层"</strong>：generate 底层跑的是 Kling / Seedance / Veo / Grok / Gemini 等别人家的模型——技能只是它聚合生意的前端皮肤。这解释了为什么它不做契约层（每接一家新模型只需换皮）；也再次确认我们的位置（契约、验收、角色资产）它结构性做不了。</li>
+<li><strong>INSTALL_FOR_AGENTS.md 是成熟样例</strong>：开篇即 "You are an AI coding agent. Follow this exactly."，CLI 安装→OAuth 验证→按平台路径装技能（Claude/Cursor/Codex 各一行）全流程写给 agent 执行。我们 M0 的 INSTALL 照此写。</li>
+</ol>
+<h3>5.5 本轮探索待办</h3>
+<ul>
+<li>[ ] Higgsfield API（9-16 首发）定价页与计费口径实测——待外部搜索额度恢复</li>
+<li>[ ] prime-skills/elevenlabs-music-generation（361k）拆解：第三方如何打赢官方——可反哺我们的触发词写法</li>
+<li>[ ] nexu-io fal 系技能（2.5k 级）拆解：小团队技能的安装量天花板样本</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 研究文档 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>
