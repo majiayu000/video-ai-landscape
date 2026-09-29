@@ -31,6 +31,8 @@ cp index.html site/
 
 ## 部署（Cloudflare Pages 直传）
 
+部署目录必须保留顶层 `site/404.html`，让不存在的地址返回 404；缺少该文件时，Pages 会将错误路径回退到首页。首页和附录的站内链接使用 `/docs/`、`/skills/` 等根路径，避免嵌套路径下重复拼接。
+
 ```bash
 cp index.html site/
 ~/.bun/bin/wrangler pages deploy site --project-name=video-vendor-skills --branch=main --commit-dirty=true

@@ -56,7 +56,7 @@ def build_section():
             fm, _ = split_fm(f.read_text(encoding="utf-8", errors="replace"))
             name, desc = fm_field(fm, "name"), fm_field(fm, "description")
             rel = f.relative_to(ROOT / repo).as_posix()
-            url = f"skills/{repo}/{Path(rel).with_suffix('.html').as_posix()}"
+            url = f"/skills/{repo}/{Path(rel).with_suffix('.html').as_posix()}"
             disp = htmllib.escape(name or Path(rel).parent.name)
             if len(desc) > 100:
                 desc = desc[:100] + "…"
