@@ -62,7 +62,20 @@
   .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
   .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
   footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
-</style></head>
+</style><meta name="description" content="claude-platform-on-aws · Anthropic 官方参照。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/claude-platform-on-aws.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="claude-platform-on-aws · Anthropic 官方参照">
+<meta property="og:description" content="claude-platform-on-aws · Anthropic 官方参照。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/claude-platform-on-aws.html">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="claude-platform-on-aws · Anthropic 官方参照">
+<meta name="twitter:description" content="claude-platform-on-aws · Anthropic 官方参照。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/claude-platform-on-aws.md</span><button onclick="t()">🌓</button></nav>
 <main class="md"><h1>Claude Platform on AWS</h1>
 <p><strong>Anthropic-operated</strong> access to the Claude Developer Platform through AWS infrastructure - SigV4 authentication, AWS IAM access control, and AWS Marketplace billing. Because Anthropic operates it, <strong>the API surface matches first-party with same-day parity</strong> - for per-feature exceptions, see <code>shared/platform-availability.md</code> (the single source of truth; do not rely on an inline exception list here). Model IDs are the bare first-party strings (<code>claude-opus-5</code>, <code>claude-sonnet-5</code>) - <strong>no provider prefix</strong>.</p>

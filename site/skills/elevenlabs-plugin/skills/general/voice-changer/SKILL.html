@@ -62,7 +62,20 @@
   .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
   .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
   footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
-</style></head>
+</style><meta name="description" content="voice-changer · ElevenLabs 插件。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/elevenlabs-plugin/skills/general/voice-changer/SKILL.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="voice-changer · ElevenLabs 插件">
+<meta property="og:description" content="voice-changer · ElevenLabs 插件。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/elevenlabs-plugin/skills/general/voice-changer/SKILL.html">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="voice-changer · ElevenLabs 插件">
+<meta name="twitter:description" content="voice-changer · ElevenLabs 插件。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/voice-changer/SKILL.md</span><button onclick="t()">🌓</button></nav>
 <main class="md"><div class="meta"><div class="m-name">voice-changer</div><div class="m-desc">Transform the voice in an audio recording into a different target voice while preserving emotion, timing, and delivery using the ElevenLabs Voice Changer (speech-to-speech) API. Use when converting one voice to another, changing the speaker/narrator of an existing recording, dubbing a voice-over in a different voice, creating character voices from a scratch performance, anonymizing a speaker, or any &quot;voice conversion / voice transfer / speech-to-speech&quot; task. Make sure to use this skill whenever the user mentions voice changing, voice conversion, speech-to-speech, swapping a voice in audio, re-voicing a clip, or applying a different voice to an existing recording — even if they don&#x27;t explicitly say &quot;voice changer&quot;. Do not use this skill to create or clone a new voice from a voice sample — that is voice cloning (IVC/PVC), a separate feature; this skill only converts an existing recording into an existing voice_id.</div><div class="m-src">源文件：<a href="https://github.com/elevenlabs/plugin/blob/main/skills/general/voice-changer/SKILL.md" target="_blank" rel="noopener">elevenlabs/plugin/skills/general/voice-changer/SKILL.md</a></div></div><h1>ElevenLabs Voice Changer</h1>
 <p>Transform the voice in an audio recording into a different target voice. Voice Changer (previously called Speech-to-Speech — the API endpoint and SDK methods still use the <code>speech_to_speech</code> / <code>speechToSpeech</code> name) keeps the original performance — emotion, pacing, intonation, breaths, whispers, laughs, cries — and only swaps who is speaking.</p>
