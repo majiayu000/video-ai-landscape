@@ -5,7 +5,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 clone() {
-  local url=$1 sha=$2 dir=$3
+  local url=$1 dir=$2 sha=$3
   if [ -d "$dir/.git" ]; then
     echo "✓ $dir 已存在，跳过"
     return

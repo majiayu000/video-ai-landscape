@@ -160,6 +160,8 @@ def write(path: Path, content: str):
     route = path.relative_to(ROOT / "site").as_posix()
     if route.endswith("index.html"):
         route = route[:-10]
+    elif route.endswith(".html"):
+        route = route[:-5]
     url = "https://video-vendor-skills.pages.dev/" + quote(route, safe="/")
     title = re.search(r"<title>(.*?)</title>", content, re.S).group(1)
     description = title + "。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。"
@@ -267,6 +269,8 @@ def build():
         route = path.relative_to(site).as_posix()
         if route.endswith("index.html"):
             route = route[:-10]
+        elif route.endswith(".html"):
+            route = route[:-5]
         urls.append("https://video-vendor-skills.pages.dev/" + quote(route, safe="/"))
     (site / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n'
