@@ -30,11 +30,11 @@ def main() -> None:
     before_main = re.sub(r'<meta\b[^>]*(?:name="(?:description|twitter:[^"]*)"|property="og:[^"]*")[^>]*>\s*', '', before_main)
     before_main = re.sub(r'<link\b[^>]*rel="canonical"[^>]*>\s*', '', before_main)
     head = """<meta name="description" content="视频生成 Agent Skills 的结构、执行契约、参考层、验证与恢复机制研究摘要，保留来源和结论边界。">
-<link rel="canonical" href="https://video-vendor-skills.pages.dev/docs/skills-construction-2026-09-25.html">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/docs/skills-construction-2026-09-25">
 <meta property="og:type" content="website">
 <meta property="og:title" content="视频生成 Agent Skills · 研究摘要">
 <meta property="og:description" content="视频生成 Agent Skills 的结构、执行契约、参考层、验证与恢复机制研究摘要，保留来源和结论边界。">
-<meta property="og:url" content="https://video-vendor-skills.pages.dev/docs/skills-construction-2026-09-25.html">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/docs/skills-construction-2026-09-25">
 <meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
