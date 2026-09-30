@@ -6,6 +6,7 @@ Usage: uv run --with markdown python build_skills_site.py
 import html as htmllib
 import re
 import shutil
+from urllib.parse import quote, urlsplit, unquote
 from pathlib import Path
 
 import markdown
@@ -156,6 +157,28 @@ def meta_card(name, version, desc, repo, relpath):
 
 
 def write(path: Path, content: str):
+    route = path.relative_to(ROOT / "site").as_posix()
+    if route.endswith("index.html"):
+        route = route[:-10]
+    url = "https://video-vendor-skills.pages.dev/" + quote(route, safe="/")
+    title = re.search(r"<title>(.*?)</title>", content, re.S).group(1)
+    description = title + "。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。"
+    image = "https://video-vendor-skills.pages.dev/social-card.png"
+    head = f"""<meta name="description" content="{description}">
+<link rel="canonical" href="{url}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{title}">
+<meta property="og:description" content="{description}">
+<meta property="og:url" content="{url}">
+<meta property="og:image" content="{image}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{title}">
+<meta name="twitter:description" content="{description}">
+<meta name="twitter:image" content="{image}">"""
+    content = content.replace("</head>", head + "</head>", 1)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content, encoding="utf-8")
 
@@ -166,6 +189,8 @@ def build():
     stats = {}
     for repo, (slug, label) in REPOS.items():
         repo_dir = ROOT / repo
+        pinned = re.search(rf"^clone .*?\s+{re.escape(repo)}\s+(\w+)",
+                           (ROOT / "setup.sh").read_text(), re.M).group(1)
         skill_entries, plain_entries = [], []
         for f in sorted(repo_dir.rglob("*.md")):
             rel = f.relative_to(repo_dir).as_posix()
@@ -173,6 +198,23 @@ def build():
                 continue
             raw = f.read_text(encoding="utf-8", errors="replace")
             fm, body_html = render_md(raw)
+            # Non-document files are not copied into the HTML mirror. Link to the
+            # same source snapshot; keep missing upstream references as plain text.
+            def source_link(match):
+                href, text = match.group(1), match.group(2)
+                url = urlsplit(htmllib.unescape(href))
+                if url.scheme or url.netloc or not url.path or url.path.endswith(".html"):
+                    return match.group(0)
+                target = (f.parent / unquote(url.path)).resolve()
+                if not target.exists():
+                    return text
+                source_path = target.relative_to(repo_dir.resolve()).as_posix()
+                kind = "tree" if target.is_dir() else "blob"
+                source = f"https://github.com/{slug}/{kind}/{pinned}/{quote(source_path, safe='/')}"
+                if url.fragment:
+                    source += "#" + quote(url.fragment)
+                return f'<a href="{htmllib.escape(source, quote=True)}">{text}</a>'
+            body_html = re.sub(r'<a href="([^"]*)">(.*?)</a>', source_link, body_html, flags=re.S)
             name, desc, version = fm_field(fm, "name"), fm_field(fm, "description"), fm_field(fm, "version")
             title = name or f.stem
             meta = meta_card(name, version, desc, repo, rel) if name else ""
@@ -216,6 +258,22 @@ def build():
     write(OUT / "index.html", page("技能库 · 视频厂商官方 Skills", "", body, search=True))
     total_s = sum(s[2] for s in stats.values()); total_d = sum(s[3] for s in stats.values())
     print(f"OK: {total_s} SKILL.md + {total_d} docs -> {OUT}")
+    # Refresh the site map after the skill output tree changes; omit the error page.
+    site = ROOT / "site"
+    urls = []
+    for path in sorted(site.rglob("*.html")):
+        if path.name == "404.html":
+            continue
+        route = path.relative_to(site).as_posix()
+        if route.endswith("index.html"):
+            route = route[:-10]
+        urls.append("https://video-vendor-skills.pages.dev/" + quote(route, safe="/"))
+    (site / "sitemap.xml").write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + ''.join(f'  <url><loc>{htmllib.escape(url)}</loc></url>\n' for url in urls)
+        + '</urlset>\n', encoding="utf-8")
+
 
 
 if __name__ == "__main__":

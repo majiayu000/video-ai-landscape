@@ -127,6 +127,20 @@ page = f"""<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>视频 AI 生态全域调研与战略 · 完整报告</title>
+<meta name="description" content="视频 AI 生态调研报告：接入面、能力矩阵、案例与来源，商业数据保留研究日期和未经审计的边界。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/report/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="视频 AI 生态全域调研与战略 · 完整报告">
+<meta property="og:description" content="视频 AI 生态调研报告：接入面、能力矩阵、案例与来源，商业数据保留研究日期和未经审计的边界。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/report/">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="视频 AI 生态全域调研与战略 · 完整报告">
+<meta name="twitter:description" content="视频 AI 生态调研报告：接入面、能力矩阵、案例与来源，商业数据保留研究日期和未经审计的边界。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png">
 <style>{CSS}</style>
 </head>
 <body>
