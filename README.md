@@ -7,6 +7,12 @@
 - **研究文档**: https://video-vendor-skills.pages.dev/docs/
 - **视频技能研究摘要**: https://video-vendor-skills.pages.dev/docs/skills-construction-2026-09-25.html
 
+## 按任务阅读
+
+[接入选择与恢复阅读路线](https://video-vendor-skills.pages.dev/docs/skills-construction-2026-09-25)解释 CLI / Skill / MCP 的入口差别，连接 Runway、Higgsfield、fal community 与 Atlas 的现有技能快照及当前上游资料，并区分等待超时、缺少文件与受理未知。本站提供调研材料，不提供新的统一生成或恢复服务。
+
+材料与镜像的版本固定在 `setup.sh`；查看当前能力时请回到各厂商上游。报告断链和来源错误可在[项目 Issues](https://github.com/majiayu000/video-ai-landscape/issues)提供公开证据，账号和计费问题走相应厂商支持。
+
 ## 结构
 
 ```
