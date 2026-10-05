@@ -210,7 +210,7 @@ for await (const f of client.beta.files.list({
 <p><strong>Requirements:</strong>
 - The <code>write</code> tool (or <code>bash</code>) must be enabled for the agent to create output files.
 - Session-scoped <code>files.list</code> / <code>files.download</code> captures outputs written to <code>/mnt/session/outputs/</code>.
-- The filter parameter is <strong><code>scope_id</code></strong> (REST query param <code>?scope_id=&lt;session_id&gt;</code>). The SDK's files resource auto-adds only the <code>files-api-2025-04-14</code> header, so pass <code>betas: ["managed-agents-2026-04-01"]</code> explicitly (or both headers on raw HTTP) - without it the API may reject <code>scope_id</code> as an unknown field. Requires <code>@anthropic-ai/sdk</code> &gt;= 0.88.0 / <code>anthropic</code> (Python) &gt;= 0.92.0 - older versions don't type <code>scope_id</code>. The <code>ant</code> CLI does <strong>not</strong> expose this flag yet; use the SDK or curl.
+- The filter parameter is <strong><code>scope_id</code></strong> (REST query param <code>?scope_id=&lt;session_id&gt;</code>). Filtering by <code>scope_id</code> requires the <code>managed-agents-2026-04-01</code> header, which <code>client.beta.files</code> does not add, so pass <code>betas: ["managed-agents-2026-04-01"]</code> explicitly (on raw HTTP, send <code>anthropic-beta: managed-agents-2026-04-01</code>); the list call uses the <code>beta</code> files namespace only to pass that header, and upload and download also work on <code>client.files</code>. Requires <code>@anthropic-ai/sdk</code> &gt;= 0.88.0 / <code>anthropic</code> (Python) &gt;= 0.92.0 - older versions don't type <code>scope_id</code>. In the <code>ant</code> CLI, use <code>ant beta:files list --scope-id &lt;session_id&gt; --beta managed-agents-2026-04-01</code>.
 - Pass the session ID returned by <code>sessions.create()</code> verbatim (e.g. <code>sesn_011CZx...</code>) - the API validates the prefix.
 - There's a brief indexing lag (~1-3s) between <code>session.status_idle</code> and output files appearing in <code>files.list</code>. Retry once or twice if empty.</p>
 <blockquote>
@@ -270,7 +270,7 @@ for await (const f of client.beta.files.list({
 const agent = await client.beta.agents.create(
   {
     name: 'GitHub Agent',
-    model: 'claude-opus-5',
+    model: 'claude-opus-5-5',
     mcp_servers: [
       { type: 'url', name: 'github', url: 'https://api.githubcopilot.com/mcp/' },
     ],
@@ -301,7 +301,7 @@ const session = await client.beta.sessions.create({
 
 agent = client.beta.agents.create(
     name=&quot;GitHub Agent&quot;,
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     mcp_servers=[{
         &quot;type&quot;: &quot;url&quot;,
         &quot;name&quot;: &quot;github&quot;,

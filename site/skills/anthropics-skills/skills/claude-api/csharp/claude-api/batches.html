@@ -81,7 +81,7 @@
 <h2>Message Batches API</h2>
 <pre><code class="language-csharp">var batch = await client.Messages.Batches.Create(new() {
     Requests = [
-        new() { CustomID = &quot;req-1&quot;, Params = new() { Model = &quot;claude-opus-5&quot;, MaxTokens = 1024, Messages = [...] } },
+        new() { CustomID = &quot;req-1&quot;, Params = new() { Model = &quot;claude-opus-5-5&quot;, MaxTokens = 1024, Messages = [...] } },
     ],
 });
 // Poll client.Messages.Batches.Retrieve(batch.ID) until ProcessingStatus == &quot;ended&quot;,

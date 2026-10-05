@@ -181,7 +181,7 @@
 <tr>
 <td>Web search</td>
 <td>non-beta</td>
-<td><code>WebSearchTool20260209</code> from <code>com.anthropic.models.messages</code> - the latest variant with dynamic filtering (Claude Fable 5.1 + Claude Opus 5 + Opus 4.8/4.7/4.6 + Claude Sonnet 5 + Sonnet 4.6). For older models or Vertex, use <code>WebSearchTool20250305</code></td>
+<td><code>WebSearchTool20260209</code> from <code>com.anthropic.models.messages</code> - the latest variant with dynamic filtering (Claude Fable 5.1 + Claude Opus 5.5 + Claude Opus 5 + Opus 4.8/4.7/4.6 + Claude Sonnet 5.5 + Claude Sonnet 5 + Sonnet 4.6). For older models or Vertex, use <code>WebSearchTool20250305</code></td>
 </tr>
 </tbody>
 </table>
@@ -216,7 +216,7 @@ AnthropicClient client = AnthropicOkHttpClient.builder()
 import com.anthropic.models.messages.Message;
 
 MessageCreateParams params = MessageCreateParams.builder()
-    .model(&quot;claude-opus-5&quot;)  // .model(String) overload - use it for ids with no typed Model constant yet
+    .model(&quot;claude-opus-5-5&quot;)  // .model(String) overload - works for every model id; typed Model.* constants lag model launches
     .maxTokens(16000L)
     .addUserMessage(&quot;What is the capital of France?&quot;)
     .build();
@@ -230,19 +230,20 @@ response.content().stream()
 <h2>Thinking</h2>
 <p><strong>Adaptive thinking is the recommended mode for Claude 4.6+ models.</strong> Claude decides dynamically when and how much to think. The builder has a direct <code>.thinking(ThinkingConfigAdaptive)</code> overload - no manual union wrapping.</p>
 <blockquote>
-<p><strong>Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking (below). <code>ThinkingConfigEnabled.builder().budgetTokens(N)</code> is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<p><strong>Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking (below). <code>ThinkingConfigEnabled.builder().budgetTokens(N)</code> is removed on Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<strong>Claude Opus 5.5:</strong> thinking is always on - omit <code>.thinking(...)</code> (or send <code>ThinkingConfigAdaptive</code>, which is equivalent); <code>ThinkingConfigDisabled</code> returns a 400 at every effort, as does a thinking budget. Control depth with <code>.outputConfig(OutputConfig.builder().effort(...))</code> instead - the default is <code>medium</code> on this model, where Claude Opus 5 defaults to <code>high</code>.
 <strong>Claude Opus 5:</strong> thinking is on by default - omitting <code>.thinking(...)</code> runs adaptive (<code>ThinkingConfigAdaptive</code> is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. <code>ThinkingConfigDisabled</code> is accepted only at effort <code>HIGH</code> or lower; pairing it with <code>XHIGH</code>/<code>MAX</code> returns a 400.
 <strong>Older models:</strong> Use <code>.thinking(ThinkingConfigEnabled.builder().budgetTokens(N).build())</code> (budget must be &lt; <code>maxTokens</code>, min 1024).</p>
 </blockquote>
 <pre><code class="language-java">import com.anthropic.models.messages.ContentBlock;
 import com.anthropic.models.messages.MessageCreateParams;
-import com.anthropic.models.messages.Model;
 import com.anthropic.models.messages.ThinkingConfigAdaptive;
 
 MessageCreateParams params = MessageCreateParams.builder()
-    .model(Model.CLAUDE_SONNET_4_6)
+    .model(&quot;claude-opus-5-5&quot;)
     .maxTokens(16000L)
-    .thinking(ThinkingConfigAdaptive.builder().build())
+    // display opt-in: default is omitted (empty thinking text) on Fable 5/5.1, Mythos 5/5.1, Claude Opus 5.5, Claude Opus 5, Opus 4.8/4.7, Claude Sonnet 5.5, and Claude Sonnet 5
+    .thinking(ThinkingConfigAdaptive.builder().display(ThinkingConfigAdaptive.Display.SUMMARIZED).build())
     .addUserMessage(&quot;Solve this step by step: 27 * 453&quot;)
     .build();
 
@@ -284,7 +285,7 @@ import com.anthropic.models.messages.CacheControlEphemeral;
 
 long tokens = client.messages().countTokens(
     MessageCountTokensParams.builder()
-        .model(Model.CLAUDE_SONNET_4_6)
+        .model(&quot;claude-opus-5-5&quot;)
         .addUserMessage(&quot;Hello&quot;)
         .build()
 ).inputTokens();

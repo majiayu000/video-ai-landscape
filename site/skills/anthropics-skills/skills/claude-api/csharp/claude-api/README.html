@@ -189,7 +189,7 @@
 <tr>
 <td>Web search</td>
 <td>non-beta</td>
-<td><code>new ToolUnion(new WebSearchTool20260209())</code> - the latest variant with dynamic filtering (Claude Fable 5.1 + Claude Opus 5 + Opus 4.8/4.7/4.6 + Claude Sonnet 5 + Sonnet 4.6). For older models or Vertex, use <code>WebSearchTool20250305()</code></td>
+<td><code>new ToolUnion(new WebSearchTool20260209())</code> - the latest variant with dynamic filtering (Claude Fable 5.1 + Claude Opus 5.5 + Claude Opus 5 + Opus 4.8/4.7/4.6 + Claude Sonnet 5.5 + Claude Sonnet 5 + Sonnet 4.6). For older models or Vertex, use <code>WebSearchTool20250305()</code></td>
 </tr>
 </tbody>
 </table>
@@ -207,7 +207,7 @@ AnthropicClient client = new();
 
 var message = await client.Messages.Create(new MessageCreateParams
 {
-    Model = &quot;claude-opus-5&quot;,
+    Model = &quot;claude-opus-5-5&quot;,
     MaxTokens = 1024,
     Messages = [ new() { Role = Role.User, Content = &quot;Hello, Claude&quot; } ],
 });
@@ -223,7 +223,7 @@ AnthropicClient client = new();
 
 var response = await client.Beta.Messages.Create(new MessageCreateParams
 {
-    Model = &quot;claude-opus-5&quot;,
+    Model = &quot;claude-opus-5-5&quot;,
     MaxTokens = 4096,
     Betas = [&quot;&lt;beta-flag&gt;&quot;],
     Messages = [ new() { Role = Role.User, Content = &quot;...&quot; } ],
@@ -258,7 +258,7 @@ AnthropicClient client = new() {
 
 var parameters = new MessageCreateParams
 {
-    Model = &quot;claude-opus-5&quot;,
+    Model = &quot;claude-opus-5-5&quot;,
     MaxTokens = 16000,
     Messages = [new() { Role = Role.User, Content = &quot;What is the capital of France?&quot; }]
 };
@@ -276,7 +276,8 @@ foreach (var text in response.Content.Select(b =&gt; b.Value).OfType&lt;TextBloc
 <h2>Thinking</h2>
 <p><strong>Adaptive thinking is the recommended mode for Claude 4.6+ models.</strong> Claude decides dynamically when and how much to think.</p>
 <blockquote>
-<p><strong>Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking (below). <code>new ThinkingConfigEnabled { BudgetTokens = N }</code> is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<p><strong>Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking (below). <code>new ThinkingConfigEnabled { BudgetTokens = N }</code> is removed on Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<strong>Claude Opus 5.5:</strong> thinking is always on - omit <code>Thinking</code> (or send <code>ThinkingConfigAdaptive</code>, which is equivalent); <code>ThinkingConfigDisabled</code> returns a 400 at every effort, as does a thinking budget. Control depth with <code>OutputConfig.Effort</code> instead - the default is <code>medium</code> on this model, where Claude Opus 5 defaults to <code>high</code>.
 <strong>Claude Opus 5:</strong> thinking is on by default - omitting <code>Thinking</code> runs adaptive (<code>ThinkingConfigAdaptive</code> is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. <code>ThinkingConfigDisabled</code> is accepted only at effort <code>high</code> or lower; pairing it with <code>xhigh</code>/<code>max</code> returns a 400.
 <strong>Older models:</strong> Use <code>new ThinkingConfigEnabled { BudgetTokens = N }</code> (budget must be &lt; <code>MaxTokens</code>, min 1024).</p>
 </blockquote>
@@ -284,11 +285,11 @@ foreach (var text in response.Content.Select(b =&gt; b.Value).OfType&lt;TextBloc
 
 var response = await client.Messages.Create(new MessageCreateParams
 {
-    Model = &quot;claude-opus-5&quot;,
+    Model = &quot;claude-opus-5-5&quot;,
     MaxTokens = 16000,
     // ThinkingConfigParam? implicitly converts from the concrete variant classes -
     // no wrapper needed.
-    // display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Claude Opus 5 / Opus 4.8 / 4.7
+    // display opt-in: default is omitted (empty thinking text) on Fable 5/5.1, Mythos 5/5.1, Claude Opus 5.5, Claude Opus 5, Opus 4.8/4.7, Claude Sonnet 5.5, and Claude Sonnet 5
     Thinking = new ThinkingConfigAdaptive { Display = Display.Summarized },
     Messages =
     [
@@ -322,7 +323,7 @@ using NonBeta = Anthropic.Models.Messages;  // only if you also need non-beta ty
 
 var betaParams = new MessageCreateParams   // no Beta prefix - see unprefixed list above
 {
-    Model = &quot;claude-opus-5&quot;,
+    Model = &quot;claude-opus-5-5&quot;,
     MaxTokens = 16000,
     Betas = [&quot;compact-2026-01-12&quot;],
     ContextManagement = new BetaContextManagementConfig
@@ -390,7 +391,7 @@ messages.Add(new BetaMessageParam { Role = Role.Assistant, Content = paramBlocks
 <hr />
 <h2>Token Counting</h2>
 <pre><code class="language-csharp">MessageTokensCount result = await client.Messages.CountTokens(new MessageCountTokensParams {
-    Model = &quot;claude-opus-5&quot;,
+    Model = &quot;claude-opus-5-5&quot;,
     Messages = [new() { Role = Role.User, Content = &quot;Hello&quot; }],
 });
 long tokens = result.InputTokens;
@@ -410,7 +411,7 @@ long tokens = result.InputTokens;
 <hr />
 <h2>Fast Mode (Beta)</h2>
 <pre><code class="language-csharp">var response = await client.Beta.Messages.Create(new MessageCreateParams {
-    Model = &quot;claude-opus-5&quot;, MaxTokens = 4096,
+    Model = &quot;claude-opus-5-5&quot;, MaxTokens = 4096,
     Speed = Speed.Fast,
     Betas = [&quot;fast-mode-2026-02-01&quot;],
     Messages = [...],
@@ -419,11 +420,11 @@ long tokens = result.InputTokens;
 <h2>Models API</h2>
 <pre><code class="language-csharp">var page = await client.Models.List();
 foreach (var m in page.Items) { Console.WriteLine(m.ID); }
-var one = await client.Models.Retrieve(&quot;claude-opus-5&quot;);
+var one = await client.Models.Retrieve(&quot;claude-opus-5-5&quot;);
 </code></pre>
 <h2>Long Output (128k) + Prefill</h2>
 <p>Set <code>MaxTokens = 128000</code> on <code>client.Messages</code> and use the streaming path (see <code>streaming.md</code>). On Claude 4+ models, 128k output is native - no <code>output-128k-*</code> beta header or beta namespace is needed.</p>
-<p><strong>Prefilling the assistant message</strong> (putting a trailing <code>Role.Assistant</code> message in the input) is <strong>not supported</strong> on Claude Fable 5.1, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6 - requests return a 400. Use <code>OutputConfig.Format</code> (structured outputs) instead.</p>
+<p><strong>Prefilling the assistant message</strong> (putting a trailing <code>Role.Assistant</code> message in the input) is <strong>not supported</strong> on Claude Fable 5.1, Claude Opus 5.5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6 - requests return a 400. Use <code>OutputConfig.Format</code> (structured outputs) instead.</p>
 <h2>Stop Details</h2>
 <p>When <code>StopReason</code> is <code>"refusal"</code>, the response includes structured <code>StopDetails</code>:</p>
 <pre><code class="language-csharp">if (response.StopReason == &quot;refusal&quot; &amp;&amp; response.StopDetails is { } details)

@@ -104,8 +104,8 @@
 </tbody>
 </table>
 <p>If you're about to write <code>sessions.create()</code> with <code>model</code>, <code>system</code>, or <code>tools</code> on the session body - <strong>stop</strong>. Those fields live on <code>agents.create()</code>. The session takes a <em>pointer</em> only.</p>
-<p><strong>When generating code, separate setup from runtime.</strong> <code>agents.create()</code> belongs in a setup script (or a guarded <code>if agent_id is None:</code> block), not at the top of the hot path. If the user's code calls <code>agents.create()</code> on every invocation, they're accumulating orphaned agents and paying the create latency for nothing. The correct shape is: define the agent as a version-controlled YAML manifest, apply it once with <code>ant beta:agents create &lt; agent.yaml</code> (or a guarded setup script - see <code>shared/anthropic-cli.md</code>), persist the returned ID (config file, env var, secrets manager), and have every run load the ID and call <code>sessions.create()</code>.</p>
-<p><strong>To change the agent's behavior, use <code>POST /v1/agents/{id}</code> - don't create a new one.</strong> Each update bumps the version; running sessions keep their pinned version, new sessions get the latest (or pin explicitly via <code>{type: "agent", id, version}</code>). See <code>shared/managed-agents-core.md</code> -&gt; Agents -&gt; Versioning. To change <code>tools</code>/<code>mcp_servers</code> on <strong>one running session</strong> without touching the agent object, use <code>sessions.update()</code> (<code>vault_ids</code> attaches at session create only) - see <code>shared/managed-agents-core.md</code> -&gt; Updating the agent configuration mid-session.</p>
+<p><strong>When generating code, separate setup from runtime.</strong> <code>agents.create()</code> belongs in a setup script (or a guarded <code>if agent_id is None:</code> block), not at the top of the hot path. If the user's code calls <code>agents.create()</code> on every invocation, they're accumulating orphaned agents and paying the create latency for nothing. The correct shape is: define the agent as a version-controlled file and sync it with <code>ant apply</code>, which records the ID in <code>claude-lock.json</code> (see <code>shared/anthropic-cli.md</code>) - or use a guarded setup script that persists the returned ID (config file, env var, secrets manager) - and have every run load the ID and call <code>sessions.create()</code>.</p>
+<p><strong>To change the agent's behavior, use <code>POST /v1/agents/{id}</code> - don't create a new one.</strong> (For an agent managed with <code>ant apply</code>, edit its file and re-run instead - an update made outside the files makes the next <code>ant apply</code> refuse to run.) Each update bumps the version; running sessions keep their pinned version, new sessions get the latest (or pin explicitly via <code>{type: "agent", id, version}</code>). See <code>shared/managed-agents-core.md</code> -&gt; Agents -&gt; Versioning. To change <code>tools</code>/<code>mcp_servers</code> on <strong>one running session</strong> without touching the agent object, use <code>sessions.update()</code> (<code>vault_ids</code> attaches at session create only) - see <code>shared/managed-agents-core.md</code> -&gt; Updating the agent configuration mid-session.</p>
 <h2>Beta Headers</h2>
 <p>Managed Agents is in beta. The SDK sets required beta headers automatically:</p>
 <table>
@@ -118,19 +118,15 @@
 <tbody>
 <tr>
 <td><code>managed-agents-2026-04-01</code></td>
-<td>Agents, Environments, Sessions, Events, Session Resources, Session Threads, Outcomes, Multiagent, Vaults, Credentials, Memory Stores, Deployments</td>
+<td>Agents, Environments, Sessions, Events, Session Resources, Session Threads, Outcomes, Multiagent, Vaults, Credentials, Deployments</td>
 </tr>
 <tr>
-<td><code>skills-2025-10-02</code></td>
-<td>Skills API (for managing custom skill definitions)</td>
-</tr>
-<tr>
-<td><code>files-api-2025-04-14</code></td>
-<td>Files API for file uploads</td>
+<td><code>agent-memory-2026-07-22</code></td>
+<td>Memory Stores (replaces <code>managed-agents-2026-04-01</code> on memory store endpoints)</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Which beta header goes where:</strong> The SDK sets <code>managed-agents-2026-04-01</code> automatically on <code>client.beta.{agents,environments,sessions,vaults,memory_stores,deployments,deployment_runs}.*</code> calls, and <code>files-api-2025-04-14</code> / <code>skills-2025-10-02</code> automatically on <code>client.beta.files.*</code> / <code>client.beta.skills.*</code> calls. You do NOT need to add the Skills or Files beta header when calling Managed Agents endpoints. On raw HTTP the Managed Agents header <strong>grants Files API access on its own</strong>, so uploading a file for use as a session resource does not need <code>files-api-2025-04-14</code> alongside it. (Direct Skills API calls over cURL do still need <code>skills-2025-10-02</code>; the <code>ant</code> CLI and the SDKs send it for you.) <strong>Exception - session-scoped file listing:</strong> <code>client.beta.files.list({scope_id: session.id})</code> is a Files endpoint that takes a Managed Agents parameter, so it needs <strong>both</strong> headers. Pass <code>betas: ["managed-agents-2026-04-01"]</code> explicitly on that call (the SDK adds the Files header; you add the Managed Agents one). See <code>shared/managed-agents-environments.md</code> -&gt; Session outputs.</p>
+<p><strong>Which beta header goes where:</strong> The SDK sets <code>managed-agents-2026-04-01</code> automatically on <code>client.beta.{agents,environments,sessions,vaults,deployments,deployment_runs}.*</code> calls and <code>agent-memory-2026-07-22</code> on <code>client.beta.memory_stores.*</code> calls. Don't add <code>managed-agents-2026-04-01</code> to a memory store call: sending both headers on a memory store request returns a 400 (attaching a memory store to a session is a session call and still uses <code>managed-agents-2026-04-01</code>). The Files and Skills APIs are out of beta and need no beta header; requests that still send <code>files-api-2025-04-14</code> or <code>skills-2025-10-02</code> keep working but get the old beta response shapes. <strong>Exception - session-scoped file listing:</strong> filtering <code>files.list</code> by <code>scope_id</code> requires <code>managed-agents-2026-04-01</code>, which <code>client.beta.files</code> does not add, so pass <code>betas: ["managed-agents-2026-04-01"]</code> explicitly on <code>client.beta.files.list({scope_id: session.id})</code> (on raw HTTP, send <code>anthropic-beta: managed-agents-2026-04-01</code>; in the <code>ant</code> CLI, add <code>--beta managed-agents-2026-04-01</code> to <code>ant beta:files list --scope-id</code>). See <code>shared/managed-agents-environments.md</code> -&gt; Session outputs.</p>
 <h2>Reading Guide</h2>
 <table>
 <thead>
@@ -213,8 +209,8 @@
 <td><code>shared/managed-agents-events.md</code> - Console session viewer note; deep link <code>?event={event_id}</code></td>
 </tr>
 <tr>
-<td>Define agents/environments as version-controlled YAML; drive the API from the shell</td>
-<td><code>shared/anthropic-cli.md</code> - <code>ant beta:agents create &lt; agent.yaml</code>, <code>--transform</code>, <code>@file</code> inlining</td>
+<td>Keep agents/environments/skills as version-controlled files (<code>ant apply</code>); drive the API from the shell</td>
+<td><code>shared/anthropic-cli.md</code> - <code>ant apply</code>, <code>claude-lock.json</code>, <code>--transform</code>, <code>@file</code> inlining</td>
 </tr>
 <tr>
 <td>Store credentials (MCP auth, API keys for CLIs/SDKs)</td>

@@ -114,7 +114,7 @@
 </tr>
 <tr>
 <td>Pricing</td>
-<td><code>https://platform.claude.com/docs/en/pricing.md</code></td>
+<td><code>https://platform.claude.com/docs/en/about-claude/pricing.md</code></td>
 <td>"Extract current pricing per million tokens for input and output"</td>
 </tr>
 <tr>
@@ -142,7 +142,7 @@
 <tr>
 <td>Adaptive Thinking</td>
 <td><code>https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking.md</code></td>
-<td>"Extract adaptive thinking setup, effort levels, and Claude Opus 5 usage examples"</td>
+<td>"Extract adaptive thinking setup, effort levels, and Claude Opus 5.5 usage examples"</td>
 </tr>
 <tr>
 <td>Effort Parameter</td>
@@ -304,8 +304,8 @@
 </tr>
 <tr>
 <td>Computer Use</td>
-<td><code>https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use.md</code></td>
-<td>"Extract computer use tool setup, capabilities, and implementation examples"</td>
+<td><code>https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool.md</code></td>
+<td>"Extract the computer_toolset_20260801 setup (configs, member tools, batch actions, toolset_name on results), the Compatibility matrix, and the migration steps from computer_20251124"</td>
 </tr>
 <tr>
 <td>Bash Tool</td>
@@ -334,7 +334,7 @@
 </tr>
 <tr>
 <td>Skills</td>
-<td><code>https://platform.claude.com/docs/en/agents-and-tools/skills.md</code></td>
+<td><code>https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview.md</code></td>
 <td>"Extract skill folder structure, SKILL.md format, and loading behavior"</td>
 </tr>
 <tr>
@@ -510,7 +510,7 @@
 </tbody>
 </table>
 <h3>Anthropic CLI</h3>
-<p>The <code>ant</code> CLI provides terminal access to the Claude API. Every API resource is exposed as a subcommand. It is the recommended way to create agents and environments from version-controlled YAML (<code>ant beta:agents create &lt; agent.yaml</code> - see <code>shared/anthropic-cli.md</code>), and also exposes sessions and every other API resource for scripting and interactive inspection.</p>
+<p>The <code>ant</code> CLI provides terminal access to the Claude API. Every API resource is exposed as a subcommand. It is the recommended way to keep agents, environments, skills, memory stores and deployments as version-controlled files (<code>ant apply</code> - see <code>shared/anthropic-cli.md</code>), and also exposes sessions and every other API resource for scripting and interactive inspection.</p>
 <table>
 <thead>
 <tr>
@@ -522,8 +522,13 @@
 <tbody>
 <tr>
 <td>Anthropic CLI</td>
-<td><code>https://platform.claude.com/docs/en/api/sdks/cli.md</code></td>
-<td>"Extract CLI install, authentication, command structure, and the beta:agents/environments/sessions commands"</td>
+<td><code>https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart.md</code></td>
+<td>"Extract CLI install, authentication, command structure, and sending a first request"</td>
+</tr>
+<tr>
+<td><code>ant apply</code></td>
+<td><code>https://platform.claude.com/docs/en/cli-sdks-libraries/cli/apply.md</code></td>
+<td>"Extract the file layout per resource kind, how a file's kind is inferred, path references between files, <code>claude-lock.json</code>, the flags (<code>--dry-run</code>, <code>--yes</code>, <code>--force</code>, <code>--prune</code>, <code>--upgrade</code>, <code>--lock-file</code>), and the CI setup"</td>
 </tr>
 <tr>
 <td><code>ant beta:sessions connect</code></td>

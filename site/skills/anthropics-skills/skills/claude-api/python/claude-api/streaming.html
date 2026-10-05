@@ -80,7 +80,7 @@
 <main class="md"><h1>Streaming - Python</h1>
 <h2>Quick Start</h2>
 <pre><code class="language-python">with client.messages.stream(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=64000,
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Write a story&quot;}]
 ) as stream:
@@ -89,7 +89,7 @@
 </code></pre>
 <h3>Async</h3>
 <pre><code class="language-python">async with async_client.messages.stream(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=64000,
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Write a story&quot;}]
 ) as stream:
@@ -99,7 +99,7 @@
 <h3>Low-level: <code>stream=True</code></h3>
 <p><code>messages.stream()</code> (above) is the recommended helper - it accumulates state and exposes <code>text_stream</code> / <code>get_final_message()</code>. If you only need the raw event iterator and want lower memory use, pass <code>stream=True</code> to <code>messages.create()</code> instead:</p>
 <pre><code class="language-python">for event in client.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=64000,
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Write a story&quot;}],
     stream=True,
@@ -111,12 +111,12 @@
 <h2>Handling Different Content Types</h2>
 <p>Claude may return text, thinking blocks, or tool use. Handle each appropriately:</p>
 <blockquote>
-<p><strong>Fable 5 / Claude Opus 5 / Opus 4.8 / Opus 4.7 / Opus 4.6:</strong> Use <code>thinking: {type: "adaptive"}</code>. On Claude Opus 5 adaptive is also what you get by omitting <code>thinking</code> entirely. On older models, use <code>thinking: {type: "enabled", budget_tokens: N}</code> instead.</p>
+<p><strong>Fable 5 / Claude Opus 5.5 / Claude Opus 5 / Opus 4.8 / Opus 4.7 / Opus 4.6:</strong> Use <code>thinking: {type: "adaptive"}</code>. On Claude Opus 5.5 and Claude Opus 5 adaptive is also what you get by omitting <code>thinking</code> entirely (Claude Opus 5.5 accepts no other setting - <code>disabled</code> and <code>budget_tokens</code> both 400). On older models, use <code>thinking: {type: "enabled", budget_tokens: N}</code> instead.</p>
 </blockquote>
 <pre><code class="language-python">with client.messages.stream(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=64000,
-    thinking={&quot;type&quot;: &quot;adaptive&quot;, &quot;display&quot;: &quot;summarized&quot;},  # display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Claude Opus 5 / Opus 4.8 / 4.7
+    thinking={&quot;type&quot;: &quot;adaptive&quot;, &quot;display&quot;: &quot;summarized&quot;},  # display opt-in: default is omitted (empty thinking text) on Fable 5/5.1, Mythos 5/5.1, Claude Opus 5.5, Claude Opus 5, Opus 4.8/4.7, Claude Sonnet 5.5, and Claude Sonnet 5
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Analyze this problem&quot;}]
 ) as stream:
     for event in stream:
@@ -134,23 +134,98 @@
 </code></pre>
 <hr />
 <h2>Streaming with Tool Use</h2>
-<p>The Python tool runner supports streaming: pass <code>stream=True</code> to <code>client.beta.messages.tool_runner(...)</code> and each iteration yields a stream you consume event-by-event, with <code>get_final_message()</code> for the accumulated message per turn (see <code>shared/tool-use-concepts.md</code> -&gt; Tool Runner vs Manual Loop). Use the manual-loop pattern below only when you're not using the tool runner and need per-token streaming with tools:</p>
-<pre><code class="language-python">with client.messages.stream(
-    model=&quot;claude-opus-5&quot;,
-    max_tokens=64000,
-    tools=tools,
-    messages=messages
-) as stream:
-    for text in stream.text_stream:
-        print(text, end=&quot;&quot;, flush=True)
+<p>The Python tool runner supports streaming: pass <code>stream=True</code> to <code>client.beta.messages.tool_runner(...)</code> and each iteration yields a stream you consume event-by-event, with <code>get_final_message()</code> for the accumulated message per turn (see <code>shared/tool-use-concepts.md</code> -&gt; Tool Runner vs Manual Loop). Declare tool-runner tools with <code>@beta_tool(eager_input_streaming=True)</code> so their inputs stream as they are generated (default rule: <code>shared/tool-use-concepts.md</code> -&gt; Eager input streaming). The runner never calls your function on unparseable input; the <code>ValueError</code> surfaces while you iterate the per-turn stream, so wrap the <code>for ... in runner</code> loop and, on failure, restart a new runner from a history you mirror while iterating, in this order for each yielded stream: take <code>message = stream.get_final_message()</code>, append it (the assistant turn), then check its <code>stop_reason</code> - on <code>max_tokens</code> with a <code>tool_use</code> present or on <code>refusal</code>, stop right there and never call <code>generate_tool_call_response()</code> for that turn (it executes the tools) - and only for a turn that continues append <code>runner.generate_tool_call_response()</code> (the matching <code>tool_result</code> user turn), exactly as <code>tool-use.md</code> does to resume <code>pause_turn</code>. The Python runner exposes no <code>params</code> read, a consumed runner cannot be iterated again, and a history missing the tool-result half of a continued turn is rejected by the API. <code>pause_turn</code> you resume yourself; a truncated text answer is simply the final message.</p>
+<p>Use the manual-loop pattern below only when you're not using the tool runner and need per-token streaming with tools. Set <code>eager_input_streaming: True</code> on each user-defined tool. With eager streaming the server no longer validates the input: the Python SDK's tolerant parser returns a partial object for a truncated input (check <code>stop_reason == "max_tokens"</code>) and can return a silently truncated one for malformed JSON (validate the parsed input before running the tool); only JSON it cannot parse at all raises <code>ValueError</code> <strong>from the stream iterator</strong>, so that guard wraps the stream, not the final-message read. Schema validation is not path validation: the model-supplied <code>path</code> is untrusted output, so confine it to a project root before writing (<code>shared/tool-use-concepts.md</code> -&gt; the text-editor security note):</p>
+<pre><code class="language-python">import json
+from pathlib import Path
 
-    response = stream.get_final_message()
-    # Continue with tool execution if response.stop_reason == &quot;tool_use&quot;
+ROOT = Path.cwd().resolve()
+
+tools = [
+    {
+        &quot;name&quot;: &quot;write_file&quot;,
+        &quot;description&quot;: &quot;Write text to a file at the given path&quot;,
+        &quot;eager_input_streaming&quot;: True,  # stream large inputs as generated
+        &quot;input_schema&quot;: {
+            &quot;type&quot;: &quot;object&quot;,
+            &quot;properties&quot;: {
+                &quot;path&quot;: {&quot;type&quot;: &quot;string&quot;},
+                &quot;contents&quot;: {&quot;type&quot;: &quot;string&quot;},
+            },
+            &quot;required&quot;: [&quot;path&quot;, &quot;contents&quot;],
+        },
+    }
+]
+
+messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: task}]
+json_retries = 0
+
+while True:
+    try:
+        with client.messages.stream(
+            model=&quot;claude-opus-5-5&quot;,
+            max_tokens=64000,
+            tools=tools,
+            messages=messages,
+        ) as stream:
+            for event in stream:
+                if event.type == &quot;text&quot;:
+                    print(event.text, end=&quot;&quot;, flush=True)
+                elif event.type == &quot;input_json&quot;:
+                    # Tool input fragment - arrives immediately with eager streaming
+                    print(event.partial_json, end=&quot;&quot;, flush=True)
+            response = stream.get_final_message()
+        json_retries = 0  # the cap is on consecutive failures of one turn
+    except ValueError:
+        # JSON the SDK could not parse at all. It raised before the tool_use
+        # block completed, so there is no tool_use_id to answer; re-issue the
+        # turn (bounded). API errors are not ValueError and propagate.
+        json_retries += 1
+        if json_retries &gt; 2:
+            raise
+        continue
+
+    # Server-side tool hit its iteration limit: append the turn and re-send
+    if response.stop_reason == &quot;pause_turn&quot;:
+        messages.append({&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: response.content})
+        continue
+
+    tool_uses = [b for b in response.content if b.type == &quot;tool_use&quot;]
+    if response.stop_reason == &quot;refusal&quot; or not tool_uses:
+        # end_turn, a text-only answer, or a refusal (which can cut a
+        # tool_use off mid-input): nothing to run
+        break
+    if response.stop_reason == &quot;max_tokens&quot;:
+        # A truncated tool input parses as a valid partial object; don't run it.
+        raise RuntimeError(&quot;tool input truncated; retry with a higher max_tokens&quot;)
+
+    # The SDK's tolerant parser can return a silently truncated or mistyped
+    # input (for example at an unescaped inner quote), so validate first.
+    tool_results = []
+    for block in tool_uses:
+        args = block.input
+        if not (isinstance(args, dict) and isinstance(args.get(&quot;path&quot;), str)
+                and isinstance(args.get(&quot;contents&quot;), str)):
+            tool_results.append({&quot;type&quot;: &quot;tool_result&quot;, &quot;tool_use_id&quot;: block.id, &quot;is_error&quot;: True,
+                                 &quot;content&quot;: json.dumps({&quot;INVALID_JSON&quot;: json.dumps(args)})})
+            continue
+        # `path` is untrusted model output: resolve it and reject anything that
+        # escapes the project root (`..`, absolute paths, symlinks) before the
+        # write - schema validation alone does not check this.
+        target = (ROOT / args[&quot;path&quot;]).resolve()
+        if not target.is_relative_to(ROOT):
+            tool_results.append({&quot;type&quot;: &quot;tool_result&quot;, &quot;tool_use_id&quot;: block.id, &quot;is_error&quot;: True,
+                                 &quot;content&quot;: &quot;path escapes the project root&quot;})
+            continue
+        tool_results.append({&quot;type&quot;: &quot;tool_result&quot;, &quot;tool_use_id&quot;: block.id,
+                             &quot;content&quot;: run_tool(block.name, {**args, &quot;path&quot;: str(target)})})
+    messages.append({&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: response.content})
+    messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: tool_results})
 </code></pre>
 <hr />
 <h2>Getting the Final Message</h2>
 <pre><code class="language-python">with client.messages.stream(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=64000,
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Hello&quot;}]
 ) as stream:
@@ -189,7 +264,7 @@
 <h2>Error Handling in Streams</h2>
 <pre><code class="language-python">try:
     with client.messages.stream(
-        model=&quot;claude-opus-5&quot;,
+        model=&quot;claude-opus-5-5&quot;,
         max_tokens=64000,
         messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Write a story&quot;}]
     ) as stream:

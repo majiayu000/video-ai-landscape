@@ -117,7 +117,7 @@ runner := client.Beta.Messages.NewToolRunner(
     []anthropic.BetaTool{weatherTool},
     anthropic.BetaToolRunnerParams{
         BetaMessageNewParams: anthropic.BetaMessageNewParams{
-            Model:     anthropic.ModelClaudeOpus4_8,
+            Model:     &quot;claude-opus-5-5&quot;,
             MaxTokens: 16000,
             Messages: []anthropic.BetaMessageParam{
                 anthropic.NewBetaUserMessage(anthropic.NewBetaTextBlock(&quot;What's the weather in Paris?&quot;)),
@@ -188,7 +188,7 @@ func main() {
 
     for {
         resp, err := client.Messages.New(context.Background(), anthropic.MessageNewParams{
-            Model:     anthropic.ModelClaudeSonnet4_6,
+            Model:     &quot;claude-opus-5-5&quot;,
             MaxTokens: 16000,
             Messages:  messages,
             Tools:     tools,
@@ -289,11 +289,11 @@ func main() {
 <h3>Advisor tool (beta)</h3>
 <p>Server-side - no tool_result round-trip. The advisor model must be &gt;= the executor (top-level) model; invalid pairs return 400.</p>
 <pre><code class="language-go">response, err := client.Beta.Messages.New(ctx, anthropic.BetaMessageNewParams{
-    Model:     anthropic.ModelClaudeSonnet4_6,
+    Model:     &quot;claude-sonnet-5-5&quot;, // executor
     MaxTokens: 4096,
     Tools: []anthropic.BetaToolUnionParam{
         {OfAdvisorTool20260301: &amp;anthropic.BetaAdvisorTool20260301Param{
-            Model: anthropic.ModelClaudeOpus4_8,
+            Model: &quot;claude-opus-5-5&quot;, // advisor
         }},
     },
     Messages: []anthropic.BetaMessageParam{ /* ... */ },

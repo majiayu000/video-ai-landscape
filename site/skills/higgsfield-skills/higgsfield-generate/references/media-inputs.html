@@ -82,10 +82,10 @@
 <h2>Path or UUID — both work</h2>
 <p>Each media flag accepts either a local file path or a UUID. The CLI auto-uploads paths before submission and auto-detects whether a UUID is an upload id (from <code>higgsfield upload create</code>) or a previous job id.</p>
 <pre><code class="language-bash"># Local path — CLI uploads automatically
-higgsfield generate create nano_banana_2 --prompt &quot;stylize in watercolor&quot; --image ./photo.png --wait
+higgsfield generate create nano_banana_flash --prompt &quot;stylize in watercolor&quot; --image ./photo.png --wait
 
 # Upload id (from higgsfield upload create)
-higgsfield generate create nano_banana_2 --prompt &quot;...&quot; --image &lt;upload_id&gt; --wait
+higgsfield generate create nano_banana_flash --prompt &quot;...&quot; --image &lt;upload_id&gt; --wait
 
 # Job id from a previous generation
 higgsfield generate create seedance_2_5 --prompt &quot;anim&quot; --mode omni_reference --start-image &lt;previous_job_id&gt; --wait
@@ -112,7 +112,7 @@ higgsfield generate create brain_activity --video ./ad.mp4 --wait
 </thead>
 <tbody>
 <tr>
-<td>Most image models (<code>nano_banana_2</code>, <code>flux_2</code>, <code>seedream_v4_5</code>, <code>gpt_image_2</code>, …)</td>
+<td>Most image models (<code>nano_banana_flash</code>, <code>flux_2</code>, <code>seedream_v4_5</code>, <code>gpt_image_2</code>, …)</td>
 <td><code>image</code></td>
 <td>1+ references, often up to 8.</td>
 </tr>
@@ -213,7 +213,7 @@ higgsfield generate create brain_activity --video ./ad.mp4 --wait
 </code></pre>
 <h2>Multiple images</h2>
 <p>Most image models accept multiple references — repeat the <code>--image</code> flag:</p>
-<pre><code class="language-bash">higgsfield generate create nano_banana_2 --prompt &quot;...&quot; \
+<pre><code class="language-bash">higgsfield generate create nano_banana_flash --prompt &quot;...&quot; \
   --image ./a.png --image ./b.png --image &lt;upload_id&gt; \
   --wait
 </code></pre>

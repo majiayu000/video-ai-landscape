@@ -131,7 +131,7 @@
 </code></pre>
 <p>Constraints:</p>
 <ul>
-<li><strong>Model-gated: Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5, Claude Fable 5.1, and Claude Mythos 5.1.</strong> Only the agent's <strong>primary</strong> model is checked - <code>system.message</code> lands on the primary thread only, so subagent models are not considered. On an unsupported primary model the event is rejected with a <code>model_does_not_support_mid_conversation_system</code> validation error.</li>
+<li><strong>Model-gated: Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, and Claude Sonnet 5.5 (not Claude Sonnet 5).</strong> Only the agent's <strong>primary</strong> model is checked - <code>system.message</code> lands on the primary thread only, so subagent models are not considered. On an unsupported primary model the event is rejected with a <code>model_does_not_support_mid_conversation_system</code> validation error.</li>
 <li><strong>While the session is idle with <code>stop_reason: requires_action</code></strong> (blocked on <code>user.custom_tool_result</code> / <code>user.tool_confirmation</code>), a <code>system.message</code> is accepted <strong>only when it trails a tool result event in the same request</strong>. Sent on its own - or alongside a <code>user.message</code> - it is rejected until the pending tool events are resolved.</li>
 <li><code>content</code> accepts 1-1000 text items.</li>
 </ul>

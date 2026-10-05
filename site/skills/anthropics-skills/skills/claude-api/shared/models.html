@@ -166,6 +166,14 @@ caps[&quot;context_management&quot;][&quot;compact_20260112&quot;][&quot;support
 <td>Active (Project Glasswing only)</td>
 </tr>
 <tr>
+<td>Claude Opus 5.5</td>
+<td><code>claude-opus-5-5</code></td>
+<td>-</td>
+<td>1M</td>
+<td>128K</td>
+<td>Active</td>
+</tr>
+<tr>
 <td>Claude Opus 5</td>
 <td><code>claude-opus-5</code></td>
 <td>-</td>
@@ -192,6 +200,14 @@ caps[&quot;context_management&quot;][&quot;compact_20260112&quot;][&quot;support
 <tr>
 <td>Claude Opus 4.6</td>
 <td><code>claude-opus-4-6</code></td>
+<td>-</td>
+<td>1M</td>
+<td>128K</td>
+<td>Active</td>
+</tr>
+<tr>
+<td>Claude Sonnet 5.5</td>
+<td><code>claude-sonnet-5-5</code></td>
 <td>-</td>
 <td>1M</td>
 <td>128K</td>
@@ -225,14 +241,16 @@ caps[&quot;context_management&quot;][&quot;compact_20260112&quot;][&quot;support
 </table>
 <h3>Model Descriptions</h3>
 <ul>
-<li><strong>Claude Fable 5.1</strong> - Anthropic's most capable widely released model, for the most demanding reasoning and long-horizon agentic work. Successor to Claude Fable 5 in the same tier at the same per-token price ($10/$50 per MTok; cache reads $0.25/MTok - 0.025x, a quarter of Claude Fable 5's; batch $5/$25); stronger long-running agentic coding, knowledge work with documents/spreadsheets/slides, multistep research, vision, long-context retrieval, and computer use. Same API surface as Claude Fable 5 (thinking always on, no prefill, no sampling params, <code>refusal</code> stop reason, 512-token cache minimum) with three breaking changes: forced tool use (<code>tool_choice</code> <code>any</code> / <code>tool</code>) returns a 400; thinking blocks are bound to the producing model (only Claude Mythos 5.1 can read them - other models drop them); and editing earlier turns invalidates thinking blocks ("preserved thinking"; new accounts created on/after 2026-08-31 get a 400 on edited history; later models enforce it for everyone; the opt-in controls are per-platform - <code>shared/platform-availability.md</code>). Adds per-message <code>effort</code>, turn-scoped <code>clear_at</code> system messages, <code>thinking.display: "updates"</code> progress updates, and content provenance. Same tokenizer as Claude Fable 5; 1M context (default), 128K max output. Covered Model: 30-day retention required (ZDR only if expressly authorized by Anthropic) - ZDR orgs get <code>400 invalid_request_error</code>, as on Claude Fable 5. No Priority Tier; shares the Fable 5.x rate-limit pool. See <code>shared/model-migration.md</code> -&gt; Migrating to Claude Fable 5.1 from Claude Fable 5.</li>
+<li><strong>Claude Fable 5.1</strong> - Anthropic's most capable widely released model, for the most demanding reasoning and long-horizon agentic work. Successor to Claude Fable 5 in the same tier at the same per-token price ($10/$50 per MTok; cache reads $0.25/MTok - 0.025x, a quarter of Claude Fable 5's; batch $5/$25); stronger long-running agentic coding, knowledge work with documents/spreadsheets/slides, multistep research, vision, long-context retrieval, and computer use. Same API surface as Claude Fable 5 (thinking always on, no prefill, no sampling params, <code>refusal</code> stop reason, 512-token cache minimum) with three breaking changes: forced tool use (<code>tool_choice</code> <code>any</code> / <code>tool</code>) returns a 400; thinking blocks are bound to the producing model (only Claude Mythos 5.1 can read them - other models drop them); and editing earlier turns invalidates thinking blocks ("preserved thinking"; new accounts created on/after 2026-08-31 get a 400 on edited history on every platform, and enforcement scope is decided per model; the opt-in controls beta is on the Claude API, Claude Platform on AWS, Bedrock, and Vertex - Foundry unconfirmed, <code>shared/platform-availability.md</code>). Adds per-message <code>effort</code>, turn-scoped <code>clear_at</code> system messages, <code>thinking.display: "updates"</code> progress updates, and content provenance. Same tokenizer as Claude Fable 5; 1M context (default), 128K max output. Covered Model: 30-day retention required (ZDR only if expressly authorized by Anthropic) - ZDR orgs get <code>400 invalid_request_error</code>, as on Claude Fable 5. No Priority Tier; shares the Fable 5.x rate-limit pool. See <code>shared/model-migration.md</code> -&gt; Migrating to Claude Fable 5.1 from Claude Fable 5.</li>
 <li><strong>Claude Fable 5</strong> / <strong>Claude Mythos 5</strong> (<code>claude-fable-5</code> / <code>claude-mythos-5</code>) - the previous Fable / Mythos release: same tier, limits and per-token pricing as Claude Fable 5.1, which adds three breaking API changes over them (see above; cache reads here are $1/MTok rather than Claude Fable 5.1's $0.25); still served and selectable by id. Claude Mythos 5 ran no safety classifiers, so <code>stop_reason: "refusal"</code> does not occur on it. Prefer claude-fable-5-1 for new work.</li>
-<li><strong>Claude Mythos 5.1</strong> - The same model as Claude Fable 5.1 (same capabilities, limits, per-token pricing, API behavior), offered only to approved Project Glasswing customers; successor to Claude Mythos 5 (which itself succeeded the invitation-only <code>claude-mythos-preview</code>). Unlike Claude Mythos 5 it runs safeguards that depend on the access program, so handle <code>stop_reason: "refusal"</code>. Not offered on Claude Platform on AWS. Use it only when the org participates in Project Glasswing; otherwise use <code>claude-fable-5-1</code>.</li>
+<li><strong>Claude Mythos 5.1</strong> - The same model as Claude Fable 5.1 (same capabilities, limits, per-token pricing, API behavior - except it does not run the history-editing check), offered only to approved Project Glasswing customers; successor to Claude Mythos 5 (which itself succeeded the invitation-only <code>claude-mythos-preview</code>). Unlike Claude Mythos 5 it runs safeguards that depend on the access program, so handle <code>stop_reason: "refusal"</code>. Not offered on Claude Platform on AWS. Use it only when the org participates in Project Glasswing; otherwise use <code>claude-fable-5-1</code>.</li>
+<li><strong>Claude Opus 5.5</strong> - Successor to Claude Opus 5 in the Opus line for long-running agentic coding and knowledge work, at a lower price ($4 / $20 per MTok; cache reads $0.20). Same 1M context, 128K output, tokenizer, and feature set as Claude Opus 5, with four breaking changes: thinking can't be disabled (effort is the only control, default <code>medium</code>), forced <code>tool_choice</code> 400s, thinking blocks are tied to the model and the conversation, and computer use needs the <code>computer_toolset_20260801</code> toolset. Broader safety classifiers (<code>bio</code> and <code>reasoning_extraction</code> join <code>cyber</code>). The current Opus and the default model; see <code>shared/model-migration.md</code> -&gt; Migrating to Claude Opus 5.5.</li>
 <li><strong>Claude Opus 5</strong> - For complex agentic coding and enterprise work; a step-change over Claude Opus 4.8, strongest on deep reasoning, agentic and long-horizon work, and test-time compute scaling, at half the cost of Claude Fable 5.1 (Claude Fable 5.1 remains the highest-capability tier). Safety classifiers can return <code>stop_reason: "refusal"</code> - handle it before reading <code>content</code>. A drop-in upgrade at Opus 4.8's pricing ($5/$25 per MTok) with the same feature set. Thinking is on by default (omitting <code>thinking</code> runs adaptive; <code>{type: "adaptive"}</code> is equivalent), and <code>thinking: {type: "disabled"}</code> is available only at effort <code>high</code> or lower - pairing it with <code>xhigh</code>/<code>max</code> returns a 400. Raw thinking tokens are never returned. Full effort ladder through <code>max</code>; 512-token prompt-cache minimum (down from 1024 on Opus 4.8); fast mode on the Claude API only. Elevated cybersecurity safeguards. Separate rate-limit bucket from the combined Opus 4.x pool. 1M context window (default and maximum), 128K max output. See <code>shared/model-migration.md</code> -&gt; Migrating to Claude Opus 5.</li>
 <li><strong>Claude Opus 4.8</strong> - The most capable model in the Opus 4 series - highly autonomous, state-of-the-art on long-horizon agentic work, knowledge work, and memory; clearer, warmer writing. Same API surface as Opus 4.7 (adaptive thinking only; sampling parameters and <code>budget_tokens</code> removed). 1M context window at standard API pricing (no long-context premium). See <code>shared/model-migration.md</code> -&gt; Migrating to Opus 4.8 - a 4.7 -&gt; 4.8 move is a model-ID swap plus prompt re-tuning, no new breaking changes.</li>
 <li><strong>Claude Opus 4.7</strong> - Previous-generation Opus. Highly autonomous; strong on long-horizon agentic work, knowledge work, vision, and memory. Adaptive thinking only; sampling parameters and <code>budget_tokens</code> removed. 1M context window. See <code>shared/model-migration.md</code> -&gt; Migrating to Opus 4.7.</li>
 <li><strong>Claude Opus 4.6</strong> - Older Opus. Supports adaptive thinking (recommended), 128K max output tokens (requires streaming for large outputs). 1M context window.</li>
-<li><strong>Claude Sonnet 5</strong> - The best combination of speed and intelligence in the Sonnet tier; near-Opus quality on coding and agentic work. Adaptive thinking on by default (omitting <code>thinking</code> runs adaptive); manual <code>budget_tokens</code> removed; non-default sampling parameters rejected. <code>effort</code> supports <code>low</code>/<code>medium</code>/<code>high</code>/<code>xhigh</code>/<code>max</code>. New tokenizer (~30% more tokens for the same text vs Sonnet 4.6). High-resolution vision (2576px). 1M context window, 128K max output. See <code>shared/model-migration.md</code> -&gt; Migrating to Claude Sonnet 5.</li>
+<li><strong>Claude Sonnet 5</strong> - The previous Sonnet; near-Opus quality on coding and agentic work. Adaptive thinking on by default (omitting <code>thinking</code> runs adaptive); manual <code>budget_tokens</code> removed; non-default sampling parameters rejected. <code>effort</code> supports <code>low</code>/<code>medium</code>/<code>high</code>/<code>xhigh</code>/<code>max</code>. New tokenizer (~30% more tokens for the same text vs Sonnet 4.6). High-resolution vision (2576px). 1M context window, 128K max output. See <code>shared/model-migration.md</code> -&gt; Migrating to Claude Sonnet 5.</li>
+<li><strong>Claude Sonnet 5.5</strong> - Successor to Claude Sonnet 5 in the Sonnet line, at the same prices ($2 / $10 per MTok; cache reads $0.20). Same tokenizer as Claude Sonnet 5; 1M context, 128K max output. Adaptive thinking on by default; effort default <code>high</code>, with recalibrated levels. Five breaking changes: <code>thinking: {type: "disabled"}</code> returns a 400 (send <code>{type: "between_tools"}</code> at effort <code>high</code> or below to turn thinking off), forced <code>tool_choice</code> 400s, thinking blocks are tied to the model and the conversation, computer use on the Claude API and Google Cloud needs the <code>computer_toolset_20260801</code> toolset, and the advisor tool rejects Claude Opus 4.8, Claude Opus 4.7, and Claude Sonnet 5 advisors. See <code>shared/model-migration.md</code> -&gt; Migrating to Claude Sonnet 5.5.</li>
 <li><strong>Claude Sonnet 4.6</strong> - Previous-generation Sonnet. Supports adaptive thinking (recommended). 1M context window. 128K max output tokens.</li>
 <li><strong>Claude Haiku 4.5</strong> - Fastest and most cost-effective model for simple tasks.</li>
 </ul>
@@ -257,7 +275,7 @@ caps[&quot;context_management&quot;][&quot;compact_20260112&quot;][&quot;support
 <td>Claude Opus 4.1</td>
 <td><code>claude-opus-4-1</code></td>
 <td><code>claude-opus-4-1-20250805</code></td>
-<td>Deprecated (retires 2026-08-05 - migrate to <code>claude-opus-5</code>)</td>
+<td>Deprecated (retires 2026-08-05 - migrate to <code>claude-opus-5-5</code>)</td>
 </tr>
 <tr>
 <td>Claude Sonnet 4.5</td>
@@ -386,11 +404,15 @@ caps[&quot;context_management&quot;][&quot;compact_20260112&quot;][&quot;support
 </tr>
 <tr>
 <td>"opus"</td>
-<td><code>claude-opus-5</code></td>
+<td><code>claude-opus-5-5</code></td>
 </tr>
 <tr>
 <td>"opus 5"</td>
 <td><code>claude-opus-5</code></td>
+</tr>
+<tr>
+<td>"opus 5.5"</td>
+<td><code>claude-opus-5-5</code></td>
 </tr>
 <tr>
 <td>"opus 4.8"</td>
@@ -410,19 +432,27 @@ caps[&quot;context_management&quot;][&quot;compact_20260112&quot;][&quot;support
 </tr>
 <tr>
 <td>"opus 4.1"</td>
-<td><code>claude-opus-4-1</code> (deprecated, retires 2026-08-05 - suggest <code>claude-opus-5</code>)</td>
+<td><code>claude-opus-4-1</code> (deprecated, retires 2026-08-05 - suggest <code>claude-opus-5-5</code>)</td>
 </tr>
 <tr>
 <td>"opus 4", "opus 4.0"</td>
-<td><code>claude-opus-4-0</code> (deprecated - suggest <code>claude-opus-5</code>)</td>
+<td><code>claude-opus-4-0</code> (deprecated - suggest <code>claude-opus-5-5</code>)</td>
 </tr>
 <tr>
 <td>"sonnet", "balanced"</td>
-<td><code>claude-sonnet-5</code></td>
+<td><code>claude-sonnet-5-5</code></td>
 </tr>
 <tr>
 <td>"sonnet 5"</td>
 <td><code>claude-sonnet-5</code></td>
+</tr>
+<tr>
+<td>"sonnet 5.5"</td>
+<td><code>claude-sonnet-5-5</code></td>
+</tr>
+<tr>
+<td>"cheapest sonnet", "newest sonnet", "latest sonnet" (any attribute phrasing)</td>
+<td><code>claude-sonnet-5-5</code></td>
 </tr>
 <tr>
 <td>"sonnet 4.6"</td>
@@ -434,15 +464,15 @@ caps[&quot;context_management&quot;][&quot;compact_20260112&quot;][&quot;support
 </tr>
 <tr>
 <td>"sonnet 4", "sonnet 4.0"</td>
-<td><code>claude-sonnet-4-0</code> (deprecated - suggest <code>claude-sonnet-5</code>)</td>
+<td><code>claude-sonnet-4-0</code> (deprecated - suggest <code>claude-sonnet-5-5</code>)</td>
 </tr>
 <tr>
 <td>"sonnet 3.7"</td>
-<td>Retired - suggest <code>claude-sonnet-5</code></td>
+<td>Retired - suggest <code>claude-sonnet-5-5</code></td>
 </tr>
 <tr>
 <td>"sonnet 3.5"</td>
-<td>Retired - suggest <code>claude-sonnet-5</code></td>
+<td>Retired - suggest <code>claude-sonnet-5-5</code></td>
 </tr>
 <tr>
 <td>"haiku", "fast", "cheap"</td>

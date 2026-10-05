@@ -80,7 +80,7 @@
 <main class="md"><h1>Streaming - Go</h1>
 <h2>Streaming</h2>
 <pre><code class="language-go">stream := client.Messages.NewStreaming(context.Background(), anthropic.MessageNewParams{
-    Model:     anthropic.ModelClaudeOpus4_8,
+    Model:     &quot;claude-opus-5-5&quot;,
     MaxTokens: 64000,
     Messages: []anthropic.MessageParam{
         anthropic.NewUserMessage(anthropic.NewTextBlock(&quot;Write a haiku&quot;)),

@@ -102,7 +102,7 @@ static class GetWeather implements Supplier&lt;String&gt; {
 
 BetaToolRunner toolRunner = client.beta().messages().toolRunner(
     MessageCreateParams.builder()
-        .model(&quot;claude-opus-5&quot;)
+        .model(&quot;claude-opus-5-5&quot;)
         .maxTokens(16000L)
         .putAdditionalHeader(&quot;anthropic-beta&quot;, &quot;structured-outputs-2025-11-13&quot;)
         .addTool(GetWeather.class)
@@ -126,7 +126,7 @@ import com.anthropic.models.beta.messages.ToolRunnerCreateParams;
 BetaMemoryToolHandler memoryHandler = new FileSystemMemoryToolHandler(sandboxRoot);
 
 MessageCreateParams createParams = MessageCreateParams.builder()
-    .model(&quot;claude-opus-5&quot;)
+    .model(&quot;claude-opus-5-5&quot;)
     .maxTokens(4096L)
     .addTool(BetaMemoryTool20250818.builder().build())
     .addUserMessage(&quot;Remember that my favorite color is blue&quot;)
@@ -160,7 +160,7 @@ Tool tool = Tool.builder()
     .build();
 
 MessageCreateParams params = MessageCreateParams.builder()
-    .model(Model.CLAUDE_SONNET_4_6)
+    .model(&quot;claude-opus-5-5&quot;)
     .maxTokens(16000L)
     .addTool(tool)
     .addUserMessage(&quot;Weather in Paris?&quot;)
@@ -194,7 +194,7 @@ record Book(String title, String author) {}
 record BookList(List&lt;Book&gt; books) {}
 
 StructuredMessageCreateParams&lt;BookList&gt; params = MessageCreateParams.builder()
-    .model(Model.CLAUDE_SONNET_4_6)
+    .model(&quot;claude-opus-5-5&quot;)
     .maxTokens(16000L)
     .outputConfig(BookList.class)  // returns a typed builder
     .addUserMessage(&quot;List 3 classic novels&quot;)
@@ -233,7 +233,7 @@ import com.anthropic.models.beta.messages.BetaCodeExecutionTool20260120;
 import com.anthropic.models.beta.messages.BetaRequestMcpServerUrlDefinition;
 
 MessageCreateParams params = MessageCreateParams.builder()
-    .model(Model.CLAUDE_OPUS_4_8)
+    .model(&quot;claude-opus-5-5&quot;)
     .maxTokens(16000L)
     .addBeta(&quot;mcp-client-2025-11-20&quot;)
     .addTool(BetaToolBash20250124.builder().build())

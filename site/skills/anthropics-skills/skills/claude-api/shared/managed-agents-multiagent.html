@@ -87,7 +87,7 @@
 <pre><code class="language-python">agent = client.beta.agents.create(
     name=&quot;Research assistant&quot;,
     description=&quot;Researches a question end to end. A copy can be spawned to own one well-scoped sub-question.&quot;,
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     system=&quot;You are a research assistant. When a request splits into independent sub-questions, delegate each to a copy of yourself, one self-contained task per copy, then verify and combine their reports.&quot;,
     tools=[{&quot;type&quot;: &quot;agent_toolset_20260401&quot;}],
     multiagent={&quot;type&quot;: &quot;coordinator&quot;, &quot;agents&quot;: [{&quot;type&quot;: &quot;self&quot;}]},  # the only change vs. a single agent
@@ -95,7 +95,7 @@
 
 session = client.beta.sessions.create(agent=agent.id, environment_id=env.id)  # unchanged
 </code></pre>
-<p><strong>Step 2 - move the reading-heavy work to a cheaper model.</strong> Delegated research work is mostly searching, reading, and extracting: many input tokens, little hard reasoning. Create a second agent on a smaller current-generation model (Claude Haiku 4.5, or Claude Sonnet 5 when the worker needs more judgment) with a narrow <code>system</code> prompt and only the tools it needs, and list it next to <code>self</code>. A roster entry is only a reference: the worker runs on its own <code>model</code>, <code>system</code>, and <code>tools</code>, and its tokens are billed at its own model's rates. The large model spends its tokens on planning, checking, and synthesis; the small model does the bulk reading.</p>
+<p><strong>Step 2 - move the reading-heavy work to a cheaper model.</strong> Delegated research work is mostly searching, reading, and extracting: many input tokens, little hard reasoning. Create a second agent on a smaller current-generation model (Claude Haiku 4.5, or Claude Sonnet 5.5 when the worker needs more judgment) with a narrow <code>system</code> prompt and only the tools it needs, and list it next to <code>self</code>. A roster entry is only a reference: the worker runs on its own <code>model</code>, <code>system</code>, and <code>tools</code>, and its tokens are billed at its own model's rates. The large model spends its tokens on planning, checking, and synthesis; the small model does the bulk reading.</p>
 <pre><code class="language-python">worker = client.beta.agents.create(
     name=&quot;Web researcher&quot;,
     description=&quot;Fast, low-cost, read-only researcher. Give it one well-scoped question; it searches, reads, and reports findings with sources.&quot;,
@@ -111,7 +111,7 @@ session = client.beta.sessions.create(agent=agent.id, environment_id=env.id)  # 
 lead = client.beta.agents.create(
     name=&quot;Research lead&quot;,
     description=&quot;Plans and synthesizes research. A copy can be spawned to own one large sub-analysis.&quot;,
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     system=&quot;Plan the work. Delegate each independent, reading-heavy question to Web researcher, one self-contained task per spawn, several in parallel. Keep verification and the final synthesis for yourself; spawn a copy of yourself only for a sub-analysis that needs your full capability.&quot;,
     tools=[{&quot;type&quot;: &quot;agent_toolset_20260401&quot;}],
     multiagent={&quot;type&quot;: &quot;coordinator&quot;, &quot;agents&quot;: [worker.id, {&quot;type&quot;: &quot;self&quot;}]},
@@ -121,7 +121,7 @@ lead = client.beta.agents.create(
 <pre><code class="language-python">reviewer = client.beta.agents.create(
     name=&quot;Concurrency reviewer&quot;,
     description=&quot;Read-only reviewer for race conditions, deadlocks, lost updates, and retry/idempotency bugs. Give it the changed file paths and the invariants that must hold; it reports findings with file:line evidence. Spawn several on the same change for independent reviews.&quot;,
-    model=&quot;claude-sonnet-5&quot;,
+    model=&quot;claude-sonnet-5-5&quot;,
     system=&quot;Review only the files you are pointed at. Look for concurrency bugs: unsynchronized shared state, lock ordering, non-atomic read-modify-write, retries without idempotency. Report each finding as file:line, the interleaving that triggers it, and a suggested fix; say plainly if you found none.&quot;,
     tools=[{&quot;type&quot;: &quot;agent_toolset_20260401&quot;, &quot;default_config&quot;: {&quot;enabled&quot;: False},
             &quot;configs&quot;: [{&quot;name&quot;: n, &quot;enabled&quot;: True} for n in (&quot;read&quot;, &quot;glob&quot;, &quot;grep&quot;)]}],
@@ -129,7 +129,7 @@ lead = client.beta.agents.create(
 test_writer = client.beta.agents.create(
     name=&quot;Test writer&quot;,
     description=&quot;Writes and runs tests. Give it the module path, the behavior to pin down, and the test command; it adds test files, runs them, and reports results with output.&quot;,
-    model=&quot;claude-sonnet-5&quot;,
+    model=&quot;claude-sonnet-5-5&quot;,
     system=&quot;Write focused tests for the behavior you are given, run them with the command you are given, and report pass/fail, the relevant output, and the paths of files you added. Do not edit non-test code; if the code under test looks wrong, report that instead.&quot;,
     tools=[{&quot;type&quot;: &quot;agent_toolset_20260401&quot;, &quot;default_config&quot;: {&quot;enabled&quot;: True},
             &quot;configs&quot;: [{&quot;name&quot;: n, &quot;enabled&quot;: False} for n in (&quot;web_fetch&quot;, &quot;web_search&quot;)]}],
@@ -137,7 +137,7 @@ test_writer = client.beta.agents.create(
 lead = client.beta.agents.create(
     name=&quot;Engineering lead&quot;,
     description=&quot;Plans and makes code changes and integrates specialist reports. A copy can be spawned to own one independent change.&quot;,
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     system=&quot;Make the change yourself. Then, in parallel, send the changed paths and invariants to three Concurrency reviewers and the module path and test command to Test writer. Merge and de-duplicate the reviewers' findings, check each against the code before acting on it, fix, and have Test writer re-run. Keep design decisions and the final summary for yourself.&quot;,
     tools=[{&quot;type&quot;: &quot;agent_toolset_20260401&quot;}],
     multiagent={&quot;type&quot;: &quot;coordinator&quot;, &quot;agents&quot;: [reviewer.id, test_writer.id, {&quot;type&quot;: &quot;self&quot;}]},
@@ -157,7 +157,7 @@ lead = client.beta.agents.create(
 <p><code>multiagent</code> is a <strong>top-level field</strong> on <code>agents.create()</code> / <code>agents.update()</code> - <strong>not</strong> a <code>tools[]</code> entry. <code>agents</code> lists 1-20 roster entries. Nothing changes on <code>sessions.create()</code> - the roster is resolved from the coordinator's config.</p>
 <pre><code class="language-python">orchestrator = client.beta.agents.create(
     name=&quot;Engineering lead&quot;,
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     system=&quot;You coordinate engineering work. Delegate code review to the reviewer and test writing to the test agent.&quot;,
     tools=[{&quot;type&quot;: &quot;agent_toolset_20260401&quot;}],
     multiagent={
@@ -312,15 +312,15 @@ session = client.beta.sessions.create(agent=orchestrator.id, environment_id=env.
 <p>An <code>{"type": "advisor", "model": "&lt;model id&gt;"}</code> roster entry gives the session's <strong>primary thread</strong> an advisor: a model it can consult mid-turn for strategic guidance (planning an approach, getting unstuck, reviewing work before finishing). The entry has exactly two fields - <code>type</code> and <code>model</code> - and can sit alongside any other roster forms; a roster with no other entries works too. The advisor is also available as a server tool on the Messages API (<code>advisor_20260301</code> - see <code>shared/tool-use-concepts.md</code> -&gt; Advisor); the Managed Agents surface differs in configuration and delivery: the roster entry has <strong>no <code>max_uses</code>, <code>max_tokens</code>, or <code>caching</code> fields</strong>, and advice arrives through thread events rather than <code>advisor_tool_result</code> blocks.</p>
 <pre><code class="language-python">agent = client.beta.agents.create(
     name=&quot;Backend engineer&quot;,
-    model=&quot;claude-sonnet-5&quot;,
+    model=&quot;claude-sonnet-5-5&quot;,
     system=&quot;You implement backend features end to end.&quot;,
     multiagent={
         &quot;type&quot;: &quot;coordinator&quot;,
-        &quot;agents&quot;: [{&quot;type&quot;: &quot;advisor&quot;, &quot;model&quot;: &quot;claude-opus-5&quot;}],
+        &quot;agents&quot;: [{&quot;type&quot;: &quot;advisor&quot;, &quot;model&quot;: &quot;claude-opus-5-5&quot;}],
     },
 )
 </code></pre>
-<p>(Claude Opus 5 is the default advisor choice. It is a redacted advisor - the agent reads its advice server-side, but the client sees <code>[{"type": "redacted"}]</code>; see <em>Plaintext vs redacted delivery</em> below. For client-readable advice, a plaintext advisor such as <code>claude-opus-4-8</code> is valid only when the agent's own model is <code>claude-opus-4-8</code> or below - agents on Claude Opus 5, Claude Fable 5.1, or Claude Mythos 5.1 can only pair with redacted advisors, so client-readable advice is not available for them (pairing table: <code>shared/tool-use-concepts.md</code>).)</p>
+<p>(Claude Opus 5.5 is the default advisor choice. It is a redacted advisor - the agent reads its advice server-side, but the client sees <code>[{"type": "redacted"}]</code>; see <em>Plaintext vs redacted delivery</em> below. For client-readable advice, a plaintext advisor such as <code>claude-opus-4-8</code> is valid only when the agent's own model is <code>claude-opus-4-8</code> or below - agents on Claude Opus 5.5, Claude Opus 5, Claude Sonnet 5.5, Claude Fable 5.1, or Claude Mythos 5.1 can only pair with redacted advisors, so client-readable advice is not available for them (pairing table: <code>shared/tool-use-concepts.md</code>).)</p>
 <p><strong>Rules:</strong>
 - <strong>At most one advisor entry per roster.</strong> The entry occupies the reserved roster name <code>anthropic.advisor</code> - a roster that also lists a member literally named <code>anthropic.advisor</code> is a 400. In responses, the advisor entry is echoed <strong>last</strong> in the roster regardless of submitted position.
 - <strong>Pairing is validated at agent save:</strong> the advisor model must meet a minimum capability bar, and the agent's own model must not be more capable than its advisor (equals can pair). Invalid pairing -&gt; 400. The valid pairs mirror the Messages advisor tool's executor&lt;-&gt;advisor table (<code>shared/tool-use-concepts.md</code>).

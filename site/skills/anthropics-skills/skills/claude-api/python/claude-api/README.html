@@ -100,7 +100,7 @@ async_client = anthropic.AsyncAnthropic()
 <h3>Per-request overrides</h3>
 <p>Use <code>with_options()</code> to override client settings for a single call without mutating the client:</p>
 <pre><code class="language-python">client.with_options(timeout=5.0, max_retries=5).messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=1024,
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Hello&quot;}],
 )
@@ -136,7 +136,7 @@ client = Anthropic(
 <hr />
 <h2>Basic Message Request</h2>
 <pre><code class="language-python">response = client.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     messages=[
         {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is the capital of France?&quot;}
@@ -151,7 +151,7 @@ for block in response.content:
 <hr />
 <h2>System Prompts</h2>
 <pre><code class="language-python">response = client.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     system=&quot;You are a helpful coding assistant. Always provide examples in Python.&quot;,
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;How do I read a JSON file?&quot;}]
@@ -178,7 +178,7 @@ with open(&quot;image.png&quot;, &quot;rb&quot;) as f:
     image_data = base64.standard_b64encode(f.read()).decode(&quot;utf-8&quot;)
 
 response = client.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     messages=[{
         &quot;role&quot;: &quot;user&quot;,
@@ -198,7 +198,7 @@ response = client.messages.create(
 </code></pre>
 <h3>URL</h3>
 <pre><code class="language-python">response = client.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     messages=[{
         &quot;role&quot;: &quot;user&quot;,
@@ -221,7 +221,7 @@ response = client.messages.create(
 <h3>Automatic Caching (Recommended)</h3>
 <p>Use top-level <code>cache_control</code> to automatically cache the last cacheable block in the request - no need to annotate individual content blocks:</p>
 <pre><code class="language-python">response = client.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     cache_control={&quot;type&quot;: &quot;ephemeral&quot;},  # auto-caches the last cacheable block
     system=&quot;You are an expert on this large document...&quot;,
@@ -231,7 +231,7 @@ response = client.messages.create(
 <h3>Manual Cache Control</h3>
 <p>For fine-grained control, add <code>cache_control</code> to specific content blocks:</p>
 <pre><code class="language-python">response = client.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     system=[{
         &quot;type&quot;: &quot;text&quot;,
@@ -243,7 +243,7 @@ response = client.messages.create(
 
 # With explicit TTL (time-to-live)
 response = client.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     system=[{
         &quot;type&quot;: &quot;text&quot;,
@@ -262,15 +262,16 @@ print(response.usage.input_tokens)                 # uncached tokens (full cost)
 <hr />
 <h2>Extended Thinking</h2>
 <blockquote>
-<p><strong>Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking. <code>budget_tokens</code> is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<p><strong>Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking. <code>budget_tokens</code> is removed on Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<strong>Claude Opus 5.5:</strong> thinking is always on - omit <code>thinking</code> (or send <code>{"type": "adaptive"}</code>, which is equivalent); <code>{"type": "disabled"}</code> returns a 400 at every effort, as does a thinking budget. Control depth with <code>output_config.effort</code> instead - the default is <code>medium</code> on this model, where Claude Opus 5 defaults to <code>high</code>.
 <strong>Claude Opus 5:</strong> thinking is on by default - omitting <code>thinking</code> runs adaptive (<code>{"type": "adaptive"}</code> is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. <code>{"type": "disabled"}</code> is accepted only at effort <code>high</code> or lower; pairing it with <code>xhigh</code>/<code>max</code> returns a 400.
 <strong>Older models:</strong> Use <code>thinking: {type: "enabled", budget_tokens: N}</code> (must be &lt; <code>max_tokens</code>, min 1024).</p>
 </blockquote>
-<pre><code class="language-python"># Fable 5 / Claude Opus 5 / Opus 4.8 / 4.7 / 4.6: adaptive thinking (recommended)
+<pre><code class="language-python"># Fable 5 / Claude Opus 5.5 / Claude Opus 5 / Opus 4.8 / 4.7 / 4.6: adaptive thinking (recommended)
 response = client.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
-    thinking={&quot;type&quot;: &quot;adaptive&quot;, &quot;display&quot;: &quot;summarized&quot;},  # display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Claude Opus 5 / Opus 4.8 / 4.7
+    thinking={&quot;type&quot;: &quot;adaptive&quot;, &quot;display&quot;: &quot;summarized&quot;},  # display opt-in: default is omitted (empty thinking text) on Fable 5/5.1, Mythos 5/5.1, Claude Opus 5.5, Claude Opus 5, Opus 4.8/4.7, Claude Sonnet 5.5, and Claude Sonnet 5
     output_config={&quot;effort&quot;: &quot;high&quot;},  # low | medium | high | xhigh | max
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Solve this step by step...&quot;}]
 )
@@ -317,7 +318,7 @@ print(message.to_dict())          # plain dict
 </code></pre>
 <p>To access raw headers or other response metadata, use <code>.with_raw_response</code>:</p>
 <pre><code class="language-python">raw = client.messages.with_raw_response.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=1024,
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Hello&quot;}],
 )
@@ -358,7 +359,7 @@ message = raw.parse()  # the Message object messages.create() would have returne
 # Usage
 conversation = ConversationManager(
     client=anthropic.Anthropic(),
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     system=&quot;You are a helpful assistant.&quot;
 )
 
@@ -374,7 +375,7 @@ response2 = conversation.send(&quot;What's my name?&quot;)  # Claude remembers &
 <hr />
 <h3>Compaction (long conversations)</h3>
 <blockquote>
-<p><strong>Beta, Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6.</strong> When conversations approach the 200K context window, compaction automatically summarizes earlier context server-side. The API returns a <code>compaction</code> block; you must pass it back on subsequent requests - append <code>response.content</code>, not just the text.</p>
+<p><strong>Beta, Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6.</strong> When conversations approach the 200K context window, compaction automatically summarizes earlier context server-side. The API returns a <code>compaction</code> block; you must pass it back on subsequent requests - append <code>response.content</code>, not just the text.</p>
 </blockquote>
 <pre><code class="language-python">import anthropic
 
@@ -386,7 +387,7 @@ def chat(user_message: str) -&gt; str:
 
     response = client.beta.messages.create(
         betas=[&quot;compact-2026-01-12&quot;],
-        model=&quot;claude-opus-5&quot;,
+        model=&quot;claude-opus-5-5&quot;,
         max_tokens=16000,
         messages=messages,
         context_management={
@@ -448,7 +449,7 @@ print(chat(&quot;Now add rate limiting and error handling&quot;))
     print(f&quot;Explanation: {response.stop_details.explanation}&quot;)
 </code></pre>
 <h3>Refusal Fallbacks (Claude Fable 5.1) - opt in by default</h3>
-<p>Fallbacks are <strong>opt-in</strong>: without them a refused request simply stops. Include the server-side <code>fallbacks</code> parameter in <code>claude-fable-5-1</code> code by default - on a policy decline the API re-runs the same request on the fallback model inside the same call. A decline before any output isn't billed (a mid-stream decline bills the streamed partial); the rescue bills at the fallback model's own rates, with cache repricing applied automatically.</p>
+<p>Fallbacks are <strong>opt-in</strong>: without them a refused request simply stops. Include the server-side <code>fallbacks</code> parameter in <code>claude-fable-5-1</code> code by default - on a policy decline the API re-runs the same request on the fallback model inside the same call. A mid-stream decline is billed at normal rates, and the rescue bills at the fallback model's own rates, with cache repricing applied automatically; for a decline before any output, see <a href="https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback#how-refusals-are-billed">How refusals are billed</a>.</p>
 <pre><code class="language-python">response = client.beta.messages.create(
     model=&quot;claude-fable-5-1&quot;,
     max_tokens=16000,
@@ -476,7 +477,7 @@ if fallback_ran and response.stop_reason != &quot;refusal&quot;:
 <h3>1. Use Prompt Caching for Repeated Context</h3>
 <pre><code class="language-python"># Automatic caching (simplest - caches the last cacheable block)
 response = client.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     cache_control={&quot;type&quot;: &quot;ephemeral&quot;},
     system=large_document_text,  # e.g., 50KB of context
@@ -489,14 +490,14 @@ response = client.messages.create(
 <h3>2. Choose the Right Model</h3>
 <pre><code class="language-python"># Default to Opus for most tasks
 response = client.messages.create(
-    model=&quot;claude-opus-5&quot;,  # $5.00/$25.00 per 1M tokens
+    model=&quot;claude-opus-5-5&quot;,  # $4.00/$20.00 per 1M tokens
     max_tokens=16000,
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Explain quantum computing&quot;}]
 )
 
 # Use Sonnet for high-volume production workloads
 standard_response = client.messages.create(
-    model=&quot;claude-sonnet-5&quot;,  # $2.00/$10.00 per 1M tokens
+    model=&quot;claude-sonnet-5-5&quot;,  # $2.00/$10.00 per 1M tokens
     max_tokens=16000,
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Summarize this document&quot;}]
 )
@@ -510,12 +511,12 @@ simple_response = client.messages.create(
 </code></pre>
 <h3>3. Use Token Counting Before Requests</h3>
 <pre><code class="language-python">count_response = client.messages.count_tokens(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     messages=messages,
     system=system
 )
 
-estimated_input_cost = count_response.input_tokens * 0.000005  # $5/1M tokens
+estimated_input_cost = count_response.input_tokens * 0.000004  # $4/1M tokens
 print(f&quot;Estimated input cost: ${estimated_input_cost:.4f}&quot;)
 </code></pre>
 <hr />

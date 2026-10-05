@@ -79,7 +79,7 @@
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/platform-availability.md</span><button onclick="t()">🌓</button></nav>
 <main class="md"><h1>Platform Availability</h1>
 <p>Which features work on which provider platform. <strong>This table is the single source of truth in this skill</strong> - per-feature sections elsewhere point here instead of restating availability. When writing code for a third-party platform (Bedrock, Vertex, Foundry) or Claude Platform on AWS, check this table first; a feature not supported there means use the first-party Claude API surface or a different approach.</p>
-<p>Columns: <strong>1P</strong> = first-party Claude API, <strong>P-AWS</strong> = Claude Platform on AWS (Anthropic-operated, same-day parity), <strong>Bedrock</strong> = Amazon Bedrock, <strong>Vertex</strong> = Google Cloud Vertex AI, <strong>Foundry</strong> = Microsoft Foundry. Yes = GA, beta = beta, No = not supported.</p>
+<p>Columns: <strong>1P</strong> = first-party Claude API, <strong>P-AWS</strong> = Claude Platform on AWS (Anthropic-operated, same-day parity), <strong>Bedrock</strong> = Amazon Bedrock, <strong>Vertex</strong> = Google Cloud Vertex AI, <strong>Foundry</strong> = Microsoft Foundry. Yes = GA, beta = beta, No = not supported, unconfirmed = not verified either way when this was written.</p>
 <table>
 <thead>
 <tr>
@@ -108,7 +108,7 @@
 <td>Yes</td>
 <td>Yes</td>
 <td>Yes</td>
-<td>beta</td>
+<td>Yes</td>
 <td></td>
 </tr>
 <tr>
@@ -117,7 +117,7 @@
 <td>Yes</td>
 <td>Yes</td>
 <td>Yes</td>
-<td>beta</td>
+<td>Yes</td>
 <td></td>
 </tr>
 <tr>
@@ -126,7 +126,7 @@
 <td>Yes</td>
 <td>Yes</td>
 <td>Yes</td>
-<td>beta</td>
+<td>Yes</td>
 <td></td>
 </tr>
 <tr>
@@ -135,7 +135,7 @@
 <td>Yes</td>
 <td>Yes</td>
 <td>Yes</td>
-<td>beta</td>
+<td>Yes</td>
 <td></td>
 </tr>
 <tr>
@@ -162,7 +162,7 @@
 <td>Yes</td>
 <td>Yes</td>
 <td>Yes</td>
-<td>beta</td>
+<td>Yes</td>
 <td></td>
 </tr>
 <tr>
@@ -171,7 +171,7 @@
 <td>Yes</td>
 <td>Yes</td>
 <td>Yes</td>
-<td>beta</td>
+<td>Yes</td>
 <td></td>
 </tr>
 <tr>
@@ -180,7 +180,7 @@
 <td>Yes</td>
 <td>Yes</td>
 <td>Yes</td>
-<td>beta</td>
+<td>Yes</td>
 <td></td>
 </tr>
 <tr>
@@ -190,7 +190,7 @@
 <td>Yes</td>
 <td>Yes</td>
 <td>Yes</td>
-<td></td>
+<td>Bedrock: <code>eager_input_streaming</code> on the newer serving stack only (Opus 4.7/4.8/5, Fable 5, Sonnet 4.6/5); older deployments (Opus 4.5/4.6, Sonnet 4.0/4.5, Haiku 4.5) 400 on the field</td>
 </tr>
 <tr>
 <td>Compaction</td>
@@ -216,7 +216,7 @@
 <td>Yes</td>
 <td>Yes</td>
 <td>Yes</td>
-<td>beta</td>
+<td>Yes</td>
 <td></td>
 </tr>
 <tr>
@@ -243,8 +243,8 @@
 <td>Yes</td>
 <td>No</td>
 <td>Yes</td>
-<td>beta</td>
-<td>Vertex: basic <code>web_search_20250305</code> only (no <code>_20260209</code> dynamic filtering)</td>
+<td>Yes</td>
+<td>Vertex: basic <code>web_search_20250305</code> only (no <code>_20260209</code> dynamic filtering). Foundry Hosted on Azure: basic <code>web_search_20250305</code> only</td>
 </tr>
 <tr>
 <td>&nbsp;&nbsp;Web fetch</td>
@@ -252,8 +252,8 @@
 <td>Yes</td>
 <td>No</td>
 <td>No</td>
-<td>beta</td>
-<td></td>
+<td>Yes</td>
+<td>Foundry Hosted on Azure: basic <code>web_fetch_20250910</code> only</td>
 </tr>
 <tr>
 <td>&nbsp;&nbsp;Code execution</td>
@@ -261,8 +261,8 @@
 <td>Yes</td>
 <td>No</td>
 <td>No</td>
-<td>beta</td>
-<td></td>
+<td>Yes</td>
+<td>Foundry: Hosted on Anthropic deployments only - Hosted on Azure returns a 400</td>
 </tr>
 <tr>
 <td>&nbsp;&nbsp;Tool search</td>
@@ -270,7 +270,7 @@
 <td>Yes</td>
 <td>Yes</td>
 <td>Yes</td>
-<td>beta</td>
+<td>Yes</td>
 <td>Bedrock: InvokeModel API only, not Converse</td>
 </tr>
 <tr>
@@ -297,7 +297,7 @@
 <td>Yes</td>
 <td>Yes</td>
 <td>Yes</td>
-<td>beta</td>
+<td>Yes</td>
 <td></td>
 </tr>
 <tr>
@@ -307,7 +307,7 @@
 <td>beta</td>
 <td>beta</td>
 <td>beta</td>
-<td></td>
+<td><code>computer_20251124</code> and older versions: beta on all five platforms. Claude Opus 5.5 accepts only <code>computer_toolset_20260801</code> (GA, no beta header) on the Claude API and Google Cloud, and still accepts <code>computer_20251124</code> on Amazon Bedrock (<code>shared/model-migration.md</code> -&gt; Migrating to Claude Opus 5.5, breaking change 4). Claude Sonnet 5.5 accepts only the toolset on the Claude API and Google Cloud, but still accepts <code>computer_20251124</code> on Amazon Bedrock, and rejects <code>computer_20250124</code> everywhere (<code>shared/model-migration.md</code> -&gt; Migrating to Claude Sonnet 5.5, breaking change 4)</td>
 </tr>
 <tr>
 <td><strong>Agentic / orchestration</strong></td>
@@ -325,7 +325,7 @@
 <td>No</td>
 <td>No</td>
 <td>beta</td>
-<td></td>
+<td>Foundry: Hosted on Anthropic deployments only - Hosted on Azure returns a 400</td>
 </tr>
 <tr>
 <td>&nbsp;&nbsp;Programmatic tool calling</td>
@@ -333,8 +333,8 @@
 <td>Yes</td>
 <td>No</td>
 <td>No</td>
-<td>beta</td>
-<td></td>
+<td>Yes</td>
+<td>Foundry: Hosted on Anthropic deployments only - Hosted on Azure returns a 400</td>
 </tr>
 <tr>
 <td>&nbsp;&nbsp;MCP connector</td>
@@ -388,7 +388,7 @@
 <td>No</td>
 <td>No</td>
 <td>beta</td>
-<td></td>
+<td>Foundry: Hosted on Anthropic deployments only - Hosted on Azure returns a 400</td>
 </tr>
 <tr>
 <td>&nbsp;&nbsp;Models API</td>
@@ -415,7 +415,16 @@
 <td>Yes</td>
 <td>Yes</td>
 <td>No</td>
-<td>Claude Opus 5, Claude Opus 4.8, Claude Fable 5, Claude Fable 5.1, Claude Mythos 5, Claude Mythos 5.1; not Claude Sonnet 5. Bedrock: InvokeModel passthrough, not ARN-versioned models</td>
+<td>Claude Opus 5, Claude Opus 5.5, Claude Opus 4.8, Claude Fable 5, Claude Fable 5.1, Claude Mythos 5, Claude Mythos 5.1, Claude Sonnet 5.5; not Claude Sonnet 5. Bedrock: InvokeModel passthrough, not ARN-versioned models</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;Mid-conversation tool changes</td>
+<td>beta</td>
+<td>beta</td>
+<td>beta</td>
+<td>beta</td>
+<td>No</td>
+<td>Same models as mid-conversation system messages; beta <code>mid-conversation-tool-changes-2026-07-01</code></td>
 </tr>
 <tr>
 <td>&nbsp;&nbsp;Turn-scoped (<code>clear_at</code>) system messages</td>
@@ -429,11 +438,11 @@
 <tr>
 <td>&nbsp;&nbsp;Per-message <code>effort</code> (system message <code>output_config</code>)</td>
 <td>beta</td>
-<td>No</td>
-<td>No</td>
-<td>No</td>
-<td>No</td>
-<td>Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5; beta <code>mid-conversation-output-config-2026-07-01</code>; Claude API at launch (Bedrock/Vertex/Foundry unconfirmed; Claude Opus 5 excluded on Bedrock)</td>
+<td>unconfirmed</td>
+<td>unconfirmed</td>
+<td>beta</td>
+<td>unconfirmed</td>
+<td>Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5, Claude Opus 5.5, Claude Sonnet 5.5 (thinking on only - a 400 with <code>between_tools</code>); beta <code>mid-conversation-output-config-2026-07-01</code>; on the Claude API and Google Cloud, open to any organization that sends the header (Claude Platform on AWS/Bedrock/Foundry unconfirmed; Claude Opus 5 excluded on Bedrock)</td>
 </tr>
 <tr>
 <td>&nbsp;&nbsp;<code>thinking.display: "updates"</code></td>
@@ -442,16 +451,16 @@
 <td>beta</td>
 <td>beta</td>
 <td>beta</td>
-<td>Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5; beta <code>thinking-display-updates-2026-08-18</code> (pass the beta value per platform); without it <code>"updates"</code> is rejected as an unknown <code>display</code> value</td>
+<td>Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Opus 5.5, Claude Sonnet 5.5 (with adaptive thinking); beta <code>thinking-display-updates-2026-08-18</code> (pass the beta value per platform); without it <code>"updates"</code> is rejected as an unknown <code>display</code> value</td>
 </tr>
 <tr>
 <td>&nbsp;&nbsp;Thinking block-binding controls</td>
 <td>beta</td>
 <td>beta</td>
-<td>per model</td>
-<td>per model</td>
-<td>No</td>
-<td><code>thinking.block_binding</code> + <code>input_transformations</code>; beta <code>thinking-binding-controls-2026-08-01</code> (on Bedrock via the <code>anthropic_beta</code> body field); the controls beta arrives per model on Bedrock/Vertex - until then the header is rejected; the history-editing enforcement itself follows the account-age rule in <code>shared/model-migration.md</code> -&gt; Migrating to Claude Fable 5.1 from Claude Fable 5</td>
+<td>beta</td>
+<td>beta</td>
+<td>unconfirmed</td>
+<td><code>thinking.block_binding</code> + <code>input_transformations</code>; beta <code>thinking-binding-controls-2026-08-01</code> (the same beta name on the Claude API, Claude Platform on AWS, Bedrock, and Vertex - Bedrock: the <code>anthropic_beta</code> body field, Vertex: the <code>anthropic-beta</code> HTTP header); Foundry unconfirmed; wherever the header is rejected, use strip-and-retry; the history-editing enforcement itself follows the account-age rule in <code>shared/model-migration.md</code> -&gt; Migrating to Claude Fable 5.1 from Claude Fable 5</td>
 </tr>
 <tr>
 <td>&nbsp;&nbsp;Server-side <code>fallbacks</code></td>
@@ -469,7 +478,7 @@
 <td>No</td>
 <td>No</td>
 <td>No</td>
-<td>Research preview, beta <code>fast-mode-2026-02-01</code>, first-party API only</td>
+<td>Research preview, beta <code>fast-mode-2026-02-01</code>, first-party API only (Claude Opus 5 / Opus 4.8 at $10 / $50; Claude Opus 5.5 at $8 / $40)</td>
 </tr>
 <tr>
 <td>&nbsp;&nbsp;Cache diagnostics</td>

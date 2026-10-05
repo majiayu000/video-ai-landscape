@@ -80,7 +80,7 @@
 <main class="md"><h1>Managed Agents - PHP</h1>
 <blockquote>
 <p><strong>Bindings not shown here:</strong> This README covers the most common managed-agents flows for PHP. If you need a class, method, namespace, field, or behavior that isn't shown, WebFetch the PHP SDK repo <strong>or the relevant docs page</strong> from <code>shared/live-sources.md</code> rather than guess. Do not extrapolate from cURL shapes or another language's SDK.</p>
-<p><strong>Agents are persistent - create once, reference by ID.</strong> Store the agent ID returned by <code>$client-&gt;beta-&gt;agents-&gt;create</code> and pass it to every subsequent <code>-&gt;sessions-&gt;create</code>; do not call <code>agents-&gt;create</code> in the request path. <strong>Recommended:</strong> define agents and environments as version-controlled YAML applied with the <code>ant</code> CLI - see <code>shared/anthropic-cli.md</code> (its live-docs URL is in <code>shared/live-sources.md</code>). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.</p>
+<p><strong>Agents are persistent - create once, reference by ID.</strong> Store the agent ID returned by <code>$client-&gt;beta-&gt;agents-&gt;create</code> and pass it to every subsequent <code>-&gt;sessions-&gt;create</code>; do not call <code>agents-&gt;create</code> in the request path. <strong>Recommended:</strong> define agents and environments as version-controlled files synced with <code>ant apply</code> - see <code>shared/anthropic-cli.md</code> (its live-docs URL is in <code>shared/live-sources.md</code>). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.</p>
 </blockquote>
 <h2>Installation</h2>
 <pre><code class="language-bash">composer require &quot;anthropic-ai/sdk&quot; &quot;guzzlehttp/guzzle:^7&quot;
@@ -113,7 +113,7 @@ echo &quot;Environment ID: {$environment-&gt;id}\n&quot;; // env_...
 // 1. Create the agent (reusable, versioned)
 $agent = $client-&gt;beta-&gt;agents-&gt;create(
     name: 'Coding Assistant',
-    model: 'claude-opus-5',
+    model: 'claude-opus-5-5',
     system: 'You are a helpful coding assistant.',
     tools: [
         BetaManagedAgentsAgentToolset20260401Params::with(
@@ -335,7 +335,7 @@ use Anthropic\Beta\Sessions\BetaManagedAgentsAgentParams;
 // Agent declares MCP server (no auth here - auth goes in a vault)
 $agent = $client-&gt;beta-&gt;agents-&gt;create(
     name: 'GitHub Assistant',
-    model: 'claude-opus-5',
+    model: 'claude-opus-5-5',
     mcpServers: [
         BetaManagedAgentsURLMCPServerParams::with(
             type: 'url',

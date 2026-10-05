@@ -96,7 +96,7 @@ $client = new Client(apiKey: getenv(&quot;ANTHROPIC_API_KEY&quot;));
 // Messages-API Bedrock endpoint. Reads AWS credentials from env.
 $client = new MantleClient(awsRegion: 'us-east-1');
 </code></pre>
-<p>Model IDs on Bedrock take an <code>anthropic.</code> prefix - e.g. <code>model: 'anthropic.claude-opus-5'</code>.</p>
+<p>Model IDs on Bedrock take an <code>anthropic.</code> prefix - e.g. <code>model: 'anthropic.claude-opus-5-5'</code>.</p>
 <h3>Google Vertex AI</h3>
 <pre><code class="language-php">use Anthropic\Vertex;
 
@@ -118,7 +118,7 @@ $client = Foundry\Client::withCredentials(
 <hr />
 <h2>Basic Message Request</h2>
 <pre><code class="language-php">$message = $client-&gt;messages-&gt;create(
-    model: 'claude-opus-5',
+    model: 'claude-opus-5-5',
     maxTokens: 16000,
     messages: [
         ['role' =&gt; 'user', 'content' =&gt; 'What is the capital of France?'],
@@ -149,9 +149,9 @@ foreach ($message-&gt;content as $block) {
 <pre><code class="language-php">use Anthropic\Messages\ThinkingBlock;
 
 $message = $client-&gt;messages-&gt;create(
-    model: 'claude-opus-5',
+    model: 'claude-opus-5-5',
     maxTokens: 16000,
-    thinking: ['type' =&gt; 'adaptive', 'display' =&gt; 'summarized'], // display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Claude Opus 5 / Opus 4.8 / 4.7
+    thinking: ['type' =&gt; 'adaptive', 'display' =&gt; 'summarized'], // display opt-in: default is omitted (empty thinking text) on Fable 5/5.1, Mythos 5/5.1, Claude Opus 5.5, Claude Opus 5, Opus 4.8/4.7, Claude Sonnet 5.5, and Claude Sonnet 5
     messages: [
         ['role' =&gt; 'user', 'content' =&gt; 'Solve: 27 * 453'],
     ],
@@ -169,7 +169,8 @@ foreach ($message-&gt;content as $block) {
 }
 </code></pre>
 <blockquote>
-<p><strong>Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking (above). <code>['type' =&gt; 'enabled', 'budgetTokens' =&gt; N]</code> is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<p><strong>Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking (above). <code>['type' =&gt; 'enabled', 'budgetTokens' =&gt; N]</code> is removed on Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<strong>Claude Opus 5.5:</strong> thinking is always on - omit <code>thinking:</code> (or send <code>['type' =&gt; 'adaptive']</code>, which is equivalent); <code>['type' =&gt; 'disabled']</code> returns a 400 at every effort, as does a thinking budget. Control depth with the <code>outputConfig:</code> effort instead - the default is <code>medium</code> on this model, where Claude Opus 5 defaults to <code>high</code>.
 <strong>Claude Opus 5:</strong> thinking is on by default - omitting <code>thinking:</code> runs adaptive (<code>['type' =&gt; 'adaptive']</code> is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. <code>['type' =&gt; 'disabled']</code> is accepted only at effort <code>high</code> or lower; pairing it with <code>xhigh</code>/<code>max</code> returns a 400.
 <strong>Older models:</strong> Use <code>thinking: ['type' =&gt; 'enabled', 'budgetTokens' =&gt; N]</code> (budget must be &lt; <code>maxTokens</code>, min 1024).</p>
 </blockquote>
@@ -178,7 +179,7 @@ foreach ($message-&gt;content as $block) {
 <h2>Prompt Caching</h2>
 <p><code>system:</code> takes an array of text blocks; set <code>cacheControl</code> on the last block. Array-shape syntax (camelCase keys) is idiomatic. For placement patterns and the silent-invalidator audit checklist, see <code>shared/prompt-caching.md</code>.</p>
 <pre><code class="language-php">$message = $client-&gt;messages-&gt;create(
-    model: 'claude-opus-5',
+    model: 'claude-opus-5-5',
     maxTokens: 16000,
     system: [
         ['type' =&gt; 'text', 'text' =&gt; $longSystemPrompt, 'cacheControl' =&gt; ['type' =&gt; 'ephemeral']],

@@ -100,7 +100,7 @@ def get_weather(location: str, unit: str = &quot;celsius&quot;) -&gt; str:
 
 # The tool runner handles the agentic loop automatically
 runner = client.beta.messages.tool_runner(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     tools=[get_weather],
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What's the weather in Paris?&quot;}],
@@ -127,7 +127,7 @@ max_restarts = 5  # cap pause_turn restarts, mirroring max_continuations advice
 restarts = 0
 while True:
     runner = client.beta.messages.tool_runner(
-        model=&quot;claude-opus-5&quot;,
+        model=&quot;claude-opus-5-5&quot;,
         max_tokens=16000,
         tools=tools,  # may mix @beta_tool functions and server-tool definitions
         messages=messages,
@@ -170,7 +170,7 @@ async with stdio_client(StdioServerParameters(command=&quot;mcp-server&quot;)) a
         tools_result = await mcp_client.list_tools()
         # tool_runner is sync - returns the runner, not a coroutine
         runner = client.beta.messages.tool_runner(
-            model=&quot;claude-opus-5&quot;,
+            model=&quot;claude-opus-5-5&quot;,
             max_tokens=16000,
             messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Use the available tools&quot;}],
             tools=[async_mcp_tool(t, mcp_client) for t in tools_result.tools],
@@ -184,7 +184,7 @@ async with stdio_client(StdioServerParameters(command=&quot;mcp-server&quot;)) a
 
 prompt = await mcp_client.get_prompt(name=&quot;my-prompt&quot;)
 response = await client.beta.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     messages=[mcp_message(m) for m in prompt.messages],
 )
@@ -194,7 +194,7 @@ response = await client.beta.messages.create(
 
 resource = await mcp_client.read_resource(uri=&quot;file:///path/to/doc.txt&quot;)
 response = await client.beta.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     messages=[{
         &quot;role&quot;: &quot;user&quot;,
@@ -225,7 +225,7 @@ messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_input
 # Agentic loop: keep going until Claude stops calling tools
 while True:
     response = client.messages.create(
-        model=&quot;claude-opus-5&quot;,
+        model=&quot;claude-opus-5-5&quot;,
         max_tokens=16000,
         tools=tools,
         messages=messages
@@ -268,7 +268,7 @@ final_text = next(b.text for b in response.content if b.type == &quot;text&quot;
 <hr />
 <h2>Handling Tool Results</h2>
 <pre><code class="language-python">response = client.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     tools=tools,
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What's the weather in Paris?&quot;}]
@@ -283,7 +283,7 @@ for block in response.content:
         result = execute_tool(tool_name, tool_input)
 
         followup = client.messages.create(
-            model=&quot;claude-opus-5&quot;,
+            model=&quot;claude-opus-5-5&quot;,
             max_tokens=16000,
             tools=tools,
             messages=[
@@ -316,7 +316,7 @@ for block in response.content:
 # Send all results back at once
 if tool_results:
     followup = client.messages.create(
-        model=&quot;claude-opus-5&quot;,
+        model=&quot;claude-opus-5-5&quot;,
         max_tokens=16000,
         tools=tools,
         messages=[
@@ -337,13 +337,14 @@ if tool_results:
 </code></pre>
 <hr />
 <h2>Tool Choice</h2>
+<p><code>tool_choice</code> is <code>{"type": "auto"}</code> by default. Forcing a call (<code>{"type": "any"}</code> or <code>{"type": "tool", "name": ...}</code>) returns a 400 on Claude Opus 5.5, Claude Sonnet 5.5, Claude Fable 5.1, and Claude Mythos 5.1; Claude Opus 5, Claude Sonnet 5, and older models accept it. Steer with the prompt instead, and keep the schema guarantee with <code>strict: true</code>:</p>
 <pre><code class="language-python">response = client.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
-    tools=tools,
-    tool_choice={&quot;type&quot;: &quot;tool&quot;, &quot;name&quot;: &quot;get_weather&quot;},  # Force specific tool
-    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What's the weather in Paris?&quot;}]
+    tools=[{**tool, &quot;strict&quot;: True} for tool in tools],  # schemas must set additionalProperties: false
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What's the weather in Paris? Use the get_weather tool.&quot;}]
 )
+# auto does not guarantee a call - check for a tool_use block and re-prompt if none came back
 </code></pre>
 <hr />
 <h2>Code Execution</h2>
@@ -353,7 +354,7 @@ if tool_results:
 client = anthropic.Anthropic()
 
 response = client.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     messages=[{
         &quot;role&quot;: &quot;user&quot;,
@@ -377,7 +378,7 @@ uploaded = client.beta.files.upload(file=open(&quot;sales_data.csv&quot;, &quot;
 
 # 2. Pass to code execution via container_upload block
 response = client.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     messages=[{
         &quot;role&quot;: &quot;user&quot;,
@@ -415,7 +416,7 @@ for block in response.content:
 <h3>Container Reuse</h3>
 <pre><code class="language-python"># First request: set up environment
 response1 = client.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Install tabulate and create data.json with sample data&quot;}],
     tools=[{&quot;type&quot;: &quot;code_execution_20260120&quot;, &quot;name&quot;: &quot;code_execution&quot;}]
@@ -427,7 +428,7 @@ container_id = response1.container.id
 # Second request: reuse the same container
 response2 = client.messages.create(
     container=container_id,
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Read data.json and display as a formatted table&quot;}],
     tools=[{&quot;type&quot;: &quot;code_execution_20260120&quot;, &quot;name&quot;: &quot;code_execution&quot;}]
@@ -459,7 +460,7 @@ response2 = client.messages.create(
 client = anthropic.Anthropic()
 
 response = client.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Remember that my preferred language is Python.&quot;}],
     tools=[{&quot;type&quot;: &quot;memory_20250818&quot;, &quot;name&quot;: &quot;memory&quot;}],
@@ -481,7 +482,7 @@ memory = MyMemoryTool()
 
 # Use with tool runner
 runner = client.beta.messages.tool_runner(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     tools=[memory],
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Remember my preferences&quot;}],
@@ -511,7 +512,7 @@ class ContactInfo(BaseModel):
 client = anthropic.Anthropic()
 
 response = client.messages.parse(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     messages=[{
         &quot;role&quot;: &quot;user&quot;,
@@ -527,7 +528,7 @@ print(contact.interests)      # [&quot;API&quot;, &quot;SDKs&quot;]
 </code></pre>
 <h3>Raw Schema</h3>
 <pre><code class="language-python">response = client.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     messages=[{
         &quot;role&quot;: &quot;user&quot;,
@@ -558,7 +559,7 @@ data = json.loads(text)
 </code></pre>
 <h3>Strict Tool Use</h3>
 <pre><code class="language-python">response = client.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Book a flight to Tokyo for 2 passengers on March 15&quot;}],
     tools=[{
@@ -580,7 +581,7 @@ data = json.loads(text)
 </code></pre>
 <h3>Using Both Together</h3>
 <pre><code class="language-python">response = client.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Plan a trip to Paris next month&quot;}],
     output_config={

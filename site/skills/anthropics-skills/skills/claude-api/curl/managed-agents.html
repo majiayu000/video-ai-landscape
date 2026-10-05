@@ -129,7 +129,7 @@ curl -X POST https://api.anthropic.com/v1/agents \
   &quot;${HEADERS[@]}&quot; \
   -d '{
     &quot;name&quot;: &quot;Coding Assistant&quot;,
-    &quot;model&quot;: &quot;claude-opus-5&quot;,
+    &quot;model&quot;: &quot;claude-opus-5-5&quot;,
     &quot;tools&quot;: [{ &quot;type&quot;: &quot;agent_toolset_20260401&quot; }]
   }'
 # -&gt; { &quot;id&quot;: &quot;agent_abc123&quot;, ... }
@@ -150,7 +150,7 @@ curl -X POST https://api.anthropic.com/v1/agents \
   &quot;${HEADERS[@]}&quot; \
   -d '{
     &quot;name&quot;: &quot;Code Reviewer&quot;,
-    &quot;model&quot;: &quot;claude-opus-5&quot;,
+    &quot;model&quot;: &quot;claude-opus-5-5&quot;,
     &quot;system&quot;: &quot;You are a senior code reviewer. Be thorough and constructive.&quot;,
     &quot;tools&quot;: [
       { &quot;type&quot;: &quot;agent_toolset_20260401&quot; },
@@ -298,7 +298,6 @@ curl &quot;https://api.anthropic.com/v1/sessions/$SESSION_ID/events?page=page_ab
 <pre><code class="language-bash">curl -X POST https://api.anthropic.com/v1/files \
   -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
   -H &quot;anthropic-version: 2023-06-01&quot; \
-  -H &quot;anthropic-beta: files-api-2025-04-14&quot; \
   -F &quot;file=@path/to/file.txt&quot; \
   -F &quot;purpose=agent&quot;
 </code></pre>
@@ -309,13 +308,12 @@ curl &quot;https://api.anthropic.com/v1/sessions/$SESSION_ID/events?page=page_ab
 curl &quot;https://api.anthropic.com/v1/files?scope_id=$SESSION_ID&quot; \
   -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
   -H &quot;anthropic-version: 2023-06-01&quot; \
-  -H &quot;anthropic-beta: files-api-2025-04-14,managed-agents-2026-04-01&quot;
+  -H &quot;anthropic-beta: managed-agents-2026-04-01&quot;
 
 # Download a specific file
 curl &quot;https://api.anthropic.com/v1/files/$FILE_ID/content&quot; \
   -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
   -H &quot;anthropic-version: 2023-06-01&quot; \
-  -H &quot;anthropic-beta: files-api-2025-04-14,managed-agents-2026-04-01&quot; \
   -o downloaded_file.txt
 </code></pre>
 <hr />
@@ -330,7 +328,7 @@ curl -X POST https://api.anthropic.com/v1/agents \
   &quot;${HEADERS[@]}&quot; \
   -d '{
     &quot;name&quot;: &quot;MCP Agent&quot;,
-    &quot;model&quot;: &quot;claude-opus-5&quot;,
+    &quot;model&quot;: &quot;claude-opus-5-5&quot;,
     &quot;mcp_servers&quot;: [
       { &quot;type&quot;: &quot;url&quot;, &quot;name&quot;: &quot;my-tools&quot;, &quot;url&quot;: &quot;https://my-mcp-server.example.com/sse&quot; }
     ],
@@ -356,7 +354,7 @@ curl -X POST https://api.anthropic.com/v1/sessions \
   &quot;${HEADERS[@]}&quot; \
   -d '{
     &quot;name&quot;: &quot;Restricted Agent&quot;,
-    &quot;model&quot;: &quot;claude-opus-5&quot;,
+    &quot;model&quot;: &quot;claude-opus-5-5&quot;,
     &quot;tools&quot;: [
       {
         &quot;type&quot;: &quot;agent_toolset_20260401&quot;,

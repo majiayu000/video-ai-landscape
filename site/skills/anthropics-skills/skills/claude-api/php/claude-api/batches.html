@@ -80,7 +80,7 @@
 <main class="md"><h1>Message Batches - PHP</h1>
 <h2>Message Batches API</h2>
 <pre><code class="language-php">$batch = $client-&gt;messages-&gt;batches-&gt;create(requests: [
-    ['customId' =&gt; 'req-1', 'params' =&gt; ['model' =&gt; 'claude-opus-5', 'maxTokens' =&gt; 1024, 'messages' =&gt; [...]]],
+    ['customId' =&gt; 'req-1', 'params' =&gt; ['model' =&gt; 'claude-opus-5-5', 'maxTokens' =&gt; 1024, 'messages' =&gt; [...]]],
     ['customId' =&gt; 'req-2', 'params' =&gt; [...]],
 ]);
 // Poll $client-&gt;messages-&gt;batches-&gt;retrieve($batch-&gt;id) until processingStatus === 'ended',

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>causes · Anthropic 官方参照</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="causes · Anthropic 官方参照。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/preserved-thinking-migration/causes">
+<meta property="og:type" content="website">
+<meta property="og:title" content="causes · Anthropic 官方参照">
+<meta property="og:description" content="causes · Anthropic 官方参照。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/preserved-thinking-migration/causes">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="causes · Anthropic 官方参照">
+<meta name="twitter:description" content="causes · Anthropic 官方参照。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/anthropics-skills/">anthropics-skills</a><span class="crumb">/</span><span class="crumb">skills/claude-api/shared/preserved-thinking-migration/causes.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Preserved Thinking - Causes, Fixes, and the Keep List</h1>
+<blockquote>
+<p><strong>Reference for <code>shared/preserved-thinking-migration.md</code></strong> (the <code>preserved-thinking-migration</code> workflow). This file is not a workflow: it holds four lookups that the guide uses - the rules for a conversation that switches models, the "Cause -&gt; detection -&gt; fix" table, the keep list, and the failure modes to avoid - kept apart from the guide so that the guide fits in one Read. Read this file when the guide sends you here (Step 1.4, Step 2, or Step 3), and use the step numbers below as references into that guide.</p>
+</blockquote>
+<h2>Switching models mid-conversation</h2>
+<p>A harness that routes one conversation to more than one model - a cheaper model for easy turns, a fallback when the primary is unavailable, an upgrade from the model the conversation started on - meets a second check that shares the response with the prefix check. The rules below are what the API does today, as observed on the Claude API with <code>claude-opus-5</code>, <code>claude-opus-5-5</code>, <code>claude-fable-5</code>, and <code>claude-fable-5-1</code> in both <code>prefix_mismatch_behavior</code> modes; the Preserved thinking page (under "Sources and live references" in <code>shared/preserved-thinking-migration.md</code>) states the same rules, and the Extended thinking page (section "Only for the model that produced it, or a newer one") lists which models read which blocks.</p>
+<p><strong>Is the model part of what the signature records?</strong> Yes. A <code>thinking</code> block's <code>signature</code> records the model that produced it alongside the conversation record and the previous thinking block. When the block is replayed, the API first asks whether the model now reading it reads blocks from the model that produced it (the page's rule: the model that produced it, or a newer one) - the <em>model check</em> - and only then whether the conversation before the block is unchanged - the <em>prefix check</em>. The <code>model</code> field of the request is not part of the conversation record, so changing it is not an edit: <strong>a model switch by itself never fails the prefix check.</strong></p>
+<p><strong>Does a switch break the check?</strong> As of 2026-09-03 the API behaves as follows: a model switch does not fail a request - upgrade, downgrade, a round trip, and a downgrade combined with an edit all return 200, in <code>"error"</code> mode and in <code>"drop_block"</code> mode. <code>"error"</code> makes <em>edits</em> loud; it does not make a <em>model switch</em> loud, because the model check has no error setting: a block the current model cannot read is dropped, not rejected. Read the Preserved thinking page for the current rule. What differs by direction is whether the earlier reasoning is used:</p>
+<ul>
+<li><strong>Upgrade (an older model's blocks replayed to Claude Fable 5.1): nothing to do.</strong> Claude Fable 5.1 reads thinking produced by Claude Opus 5 and Claude Fable 5, among other earlier models (the Extended thinking page has the full list). The blocks are kept, fed to the model, counted in input tokens, and <code>input_transformations</code> is <code>[]</code>. An older model's block carries no conversation record for Claude Fable 5.1 to compare, so an edit made before such a block does not invalidate it; a conversation migrated from Claude Opus 5 can only break on the turns Claude Fable 5.1 produces from then on.</li>
+<li><strong>Downgrade (Claude Fable 5.1's blocks replayed to Claude Opus 5 or Claude Fable 5): the reasoning is lost for that request, not the request.</strong> The older model cannot read them, so the API leaves them out of that call, reports each one as <code>{"type": "thinking_dropped", "reason": "model_binding_mismatch", "path": ...}</code> when the beta header is on, and does not bill the dropped tokens. As of 2026-09-03 this is not a 400 in either mode, and there is no diagnosis header (that header belongs to the prefix check). Your <code>messages</code> array is never edited: the blocks stay in your history.</li>
+<li><strong>Round trip (Claude Fable 5.1, then an older model, then Claude Fable 5.1 again): nothing is lost, provided the client keeps the history intact.</strong> Back on Claude Fable 5.1 every block is read again - the ones from before the switch, the older model's own thinking block, and the ones minted after the return. Observed through four turns: a Claude Fable 5.1 block minted after the older model's turn is valid, and the chain of Claude Fable 5.1 blocks does not care that a turn between them came from another model. The same four-turn history sent back to the older model drops exactly the Claude Fable 5.1 blocks and keeps its own.</li>
+<li><strong>Claude Opus 5.5 runs the same prefix check, and sits beside Claude Fable 5.1, not under it.</strong> Everything in this file that names Claude Fable 5.1 as the model that runs the prefix check holds for Claude Opus 5.5 too (observed 2026-09-23: an edited history is a 400 in <code>"error"</code> mode, a <code>prefix_binding_mismatch</code> drop in <code>"drop_block"</code> mode, and a <code>thinking_mismatch_allowed</code> entry with the field unset). What differs is who reads whose blocks, per the Preserved thinking page: Claude Opus 5.5 reads thinking from Claude Opus 5 and earlier Opus, Sonnet and Haiku models, but not from Claude Fable or Claude Mythos models; on the Claude API, Claude Fable 5.1 and Claude Mythos 5.1 read Claude Opus 5.5's blocks, and no other model does. So Claude Opus 5 to Claude Opus 5.5, and Claude Opus 5.5 up to Claude Fable 5.1 on the Claude API, keep the reasoning (<code>[]</code>); Claude Fable 5.1 to Claude Opus 5.5, or Claude Opus 5.5 to any other model, is a downgrade in the sense above - <code>model_binding_mismatch</code> drops, 200 in both modes.</li>
+<li><strong>A downgrade can hide an edit for one request.</strong> The model check runs first, so a block the older model cannot read is never prefix-judged: a request that switches down <em>and</em> edits earlier content reports only <code>model_binding_mismatch</code>, even in <code>"error"</code> mode. The edit is still there; it surfaces on the next Claude Fable 5.1 turn as an ordinary prefix break (a 400 in <code>"error"</code> mode, <code>prefix_binding_mismatch</code> in <code>"drop_block"</code> mode). Scan and measure every turn of a mixed-model conversation, not only the turn where the switch happened.</li>
+<li><strong>Turns from a non-Claude model</strong> do not invalidate earlier thinking, provided they are appended after the existing history as ordinary assistant messages (<code>text</code> and <code>tool_use</code> content, no <code>thinking</code> blocks) and nothing earlier changes. Claude Fable 5.1 thinking minted after such a turn stays valid.</li>
+<li><strong>A twin model that reads the blocks but runs no conversation check</strong> (the Extended thinking page lists which models read which): its turns report <code>[]</code> even on an edited history, so an edit made on such a turn surfaces only on the next Claude Fable 5.1 turn - the same one-request blind spot as a downgrade, with <code>[]</code> instead of a model drop to notice it by.</li>
+</ul>
+<p><strong>Does changing a tool description break the check?</strong> Yes. Tools are compared as their full definitions - name, description, and <code>input_schema</code> - so changing even one tool's description invalidates every thinking block minted before the change, reported as <code>prefix_binding_mismatch</code> with <code>pattern=tool_schema_changed</code> (the API reports a description edit and a schema edit with the same word). Adding or removing a plain tool has the same effect, reported as <code>tool_set_changed</code>. Reordering tools is fine, and a <code>defer_loading: true</code> tool is outside the comparison until something references it. The fix is the <code>tool_schema_changed</code> and <code>tool_set_changed</code> rows: freeze each tool's text for the life of the conversation, and add or withdraw tools by reference - or, under <code>inline-tools-2026-09-15</code> (Claude API), append a <code>tool_addition</code> carrying the new definition ("Append-only forms under newer betas", below).</p>
+<p><strong>Cause -&gt; detection -&gt; fix.</strong> A model switch produces findings in two shapes, and only the second is a harness bug:</p>
+<ol>
+<li><strong>The conversation is routed to a model that cannot read its thinking.</strong> <em>Detection</em>: <code>model_binding_mismatch</code> entries on the older model's turns; the probe prints them as <code>model_drops=N</code> per turn and <code>model_drop_turns</code> per conversation, apart from the prefix-break count, and <code>prefix_diff.py</code> prints <code>model_switch=A-&gt;B</code> on the pair where the <code>model</code> field changed (never as a MISMATCH). <em>Fix</em>: a routing decision, not a history edit. Send the same <code>messages</code> - thinking blocks included - to every model, and leave the beta header and <code>block_binding</code> field in place across the switch (the object is accepted on every model that accepts <code>thinking</code>). If the product needs the reasoning on those turns, keep the conversation on the model that produced it and switch models at conversation boundaries; if it needs the older model on those turns, accept that they run without the newer reasoning. Report it as <em>reasoning lost by routing</em> - conversations and turns affected - beside the prefix breaks, so the owner can decide.</li>
+<li><strong>The switch triggers an edit.</strong> Three kinds, each an ordinary prefix break with the switch as its trigger: (a) the harness strips thinking blocks on a switch, or rebuilds the history from what each model was shown - the diff shows the blocks removed (<code>predecessor_missing</code> if from the middle), and the reasoning is gone for good when the conversation returns; <em>fix</em>: stop stripping, the API already leaves out what the current model cannot read. (b) A re-rendered system prompt or tool list that <em>persists</em> past the switch - a fallback banner that stays in <code>system</code> from then on, a prompt that depends on which model answered last - reaches Claude Fable 5.1 together with blocks minted under the old text: <code>system_rerendered</code>, <code>tool_set_changed</code>, or <code>tool_schema_changed</code> on the first Claude Fable 5.1 turn after it (on a downgrade the older model's turn in between reports only the model drop). A prompt or tool set that is a pure function of the model being called is different: every Claude Fable 5.1 request then carries the same text the blocks were minted under, so the check finds nothing (verified: the original prompt restored on the return to Claude Fable 5.1 gave 200 and <code>[]</code> with the block fed, in both modes), even though the pair diff flags the switch pairs and the older model's turns still lose the reasoning through the model check. <em>Fix</em> for the persisting case: the rows for those patterns - keep each model's prompt and tool text stable across that model's own turns, and deliver anything that must change mid-conversation as an appended <code>role: "system"</code> message. (c) A request shape the target model does not accept - a <code>thinking</code> configuration it rejects (a 400 from request validation whose text names the field, not a binding failure), or mid-conversation <code>role: "system"</code> messages, and with them <code>tool_addition</code>, <code>tool_removal</code> and <code>clear_at</code>, on a model the Mid-conversation system messages page does not list (it names Claude Sonnet 5 as unsupported: "Use the top-level system field there instead"); <em>fix</em>: one request body that every model in the route accepts.</li>
+</ol>
+<h2>Cause -&gt; detection -&gt; fix</h2>
+<p>The <code>pattern</code> column is the word the API's diagnosis header and the diff script both use. "Diff shows" is the attribution line from <code>prefix_diff.py</code>; "scan lead" is the heuristic <code>--scan</code> reports; the fix is the append-only form from Step 3 of <code>shared/preserved-thinking-migration.md</code>. One caution on reading the pattern word: for a summary-plus-tail compaction the header's word depends on how much was removed - the same code path reports <code>tail_kept</code>, <code>compaction_summary</code>, or <code>unknown</code> with <code>kind=blocks_replaced</code> on different conversations - so identify that cause by the kind (<code>blocks_removed</code> or <code>blocks_replaced</code>) together with the diff's attribution lines, not by one pattern word.</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th><code>pattern</code> (and <code>kind</code>)</th>
+<th>What the harness did</th>
+<th>Diff shows</th>
+<th>Scan lead</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>system_rerendered</code> (<code>system_changed</code>)</td>
+<td>The system prompt was rebuilt with per-request content: time, cwd, account line, memory or instruction files, flags, version strings</td>
+<td><code>system[i] changed at char N</code></td>
+<td>time and environment reads near prompt builders; templates rendered per request</td>
+<td>Render once, store the bytes with the conversation, replay; per-session facts go into the first turn; changes go out as appended <code>role: "system"</code> messages</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>tool_set_changed</code> (<code>tools_changed</code>)</td>
+<td>A tool was added or removed after the first request: a plugin or MCP server connected late, a provider disconnected, a permission changed</td>
+<td><code>tools: X added</code> / <code>removed</code></td>
+<td><code>tools</code> mutated after session start; a tool listing fetched per request</td>
+<td>Declare the full set at start; append a late tool with <code>defer_loading: true</code> (safe while unreferenced) and announce it with <code>tool_addition</code> in an appended system message - never append a regular tool; never remove one from the array - withdraw it with a <code>tool_removal</code> block and leave the definition in place, returning an ordinary "not available" error if the model still calls it</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>tool_schema_changed</code> (<code>tools_changed</code>)</td>
+<td>Same tool names, different description or schema text: a date, a refreshed token, a live listing, a version inside a description</td>
+<td><code>tools: X description changed at char N</code></td>
+<td>descriptions or schemas built from templates or state</td>
+<td>Freeze each tool's text for the conversation; store and replay the definitions as sent. Without the <code>inline-tools-2026-09-15</code> beta no append-only form expresses a same-name change - a new name is the only way to offer changed text; under it, append a <code>tool_addition</code> carrying the new definition instead (the betas section below)</td>
+</tr>
+<tr>
+<td>1-2</td>
+<td><code>system_and_tools_changed</code> (<code>multiple</code>)</td>
+<td>Both re-rendered, messages untouched: a connector landing on request 2, or a restart or resume re-deriving both</td>
+<td>both of the above</td>
+<td>startup, resume, reconnect paths</td>
+<td>Replay the stored prompt and tool text across restarts, and across model switches (a switch is not a boundary: a re-render that persists into later requests on the model that minted the blocks is this break, with the switch as its trigger; a prompt that is a pure function of the model called is stable on each model's own turns and is not); the only declared boundaries are a new conversation, a user-invoked reset, and the request after a full compaction</td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>first_message_rewritten</code> (<code>blocks_modified</code> / <code>blocks_removed</code>, often with <code>system</code> in <code>sections</code>)</td>
+<td>The opening user message carried context rebuilt from live state: environment, instructions, a session date</td>
+<td><code>messages[0] (user) content[j] changed at char N</code></td>
+<td><code>messages[0]</code> assigned after creation; a context header rendered per request</td>
+<td>Announce context once and freeze it; send later changes as an appended message describing the delta</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>rolling_truncation</code> (<code>blocks_removed</code>)</td>
+<td>The oldest turns were dropped whole - a sliding window</td>
+<td><code>messages[0..k] removed</code></td>
+<td><code>messages[-N:]</code>, keep-last, window size</td>
+<td>Without the <code>compact-2026-09-04</code> beta no client-side form keeps the thinking (with it, on-demand compaction does, but the window must summarize rather than only drop - the betas section below). The choices: server-side compaction or context editing; simple compaction (summary plus new turn, nothing older); or keep the window and strip the retained turns' thinking as a deterministic, recorded strip, or send <code>drop_block</code> (equivalent in effect) - measured</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>tail_kept</code> (<code>blocks_removed</code>)</td>
+<td>A run of older turns removed (or replaced by a summary the record can't see) with the first message kept and the newest turns verbatim - keep-tail compaction or keep-first truncation</td>
+<td><code>messages[i..j] removed</code>, <code>messages[0]</code> intact</td>
+<td><code>summarize(messages[:-k])</code> plus <code>messages[-k:]</code></td>
+<td>Same as above; the retained turns' thinking cannot verify without the <code>compact-2026-09-04</code> beta (it does behind an on-demand compaction block, the betas section below) - send <code>drop_block</code> from the compaction onward or strip that thinking as a recorded decision, never mid tool-round; measure, decide, and record the decision</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>compaction_summary</code> (<code>blocks_replaced</code>)</td>
+<td>Older turns replaced in place by a shorter summary, the tail intact</td>
+<td><code>messages[i..j] replaced by 1 message(s)</code></td>
+<td>same</td>
+<td>Same; or move the summary to simple compaction (replay nothing older than the summary); or, under <code>compact-2026-09-04</code>, on-demand compaction (the betas section below)</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>tool_results_rewritten</code> (<code>blocks_modified</code>)</td>
+<td>Old <code>tool_result</code> content trimmed or cleared after it was sent</td>
+<td><code>messages[i] (user) content[j] (tool_result) changed at char N</code></td>
+<td>tool-result truncation applied to earlier turns</td>
+<td>Bound outputs before the first send; later clearing through server-side context editing (<code>clear_tool_uses_20250919</code>, beta <code>context-management-2025-06-27</code>); a client-side prune only at a declared boundary, as a pure function of the growing history</td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>tool_use_rewritten</code> (<code>blocks_modified</code>)</td>
+<td>Old <code>tool_use.input</code> re-encoded or normalized on replay</td>
+<td><code>content[j] (tool_use) changed</code></td>
+<td>input normalizers, <code>to_dict</code> on tool calls</td>
+<td>Echo <code>tool_use.input</code> exactly as received; normalize a copy for execution only</td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>reserialized</code> (<code>blocks_modified</code>)</td>
+<td>Many blocks differ slightly across types: a lossy round trip through the app's own message model (interior whitespace, number formatting, coerced keys, trimmed text)</td>
+<td>many <code>changed at char N</code> lines across messages</td>
+<td><code>from_dict</code>/<code>to_dict</code>, JSON re-encoding of history, <code>.strip()</code> on content</td>
+<td>Persist and replay the wire JSON; never rebuild messages from domain objects</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>reminder_stripped</code> / <code>history_block_stripped</code> / <code>block_inserted</code> (<code>blocks_removed</code> / <code>blocks_inserted</code>)</td>
+<td>A per-turn text block injected into a user turn and removed on the next request (or added after the fact)</td>
+<td><code>messages[i] (user) content[j] (text) removed</code> / <code>inserted</code></td>
+<td>regex strips of reminder tags; inject-then-strip helpers</td>
+<td>Turn-scoped system message (<code>clear_at: "next_user_message"</code>) appended after the tool results, every earlier copy left in place; without the beta, a text block after the <code>tool_result</code> blocks, left in place</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>system_block_rerendered</code> / <code>system_blocks_stripped</code></td>
+<td>A mid-conversation <code>role: "system"</code> message re-rendered in place, or several dropped (a sub-agent transcript replayed without them)</td>
+<td><code>messages[i] (system) changed</code> / <code>removed</code></td>
+<td>transcript stores that don't keep system messages</td>
+<td>Persist them with the transcript and replay verbatim</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>media_stripped</code> (<code>blocks_removed</code> / <code>blocks_modified</code>)</td>
+<td>Images or documents in earlier turns dropped, downsized, or replaced by a placeholder - a client media cap</td>
+<td><code>content[j] (image) removed</code></td>
+<td>image caps, resizing of stored turns</td>
+<td>Downscale at ingestion; return images inside the producing tool's <code>tool_result</code> so server-side context editing can clear them; if a user-turn cap is unavoidable, strip deterministically to cap-minus-headroom and accept that each crossing is an edit; <code>file_id</code> only for bytes that would drift</td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>image_url_resigned</code> (pattern) / <code>media_content_changed</code> (kind)</td>
+<td>A URL-sourced image or document whose block changed, or whose bytes differ from the first fetch</td>
+<td><code>content[j] (image) changed</code></td>
+<td>URL re-signing, re-uploads</td>
+<td>The check compares the bytes, not the URL string: a rotated URL to the same bytes is fine; for content referenced across turns use a <code>file_id</code> or base64</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>predecessor_missing</code> / <code>predecessor_reordered</code> (kinds of the chain check; the header reads <code>kind=predecessor_missing; pattern=not_applicable</code>)</td>
+<td>A thinking block removed from the middle, or re-ordered, with the rest of the prefix intact</td>
+<td><code>! messages[i] re-sent with a different set of thinking blocks</code></td>
+<td>filters on <code>type == "thinking"</code>; serializers that drop empty fields or unknown block types (a <code>thinking</code> block with empty text is still a block); a hand-rolled stream parser that loses the <code>signature_delta</code>; strip-and-retry without a record</td>
+<td>Keep the replayed thinking blocks a contiguous window of the original (drop from the front or the back, never the middle); make any forced strip deterministic and recorded so it replays identically</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>unknown</code> with kind <code>blocks_removed</code> or <code>blocks_replaced</code></td>
+<td>A shortening of the history that the API does not name more specifically, or several edits at once</td>
+<td><code>messages[i..j] removed</code> / <code>replaced by 1 message(s)</code></td>
+<td>the same leads as the truncation and compaction rows</td>
+<td>Read the attribution lines; the fix is the truncation or compaction one above</td>
+</tr>
+<tr>
+<td>-</td>
+<td><code>foreign_prefix</code> (<code>unrelated</code>)</td>
+<td>A block from another conversation replayed (on a long conversation; a short one reports an ordinary <code>multiple</code> / <code>system_and_tools_changed</code>)</td>
+<td>no pair diff (it is a different conversation)</td>
+<td>session keys, multiplexed stores</td>
+<td>Fix the session keying</td>
+</tr>
+<tr>
+<td>-</td>
+<td>(no pattern)</td>
+<td>A drop or 400 on a pair where nothing you sent differs - the diff shows no change and the digests match</td>
+<td>no diff</td>
+<td>-</td>
+<td>Not a harness bug; report the request id to Anthropic</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>thinking_modified</code> (a separate 400, "cannot be modified")</td>
+<td>A replayed thinking block's text differs from what the API returned - truncated, summarized, re-wrapped</td>
+<td><code>! the thinking text of the block in messages[i] differs</code></td>
+<td>stores that trim or reformat thinking text</td>
+<td>Store and replay thinking blocks byte for byte</td>
+</tr>
+<tr>
+<td>0</td>
+<td><code>model_binding_mismatch</code> (model check; no <code>pattern</code>, no header)</td>
+<td>The conversation was routed to a model that cannot read its earlier thinking - a downgrade, a cheaper-model route, a fallback</td>
+<td><code>model_switch=A-&gt;B</code> on the pair, verdict unchanged; the probe's <code>model_drops</code></td>
+<td>model ids chosen per turn; fallback or router code</td>
+<td>Not a history edit: send the same <code>messages</code> to every model, keep the field and header in place, and decide the routing - pin the conversation to the producing model, or accept that the older model's turns run without the newer reasoning; report it as reasoning lost by routing</td>
+</tr>
+<tr>
+<td>1-2</td>
+<td><code>system_rerendered</code> / <code>tool_set_changed</code> / <code>tool_schema_changed</code> / <code>predecessor_missing</code>, triggered by a switch</td>
+<td>A re-rendered prompt or tool list that persists past the switch (a fallback banner, a prompt keyed to the last responder), or thinking stripped on the switch; on a downgrade the edit is reported only on the next Claude Fable 5.1 turn. A prompt that is a pure function of the model called is not this break</td>
+<td>the row for that pattern, on the pair after the switch (the diff also flags a per-model prompt that the API accepts - confirm with the probe)</td>
+<td>prompts or tool lists that change with the route; thinking filtered on a switch</td>
+<td>The row for that pattern: each model's prompt and tool text stable across its own turns, changes as an appended <code>role: "system"</code> message, and never strip thinking on a switch</td>
+</tr>
+</tbody>
+</table>
+<h2>Append-only forms under newer betas</h2>
+<p>Two newer betas add an append-only form for shapes the table above marks as having none without them. On-demand compaction (<code>compact-2026-09-04</code>) is on the Claude API, Claude Platform on AWS, Google Cloud and Microsoft Foundry, not on Amazon Bedrock; the Compatibility list on its page names the models and platforms, and the Models API reports each model's <code>capabilities.compaction</code> with the beta header. Defining a tool inside a message (<code>inline-tools-2026-09-15</code>) is Claude API only; by-reference tool changes under the older <code>mid-conversation-tool-changes-2026-07-01</code> header also work on Amazon Bedrock and Google Cloud. Where a beta is not available, treat those shapes as the table says: measure and decide, freeze and replay.</p>
+<p><strong>Background and keep-tail compaction, the append-only way: on-demand compaction (beta <code>compact-2026-09-04</code>, <code>"compaction": {"type": "summarize"}</code>; the on-demand compaction page, <code>https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand</code>).</strong> Send a compaction request that carries exactly the <code>messages</code> of a request you already sent, on the conversation's model and under its <code>system</code>, <code>tools</code> and <code>thinking</code> settings, with the <code>compaction</code> field and a <code>max_tokens</code> large enough for a summary; send the beta header on it and on every request that carries the block. Exactly those messages, because the kept turns must directly follow the summarized messages and the first kept message must not be one the API would merge into the last summarized one (the same role, or a <code>role: "system"</code> message). A compaction request whose last assistant turn is still waiting on a tool result is rejected, so send the results first. Leave out <code>output_config.format</code>, <code>stop_sequences</code> and a <code>tool_choice</code> of type <code>any</code> or <code>tool</code> (the API rejects a compaction request that carries them), and never send <code>output_config.task_budget.remaining</code> on the compaction request or on any request that carries the block (a 400). The response holds one signed <code>compaction</code> block and nothing else (<code>stop_reason: "compaction"</code>). When no summary could be written there is no block: the response is still a 200 with empty <code>content</code>, and <code>stop_reason</code> is the summarization call's own - <code>max_tokens</code> (cut off), <code>model_context_window_exceeded</code> (no room for the summarization prompt), <code>refusal</code>, <code>tool_use</code>, or <code>end_turn</code> (no text) - so give <code>max_tokens</code> a few thousand tokens at least, resend with more room or fewer messages as the reason suggests, or continue without one. Custom <code>instructions</code> replace the server's summarization prompt whole (a blank value counts as absent), so ask for text only and no tool call yourself; the summarizer reads the whole conversation either way, earlier thinking included (unlike threshold compaction with custom instructions on Claude 5.1 and later models, which leaves earlier thinking out). Keep taking turns against the full history while it runs, and do not edit anything already sent.</p>
+<p>On the first request after the block arrives, drop exactly the messages you sent to the compaction request from the front of the history and put the block first, as an <code>assistant</code> message of its own (the request that does this adopts the block; the API also accepts it as the first content block of the first kept message, and <code>prefix_diff.py</code> checks the kept turns only in the message-of-its-own form); everything appended since stays, thinking included, and keeps verifying. Keep nothing else from the dropped messages: summarized messages re-sent after the block are not rejected - the model sees them twice, summary then verbatim - so drop them yourself. Keep the block first on every later request; to compact again, send <code>compaction</code> on a request that starts with the current block, and from then on send only the newest block (a request that carries more than one <code>compaction</code> block is a 400). Do not send <code>compaction</code> and <code>context_management</code> in the same request. Text instructions in <code>role: "system"</code> messages and <code>tool_addition</code> / <code>tool_removal</code> blocks that sat inside the summarized messages stop applying at adoption (tool changes excepted when the block carries <code>tool_changes</code> - next sentence): re-declare them in a <code>role: "system"</code> message on the first request that adopts the block, directly after that request's new <code>user</code> turn (which comes after the kept turns - a system message between the block and the kept turns breaks their thinking), and leave it there afterward. Where the compaction request also carried <code>inline-tools-2026-09-15</code>, the block records the summarized messages' net tool changes in a <code>tool_changes</code> field: send the block back unmodified and they carry over by themselves, so re-declare no tool change; a block without that field carries none, so re-declare as above. The block is accepted on any model that supports the beta, with any later <code>system</code> or <code>tools</code>, but the kept turns' thinking verifies only on a model that can read it, only if every compaction request since that thinking was produced ran on a model with preserved thinking, and only while <code>system</code> and the tools other than <code>defer_loading: true</code> ones stay what the compaction request had: changing either can invalidate the kept turns' thinking and has no other effect, so to change them without losing any, compact the whole conversation first (keeping no turns), then change them on the next request. Nothing before the block is sent, but the kept turns are still checked against the summarized messages as they stood when you sent the compaction request, so do not touch them in between; <code>prefix_diff.py</code> compares them against the earlier request by aligning on a kept thinking block both carry, and when the compaction request itself is in the capture it checks that request's <code>system</code> and <code>tools</code> against the conversation's, compares the adopting request's <code>system</code> and <code>tools</code> against that request, and checks that the dropped range is the messages it carried.</p>
+<p><strong>Tool changes by value (beta <code>inline-tools-2026-09-15</code>, Claude API; the Mid-conversation system messages and tool changes page, "Define tools in a message").</strong> Keep <code>tools</code> exactly as the first request sent it, on every request, and make every later change by appending one <code>role: "system"</code> message: a <code>tool_addition</code> whose <code>tool</code> is <code>{"type": "tool_definition", "definition": {...}}</code> with the full <code>tools</code> entry (name, description, <code>input_schema</code>) inside <code>definition</code>, for a new tool or for a same-name tool whose description or schema changed - a different definition replaces the tool from that message on, an identical one changes nothing (safe to resend on a retry) - and a <code>tool_removal</code> by reference to withdraw one. Nothing already sent moves, so earlier thinking keeps verifying; rewording or deleting a definition message already sent is an edit like any other. The header also covers changes by reference, so it replaces <code>mid-conversation-tool-changes-2026-07-01</code>; the placement rules are the same, including no tool change directly after a paused assistant turn. A tool added this way may itself be <code>defer_loading: true</code> (inside <code>definition</code>); a tool already known at the first request belongs in <code>tools</code> with <code>defer_loading: true</code>, shown later by reference. Keep at least one non-deferred tool in <code>tools</code> (a tool search tool counts): otherwise the first tool defined by value costs one full cache miss. <code>cache_control</code> goes on the block or in the definition, not both, and never on a deferred definition. Reusing a name for a different type of tool is a 400, and during the beta some tool types (computer use among them) cannot be defined in a message - declare those in <code>tools</code> and add them by reference. A definition stays in the history after the tool is replaced or withdrawn, so a beta header that a dated tool <code>type</code> needs goes on every later request of the conversation. For an MCP connector server, add <code>mcp-client-2026-09-15</code> (in place of <code>mcp-client-2025-11-20</code>, which it includes): the <code>definition</code> can then be an <code>mcp_toolset</code> (connection details stay in <code>mcp_servers</code>), and a response for which the API fetched a server's tool list starts with one <code>mcp_tool_listing</code> block per server fetched (code that reads <code>content[0]</code> must skip them) - send the assistant message back as it came, those blocks included, keep the header on every request that carries one, and later requests reuse that list instead of asking the server again.</p>
+<h2>Keep list - what never to flag</h2>
+<p>The scan and the diff will tempt you to report things the check does not care about. These stay out of the report (or go in a "checked, fine" line):</p>
+<ul>
+<li>Reordering tools in the <code>tools</code> array without changing them - compared as a name-keyed set.</li>
+<li>Adding a <code>defer_loading: true</code> tool that nothing has referenced yet.</li>
+<li>Adding, moving, or removing <code>cache_control</code> markers anywhere.</li>
+<li>Changing <code>model</code>, <code>max_tokens</code>, <code>temperature</code> and other sampling parameters, <code>tool_choice</code>, <code>metadata</code>, <code>stop_sequences</code>, <code>stream</code>, <code>service_tier</code>, <code>output_config</code> (including effort), or the <code>thinking</code> configuration itself - none is part of the compared prefix today (a model change triggers the separate model check, reported as <code>model_binding_mismatch</code>, not this one). Request headers are not part of it either, except that a beta which makes the API inject a tool server-side (code execution, the web-search fallback) changes the tool set with an identical body.</li>
+<li>String content versus a single text block of the same text; leading or trailing whitespace of a text block; whitespace-only text blocks; JSON key order; <code>1</code> versus <code>1.0</code>.</li>
+<li>A rotated or re-signed URL for an image or document that serves the same bytes.</li>
+<li>Removing thinking blocks from the start of the history (oldest first), from the end, or all of them - allowed, and the Preserved thinking page documents all three. The kept blocks must stay an unbroken run of the original sequence; it costs the reasoning, not the validity of the kept blocks. An assistant turn whose <code>tool_use</code> still awaits its <code>tool_result</code> should keep its thinking (the page asks for that). Two things are not on this list: removing a block from the middle, which invalidates every block after it, and putting a removed block back, which invalidates the blocks produced while it was gone.</li>
+<li>Anything the API itself adds or rewrites server-side (server-side compaction, context editing, thinking clearing, its own injected text) - the check runs on the request as you sent it.</li>
+<li>Mid-conversation <code>role: "system"</code> messages and cleared turn-scoped messages that are left in place and replayed verbatim.</li>
+</ul>
+<h2>Failure modes to avoid</h2>
+<ul>
+<li><strong>Measuring on a slice that never replays thinking.</strong> The first request of every conversation replays nothing; short turns may return no thinking block; a harness that strips thinking has nothing to check. Read the replayed-thinking count before the drop count, every run.</li>
+<li><strong>Counting entries instead of breaks.</strong> A stale block re-fails on every later request. Report conversations with a first break and the turn it happened at; an entries-per-request number only ever goes up with conversation length.</li>
+<li><strong>Trusting the header over the body.</strong> The diagnosis header is best-effort and unpublished; <code>input_transformations</code> is the contract. A drop with no header is still a drop; a header-only pipeline misses every drop where the header did not arrive.</li>
+<li><strong>Reading a header-only run as an enforcement test.</strong> On an organization that is not enforced yet the header alone records failures as <code>thinking_mismatch_allowed</code> and drops nothing: good for finding edits in production, no measure of what enforcement costs. Set <code>prefix_mismatch_behavior</code> for that.</li>
+<li><strong>Misspelling the field.</strong> Only <code>block_binding.prefix_mismatch_behavior</code> is the documented name; the probe removes any other key it finds under <code>block_binding</code> and says which; production code should write the documented name.</li>
+<li><strong>Reading the capture from the app's own objects.</strong> A capture rebuilt from ORM or domain objects hides the re-serialization the check catches. Capture at the HTTP layer.</li>
+<li><strong>Replaying someone else's conversation.</strong> A capture from another organization still gets its blocks dropped, but it is not diagnosed, and the drop teaches nothing about the harness. Replay with a key from the organization that produced the capture.</li>
+<li><strong>Bundling fixes.</strong> Two causes fixed in one diff cannot be attributed or reverted separately. One cause per diff, re-measured each time.</li>
+<li><strong>Prescribing a compaction rewrite as if it were required.</strong> Keep-tail and background compaction have no append-only client-side form without the <code>compact-2026-09-04</code> beta (on-demand compaction); measure the scheme the product has, choose <code>error</code> or <code>drop_block</code>, and record the decision.</li>
+<li><strong>Setting <code>drop_block</code> and calling it done.</strong> <code>"drop_block"</code> hides the error but doesn't fix the edit that caused it. Dropped blocks aren't billed, but a session's token usage might still increase because Claude can sometimes think more to re-create the dropped thinking. The increase tends to be larger when more thinking blocks are dropped, or when blocks are dropped on more turns of a long session. Use <code>drop_block</code> to measure (Step 2) and as a recorded stopgap, count the responses in each session whose <code>input_transformations</code> has a <code>prefix_binding_mismatch</code> entry, and fix the edit.</li>
+<li><strong>Resending the refused body, or fixing a broken session per request.</strong> The Preserved thinking page's "Handle the error in code": retry once with the beta header and <code>prefix_mismatch_behavior: "drop_block"</code>, and store that choice with the session so every later request sends it too, including after a restart; where the beta header cannot be sent, remove every <code>thinking</code> and <code>redacted_thinking</code> block from the history once and leave them out. A saved session that now fails on every request has the edit stored in it: the same remedy applies, thinking produced from then on stays valid as long as nothing before it changes again, and the edit still has to be found so new sessions do not hit it.</li>
+<li><strong>A library, proxy or gateway that rewrites what it forwards.</strong> Its rewrites are edits its users cannot see or fix. Forward the caller's <code>anthropic-beta</code> values and <code>thinking.block_binding</code> unchanged and return <code>input_transformations</code> to them (an options schema that rejects unknown keys stops a caller from choosing <code>"drop_block"</code>); leave a <code>role: "system"</code> message where the caller put it - moving it into the top-level <code>system</code> field invalidates every thinking block in the conversation; turn tool use off with <code>tool_choice: {"type": "none"}</code>, never by removing <code>tools</code>; and do not hide the 400 - code that catches it, strips thinking and retries on the caller's behalf logs that it did.</li>
+<li><strong>An unrecorded strip.</strong> Stripping thinking after a 400 without making the strip deterministic and recorded re-sends the refused blocks on the next turn and fails again, every turn, for the rest of the conversation.</li>
+<li><strong>Leaving the production value unset.</strong> Defaults differ by surface and by account age; an unset field on a not-yet-enforced account means the check is only recorded (<code>thinking_mismatch_allowed</code>), and that default changes the day the account or the model is enforced. Set it, and monitor the entries or the 400s.</li>
+<li><strong>Mistaking the model check for this one.</strong> <code>model_binding_mismatch</code> entries after a model switch are expected and unbilled; only <code>prefix_binding_mismatch</code> is a harness finding.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

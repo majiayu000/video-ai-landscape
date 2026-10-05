@@ -89,7 +89,7 @@
   -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
   -H &quot;anthropic-version: 2023-06-01&quot; \
   -d '{
-    &quot;model&quot;: &quot;claude-opus-5&quot;,
+    &quot;model&quot;: &quot;claude-opus-5-5&quot;,
     &quot;max_tokens&quot;: 16000,
     &quot;messages&quot;: [
       {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is the capital of France?&quot;}
@@ -105,7 +105,7 @@ response=$(curl -s https://api.anthropic.com/v1/messages \
   -H &quot;Content-Type: application/json&quot; \
   -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
   -H &quot;anthropic-version: 2023-06-01&quot; \
-  -d '{&quot;model&quot;:&quot;claude-opus-5&quot;,&quot;max_tokens&quot;:16000,&quot;messages&quot;:[{&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:&quot;Hello&quot;}]}')
+  -d '{&quot;model&quot;:&quot;claude-opus-5-5&quot;,&quot;max_tokens&quot;:16000,&quot;messages&quot;:[{&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:&quot;Hello&quot;}]}')
 
 # Print the first text block (-r strips the JSON quotes)
 echo &quot;$response&quot; | jq -r '.content[0].text'
@@ -127,7 +127,7 @@ echo &quot;$response&quot; | jq -r '.content[] | select(.type == &quot;text&quot
   -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
   -H &quot;anthropic-version: 2023-06-01&quot; \
   -d '{
-    &quot;model&quot;: &quot;claude-opus-5&quot;,
+    &quot;model&quot;: &quot;claude-opus-5-5&quot;,
     &quot;max_tokens&quot;: 64000,
     &quot;stream&quot;: true,
     &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Write a haiku&quot;}]
@@ -159,7 +159,7 @@ data: {&quot;type&quot;:&quot;message_stop&quot;}
   -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
   -H &quot;anthropic-version: 2023-06-01&quot; \
   -d '{
-    &quot;model&quot;: &quot;claude-opus-5&quot;,
+    &quot;model&quot;: &quot;claude-opus-5-5&quot;,
     &quot;max_tokens&quot;: 16000,
     &quot;tools&quot;: [{
       &quot;name&quot;: &quot;get_weather&quot;,
@@ -181,7 +181,7 @@ data: {&quot;type&quot;:&quot;message_stop&quot;}
   -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
   -H &quot;anthropic-version: 2023-06-01&quot; \
   -d '{
-    &quot;model&quot;: &quot;claude-opus-5&quot;,
+    &quot;model&quot;: &quot;claude-opus-5-5&quot;,
     &quot;max_tokens&quot;: 16000,
     &quot;tools&quot;: [{
       &quot;name&quot;: &quot;get_weather&quot;,
@@ -214,7 +214,7 @@ data: {&quot;type&quot;:&quot;message_stop&quot;}
   -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
   -H &quot;anthropic-version: 2023-06-01&quot; \
   -d '{
-    &quot;model&quot;: &quot;claude-opus-5&quot;,
+    &quot;model&quot;: &quot;claude-opus-5-5&quot;,
     &quot;max_tokens&quot;: 16000,
     &quot;system&quot;: [
       {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;&lt;large shared prompt...&gt;&quot;, &quot;cache_control&quot;: {&quot;type&quot;: &quot;ephemeral&quot;}}
@@ -226,17 +226,18 @@ data: {&quot;type&quot;:&quot;message_stop&quot;}
 <hr />
 <h2>Extended Thinking</h2>
 <blockquote>
-<p><strong>Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking. <code>budget_tokens</code> is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<p><strong>Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking. <code>budget_tokens</code> is removed on Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<strong>Claude Opus 5.5:</strong> thinking is always on - omit <code>thinking</code> (or send <code>{"type": "adaptive"}</code>, which is equivalent); <code>{"type": "disabled"}</code> returns a 400 at every effort, as does a thinking budget. Control depth with <code>output_config.effort</code> instead - the default is <code>medium</code> on this model, where Claude Opus 5 defaults to <code>high</code>.
 <strong>Claude Opus 5:</strong> thinking is on by default - omitting <code>"thinking"</code> runs adaptive (<code>{"type": "adaptive"}</code> is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. <code>{"type": "disabled"}</code> is accepted only at effort <code>high</code> or lower; pairing it with <code>xhigh</code>/<code>max</code> returns a 400.
 <strong>Older models:</strong> Use <code>"type": "enabled"</code> with <code>"budget_tokens": N</code> (must be &lt; <code>max_tokens</code>, min 1024).</p>
 </blockquote>
-<pre><code class="language-bash"># Fable 5 / Claude Opus 5 / Opus 4.8 / 4.7 / 4.6: adaptive thinking (recommended)
+<pre><code class="language-bash"># Fable 5 / Claude Opus 5.5 / Claude Opus 5 / Opus 4.8 / 4.7 / 4.6: adaptive thinking (recommended)
 curl https://api.anthropic.com/v1/messages \
   -H &quot;Content-Type: application/json&quot; \
   -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
   -H &quot;anthropic-version: 2023-06-01&quot; \
   -d '{
-    &quot;model&quot;: &quot;claude-opus-5&quot;,
+    &quot;model&quot;: &quot;claude-opus-5-5&quot;,
     &quot;max_tokens&quot;: 16000,
     &quot;thinking&quot;: {
       &quot;type&quot;: &quot;adaptive&quot;,
@@ -250,7 +251,7 @@ curl https://api.anthropic.com/v1/messages \
 </code></pre>
 <hr />
 <h2>Refusal Fallbacks (Claude Fable 5.1) - opt in by default</h2>
-<p>On <code>claude-fable-5-1</code>, safety classifiers may decline a request (HTTP 200 with <code>stop_reason: "refusal"</code>). Fallbacks are <strong>opt-in</strong>: without them the request simply stops. Include the <code>fallbacks</code> parameter and its beta header by default - on a policy decline the API re-runs the same request on the fallback model inside the same call. A decline before any output isn't billed (a mid-stream decline bills the streamed partial); the rescue bills at the fallback model's own rates.</p>
+<p>On <code>claude-fable-5-1</code>, safety classifiers may decline a request (HTTP 200 with <code>stop_reason: "refusal"</code>). Fallbacks are <strong>opt-in</strong>: without them the request simply stops. Include the <code>fallbacks</code> parameter and its beta header by default - on a policy decline the API re-runs the same request on the fallback model inside the same call. A mid-stream decline is billed at normal rates, and the rescue bills at the fallback model's own rates; for a decline before any output, see <a href="https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback#how-refusals-are-billed">How refusals are billed</a>.</p>
 <pre><code class="language-bash">response=$(curl -s https://api.anthropic.com/v1/messages \
   -H &quot;Content-Type: application/json&quot; \
   -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \

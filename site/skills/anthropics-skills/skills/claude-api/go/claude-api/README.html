@@ -99,13 +99,13 @@ client := anthropic.NewClient(
 )
 </code></pre>
 <hr />
-<h2>Model Constants</h2>
-<p>The Go SDK provides typed model constants: <code>anthropic.ModelClaudeFable5</code>, <code>anthropic.ModelClaudeOpus4_8</code>, <code>anthropic.ModelClaudeOpus4_7</code>, <code>anthropic.ModelClaudeSonnet4_6</code>, <code>anthropic.ModelClaudeHaiku4_5_20251001</code>. Default to Claude Opus 5 unless the user specifies otherwise; if they ask for Fable or the most powerful model, use <code>anthropic.ModelClaudeFable5</code> (see <code>shared/models.md</code> for the full resolution table).</p>
-<p><code>anthropic.Model</code> is an alias for <code>string</code>, so a model with no typed constant yet - including Claude Opus 5 - is passed as the plain id: <code>Model: "claude-opus-5"</code>. Check the SDK release notes for a typed <code>Claude Opus 5</code> constant before assuming one exists.</p>
+<h2>Model IDs</h2>
+<p><code>anthropic.Model</code> is an alias for <code>string</code>, so pass the model as its plain id: <code>Model: "claude-opus-5-5"</code>. Default to Claude Opus 5.5 unless the user specifies otherwise; if they ask for Fable or the most powerful model, use <code>"claude-fable-5-1"</code>; if they ask for a cheaper tier, use the current generation - <code>"claude-sonnet-5-5"</code> or <code>"claude-haiku-4-5"</code> (see <code>shared/models.md</code> for the full resolution table).</p>
+<p>The SDK also ships typed <code>anthropic.ModelClaude*</code> constants, but they lag model launches - a given SDK release may have constants only for previous-generation models. Do not pick a model because it has a typed constant; the string id works for every model on every SDK version. Check the SDK release notes before assuming a typed constant exists for a current model.</p>
 <hr />
 <h2>Basic Message Request</h2>
 <pre><code class="language-go">response, err := client.Messages.New(context.Background(), anthropic.MessageNewParams{
-    Model:     &quot;claude-opus-5&quot;,
+    Model:     &quot;claude-opus-5-5&quot;,
     MaxTokens: 16000,
     Messages: []anthropic.MessageParam{
         anthropic.NewUserMessage(anthropic.NewTextBlock(&quot;What is the capital of France?&quot;)),
@@ -128,9 +128,10 @@ for _, block := range response.Content {
 <p>Derived from <code>anthropic-sdk-go/message.go</code> (<code>ThinkingConfigParamUnion</code>, <code>ThinkingConfigAdaptiveParam</code>).</p>
 <pre><code class="language-go">// There is no ThinkingConfigParamOfAdaptive helper - construct the union
 // struct-literal directly and take the address of the variant.
-adaptive := anthropic.ThinkingConfigAdaptiveParam{}
+// display opt-in: default is omitted (empty thinking text) on Fable 5/5.1, Mythos 5/5.1, Claude Opus 5.5, Claude Opus 5, Opus 4.8/4.7, Claude Sonnet 5.5, and Claude Sonnet 5
+adaptive := anthropic.ThinkingConfigAdaptiveParam{Display: anthropic.ThinkingConfigAdaptiveDisplaySummarized}
 params := anthropic.MessageNewParams{
-    Model:     anthropic.ModelClaudeSonnet4_6,
+    Model:     &quot;claude-opus-5-5&quot;,
     MaxTokens: 16000,
     Thinking:  anthropic.ThinkingConfigParamUnion{OfAdaptive: &amp;adaptive},
     Messages: []anthropic.MessageParam{
@@ -154,11 +155,12 @@ for _, block := range resp.Content {
 }
 </code></pre>
 <blockquote>
-<p><strong>Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking (above). <code>ThinkingConfigParamOfEnabled(budgetTokens)</code> is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<p><strong>Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking (above). <code>ThinkingConfigParamOfEnabled(budgetTokens)</code> is removed on Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<strong>Claude Opus 5.5:</strong> thinking is always on - leave <code>Thinking</code> unset (or send the adaptive union, which is equivalent); <code>OfDisabled</code> returns a 400 at every effort, as does <code>ThinkingConfigParamOfEnabled</code>. Control depth with <code>Effort</code> under <code>OutputConfig</code> instead - the default is <code>medium</code> on this model, where Claude Opus 5 defaults to <code>high</code>.
 <strong>Claude Opus 5:</strong> thinking is on by default - leaving <code>Thinking</code> unset runs adaptive (the adaptive union is equivalent), unlike Opus 4.8/4.7 where leaving it unset meant no thinking.
 <strong>Older models:</strong> Use <code>anthropic.ThinkingConfigParamOfEnabled(N)</code> (budget must be &lt; <code>MaxTokens</code>, min 1024).</p>
 </blockquote>
-<p>To disable: <code>anthropic.ThinkingConfigParamUnion{OfDisabled: &amp;anthropic.ThinkingConfigDisabledParam{}}</code>. On Claude Opus 5 that is accepted only at effort <code>high</code> or lower - pairing it with <code>xhigh</code>/<code>max</code> returns a 400.</p>
+<p>To disable: <code>anthropic.ThinkingConfigParamUnion{OfDisabled: &amp;anthropic.ThinkingConfigDisabledParam{}}</code>. On Claude Opus 5 that is accepted only at effort <code>high</code> or lower - pairing it with <code>xhigh</code>/<code>max</code> returns a 400; on Claude Opus 5.5 it returns a 400 at every effort (lower <code>Effort</code> instead).</p>
 <hr />
 <h2>Prompt Caching</h2>
 <p><code>System</code> is <code>[]TextBlockParam</code>; set <code>CacheControl</code> on the last block to cache tools + system together. For placement patterns and the silent-invalidator audit checklist, see <code>shared/prompt-caching.md</code>.</p>
@@ -193,7 +195,7 @@ msg := anthropic.NewUserMessage(
 <h2>Context Editing / Compaction (Beta)</h2>
 <p>Use <code>Beta.Messages.New</code> with <code>ContextManagement</code> on <code>BetaMessageNewParams</code>. There is no <code>NewBetaAssistantMessage</code> - use <code>.ToParam()</code> for the round-trip.</p>
 <pre><code class="language-go">params := anthropic.BetaMessageNewParams{
-    Model:     &quot;claude-opus-5&quot;,  // also supported: ModelClaudeOpus4_8, ModelClaudeSonnet4_6
+    Model:     &quot;claude-opus-5-5&quot;,
     MaxTokens: 16000,
     Betas:     []anthropic.AnthropicBeta{&quot;compact-2026-01-12&quot;},
     ContextManagement: anthropic.BetaContextManagementConfigParam{

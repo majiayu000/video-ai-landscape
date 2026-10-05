@@ -112,18 +112,19 @@
 <li><strong>Pick top 2 → animate</strong> (<code>higgsfield-generate</code>, image-to-video):</li>
 </ol>
 <p><code>bash
-   higgsfield generate create kling3_0 \
+   higgsfield generate create seedance_2_5 \
      --prompt "subtle product reveal, camera slowly pulls back, ambient motion" \
+     --mode omni_reference \
      --start-image ./campaign/photos/lifestyle-01.jpg \
      --duration 5 \
      --aspect_ratio 1:1 \
-     --sound off \
+     --generate_audio false \
      --output-dir ./campaign/videos \
      --wait</code></p>
 <p><strong>Tips:</strong></p>
 <ul>
 <li>Use <code>--count 5</code> on photoshoot first — cheaper than 5 separate runs and the backend coordinates the visual system across variants.</li>
-<li><code>kling3_0</code> with <code>--start-image</code> gives the cleanest image-to-video. <code>seedance_2_0</code> is an alternative for more dramatic motion.</li>
+<li><code>seedance_2_5</code> with <code>--mode omni_reference --start-image</code> is the default image-to-video. Use <code>kling3_0_turbo</code> only when the user asks for a cheaper or faster pass.</li>
 <li>For the founder's face to stay consistent in animations, use Soul models (<code>text2image_soul_v2</code>) for the photoshoot step instead of <code>gpt_image_2</code>. Trade-off: less control over background, more on identity.</li>
 </ul>
 <hr />
@@ -270,17 +271,19 @@ higgsfield generate create explainer_video \
 </code></pre>
 <p><strong>What the agent does:</strong></p>
 <ol>
-<li>Uses <code>higgsfield-game-generation</code> to lock the game profile, STYLE FORMULA, and <code>design/assets.csv</code>.</li>
-<li>Generates the declared assets and builds <code>index.html</code> plus <code>logic.js</code>.</li>
-<li>Runs the game locally and verifies the complete loop on keyboard and touch.</li>
-<li>Packages and deploys:</li>
+<li>Uses <code>higgsfield-websites</code> with <code>--type game</code> to lock the game profile, STYLE FORMULA, and <code>design/assets.csv</code>.</li>
+<li>Creates the game:</li>
 </ol>
 <p><code>bash
-   higgsfield game deploy ./game.zip \
-     --title "Battery Run" \
-     --description "Collect batteries and dodge patrol drones." \
-     --json</code></p>
-<p>Marketplace publication is separate and happens only when the user asks for it.</p>
+   higgsfield website create --type game --category arcade --subdomain battery-run</code></p>
+<ol start="3">
+<li>Generates the declared assets and implements the game in <code>app/src/logic.js</code>.</li>
+<li>Runs the game locally and verifies the complete loop on keyboard and touch.</li>
+<li>Pushes and deploys:</li>
+</ol>
+<p><code>bash
+   higgsfield website deploy &lt;website_id&gt;</code></p>
+<p>Publishing is separate (<code>higgsfield website publish</code>) and happens only when the user asks for it.</p>
 <hr />
 <h2>Quick reference — which recipe for what</h2>
 <table>
@@ -315,7 +318,7 @@ higgsfield generate create explainer_video \
 <tr>
 <td>Build and deploy a playable browser game</td>
 <td>#5 Browser Game</td>
-<td><code>higgsfield-game-generation</code></td>
+<td><code>higgsfield-websites</code> (<code>--type game</code>)</td>
 </tr>
 </tbody>
 </table>
@@ -323,7 +326,7 @@ higgsfield generate create explainer_video \
 <ol>
 <li><strong>Train identity once, reuse forever.</strong> Soul training is 15–45 minutes one-time. Every future video that needs the founder's face is one prompt away.</li>
 <li><strong>Let the backend assemble the prompt for branded work.</strong> <code>product-photoshoot</code> enhances prompts before submitting to <code>gpt_image_2</code>. Don't write <code>gpt_image_2</code> prompts by hand.</li>
-<li><strong>Cheap-first iteration.</strong> Test cheap models (<code>flux</code>, <code>z_image</code>) for prompt iteration; switch to expensive (<code>nano_banana_pro</code>, <code>gpt_image_2</code>) only on confirmed direction.</li>
+<li><strong>Cheap-first iteration on request.</strong> When the user wants to iterate cheaply, draft on <code>z_image</code>, then switch to the default model (<code>gpt_image_2_5</code>) once the direction is confirmed.</li>
 <li><strong>Filenames have timestamps.</strong> Use <code>yyyy-mm-dd-hh-mm-ss-name.ext</code> so you can trace which generation came from which session.</li>
 </ol></main>
 <footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>

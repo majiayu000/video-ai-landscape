@@ -114,6 +114,42 @@
 <li>Mark truly required parameters in <code>required</code>; make others optional with defaults</li>
 </ul>
 <hr />
+<h3>Eager input streaming (default for streaming requests with client tools)</h3>
+<p>By default the API <strong>buffers and validates each tool-input parameter</strong> before it emits any <code>input_json_delta</code> for it. For a small <code>{"location": "Paris"}</code> that is invisible; for a tool that takes a file body, a code block, or a document, nothing arrives until the whole parameter is generated (a 20K-token parameter is a multi-minute silent gap on the stream). Setting <code>eager_input_streaming: true</code> on the tool turns off that buffering for that tool: fragments stream as they are generated, the first fragment arrives immediately, and the fragments are longer. The events are the same (<code>content_block_start</code> -&gt; <code>input_json_delta</code> × N -&gt; <code>content_block_stop</code>) - only the timing and the validation guarantee change.</p>
+<p><strong>Default rule:</strong> when a request is streamed (<code>client.messages.stream(...)</code>, <code>stream=True</code>, tool runner with streaming on) and defines user-defined tools, set <code>eager_input_streaming: true</code> on each of those tools. Do not set it on non-streaming requests (it is ignored), on server tools (<code>web_search</code>, <code>code_execution</code>, <code>mcp_toolset</code>, etc. - it is not a valid field there), or when the client has no way to handle invalid JSON.</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;write_file&quot;,
+  &quot;description&quot;: &quot;Write text to a file&quot;,
+  &quot;eager_input_streaming&quot;: true,
+  &quot;input_schema&quot;: {
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;properties&quot;: {
+      &quot;path&quot;: {&quot;type&quot;: &quot;string&quot;},
+      &quot;contents&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Full file contents&quot;}
+    },
+    &quot;required&quot;: [&quot;path&quot;, &quot;contents&quot;]
+  }
+}
+</code></pre>
+<p>Tool runner: Python <code>@beta_tool(eager_input_streaming=True)</code> passes it through. TypeScript <code>betaZodTool()</code> has no option for it - spread the field onto the returned tool: <code>{ ...betaZodTool({ name, description, inputSchema, run }), eager_input_streaming: true }</code>. Go/Java/Ruby/C#/PHP: the field is on the tool param type (<code>EagerInputStreaming</code>, <code>.eagerInputStreaming(true)</code>, <code>eager_input_streaming:</code>).</p>
+<p><strong>What you give up, and how to handle it.</strong> Without buffering the API does not validate or coerce the parameter, so the accumulated <code>partial_json</code> can be (a) cut off at <code>max_tokens</code> mid-parameter or (b) invalid JSON the model emitted. Both SDKs accumulate it with a <em>tolerant</em> partial-JSON parser, so malformed input often comes back as a silently truncated object (an unescaped inner quote ends the string early; trailing garbage is dropped) rather than an exception. Do not rely on an exception. Always:</p>
+<ol>
+<li><strong>Validate the parsed input against the tool's schema before running the tool.</strong> The typed runner helpers do this for you and never call <code>run</code> on input that fails: TS <code>betaZodTool</code> (Zod), Python <code>@beta_tool</code> on a function with typed parameters, Java's annotated classes, Go's struct tags, Ruby's <code>BaseTool</code>. The raw JSON-Schema helpers do <strong>not</strong> validate at runtime - TS <code>betaTool()</code> and PHP's <code>BetaRunnableTool</code> hand <code>run</code> whatever was parsed - so with those, validate inside <code>run</code> (or leave <code>eager_input_streaming</code> off for that tool). In a manual loop, validate yourself (<code>schema.safeParse(block.input)</code> in TS, a pydantic model or explicit type checks in Python) and treat a failure exactly like invalid JSON. A raw SSE / cURL client should <code>JSON.parse</code> the accumulated fragments strictly and then validate.</li>
+<li>Check <code>stop_reason == "max_tokens"</code> when a <code>tool_use</code> block is present: a truncated input usually parses as a valid partial object, so this is what catches it; retry with a higher <code>max_tokens</code> rather than running the tool. Also stop on <code>stop_reason == "refusal"</code> - a refusal can cut a <code>tool_use</code> off mid-input, so never execute that turn's tools.</li>
+<li>Still guard the exceptions the SDKs do raise for JSON they cannot parse at all: <strong>Python</strong> raises <code>ValueError</code> from the stream iterator (wrap the <code>with client.messages.stream(...)</code> block); <strong>TypeScript</strong> materializes the input at <code>content_block_stop</code>, so the error rejects whatever you are awaiting at that moment - the <code>for await (const event of stream)</code> loop if you iterate events, otherwise <code>await stream.finalMessage()</code> - so wrap the whole consumption of the stream (iteration and final read together), as the Python guidance wraps the whole <code>with</code> block; the <strong>tool runners</strong> surface the same error from their iteration (wrap the loop). Catch only that error - rethrow the SDK's typed API errors (<code>RateLimitError</code>, <code>AuthenticationError</code>, ...) so an auth or rate-limit failure is not mistaken for bad JSON - and cap retries.</li>
+<li>When validation fails and you still hold the <code>tool_use</code> block (manual loop after <code>finalMessage()</code> / <code>get_final_message()</code>, raw SSE), do not run the tool; return the raw text to Claude as an error result so it can retry:</li>
+</ol>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;tool_result&quot;,
+  &quot;tool_use_id&quot;: &quot;toolu_01...&quot;,
+  &quot;is_error&quot;: true,
+  &quot;content&quot;: &quot;{\&quot;INVALID_JSON\&quot;: \&quot;&lt;the unparseable input you received&gt;\&quot;}&quot;
+}
+</code></pre>
+<p>When the SDK raised before the block completed (Python stream, either tool runner), there is no <code>tool_use_id</code> to answer, so re-issue the request instead.</p>
+<p>Build that wrapper with the JSON library (not string concatenation) so quotes in the bad input are escaped. With the buffered default the server would have delivered the same broken parameter as a single string value instead; eager mode moves that failure to the client, it does not create it.</p>
+<p><strong>Availability:</strong> Claude API, Claude Platform on AWS, Vertex AI, and Microsoft Foundry for all current models (<code>shared/platform-availability.md</code>). On Amazon Bedrock only the newer serving stack accepts the field (Opus 4.7 / 4.8 / 5, Fable 5, Sonnet 4.6 / 5); older Bedrock deployments (Opus 4.5 / 4.6, Sonnet 4.0 / 4.5, Haiku 4.5) return 400 on the unknown field - drop it there. <code>shared/platform-availability.md</code> is the source of truth for this list. Any proxy or gateway in front of the API may likewise reject it; if the user's code points at a custom <code>base_url</code>, leave it off unless they confirm the upstream is the real API.</p>
+<hr />
 <h3>Tool Choice Options</h3>
 <p>Control when Claude uses tools:</p>
 <table>
@@ -143,7 +179,7 @@
 </tbody>
 </table>
 <p>Any <code>tool_choice</code> value can also include <code>"disable_parallel_tool_use": true</code> to force Claude to use at most one tool per response. By default, Claude may request multiple tool calls in a single response.</p>
-<p><strong>Claude Fable 5.1, Claude Mythos 5.1, and Mythos Preview reject forced tool use:</strong> <code>{"type": "any"}</code> and <code>{"type": "tool", "name": ...}</code> return a 400 there (<code>tool_choice: type "tool" and "any" are not supported for this model.</code> - on <code>count_tokens</code> and Batches too). It is a model-specific restriction (Claude Fable 5 and Claude Opus 5 accept them). Use <code>{"type": "auto"}</code> and state the expectation in the prompt ("Use the get_weather tool to answer") - <code>strict: true</code> on the tool keeps the schema-valid-arguments guarantee <code>any</code> gave you - or structured outputs (<code>output_config.format</code>) when the forced call only existed to extract JSON. <code>auto</code> and <code>none</code> are unaffected; <code>disable_parallel_tool_use</code> with <code>auto</code> still means at most one call (the "exactly one" combination with <code>any</code>/<code>tool</code> is gone). Combining <code>tool_choice</code> <code>any</code> with <code>strict: true</code> applies only on models that support forced tool use. See <code>shared/model-migration.md</code> -&gt; Migrating to Claude Fable 5.1 from Claude Fable 5.</p>
+<p><strong>Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, and Claude Sonnet 5.5 reject forced tool use:</strong> <code>{"type": "any"}</code> and <code>{"type": "tool", "name": ...}</code> return a 400 there (<code>tool_choice: type "tool" and "any" are not supported for this model.</code> - on <code>count_tokens</code> and Batches too). It is a model-specific restriction (Claude Fable 5 and Claude Opus 5 accept them). Because <code>auto</code> does not guarantee a call, check that one was made and retry if it wasn't. Use <code>{"type": "auto"}</code> and state the expectation in the prompt ("Use the get_weather tool to answer") - <code>strict: true</code> on the tool keeps the schema-valid-arguments guarantee <code>any</code> gave you - or structured outputs (<code>output_config.format</code>) when the forced call only existed to extract JSON. <code>auto</code> and <code>none</code> are unaffected; <code>disable_parallel_tool_use</code> with <code>auto</code> still means at most one call (the "exactly one" combination with <code>any</code>/<code>tool</code> is gone). Combining <code>tool_choice</code> <code>any</code> with <code>strict: true</code> applies only on models that support forced tool use. See <code>shared/model-migration.md</code> -&gt; Migrating to Claude Fable 5.1 from Claude Fable 5.</p>
 <hr />
 <h3>Tool Runner vs Manual Loop</h3>
 <p><strong>Tool Runner (Recommended):</strong> The SDK's tool runner handles the agentic loop automatically - it calls the API, detects tool use requests, executes your tool functions, feeds results back to Claude, and repeats until Claude stops calling tools. Available in Python, TypeScript, Java, Go, Ruby, PHP, and C# SDKs (beta). The Python SDK also provides MCP conversion helpers (<code>anthropic.lib.tools.mcp</code>) to convert MCP tools, prompts, and resources for use with the tool runner - see <code>python/claude-api/tool-use.md</code> for details. <strong>Default to the tool runner</strong> for any custom-tool agent.</p>
@@ -172,7 +208,7 @@ if response.stop_reason == &quot;pause_turn&quot;:
     ]
     # Make another API request - server resumes automatically
     response = client.messages.create(
-        model=&quot;claude-opus-5&quot;, messages=messages, tools=tools
+        model=&quot;claude-opus-5-5&quot;, messages=messages, tools=tools
     )
 </code></pre>
 <p><strong>Note:</strong> the SDK tool runners do not auto-resume <code>pause_turn</code> (as of <code>@anthropic-ai/sdk</code> 0.110.0 / <code>anthropic</code> 0.116.0) - a paused turn ends the runner and is returned as the final message, with no error. In TypeScript you can resume inside the iteration body (push the paused assistant turn back onto the runner); in Python the runner cannot be resumed mid-loop - restart a new runner with the paused turn appended, or handle <code>pause_turn</code> in a manual loop. See each language's <code>tool-use.md</code> for the pattern.</p>
@@ -263,7 +299,7 @@ if response.stop_reason == &quot;pause_turn&quot;:
   { &quot;type&quot;: &quot;web_fetch_20260209&quot;, &quot;name&quot;: &quot;web_fetch&quot; }
 ]
 </code></pre>
-<h3>Dynamic Filtering (Claude Opus 5 / Fable 5 / Opus 4.8 / Opus 4.7 / Opus 4.6 / Sonnet 5 / Sonnet 4.6)</h3>
+<h3>Dynamic Filtering (Claude Opus 5.5 / Claude Opus 5 / Fable 5 / Opus 4.8 / Opus 4.7 / Opus 4.6 / Claude Sonnet 5.5 / Sonnet 5 / Sonnet 4.6)</h3>
 <p>The <code>web_search_20260209</code> and <code>web_fetch_20260209</code> versions support <strong>dynamic filtering</strong> - Claude writes and executes code to filter search results before they reach the context window, improving accuracy and token efficiency. Dynamic filtering is built into these tool versions and activates automatically; you do not need to separately declare the <code>code_execution</code> tool or pass any beta header.</p>
 <pre><code class="language-json">{
   &quot;tools&quot;: [
@@ -293,7 +329,7 @@ if response.stop_reason == &quot;pause_turn&quot;:
 </ul>
 <hr />
 <h2>Mid-conversation tool changes (Beta)</h2>
-<p><strong>Beta header <code>mid-conversation-tool-changes-2026-07-01</code>; Claude Opus 5 onward.</strong> Normally <code>tools</code> is fixed for a conversation's lifetime - editing it changes the very front of the prompt prefix and invalidates the entire cache (see <code>prompt-caching.md</code> § Invalidation hierarchy). This feature lets you add and remove tools between turns while the cached prefix survives.</p>
+<p><strong>Beta header <code>mid-conversation-tool-changes-2026-07-01</code>; Claude Opus 5, Claude Opus 5.5, Claude Opus 4.8, Claude Fable 5, Claude Fable 5.1, Claude Mythos 5, Claude Mythos 5.1, and Claude Sonnet 5.5 - not Claude Sonnet 5; not available on Microsoft Foundry (availability: <code>shared/platform-availability.md</code>).</strong> Normally <code>tools</code> is fixed for a conversation's lifetime - editing it changes the very front of the prompt prefix and invalidates the entire cache (see <code>prompt-caching.md</code> § Invalidation hierarchy). This feature lets you add and remove tools between turns while the cached prefix survives.</p>
 <p>Both operations are content blocks on a <code>{"role": "system", ...}</code> message appended to <code>messages[]</code>, and both reference a tool by name via a <code>tool_reference</code>:</p>
 <pre><code class="language-python"># Removal - must sit immediately before an assistant message, or last in messages.
 {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: [
@@ -330,7 +366,7 @@ if response.stop_reason == &quot;pause_turn&quot;:
 <li><code>tools=[{"type": "code_execution_20260521", "name": "code_execution"}]</code> - skills execute via code execution in the container.</li>
 </ol>
 <pre><code class="language-python">response = client.beta.messages.create(
-    model=&quot;claude-opus-5&quot;, max_tokens=16000,
+    model=&quot;claude-opus-5-5&quot;, max_tokens=16000,
     betas=[&quot;code-execution-2025-08-25&quot;],
     container={&quot;skills&quot;: [{&quot;type&quot;: &quot;anthropic&quot;, &quot;skill_id&quot;: &quot;pptx&quot;, &quot;version&quot;: &quot;latest&quot;}]},
     tools=[{&quot;type&quot;: &quot;code_execution_20260521&quot;, &quot;name&quot;: &quot;code_execution&quot;}],
@@ -349,7 +385,7 @@ if response.stop_reason == &quot;pause_turn&quot;:
 </ul>
 <p>The <code>mcp_server_name</code> in the toolset must match a <code>name</code> in <code>mcp_servers</code>. Omitting the <code>mcp_toolset</code> entry is rejected as a validation error - every server in <code>mcp_servers</code> must be referenced by exactly one toolset.</p>
 <pre><code class="language-python">client.beta.messages.create(
-    model=&quot;claude-opus-5&quot;, max_tokens=1024,
+    model=&quot;claude-opus-5-5&quot;, max_tokens=1024,
     betas=[&quot;mcp-client-2025-11-20&quot;],
     mcp_servers=[{&quot;type&quot;: &quot;url&quot;, &quot;url&quot;: &quot;https://example/sse&quot;, &quot;name&quot;: &quot;example-mcp&quot;}],
     tools=[{&quot;type&quot;: &quot;mcp_toolset&quot;, &quot;mcp_server_name&quot;: &quot;example-mcp&quot;}],
@@ -368,7 +404,8 @@ if response.stop_reason == &quot;pause_turn&quot;:
 <hr />
 <h2>Client-Side Tools: Computer Use</h2>
 <p>Computer use lets Claude interact with a desktop environment (screenshots, mouse, keyboard). It is a client-side tool - your application provides the environment and executes the actions Claude requests; Anthropic processes the screenshots and action requests in real time but does not host the environment or retain the data.</p>
-<p>For full documentation, use WebFetch:</p>
+<p><strong>Two request shapes.</strong> The current one is the <strong>computer toolset</strong> - GA on the Claude API and Google Cloud, no beta header: one <code>tools</code> entry <code>{"type": "computer_toolset_20260801"}</code> with <strong>no <code>name</code></strong> and no display dimensions, plus an optional <code>configs</code> map to turn member tools off (<code>{"zoom": {"enabled": false}}</code>; all 17 members, <code>zoom</code> included, are on by default). Claude's calls are <code>tool_use</code> blocks whose <code>name</code> is the member (<code>screenshot</code>, <code>left_click</code>, <code>type</code>, <code>zoom</code>, ...) carrying <code>"toolset_name": "computer"</code>, often several per turn; return one <code>tool_result</code> per call in the next <code>user</code> message, <strong>each echoing <code>"toolset_name": "computer"</code></strong> (only <code>screenshot</code> / <code>zoom</code> need an image; <code>OK</code> suffices for the rest). Coordinates are in the pixel space of the full screenshots you return, also after a <code>zoom</code>, and screenshots must already fit the model's image limits. The earlier <code>computer_20251124</code> tool (beta <code>computer-use-2025-11-24</code>, a <code>name: "computer"</code> entry with <code>display_width_px</code> / <code>display_height_px</code>, actions in <code>input.action</code>) keeps working on the models and platforms that offer it - Bedrock, Claude Platform on AWS, and Foundry offer only the earlier beta versions today - and the two forms can't share a request. <strong>Claude Opus 5.5 accepts only the toolset</strong>: <code>computer_20251124</code> returns a 400 there (<code>shared/model-migration.md</code> -&gt; Migrating to Claude Opus 5.5 -&gt; Breaking change 4 has the request and agent-loop changes; test them on Claude Opus 5, which accepts both). <strong>Claude Sonnet 5.5 accepts only the toolset on the Claude API and Google Cloud</strong> (<code>computer_20251124</code> returns a 400 there; Amazon Bedrock still accepts it, and no platform accepts <code>computer_20250124</code>) - see <code>shared/model-migration.md</code> -&gt; Migrating to Claude Sonnet 5.5 -&gt; Breaking change 4.</p>
+<p>For full documentation (member reference, batch actions, scaling, the <code>computer_20251124</code> migration steps), use WebFetch:</p>
 <ul>
 <li>URL: <code>https://platform.claude.com/docs/en/agents-and-tools/computer-use/overview</code></li>
 </ul>
@@ -406,28 +443,32 @@ if response.stop_reason == &quot;pause_turn&quot;:
 </thead>
 <tbody>
 <tr>
-<td><code>claude-haiku-4-5</code> / <code>claude-sonnet-4-6</code> / <code>claude-sonnet-5</code> / <code>claude-opus-4-6</code> / <code>claude-opus-4-7</code></td>
-<td><code>claude-opus-5</code>, <code>claude-fable-5-1</code>, <code>claude-mythos-5-1</code>, <code>claude-fable-5</code>, <code>claude-mythos-5</code>, <code>claude-opus-4-8</code>, or <code>claude-opus-4-7</code></td>
+<td><code>claude-haiku-4-5</code> / <code>claude-sonnet-4-6</code></td>
+<td><code>claude-mythos-5-1</code>, <code>claude-fable-5-1</code>, <code>claude-mythos-5</code>, <code>claude-fable-5</code>, <code>claude-opus-5-5</code>, <code>claude-opus-5</code>, <code>claude-opus-4-8</code>, <code>claude-opus-4-7</code>, <code>claude-opus-4-6</code>, <code>claude-sonnet-5-5</code>, <code>claude-sonnet-5</code>, or <code>claude-sonnet-4-6</code></td>
 </tr>
 <tr>
-<td><code>claude-opus-4-8</code></td>
-<td><code>claude-opus-5</code>, <code>claude-fable-5-1</code>, <code>claude-mythos-5-1</code>, <code>claude-fable-5</code>, <code>claude-mythos-5</code>, or <code>claude-opus-4-8</code></td>
+<td><code>claude-sonnet-5</code></td>
+<td><code>claude-mythos-5-1</code>, <code>claude-fable-5-1</code>, <code>claude-mythos-5</code>, <code>claude-fable-5</code>, <code>claude-opus-5-5</code>, <code>claude-opus-5</code>, <code>claude-opus-4-8</code>, <code>claude-opus-4-7</code>, <code>claude-sonnet-5-5</code>, or <code>claude-sonnet-5</code></td>
 </tr>
 <tr>
-<td><code>claude-opus-5</code></td>
-<td><code>claude-opus-5</code>, <code>claude-fable-5-1</code>, <code>claude-mythos-5-1</code>, <code>claude-fable-5</code>, or <code>claude-mythos-5</code></td>
+<td><code>claude-opus-4-6</code></td>
+<td><code>claude-mythos-5-1</code>, <code>claude-fable-5-1</code>, <code>claude-mythos-5</code>, <code>claude-fable-5</code>, <code>claude-opus-5-5</code>, <code>claude-opus-5</code>, <code>claude-opus-4-8</code>, <code>claude-opus-4-7</code>, <code>claude-opus-4-6</code>, <code>claude-sonnet-5-5</code>, or <code>claude-sonnet-5</code></td>
 </tr>
 <tr>
-<td><code>claude-fable-5</code></td>
-<td><code>claude-fable-5-1</code>, <code>claude-mythos-5-1</code>, <code>claude-fable-5</code>, <code>claude-mythos-5</code>, or <code>claude-opus-5</code></td>
+<td><code>claude-opus-4-7</code> / <code>claude-opus-4-8</code></td>
+<td><code>claude-mythos-5-1</code>, <code>claude-fable-5-1</code>, <code>claude-mythos-5</code>, <code>claude-fable-5</code>, <code>claude-opus-5-5</code>, <code>claude-opus-5</code>, <code>claude-opus-4-8</code>, <code>claude-opus-4-7</code>, or <code>claude-sonnet-5-5</code></td>
 </tr>
 <tr>
-<td><code>claude-mythos-5</code></td>
-<td><code>claude-mythos-5-1</code>, <code>claude-fable-5-1</code>, <code>claude-mythos-5</code>, <code>claude-fable-5</code>, or <code>claude-opus-5</code></td>
+<td><code>claude-opus-5-5</code> / <code>claude-opus-5</code> / <code>claude-fable-5</code> / <code>claude-mythos-5</code></td>
+<td><code>claude-mythos-5-1</code>, <code>claude-fable-5-1</code>, <code>claude-mythos-5</code>, <code>claude-fable-5</code>, <code>claude-opus-5-5</code>, or <code>claude-opus-5</code></td>
 </tr>
 <tr>
 <td><code>claude-fable-5-1</code> / <code>claude-mythos-5-1</code></td>
-<td><code>claude-mythos-5-1</code>, <code>claude-fable-5-1</code>, <code>claude-mythos-5</code>, <code>claude-fable-5</code>, or <code>claude-opus-5</code> - and these executors reject forced <code>tool_choice</code>, so nudge the advisor call from the prompt (the <code>-5-1</code> advisors return the encrypted <code>advisor_redacted_result</code>, like claude-opus-5 / claude-fable-5 / claude-mythos-5)</td>
+<td><code>claude-mythos-5-1</code> or <code>claude-fable-5-1</code> - and these executors (like <code>claude-opus-5-5</code>) reject forced <code>tool_choice</code>, so nudge the advisor call from the prompt</td>
+</tr>
+<tr>
+<td><code>claude-sonnet-5-5</code></td>
+<td><code>claude-mythos-5-1</code>, <code>claude-fable-5-1</code>, <code>claude-mythos-5</code>, <code>claude-fable-5</code>, <code>claude-opus-5-5</code>, <code>claude-opus-5</code>, or <code>claude-sonnet-5-5</code> - Claude Opus 4.8 / 4.7 / 4.6, Claude Sonnet 5, and Sonnet 4.6 advisors return a 400; every accepted advisor returns the encrypted <code>advisor_redacted_result</code>, and this executor rejects forced <code>tool_choice</code>, so nudge the advisor call from the prompt</td>
 </tr>
 </tbody>
 </table>
@@ -450,7 +491,7 @@ if response.stop_reason == &quot;pause_turn&quot;:
 <tr>
 <td><code>advisor_redacted_result</code></td>
 <td><code>encrypted_content</code>, <code>stop_reason</code></td>
-<td>Advisor returns encrypted output - Claude Opus 5, Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5</td>
+<td>Advisor returns encrypted output - Claude Opus 5.5, Claude Opus 5, Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Sonnet 5.5</td>
 </tr>
 <tr>
 <td><code>advisor_tool_result_error</code></td>
@@ -459,7 +500,7 @@ if response.stop_reason == &quot;pause_turn&quot;:
 </tr>
 </tbody>
 </table>
-<p>So switch on <code>advisor_tool_result.content</code> type, not on the block type. Code that reads <code>.text</code> unconditionally gets nothing back from an Claude Opus 5 advisor, because the payload is under <code>encrypted_content</code> instead - and you cannot read it, only replay it.</p>
+<p>So switch on <code>advisor_tool_result.content</code> type, not on the block type. Code that reads <code>.text</code> unconditionally gets nothing back from an Claude Opus 5.5 or Claude Opus 5 advisor, because the payload is under <code>encrypted_content</code> instead - and you cannot read it, only replay it.</p>
 </blockquote>
 <p>Call via <code>client.beta.messages.create(...)</code> with <code>betas=["advisor-tool-2026-03-01"]</code> (or the <code>anthropic-beta: advisor-tool-2026-03-01</code> header). In multi-turn conversations, append the full <code>response.content</code> - including any <code>advisor_tool_result</code> blocks - back to <code>messages</code> on the next turn. If you remove the advisor tool from <code>tools</code> on a later turn while the history still contains <code>advisor_tool_result</code> blocks, the API returns a 400.</p>
 <blockquote>
@@ -571,7 +612,7 @@ if response.stop_reason == &quot;pause_turn&quot;:
 <li><strong>JSON outputs</strong> (<code>output_config.format</code>): Control Claude's response format</li>
 <li><strong>Strict tool use</strong> (<code>strict: true</code>): Guarantee valid tool parameter schemas</li>
 </ul>
-<p><strong>Supported models:</strong> Claude Fable 5, Claude Mythos 5, Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5, and Claude Haiku 4.5. Legacy models (Claude Opus 4.5, Claude Opus 4.1) also support structured outputs.</p>
+<p><strong>Supported models:</strong> Claude Fable 5, Claude Mythos 5, Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5.5, Claude Sonnet 5, and Claude Haiku 4.5. Legacy models (Claude Opus 4.5, Claude Opus 4.1) also support structured outputs.</p>
 <blockquote>
 <p><strong>Recommended:</strong> Use <code>client.messages.parse()</code> which automatically validates responses against your schema. When using <code>messages.create()</code> directly, use <code>output_config: {format: {...}}</code>. The <code>output_format</code> convenience parameter is also accepted by some SDK methods (e.g., <code>.parse()</code>), but <code>output_config.format</code> is the canonical API-level parameter.</p>
 </blockquote>

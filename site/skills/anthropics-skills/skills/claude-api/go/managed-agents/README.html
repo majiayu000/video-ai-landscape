@@ -80,7 +80,7 @@
 <main class="md"><h1>Managed Agents - Go</h1>
 <blockquote>
 <p><strong>Bindings not shown here:</strong> This README covers the most common managed-agents flows for Go. If you need a class, method, namespace, field, or behavior that isn't shown, WebFetch the Go SDK repo <strong>or the relevant docs page</strong> from <code>shared/live-sources.md</code> rather than guess. Do not extrapolate from cURL shapes or another language's SDK.</p>
-<p><strong>Agents are persistent - create once, reference by ID.</strong> Store the agent ID returned by <code>agents.New</code> and pass it to every subsequent <code>sessions.New</code>; do not call <code>agents.New</code> in the request path. <strong>Recommended:</strong> define agents and environments as version-controlled YAML applied with the <code>ant</code> CLI - see <code>shared/anthropic-cli.md</code> (its live-docs URL is in <code>shared/live-sources.md</code>). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.</p>
+<p><strong>Agents are persistent - create once, reference by ID.</strong> Store the agent ID returned by <code>agents.New</code> and pass it to every subsequent <code>sessions.New</code>; do not call <code>agents.New</code> in the request path. <strong>Recommended:</strong> define agents and environments as version-controlled files synced with <code>ant apply</code> - see <code>shared/anthropic-cli.md</code> (its live-docs URL is in <code>shared/live-sources.md</code>). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.</p>
 </blockquote>
 <h2>Installation</h2>
 <pre><code class="language-bash">go get github.com/anthropics/anthropic-sdk-go
@@ -130,7 +130,7 @@ fmt.Println(environment.ID) // env_...
 agent, err := client.Beta.Agents.New(ctx, anthropic.BetaAgentNewParams{
     Name: &quot;Coding Assistant&quot;,
     Model: anthropic.BetaManagedAgentsModelConfigParams{
-        ID:   &quot;claude-opus-5&quot;,
+        ID:   &quot;claude-opus-5-5&quot;,
         Type: anthropic.BetaManagedAgentsModelConfigParamsTypeModelConfig,
     },
     System: anthropic.String(&quot;You are a helpful coding assistant.&quot;),
@@ -412,7 +412,7 @@ if err != nil {
 agent, err := client.Beta.Agents.New(ctx, anthropic.BetaAgentNewParams{
     Name: &quot;GitHub Assistant&quot;,
     Model: anthropic.BetaManagedAgentsModelConfigParams{
-        ID:   &quot;claude-opus-5&quot;,
+        ID:   &quot;claude-opus-5-5&quot;,
         Type: anthropic.BetaManagedAgentsModelConfigParamsTypeModelConfig,
     },
     MCPServers: []anthropic.BetaManagedAgentsURLMCPServerParams{{

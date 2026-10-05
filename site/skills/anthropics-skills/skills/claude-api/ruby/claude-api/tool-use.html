@@ -97,7 +97,7 @@ class GetWeather &lt; Anthropic::BaseTool
 end
 
 client.beta.messages.tool_runner(
-  model: :&quot;claude-opus-5&quot;,
+  model: :&quot;claude-opus-5-5&quot;,
   max_tokens: 16000,
   tools: [GetWeather.new],
   messages: [{ role: &quot;user&quot;, content: &quot;What's the weather in San Francisco?&quot; }]

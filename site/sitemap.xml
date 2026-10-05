@@ -61,6 +61,11 @@
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/claude-platform-on-aws</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/cost-optimization</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/error-codes</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/evals/build-eval</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/evals/cost-hillclimb</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/evals/eval-audit</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/evals/eval-hillclimb</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/evals/report/SCHEMA</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/live-sources</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/managed-agents-api-reference</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/managed-agents-client-patterns</loc></url>
@@ -79,6 +84,8 @@
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/model-migration</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/models</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/platform-availability</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/preserved-thinking-migration/causes</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/preserved-thinking-migration</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/prompt-audit</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/prompt-caching</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/claude-api/shared/token-counting</loc></url>

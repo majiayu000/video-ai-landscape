@@ -80,7 +80,7 @@
 <main class="md"><h1>Managed Agents - TypeScript</h1>
 <blockquote>
 <p><strong>Bindings not shown here:</strong> This README covers the most common managed-agents flows for TypeScript. If you need a class, method, namespace, field, or behavior that isn't shown, WebFetch the TypeScript SDK repo <strong>or the relevant docs page</strong> from <code>shared/live-sources.md</code> rather than guess. Do not extrapolate from cURL shapes or another language's SDK.</p>
-<p><strong>Agents are persistent - create once, reference by ID.</strong> Store the agent ID returned by <code>agents.create</code> and pass it to every subsequent <code>sessions.create</code>; do not call <code>agents.create</code> in the request path. <strong>Recommended:</strong> define agents and environments as version-controlled YAML applied with the <code>ant</code> CLI - see <code>shared/anthropic-cli.md</code> (its live-docs URL is in <code>shared/live-sources.md</code>). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.</p>
+<p><strong>Agents are persistent - create once, reference by ID.</strong> Store the agent ID returned by <code>agents.create</code> and pass it to every subsequent <code>sessions.create</code>; do not call <code>agents.create</code> in the request path. <strong>Recommended:</strong> define agents and environments as version-controlled files synced with <code>ant apply</code> - see <code>shared/anthropic-cli.md</code> (its live-docs URL is in <code>shared/live-sources.md</code>). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.</p>
 </blockquote>
 <h2>Installation</h2>
 <pre><code class="language-bash">npm install @anthropic-ai/sdk
@@ -119,7 +119,7 @@ console.log(environment.id); // env_...
 const agent = await client.beta.agents.create(
   {
     name: &quot;Coding Assistant&quot;,
-    model: &quot;claude-opus-5&quot;,
+    model: &quot;claude-opus-5-5&quot;,
     tools: [{ type: &quot;agent_toolset_20260401&quot;, default_config: { enabled: true } }],
   },
 );
@@ -138,7 +138,7 @@ console.log(`Trace: https://platform.claude.com/workspaces/default/sessions/${se
 <pre><code class="language-typescript">const agent = await client.beta.agents.create(
   {
     name: &quot;Code Reviewer&quot;,
-    model: &quot;claude-opus-5&quot;,
+    model: &quot;claude-opus-5-5&quot;,
     system: &quot;You are a senior code reviewer.&quot;,
     tools: [
       { type: &quot;agent_toolset_20260401&quot;, default_config: { enabled: true } },
@@ -192,6 +192,31 @@ const session = await client.beta.sessions.create(
 <blockquote>
 <p>Tip: <strong>Stream-first:</strong> Open the stream <em>before</em> (or concurrently with) sending the message. The stream only delivers events that occur after it opens - stream-after-send means early events arrive buffered in one batch. See <a href="../../shared/managed-agents-events.html#steering-patterns">Steering Patterns</a>.</p>
 </blockquote>
+<hr />
+<h2>Define an Outcome (default kickoff for deliverables)</h2>
+<p>When the session's job is to produce something checkable - an artifact, a report, a PR - kick off with <code>user.define_outcome</code> instead of <code>user.message</code>: the harness grades each iteration against your rubric and the agent revises until it passes. Send one or the other, never both. See <a href="../../shared/managed-agents-outcomes.html">Outcomes</a> for the event reference and rubric-writing guidance.</p>
+<pre><code class="language-typescript">const STARTER_RUBRIC = `# Report rubric - starter, tune the criteria
+- Output is a single \`report.md\` in /mnt/session/outputs/
+- Every claim cites a source URL
+- Includes a summary table with one row per competitor
+- Prices are current as of the run date and each row says where it was read from
+- No placeholder text, TODOs, or empty sections remain
+`;
+
+await client.beta.sessions.events.send(
+  session.id,
+  {
+    events: [
+      {
+        type: &quot;user.define_outcome&quot;,
+        description: &quot;Write a competitor-pricing report as report.md&quot;,
+        rubric: { type: &quot;text&quot;, content: STARTER_RUBRIC },
+        max_iterations: 5, // optional; default 3, max 20
+      },
+    ],
+  },
+);
+</code></pre>
 <hr />
 <h2>Stream Events (SSE)</h2>
 <pre><code class="language-typescript">// Stream-first: open stream and send concurrently
@@ -365,7 +390,7 @@ await client.beta.sessions.archive(&quot;sesn_011CZxAbc123Def456&quot;);
 <pre><code class="language-typescript">// Agent declares MCP server (no auth here - auth goes in a vault)
 const agent = await client.beta.agents.create({
   name: &quot;MCP Agent&quot;,
-  model: &quot;claude-opus-5&quot;,
+  model: &quot;claude-opus-5-5&quot;,
   mcp_servers: [
     { type: &quot;url&quot;, name: &quot;my-tools&quot;, url: &quot;https://my-mcp-server.example.com/sse&quot; },
   ],

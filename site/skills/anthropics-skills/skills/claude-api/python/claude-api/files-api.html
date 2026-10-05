@@ -107,7 +107,7 @@ print(f&quot;Size: {uploaded.size_bytes} bytes&quot;)
 <h2>Use a File in Messages</h2>
 <h3>PDF / Text Document</h3>
 <pre><code class="language-python">response = client.beta.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     messages=[{
         &quot;role&quot;: &quot;user&quot;,
@@ -133,7 +133,7 @@ for block in response.content:
 )
 
 response = client.beta.messages.create(
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     max_tokens=16000,
     messages=[{
         &quot;role&quot;: &quot;user&quot;,
@@ -190,7 +190,7 @@ questions = [
 
 for question in questions:
     response = client.beta.messages.create(
-        model=&quot;claude-opus-5&quot;,
+        model=&quot;claude-opus-5-5&quot;,
         max_tokens=16000,
         messages=[{
             &quot;role&quot;: &quot;user&quot;,

@@ -80,6 +80,7 @@
 <main class="md"><h1>Managed Agents - Outcomes</h1>
 <p>An <strong>outcome</strong> elevates a session from <em>conversation</em> to <em>work</em>: you state what "done" looks like, and the harness runs an iterate -&gt; grade -&gt; revise loop until the artifact meets the rubric, hits <code>max_iterations</code>, or is interrupted. A separate <strong>grader</strong> (independent context window) scores each iteration against your rubric and feeds per-criterion gaps back to the agent.</p>
 <p>The SDK sets the <code>managed-agents-2026-04-01</code> beta header automatically on all <code>client.beta.sessions.*</code> calls; no additional header is required for outcomes.</p>
+<p><strong>Codegen default:</strong> when generating Managed Agents client code for a task with a deliverable (an artifact, a report, a PR, a dataset), kick the session off with <code>user.define_outcome</code> rather than <code>user.message</code> - draft a starter rubric from the task description and mark it for the user to tune. Reserve plain <code>user.message</code> kickoffs for genuinely conversational sessions.</p>
 <hr />
 <h2>The <code>user.define_outcome</code> event</h2>
 <p>Outcomes are not a field on <code>sessions.create()</code>. You create a normal session, then send a <code>user.define_outcome</code> event. The agent starts working on receipt - <strong>do not also send a <code>user.message</code></strong> to kick it off.</p>
@@ -125,7 +126,7 @@ client.beta.sessions.events.send(
 <tr>
 <td><code>rubric</code></td>
 <td><code>{type: "text", content}</code> | <code>{type: "file", file_id}</code></td>
-<td><strong>Required.</strong> Markdown with explicit, independently gradeable criteria. Upload once via <code>client.beta.files.upload(...)</code> (beta <code>files-api-2025-04-14</code>) to reuse across sessions.</td>
+<td><strong>Required.</strong> Markdown with explicit, independently gradeable criteria. Upload once via <code>client.files.upload(...)</code> to reuse across sessions.</td>
 </tr>
 <tr>
 <td><code>max_iterations</code></td>
@@ -136,7 +137,7 @@ client.beta.sessions.events.send(
 </table>
 <p>The event is echoed back on the stream with a server-assigned <code>outcome_id</code> and <code>processed_at</code>.</p>
 <blockquote>
-<p><strong>Writing rubrics.</strong> Use explicit, gradeable criteria ("CSV has a numeric <code>price</code> column"), not vibes ("data looks good") - the grader scores each criterion independently, so vague criteria produce noisy loops. If you don't have a rubric, have Claude analyze a known-good artifact and turn that analysis into one.</p>
+<p><strong>Writing rubrics.</strong> Use explicit, gradeable criteria ("CSV has a numeric <code>price</code> column"), not vibes ("data looks good") - the grader scores each criterion independently, so vague criteria produce noisy loops. If you don't have a rubric, have Claude analyze a known-good artifact and turn that analysis into one. When generating code for a user who supplied no rubric, draft one yourself from their task description - 5-10 concrete criteria covering the artifact's format, required content, and quality floor - and comment it as a starter rubric to tune; never omit the outcome because the rubric wasn't handed to you.</p>
 </blockquote>
 <hr />
 <h2>Outcome-specific events</h2>
@@ -217,7 +218,7 @@ client.beta.sessions.events.send(
 for ev in session.outcome_evaluations:
     print(f&quot;{ev.outcome_id}: {ev.result}&quot;)  # outc_01a...: satisfied
 </code></pre>
-<p><strong>Deliverables</strong> - the agent writes to <code>/mnt/session/outputs/</code>. Once idle, fetch via the Files API with <code>scope_id=session.id</code>. This is the same session-outputs mechanism documented in <code>shared/managed-agents-environments.md</code> -&gt; Session outputs (including the dual-beta-header requirement on <code>files.list</code>).</p>
+<p><strong>Deliverables</strong> - the agent writes to <code>/mnt/session/outputs/</code>. Once idle, fetch via the Files API with <code>scope_id=session.id</code>. This is the same session-outputs mechanism documented in <code>shared/managed-agents-environments.md</code> -&gt; Session outputs (including the <code>managed-agents-2026-04-01</code> header that <code>files.list</code> needs for <code>scope_id</code>).</p>
 <hr />
 <h2>Interaction rules &amp; pitfalls</h2>
 <ul>

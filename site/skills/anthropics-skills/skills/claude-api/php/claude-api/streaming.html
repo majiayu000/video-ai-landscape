@@ -86,7 +86,7 @@
 use Anthropic\Messages\TextDelta;
 
 $stream = $client-&gt;messages-&gt;createStream(
-    model: 'claude-opus-5',
+    model: 'claude-opus-5-5',
     maxTokens: 64000,
     messages: [
         ['role' =&gt; 'user', 'content' =&gt; 'Write a haiku'],

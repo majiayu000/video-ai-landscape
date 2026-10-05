@@ -80,12 +80,12 @@
 <main class="md"><h1>Managed Agents - Endpoint Reference</h1>
 <p>All endpoints require <code>x-api-key</code> and <code>anthropic-version: 2023-06-01</code> headers. Managed Agents endpoints additionally require the <code>anthropic-beta</code> header.</p>
 <blockquote>
-<p>Most users should define agents and environments as version-controlled YAML applied with the <code>ant</code> CLI - see <code>shared/anthropic-cli.md</code>. The endpoints below are the underlying API that the CLI and SDKs drive.</p>
+<p>Most users should define agents and environments as version-controlled files synced with <code>ant apply</code> - see <code>shared/anthropic-cli.md</code>. The endpoints below are the underlying API that the CLI and SDKs drive.</p>
 </blockquote>
 <h2>Beta Headers</h2>
 <pre><code>anthropic-beta: managed-agents-2026-04-01
 </code></pre>
-<p>The SDK adds this header automatically for all <code>client.beta.{agents,environments,sessions,vaults,memory_stores,deployments,deployment_runs}.*</code> calls. Skills endpoints use <code>skills-2025-10-02</code>; Files endpoints use <code>files-api-2025-04-14</code>.</p>
+<p>The SDK adds this header automatically for all <code>client.beta.{agents,environments,sessions,vaults,deployments,deployment_runs}.*</code> calls. Memory store endpoints (<code>client.beta.memory_stores.*</code>) use <code>agent-memory-2026-07-22</code> instead, which the SDK also sets; sending both headers on a memory store request returns a 400. The Files and Skills APIs are out of beta and need no beta header.</p>
 <hr />
 <h2>SDK Method Reference</h2>
 <p>All resources are under the <code>beta</code> namespace. Python and TypeScript share identical method names.</p>
@@ -181,7 +181,7 @@
 - Go's event stream is <code>StreamEvents</code> (not <code>Stream</code>).
 - The self-hosted worker class is <code>EnvironmentWorker</code> from <code>anthropic.lib.environments</code> / <code>@anthropic-ai/sdk/helpers/beta/environments</code> / <code>anthropic-sdk-go/lib/environments</code>; <code>client.beta.environments.work.worker(...)</code> is a factory that returns the same class, alongside the <code>environments.work.poller/stats/stop</code> client methods.</p>
 <p><strong>Agent shorthand:</strong> <code>agent</code> on session create accepts three forms - a bare string (<code>agent="agent_abc123"</code>, latest version), a pinned reference <code>{type: "agent", id, version}</code>, or <code>{type: "agent_with_overrides", id, version?, model?, system?, tools?, mcp_servers?, skills?}</code> to override those fields for this session only (see <code>shared/managed-agents-core.md</code> -&gt; Override agent configuration for a session).</p>
-<p><strong>Model shorthand:</strong> <code>model</code> on agent create accepts either a bare string (<code>model="claude-opus-5"</code> - uses <code>standard</code> speed) or the full config object, which takes <code>speed</code>, <code>effort</code>, and <code>inference_geo</code> alongside <code>id</code>: <code>{id: "claude-opus-5", speed: "fast"}</code>, <code>{id: "claude-opus-5", effort: "high"}</code>, <code>{id: "claude-opus-5", inference_geo: "us"}</code>. <code>effort</code> accepts a level string (<code>low</code>/<code>medium</code>/<code>high</code>/<code>xhigh</code>/<code>max</code>) or <code>{type: "&lt;level&gt;"}</code>, and is <strong>agent-configuration only</strong> - an <code>effort</code> inside a per-session <code>model</code> override is ignored. <code>inference_geo</code> (<code>"us"</code> | <code>"global"</code>) pins the geography serving the agent's model requests, and unlike <code>effort</code> <strong>is</strong> applied in a per-session <code>model</code> override. See <code>shared/managed-agents-core.md</code> -&gt; Effort on the agent model / Pinning inference geography. Note: <code>speed: "fast"</code> is supported on Claude Opus 5 and Opus 4.8 - on the Claude API only, which includes Managed Agents but not Amazon Bedrock, Google Cloud, or Microsoft Foundry. Opus 4.7 fast mode has been removed; <code>speed: "fast"</code> on Opus 4.7 returns an error.</p>
+<p><strong>Model shorthand:</strong> <code>model</code> on agent create accepts either a bare string (<code>model="claude-opus-5-5"</code> - uses <code>standard</code> speed) or the full config object, which takes <code>speed</code>, <code>effort</code>, and <code>inference_geo</code> alongside <code>id</code>: <code>{id: "claude-opus-5-5", speed: "fast"}</code>, <code>{id: "claude-opus-5-5", effort: "high"}</code>, <code>{id: "claude-opus-5-5", inference_geo: "us"}</code>. <code>effort</code> accepts a level string (<code>low</code>/<code>medium</code>/<code>high</code>/<code>xhigh</code>/<code>max</code>) or <code>{type: "&lt;level&gt;"}</code>, and in a per-session <code>model</code> override it sets the session's effort level (the agent's own <code>effort</code> isn't carried over, and a <code>model</code> override without <code>effort</code> runs at that model's default effort level). <code>inference_geo</code> (<code>"us"</code> | <code>"global"</code>) pins the geography serving the agent's model requests, and is also applied in a per-session <code>model</code> override. See <code>shared/managed-agents-core.md</code> -&gt; Effort on the agent model / Pinning inference geography. Note: <code>speed: "fast"</code> is supported on Claude Opus 5.5, Claude Opus 5, and Opus 4.8 - on the Claude API only, which includes Managed Agents but not Amazon Bedrock, Google Cloud, or Microsoft Foundry. Opus 4.7 fast mode has been removed; <code>speed: "fast"</code> on Opus 4.7 returns an error.</p>
 <hr />
 <h2>Agents</h2>
 <p><strong>Step one of every flow.</strong> Sessions require a pre-created agent - there is no inline agent config under <code>managed-agents-2026-04-01</code>.</p>
@@ -880,7 +880,7 @@
 <p><strong>Always start here.</strong> <code>model</code>, <code>system</code>, <code>tools</code>, <code>mcp_servers</code>, <code>skills</code> are top-level fields on this object - they do NOT go on the session.</p>
 <pre><code class="language-json">{
   &quot;name&quot;: &quot;string (required, 1-256 chars)&quot;,
-  &quot;model&quot;: &quot;claude-opus-5 (required - bare string, or {id, speed?, effort?, inference_geo?} object)&quot;,
+  &quot;model&quot;: &quot;claude-opus-5-5 (required - bare string, or {id, speed?, effort?, inference_geo?} object)&quot;,
   &quot;description&quot;: &quot;string (optional, up to 2048 chars)&quot;,
   &quot;system&quot;: &quot;string (optional, up to 100,000 chars)&quot;,
   &quot;tools&quot;: [
@@ -941,7 +941,7 @@
 }
 </code></pre>
 <blockquote>
-<p>The <code>agent</code> field accepts a string ID, <code>{type: "agent", id, version}</code>, or <code>{type: "agent_with_overrides", id, version?, ...}</code> for session-local overrides of <code>model</code>/<code>system</code>/<code>tools</code>/<code>mcp_servers</code>/<code>skills</code>. Outside the overrides form, those fields live on the agent, not here. An <code>effort</code> inside a <code>model</code> override is ignored - set it on the agent. An <code>inference_geo</code> inside a <code>model</code> override <strong>is</strong> applied (omitting it clears the agent's pin for this session).</p>
+<p>The <code>agent</code> field accepts a string ID, <code>{type: "agent", id, version}</code>, or <code>{type: "agent_with_overrides", id, version?, ...}</code> for session-local overrides of <code>model</code>/<code>system</code>/<code>tools</code>/<code>mcp_servers</code>/<code>skills</code>. Outside the overrides form, those fields live on the agent, not here. An <code>effort</code> inside a <code>model</code> override is applied (the agent's own <code>effort</code> isn't carried over, and a <code>model</code> override without <code>effort</code> runs at that model's default effort level). An <code>inference_geo</code> inside a <code>model</code> override <strong>is</strong> applied (omitting it clears the agent's pin for this session).</p>
 <p><strong><code>budget</code></strong> (optional, create-only) is a hard dollar cap on the session's list-priced spend; <code>amount</code> is an integer string in minor units (cents - <code>"2500"</code> = $25.00), <code>USD</code> only. It can be changed or removed later via session update, never added. See <code>shared/managed-agents-core.md</code> -&gt; Session budgets.</p>
 <p><strong><code>initial_events</code></strong> (optional, max 50) sends events at creation and starts the agent loop in the same call. Only <code>user.message</code> and <code>user.define_outcome</code> are accepted - no <code>system.message</code>, and none of the tool-result kinds. Validation is all-or-nothing. See <code>shared/managed-agents-core.md</code> -&gt; Seeding a session with <code>initial_events</code>.</p>
 <p><strong><code>checkout</code></strong> accepts <code>{type: "branch", name: "..."}</code> or <code>{type: "commit", sha: "..."}</code>. Omit for the repo's default branch.</p>
@@ -994,7 +994,7 @@
 }
 </code></pre>
 <blockquote>
-<p><code>system.message</code> events (append system-level context for this turn and later ones) use the same envelope with <code>type: "system.message"</code> - supported on Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5, Claude Fable 5.1, and Claude Mythos 5.1, checked against the agent's <em>primary</em> model only; see <code>shared/managed-agents-events.md</code> § Adding system context mid-session.</p>
+<p><code>system.message</code> events (append system-level context for this turn and later ones) use the same envelope with <code>type: "system.message"</code> - supported on Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, and Claude Sonnet 5.5 (not Claude Sonnet 5), checked against the agent's <em>primary</em> model only; see <code>shared/managed-agents-events.md</code> § Adding system context mid-session.</p>
 </blockquote>
 <h3>Define Outcome Event</h3>
 <pre><code class="language-json">{

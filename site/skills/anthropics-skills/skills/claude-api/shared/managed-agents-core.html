@@ -295,7 +295,7 @@ ant beta:sessions delete   --session-id &quot;$SID&quot;
 const agent = await client.beta.agents.create(
   {
     name: &quot;Coding Assistant&quot;,
-    model: &quot;claude-opus-5&quot;,
+    model: &quot;claude-opus-5-5&quot;,
     system: &quot;You are a helpful coding agent.&quot;,
     tools: [{ type: &quot;agent_toolset_20260401&quot;}],
   },
@@ -566,22 +566,22 @@ const session = await client.beta.sessions.create(
 </code></pre>
 <p><strong>Anti-pattern:</strong> calling <code>agents.create()</code> at the top of every script run. This accumulates orphaned agent objects, pays create latency on every invocation, and defeats the versioning model. If you see <code>agents.create()</code> in a function that's called per-request or per-cron-tick, that's wrong - hoist it to one-time setup and persist the ID.</p>
 <blockquote>
-<p><strong>Recommended - define agents and environments as YAML + apply via the <code>ant</code> CLI.</strong> The split is <strong>CLI for the control plane, SDK for the data plane</strong>: agents and environments are relatively static resources you manage with <code>ant</code> (version-controlled YAML, applied from CI); sessions are dynamic and driven by your application through the SDK. See <code>shared/anthropic-cli.md</code> -&gt; <em>Version-controlled Managed Agents resources</em> for the <code>ant beta:agents create &lt; agent.yaml</code> / <code>update --version N</code> flow. The SDK <code>agents.create()</code> call shown elsewhere in this doc is the in-code equivalent - use it when you need to provision programmatically, but prefer the YAML flow for anything a human maintains.</p>
+<p><strong>Recommended - define agents and environments as files and sync them with <code>ant apply</code>.</strong> The split is <strong>CLI for the control plane, SDK for the data plane</strong>: agents and environments are relatively static resources you manage with <code>ant</code> (version-controlled files, synced by hand or from CI); sessions are dynamic and driven by your application through the SDK. See <code>shared/anthropic-cli.md</code> -&gt; <em>Version-controlled Managed Agents resources</em> for the file layout, <code>claude-lock.json</code>, and the CI flow. The SDK <code>agents.create()</code> call shown elsewhere in this doc is the in-code equivalent - use it when you need to provision programmatically, but prefer files + <code>ant apply</code> for anything a human maintains.</p>
 </blockquote>
 <h3>Effort on the agent model</h3>
-<p>Pass <code>model</code> as an object to set the effort level: <code>{"id": "claude-opus-5", "effort": "high"}</code>. <code>effort</code> accepts a level string (<code>low</code>, <code>medium</code>, <code>high</code>, <code>xhigh</code>, <code>max</code>) or an object such as <code>{"type": "high"}</code>. The create/update response echoes it in object form and fills in omitted <code>model</code> fields with their defaults.</p>
+<p>Pass <code>model</code> as an object to set the effort level: <code>{"id": "claude-opus-5-5", "effort": "high"}</code>. <code>effort</code> accepts a level string (<code>low</code>, <code>medium</code>, <code>high</code>, <code>xhigh</code>, <code>max</code>) or an object such as <code>{"type": "high"}</code>. The create/update response echoes it in object form and fills in omitted <code>model</code> fields with their defaults.</p>
 <blockquote>
-<p>Warning: <strong>Effort is agent configuration only.</strong> An <code>effort</code> set inside a per-session <code>model</code> override is <strong>not applied</strong> - the session runs at the agent's effort. To change effort you must update the agent (or point the session at a different agent). This is the one field where the override form silently does nothing rather than erroring.</p>
+<p>Warning: <strong>A per-session <code>model</code> override replaces the agent's <code>model</code> object in full, so the agent's own <code>effort</code> isn't carried over.</strong> To run the session at a specific effort level, set <code>effort</code> inside the override's <code>model</code> object. A level the model doesn't support returns a 400 error, and a <code>model</code> override without <code>effort</code> runs at that model's default effort level.</p>
 </blockquote>
-<p>The same object form carries <code>speed</code> for fast mode: <code>{"id": "claude-opus-5", "speed": "fast"}</code>.</p>
+<p>The same object form carries <code>speed</code> for fast mode: <code>{"id": "claude-opus-5-5", "speed": "fast"}</code>.</p>
 <h3>Pinning inference geography (<code>inference_geo</code>)</h3>
-<p>The <code>model</code> object also takes <code>inference_geo</code> to pin the geography that serves the agent's model requests: <code>{"id": "claude-opus-5", "inference_geo": "us"}</code>. Accepts <code>"us"</code> or <code>"global"</code> - and unlike the Messages API, where <code>inference_geo</code> is a top-level request parameter, here it is always nested inside <code>model</code>, never top-level. When unset, each model request follows the workspace's default inference geo at the time it's served.</p>
+<p>The <code>model</code> object also takes <code>inference_geo</code> to pin the geography that serves the agent's model requests: <code>{"id": "claude-opus-5-5", "inference_geo": "us"}</code>. Accepts <code>"us"</code> or <code>"global"</code> - and unlike the Messages API, where <code>inference_geo</code> is a top-level request parameter, here it is always nested inside <code>model</code>, never top-level. When unset, each model request follows the workspace's default inference geo at the time it's served.</p>
 <ul>
 <li><strong>Validated at every stage:</strong> the pin is checked against the workspace's <code>allowed_inference_geos</code> when the agent is saved, when a session is created from it, and on every turn the session serves. If the workspace allowlist later narrows so the pin is no longer allowed, new sessions can't be created from the agent and <strong>running sessions refuse further turns</strong> - pins are never grandfathered (workspaces rely on them for compliance).</li>
 <li>Setting <code>inference_geo</code> on a model that doesn't support geographic inference pinning returns a 400.</li>
 <li><strong>Fixed for a session's lifetime</strong> - the pin can't change mid-session. Set it on the agent, or set/clear it for one session with a <code>model</code> override at session create (see § Override agent configuration for a session).</li>
 <li><strong>Multiagent rosters must be geo-uniform:</strong> the coordinator's pin and every roster member's must all be the same value or all be unset - see <code>shared/managed-agents-multiagent.md</code>.</li>
-<li>Unlike <code>effort</code>, an <code>inference_geo</code> inside a per-session <code>model</code> override <strong>is applied</strong> - and because overrides replace the <code>model</code> object in full, an override that <em>omits</em> <code>inference_geo</code> clears the agent's pin for that session.</li>
+<li>Like <code>effort</code>, an <code>inference_geo</code> inside a per-session <code>model</code> override <strong>is applied</strong> - and because overrides replace the <code>model</code> object in full, an override that <em>omits</em> <code>inference_geo</code> clears the agent's pin for that session.</li>
 </ul>
 <h3>Versioning</h3>
 <p>Each <code>POST /v1/agents/{id}</code> (update) creates a new immutable version - a sequential integer, starting at 1 and incrementing on each update. The agent's history is append-only - you can't edit a past version.</p>
@@ -603,7 +603,7 @@ const session = await client.beta.sessions.create(
 <tr>
 <td>Omitted</td>
 <td>Applies unconditionally. The most recent update silently replaces any concurrent one, with no error to either caller.</td>
-<td>Declarative apply loops - e.g. a CI job syncing checked-in agent definitions, where the loop owns the agent</td>
+<td>Hand-rolled sync loops - e.g. a CI script pushing checked-in agent definitions with <code>agents.update()</code>, where the loop owns the agent</td>
 </tr>
 </tbody>
 </table>
@@ -675,7 +675,7 @@ session = client.beta.sessions.create(
     agent={
         &quot;type&quot;: &quot;agent_with_overrides&quot;,
         &quot;id&quot;: agent.id,
-        &quot;model&quot;: &quot;claude-opus-5&quot;,   # replace the agent's model for this session
+        &quot;model&quot;: &quot;claude-opus-5-5&quot;,   # replace the agent's model for this session
         &quot;system&quot;: None,           # clear the system prompt for this session
     },
     environment_id=environment_id,
@@ -684,7 +684,7 @@ session = client.beta.sessions.create(
 <p>Each overridable field follows tri-state rules:
 - <strong>Omit</strong> -&gt; the session inherits the value from the referenced agent version.
 - <strong><code>null</code> (or <code>[]</code> for list fields)</strong> -&gt; the session runs with that field cleared. Applies in full to <code>system</code> and <code>skills</code>. Three exceptions: <code>model</code> is never clearable (<code>model: null</code> -&gt; 400 <code>agent_model_required</code>); clearing <code>tools</code> returns 400 when the session's effective <code>skills</code> is non-empty (skills require the <code>read</code> tool); and clearing <code>mcp_servers</code> returns 400 when the effective <code>tools</code> still contains an <code>mcp_toolset</code> referencing one of the agent's servers - override <code>tools</code> in the same request to drop those entries, then clear <code>mcp_servers</code>.
-- <strong>A value</strong> -&gt; replaces the agent's value <strong>in full</strong>. Overrides never merge - a <code>tools</code> override must list every tool the session should have. One exception: an <code>effort</code> level inside a <code>model</code> override is <strong>not applied</strong> (set it on the agent instead - see § Effort on the agent model). An <code>inference_geo</code> inside a <code>model</code> override <strong>is</strong> applied - and because the object is replaced in full, an override that omits it clears the agent's pin, so the session follows the workspace's default inference geo. The overridden value is validated against the workspace's <code>allowed_inference_geos</code> at session create.</p>
+- <strong>A value</strong> -&gt; replaces the agent's value <strong>in full</strong>. Overrides never merge - a <code>tools</code> override must list every tool the session should have. A <code>model</code> override also replaces the agent's <code>model</code> object in full: the agent's own <code>effort</code> isn't carried over, so set <code>effort</code> inside the override's <code>model</code> object to run the session at a specific effort level (a level the model doesn't support returns a 400 error, and a <code>model</code> override without <code>effort</code> runs at that model's default effort level). An <code>inference_geo</code> inside a <code>model</code> override <strong>is</strong> applied - and because the object is replaced in full, an override that omits it clears the agent's pin, so the session follows the workspace's default inference geo. The overridden value is validated against the workspace's <code>allowed_inference_geos</code> at session create.</p>
 <p>Overrides are session-local: they do <strong>not</strong> modify the agent resource or create a new agent version. The response's <code>agent</code> object reflects the post-override configuration, while its <code>id</code> and <code>version</code> still identify the base agent - so you can trace a session back to its base. In multiagent sessions, overrides apply to the coordinator and its <code>{type: "self"}</code> copies; roster agents referenced by ID always use their own as-created configuration (see <code>shared/managed-agents-multiagent.md</code>).</p>
 <h3>Updating the agent configuration mid-session</h3>
 <p><code>sessions.update()</code> can change <code>agent.tools</code> and <code>agent.mcp_servers</code> (including permission policies and the per-tool web settings - <code>allowed_domains</code> / <code>blocked_domains</code> etc., see <code>shared/managed-agents-tools.md</code> § Web search &amp; web fetch settings) on an <strong>existing</strong> session. Updated domain lists apply to the rest of the session. This is a <strong>session-local override</strong> - it does not create a new agent version and does not propagate back to the agent object. The provided arrays are <strong>full replacements</strong>; to append one tool, <code>GET</code> the session, modify, and <code>POST</code> back. The session must be <code>idle</code> - interrupt first if running. <code>vault_ids</code> is <strong>create-only</strong>: the update param exists in the SDK but is rejected by the API ("Not yet supported") - attach vaults when you create the session.</p>

@@ -93,7 +93,12 @@
 <p>This opens a browser for OAuth. Wait for them to confirm.</p>
 <p>Verify: <code>higgsfield account status</code>. Expect <code>&lt;email&gt; — &lt;plan&gt; plan, &lt;N&gt; credits</code>.</p>
 <h2>Step 3 — Install the skills</h2>
-<p>Detect the agent platform:</p>
+<p><strong>Claude Code</strong> — install the plugin, then ask the user to restart Claude Code:</p>
+<pre><code class="language-bash">claude plugin marketplace add higgsfield-ai/skills
+claude plugin install higgsfield@higgsfield
+</code></pre>
+<p>If the plugin install is unavailable, clone the repo anywhere and run <code>./setup --host claude</code>, which links each skill into <code>~/.claude/skills/&lt;skill-name&gt;</code>. Do not clone the repo into <code>~/.claude/skills/higgsfield</code>: Claude Code looks for each skill one level down and finds none there.</p>
+<p><strong>Other agents</strong> — clone into the agent's plugin directory:</p>
 <table>
 <thead>
 <tr>
@@ -102,10 +107,6 @@
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>Claude Code</td>
-<td><code>~/.claude/skills/higgsfield</code></td>
-</tr>
 <tr>
 <td>Cursor</td>
 <td><code>~/.cursor/plugins/higgsfield</code></td>

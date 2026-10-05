@@ -268,7 +268,7 @@
 </table>
 <pre><code class="language-json">{
   &quot;name&quot;: &quot;Ops Agent&quot;,
-  &quot;model&quot;: &quot;claude-opus-5&quot;,
+  &quot;model&quot;: &quot;claude-opus-5-5&quot;,
   &quot;mcp_servers&quot;: [{ &quot;type&quot;: &quot;url&quot;, &quot;name&quot;: &quot;github&quot;, &quot;url&quot;: &quot;https://mcp.example.com/github&quot; }],
   &quot;tools&quot;: [
     {
@@ -657,13 +657,13 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Max 20 skills per agent.</strong> Agent creation uses <code>managed-agents-2026-04-01</code>; the separate Skills API (for managing custom skill definitions) uses <code>skills-2025-10-02</code>.</p>
+<p><strong>Max 20 skills per agent.</strong> Agent creation uses <code>managed-agents-2026-04-01</code>; the separate Skills API (for managing custom skill definitions) is out of beta and needs no beta header.</p>
 <h3>Enabling skills on a session</h3>
 <p>Skills are attached to the <strong>agent</strong> definition via <code>agents.create()</code>:</p>
 <pre><code class="language-ts">const agent = await client.beta.agents.create(
   {
     name: &quot;Financial Agent&quot;,
-    model: &quot;claude-opus-5&quot;,
+    model: &quot;claude-opus-5-5&quot;,
     system: &quot;You are a financial analysis agent.&quot;,
     skills: [
       { type: &quot;anthropic&quot;, skill_id: &quot;xlsx&quot; },
@@ -675,7 +675,7 @@
 <p>Python:</p>
 <pre><code class="language-python">agent = client.beta.agents.create(
     name=&quot;Financial Agent&quot;,
-    model=&quot;claude-opus-5&quot;,
+    model=&quot;claude-opus-5-5&quot;,
     system=&quot;You are a financial analysis agent.&quot;,
     skills=[
         {&quot;type&quot;: &quot;anthropic&quot;, &quot;skill_id&quot;: &quot;xlsx&quot;},

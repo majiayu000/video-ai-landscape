@@ -103,7 +103,7 @@ const getWeather = betaZodTool({
 
 // The tool runner handles the agentic loop and returns the final message
 const finalMessage = await client.beta.messages.toolRunner({
-  model: &quot;claude-opus-5&quot;,
+  model: &quot;claude-opus-5-5&quot;,
   max_tokens: 16000,
   tools: [getWeather],
   messages: [{ role: &quot;user&quot;, content: &quot;What's the weather in Paris?&quot; }],
@@ -123,7 +123,7 @@ console.log(finalMessage.content);
 <p>The runner's <code>tools</code> array accepts raw server-tool definitions (<code>web_search_20260209</code>, <code>web_fetch_20260209</code>, code execution) alongside runnable tools - pass the literal tool object; server tools run on Anthropic's servers, so there is no <code>run</code> function.</p>
 <p><strong>Caution - the runner does not auto-resume <code>pause_turn</code> (as of <code>@anthropic-ai/sdk</code> 0.110.0).</strong> A long-running server-tool turn can stop with <code>stop_reason: "pause_turn"</code>. The runner only continues after a client tool produces a result, so a paused turn ends the loop and is returned as the final message - no error, no warning, just a silently truncated answer. If you mix server tools into the runner, check <code>stop_reason</code> on every iteration and resume by pushing the paused assistant turn back:</p>
 <pre><code class="language-typescript">const params = {
-  model: &quot;claude-opus-5&quot;,
+  model: &quot;claude-opus-5-5&quot;,
   max_tokens: 16000,
   tools: [getWeather, { type: &quot;web_search_20260209&quot;, name: &quot;web_search&quot;, max_uses: 5 }],
   messages: [{ role: &quot;user&quot;, content: &quot;Compare this week's forecasts for Paris across two sources&quot; }],
@@ -162,7 +162,7 @@ let messages: Anthropic.MessageParam[] = [{ role: &quot;user&quot;, content: use
 
 while (true) {
   const response = await client.messages.create({
-    model: &quot;claude-opus-5&quot;,
+    model: &quot;claude-opus-5-5&quot;,
     max_tokens: 16000,
     tools: tools,
     messages: messages,
@@ -196,16 +196,32 @@ while (true) {
 }
 </code></pre>
 <h3>Streaming Manual Loop</h3>
-<p>Use <code>client.messages.stream()</code> + <code>finalMessage()</code> instead of <code>.create()</code> when you need streaming within a manual loop. Text deltas are streamed on each iteration; <code>finalMessage()</code> collects the complete <code>Message</code> so you can inspect <code>stop_reason</code> and extract tool-use blocks:</p>
+<p>Use <code>client.messages.stream()</code> + <code>finalMessage()</code> instead of <code>.create()</code> when you need streaming within a manual loop. Text deltas are streamed on each iteration; <code>finalMessage()</code> collects the complete <code>Message</code> so you can inspect <code>stop_reason</code> and extract tool-use blocks. Set <code>eager_input_streaming: true</code> on each tool so large inputs stream as generated; the server then no longer validates them, so validate each parsed input against the tool's schema before running it, stop on <code>max_tokens</code> / <code>refusal</code>, and catch only the SDK's JSON error (<code>shared/tool-use-concepts.md</code> -&gt; Eager input streaming). Schema validation is not path validation: the model-supplied <code>path</code> is untrusted output, so confine it to a project root before writing (the text-editor security note in the same file):</p>
 <pre><code class="language-typescript">import Anthropic from &quot;@anthropic-ai/sdk&quot;;
+import nodePath from &quot;path&quot;;
+import { z } from &quot;zod&quot;;
 
 const client = new Anthropic();
-const tools: Anthropic.Tool[] = [...];
+const ROOT = nodePath.resolve(process.cwd());
+const WriteFileInput = z.object({ path: z.string(), contents: z.string() });
+const tools: Anthropic.Tool[] = [
+  {
+    name: &quot;write_file&quot;,
+    description: &quot;Write text to a file at the given path&quot;,
+    eager_input_streaming: true, // stream large inputs as generated
+    input_schema: {
+      type: &quot;object&quot;,
+      properties: { path: { type: &quot;string&quot; }, contents: { type: &quot;string&quot; } },
+      required: [&quot;path&quot;, &quot;contents&quot;],
+    },
+  },
+];
 let messages: Anthropic.MessageParam[] = [{ role: &quot;user&quot;, content: userInput }];
+let jsonRetries = 0;
 
 while (true) {
   const stream = client.messages.stream({
-    model: &quot;claude-opus-5&quot;,
+    model: &quot;claude-opus-5-5&quot;,
     max_tokens: 64000,
     tools,
     messages,
@@ -217,10 +233,22 @@ while (true) {
   });
 
   // finalMessage() resolves with the complete Message - no need to
-  // manually wire up .on(&quot;message&quot;) / .on(&quot;error&quot;) / .on(&quot;abort&quot;)
-  const message = await stream.finalMessage();
+  // manually wire up .on(&quot;message&quot;) / .on(&quot;error&quot;) / .on(&quot;abort&quot;).
+  // With eager input streaming it rejects if a tool input could not be
+  // parsed at all. Only that case is retried; API errors are rethrown.
+  let message: Anthropic.Message;
+  try {
+    message = await stream.finalMessage();
+    jsonRetries = 0; // the cap is on consecutive failures of one turn
+  } catch (err) {
+    if (err instanceof Anthropic.APIError || jsonRetries++ &gt;= 2) throw err;
+    console.error(&quot;tool input was not parseable JSON, re-issuing the turn&quot;);
+    continue;
+  }
 
   if (message.stop_reason === &quot;end_turn&quot;) break;
+  // A refusal can cut a tool_use off mid-input; never run that turn's tools.
+  if (message.stop_reason === &quot;refusal&quot;) break;
 
   // Server-side tool hit iteration limit; append assistant turn and re-send to continue
   if (message.stop_reason === &quot;pause_turn&quot;) {
@@ -231,16 +259,51 @@ while (true) {
   const toolUseBlocks = message.content.filter(
     (b): b is Anthropic.ToolUseBlock =&gt; b.type === &quot;tool_use&quot;,
   );
+  if (toolUseBlocks.length === 0) break; // other terminal stop
+
+  // A tool input cut off at max_tokens usually parses as a valid partial
+  // object; check the stop reason and retry with a higher max_tokens
+  // instead of running the tool on truncated input.
+  if (message.stop_reason === &quot;max_tokens&quot;) {
+    throw new Error(&quot;tool input truncated (max_tokens); retry with a higher max_tokens&quot;);
+  }
 
   messages.push({ role: &quot;assistant&quot;, content: message.content });
 
   const toolResults: Anthropic.ToolResultBlockParam[] = [];
   for (const tool of toolUseBlocks) {
-    const result = await executeTool(tool.name, tool.input);
+    // The SDK's tolerant parser can return a silently truncated input (for
+    // example at an unescaped inner quote), so validate before running.
+    const parsed = WriteFileInput.safeParse(tool.input);
+    if (!parsed.success) {
+      toolResults.push({
+        type: &quot;tool_result&quot;,
+        tool_use_id: tool.id,
+        is_error: true,
+        content: JSON.stringify({ INVALID_JSON: JSON.stringify(tool.input) }),
+      });
+      continue;
+    }
+    // `path` is untrusted model output: resolve it and reject anything that
+    // escapes the project root (`..`, absolute paths) before the write -
+    // schema validation alone does not check this. This check is lexical; if
+    // the root contains symlinked directories, canonicalize with fs.realpath
+    // too (shared/tool-use-concepts.md -&gt; the text-editor security note).
+    const target = nodePath.resolve(ROOT, parsed.data.path);
+    const relative = nodePath.relative(ROOT, target);
+    if (relative === &quot;..&quot; || relative.startsWith(&quot;..&quot; + nodePath.sep) || nodePath.isAbsolute(relative)) {
+      toolResults.push({
+        type: &quot;tool_result&quot;,
+        tool_use_id: tool.id,
+        is_error: true,
+        content: &quot;path escapes the project root&quot;,
+      });
+      continue;
+    }
     toolResults.push({
       type: &quot;tool_result&quot;,
       tool_use_id: tool.id,
-      content: result,
+      content: await executeTool(tool.name, { ...parsed.data, path: target }),
     });
   }
 
@@ -255,7 +318,7 @@ while (true) {
 <hr />
 <h2>Handling Tool Results</h2>
 <pre><code class="language-typescript">const response = await client.messages.create({
-  model: &quot;claude-opus-5&quot;,
+  model: &quot;claude-opus-5-5&quot;,
   max_tokens: 16000,
   tools: tools,
   messages: [{ role: &quot;user&quot;, content: &quot;What's the weather in Paris?&quot; }],
@@ -266,7 +329,7 @@ for (const block of response.content) {
     const result = await executeTool(block.name, block.input);
 
     const followup = await client.messages.create({
-      model: &quot;claude-opus-5&quot;,
+      model: &quot;claude-opus-5-5&quot;,
       max_tokens: 16000,
       tools: tools,
       messages: [
@@ -285,13 +348,14 @@ for (const block of response.content) {
 </code></pre>
 <hr />
 <h2>Tool Choice</h2>
+<p><code>tool_choice</code> is <code>{ type: "auto" }</code> by default. Forcing a call (<code>{ type: "any" }</code> or <code>{ type: "tool", name: ... }</code>) returns a 400 on Claude Opus 5.5, Claude Sonnet 5.5, Claude Fable 5.1, and Claude Mythos 5.1; Claude Opus 5, Claude Sonnet 5, and older models accept it. Steer with the prompt instead, and keep the schema guarantee with <code>strict: true</code>:</p>
 <pre><code class="language-typescript">const response = await client.messages.create({
-  model: &quot;claude-opus-5&quot;,
+  model: &quot;claude-opus-5-5&quot;,
   max_tokens: 16000,
-  tools: tools,
-  tool_choice: { type: &quot;tool&quot;, name: &quot;get_weather&quot; },
-  messages: [{ role: &quot;user&quot;, content: &quot;What's the weather in Paris?&quot; }],
+  tools: tools.map((tool) =&gt; ({ ...tool, strict: true })), // schemas must set additionalProperties: false
+  messages: [{ role: &quot;user&quot;, content: &quot;What's the weather in Paris? Use the get_weather tool.&quot; }],
 });
+// auto does not guarantee a call - check for a tool_use block and re-prompt if none came back
 </code></pre>
 <hr />
 <h2>Anthropic-Defined Tools</h2>
@@ -299,7 +363,7 @@ for (const block of response.content) {
 <p><strong>Don't type-annotate as <code>Tool[]</code></strong> - <code>Tool</code> is just the custom-tool variant. Let structural typing infer from the <code>tools</code> param, or annotate as <code>Anthropic.Messages.ToolUnion[]</code> if you must:</p>
 <pre><code class="language-typescript">// Good: let inference work - no annotation
 const response = await client.messages.create({
-  model: &quot;claude-opus-5&quot;,
+  model: &quot;claude-opus-5-5&quot;,
   max_tokens: 16000,
   tools: [
     { type: &quot;text_editor_20250728&quot;, name: &quot;str_replace_based_edit_tool&quot; },
@@ -368,7 +432,7 @@ const response = await client.messages.create({
 const client = new Anthropic();
 
 const response = await client.messages.create({
-  model: &quot;claude-opus-5&quot;,
+  model: &quot;claude-opus-5-5&quot;,
   max_tokens: 16000,
   messages: [
     {
@@ -406,7 +470,7 @@ const uploaded = await client.beta.files.upload({
 // 2. Pass to code execution
 const response = await client.messages.create(
   {
-    model: &quot;claude-opus-5&quot;,
+    model: &quot;claude-opus-5-5&quot;,
     max_tokens: 16000,
     messages: [
       {
@@ -459,7 +523,7 @@ for (const block of response.content) {
 <h3>Container Reuse</h3>
 <pre><code class="language-typescript">// First request: set up environment
 const response1 = await client.messages.create({
-  model: &quot;claude-opus-5&quot;,
+  model: &quot;claude-opus-5-5&quot;,
   max_tokens: 16000,
   messages: [
     {
@@ -476,7 +540,7 @@ const containerId = response1.container!.id;
 
 const response2 = await client.messages.create({
   container: containerId,
-  model: &quot;claude-opus-5&quot;,
+  model: &quot;claude-opus-5-5&quot;,
   max_tokens: 16000,
   messages: [
     {
@@ -491,7 +555,7 @@ const response2 = await client.messages.create({
 <h2>Memory Tool</h2>
 <h3>Basic Usage</h3>
 <pre><code class="language-typescript">const response = await client.messages.create({
-  model: &quot;claude-opus-5&quot;,
+  model: &quot;claude-opus-5-5&quot;,
   max_tokens: 16000,
   messages: [
     {
@@ -521,7 +585,7 @@ const handlers: MemoryToolHandlers = {
 const memory = betaMemoryTool(handlers);
 
 const runner = client.beta.messages.toolRunner({
-  model: &quot;claude-opus-5&quot;,
+  model: &quot;claude-opus-5-5&quot;,
   max_tokens: 16000,
   tools: [memory],
   messages: [{ role: &quot;user&quot;, content: &quot;Remember my preferences&quot; }],
@@ -553,7 +617,7 @@ const ContactInfoSchema = z.object({
 const client = new Anthropic();
 
 const response = await client.messages.parse({
-  model: &quot;claude-opus-5&quot;,
+  model: &quot;claude-opus-5-5&quot;,
   max_tokens: 16000,
   messages: [
     {
@@ -572,7 +636,7 @@ console.log(response.parsed_output!.name); // &quot;Jane Doe&quot;
 </code></pre>
 <h3>Strict Tool Use</h3>
 <pre><code class="language-typescript">const response = await client.messages.create({
-  model: &quot;claude-opus-5&quot;,
+  model: &quot;claude-opus-5-5&quot;,
   max_tokens: 16000,
   messages: [
     {
@@ -606,7 +670,7 @@ console.log(response.parsed_output!.name); // &quot;Jane Doe&quot;
 <h2>Agent Skills</h2>
 <p>Enable an Anthropic-managed skill (e.g., <code>pptx</code>) via <code>container.skills</code> + the <code>code_execution</code> tool on the beta path. Both beta headers are required. Outputs land as files in the response content - download by file ID via the Files API.</p>
 <pre><code class="language-typescript">const response = await client.beta.messages.create({
-  model: &quot;claude-opus-5&quot;,
+  model: &quot;claude-opus-5-5&quot;,
   max_tokens: 16000,
   container: {
     skills: [{ type: &quot;anthropic&quot;, skill_id: &quot;pptx&quot;, version: &quot;latest&quot; }],

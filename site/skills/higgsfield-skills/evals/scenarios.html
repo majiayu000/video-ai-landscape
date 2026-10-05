@@ -88,9 +88,8 @@
 </blockquote>
 <p><strong>Expected behavior:</strong></p>
 <ul>
-<li>Picks <code>nano_banana_2</code>, <code>flux_2</code>, or another photorealistic-default model.</li>
+<li>Picks <code>gpt_image_2_5</code> (default), or a faster option (<code>z_image</code>, <code>nano_banana_2_lite</code>) because the user said "quick".</li>
 <li>Does NOT pick a Soul model (no face mentioned).</li>
-<li>Does NOT pick <code>gpt_image_2</code> (overkill for "quick").</li>
 <li>Submits via <code>higgsfield generate create &lt;model&gt; --prompt "..." --wait</code> (one-shot create+poll, no separate <code>wait</code> step).</li>
 <li>Stays silent until done (no "checking status..." spam).</li>
 <li>Delivers ONE URL with a short summary.</li>
@@ -110,7 +109,7 @@
 </blockquote>
 <p><strong>Expected behavior:</strong></p>
 <ul>
-<li>Picks <code>kling3_0</code> (default for image-to-video) or <code>seedance_2_0</code>.</li>
+<li>Picks <code>seedance_2_5</code> (default for image-to-video) with <code>--mode omni_reference</code>.</li>
 <li>Uses <code>--start-image still.jpg</code>.</li>
 <li>Uses motion verbs in the prompt ("pulls back", "ambient motion") not redescribed scene.</li>
 <li><code>--duration 5</code>.</li>
@@ -231,8 +230,8 @@
 <ul>
 <li>Detects user_language = <code>ru</code>.</li>
 <li>Replies in Russian for status, questions, summary.</li>
-<li>Keeps technical flags English (<code>--model nano_banana_2</code>, <code>--aspect_ratio 16:9</code>).</li>
-<li>Picks <code>nano_banana_2</code> or <code>flux_2</code>.</li>
+<li>Keeps technical flags English (<code>--model nano_banana_flash</code>, <code>--aspect_ratio 16:9</code>).</li>
+<li>Picks <code>gpt_image_2_5</code> (default).</li>
 </ul>
 <p><strong>Score:</strong></p>
 <ul>
@@ -328,11 +327,11 @@
 </blockquote>
 <p><strong>Expected behavior:</strong></p>
 <ul>
-<li>Routes to <code>higgsfield-game-generation</code>.</li>
+<li>Routes to <code>higgsfield-websites</code> and creates the project with <code>--type game</code> and a game-genre <code>--category</code>.</li>
 <li>Produces a STYLE FORMULA and <code>design/assets.csv</code> before visuals/code.</li>
 <li>Builds responsive touch + keyboard controls and a complete win/lose/restart loop.</li>
-<li>Verifies locally, packages the required root layout, and runs <code>higgsfield game deploy</code>.</li>
-<li>Does not run <code>higgsfield game publish</code> unless marketplace publication is requested.</li>
+<li>Verifies locally, pushes, and runs <code>higgsfield website deploy</code>.</li>
+<li>Does not run <code>higgsfield website publish</code> unless publication is requested.</li>
 </ul>
 <p><strong>Score:</strong></p>
 <ul>

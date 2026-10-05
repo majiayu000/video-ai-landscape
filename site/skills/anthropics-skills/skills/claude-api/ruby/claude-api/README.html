@@ -96,7 +96,7 @@ client = Anthropic::Client.new(api_key: &quot;your-api-key&quot;)
 <hr />
 <h2>Basic Message Request</h2>
 <pre><code class="language-ruby">message = client.messages.create(
-  model: :&quot;claude-opus-5&quot;,
+  model: :&quot;claude-opus-5-5&quot;,
   max_tokens: 16000,
   messages: [
     { role: &quot;user&quot;, content: &quot;What is the capital of France?&quot; }
@@ -112,12 +112,13 @@ end
 <hr />
 <h2>Extended Thinking</h2>
 <blockquote>
-<p><strong>Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking. <code>budget_tokens</code> is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<p><strong>Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking. <code>budget_tokens</code> is removed on Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+<strong>Claude Opus 5.5:</strong> thinking is always on - omit <code>thinking</code> (or send <code>{ type: "adaptive" }</code>, which is equivalent); <code>{ type: "disabled" }</code> returns a 400 at every effort, as does a thinking budget. Control depth with <code>output_config.effort</code> instead - the default is <code>medium</code> on this model, where Claude Opus 5 defaults to <code>high</code>.
 <strong>Claude Opus 5:</strong> thinking is on by default - omitting <code>thinking:</code> runs adaptive (<code>{ type: "adaptive" }</code> is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. <code>{ type: "disabled" }</code> is accepted only at effort <code>high</code> or lower; pairing it with <code>xhigh</code>/<code>max</code> returns a 400.
 <strong>Older models:</strong> Use <code>thinking: { type: "enabled", budget_tokens: N }</code> (must be &lt; <code>max_tokens</code>, min 1024).</p>
 </blockquote>
 <pre><code class="language-ruby">message = client.messages.create(
-  model: :&quot;claude-opus-5&quot;,
+  model: :&quot;claude-opus-5-5&quot;,
   max_tokens: 16000,
   thinking: { type: &quot;adaptive&quot; },
   messages: [{ role: &quot;user&quot;, content: &quot;Solve: 27 * 453&quot; }]
@@ -134,7 +135,7 @@ end
 <h2>Prompt Caching</h2>
 <p><code>system_:</code> (trailing underscore - avoids shadowing <code>Kernel#system</code>) takes an array of text blocks; set <code>cache_control</code> on the last block. Plain hashes work via the <code>OrHash</code> type alias. For placement patterns and the silent-invalidator audit checklist, see <code>shared/prompt-caching.md</code>.</p>
 <pre><code class="language-ruby">message = client.messages.create(
-  model: :&quot;claude-opus-5&quot;,
+  model: :&quot;claude-opus-5-5&quot;,
   max_tokens: 16000,
   system_: [
     { type: &quot;text&quot;, text: long_system_prompt, cache_control: { type: &quot;ephemeral&quot; } }
@@ -158,7 +159,7 @@ end
 <p><code>betas:</code> is only valid on <code>client.beta.messages.create</code>, not the non-beta path.</p>
 <h3>Task budgets</h3>
 <pre><code class="language-ruby">response = client.beta.messages.create(
-  model: :&quot;claude-opus-5&quot;,
+  model: :&quot;claude-opus-5-5&quot;,
   max_tokens: 16000,
   output_config: { task_budget: { type: :tokens, total: 64_000 } },
   tools: [...],
