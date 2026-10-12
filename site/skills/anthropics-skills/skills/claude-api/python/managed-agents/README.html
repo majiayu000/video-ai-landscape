@@ -102,7 +102,7 @@ client = anthropic.Anthropic(api_key=&quot;your-api-key&quot;)
     name=&quot;my-dev-env&quot;,
     config={
         &quot;type&quot;: &quot;cloud&quot;,
-        &quot;networking&quot;: {&quot;type&quot;: &quot;unrestricted&quot;},
+        &quot;networking&quot;: {&quot;type&quot;: &quot;limited&quot;, &quot;allow_package_managers&quot;: True, &quot;allow_mcp_servers&quot;: True},
     },
 )
 print(environment.id)  # env_...
@@ -113,11 +113,21 @@ print(environment.id)  # env_...
 <p>Warning: <strong>There is no inline agent config.</strong> <code>model</code>/<code>system</code>/<code>tools</code> live on the agent object, not the session. Always start with <code>agents.create()</code> - the session only takes <code>agent={"type": "agent", "id": agent.id}</code>.</p>
 </blockquote>
 <h3>Minimal</h3>
+<p>The examples on this page turn both web tools off. Set <code>enabled</code> to true on <code>web_fetch</code> / <code>web_search</code> only when the job as described needs the web (a general-purpose or open-ended job stays off; tell the user how to switch it on) - see <code>shared/managed-agents-tools.md</code> § Agent Toolset. They also set the <code>auto</code> permission policy, under which a call can pause for your approval - the event loop under Stream Events answers it. When nobody is watching the run, answer <code>deny</code>; never answer <code>allow</code> to every paused call.</p>
 <pre><code class="language-python"># 1. Create the agent (reusable, versioned)
 agent = client.beta.agents.create(
     name=&quot;Coding Assistant&quot;,
     model=&quot;claude-opus-5-5&quot;,
-    tools=[{&quot;type&quot;: &quot;agent_toolset_20260401&quot;, &quot;default_config&quot;: {&quot;enabled&quot;: True}}],
+    tools=[
+        {
+            &quot;type&quot;: &quot;agent_toolset_20260401&quot;,
+            &quot;default_config&quot;: {&quot;enabled&quot;: True, &quot;permission_policy&quot;: {&quot;type&quot;: &quot;auto&quot;}},
+            &quot;configs&quot;: [
+                {&quot;name&quot;: &quot;web_fetch&quot;, &quot;enabled&quot;: False},
+                {&quot;name&quot;: &quot;web_search&quot;, &quot;enabled&quot;: False},
+            ],
+        },
+    ],
 )
 
 # 2. Start a session
@@ -136,7 +146,14 @@ agent = client.beta.agents.create(
     model=&quot;claude-opus-5-5&quot;,
     system=&quot;You are a senior code reviewer.&quot;,
     tools=[
-        {&quot;type&quot;: &quot;agent_toolset_20260401&quot;},
+        {
+            &quot;type&quot;: &quot;agent_toolset_20260401&quot;,
+            &quot;default_config&quot;: {&quot;permission_policy&quot;: {&quot;type&quot;: &quot;auto&quot;}},
+            &quot;configs&quot;: [
+                {&quot;name&quot;: &quot;web_fetch&quot;, &quot;enabled&quot;: False},
+                {&quot;name&quot;: &quot;web_search&quot;, &quot;enabled&quot;: False},
+            ],
+        },
         {
             &quot;type&quot;: &quot;custom&quot;,
             &quot;name&quot;: &quot;run_tests&quot;,
@@ -162,7 +179,7 @@ session = client.beta.sessions.create(
             &quot;url&quot;: &quot;https://github.com/owner/repo&quot;,
             &quot;mount_path&quot;: &quot;/workspace/repo&quot;,
             &quot;authorization_token&quot;: os.environ[&quot;GITHUB_TOKEN&quot;],
-            &quot;branch&quot;: &quot;main&quot;,
+            &quot;checkout&quot;: {&quot;type&quot;: &quot;branch&quot;, &quot;name&quot;: &quot;main&quot;},
         }
     ],
 )
@@ -183,8 +200,8 @@ session = client.beta.sessions.create(
 <p>Tip: <strong>Stream-first:</strong> Open the stream <em>before</em> (or concurrently with) sending the message. The stream only delivers events that occur after it opens - stream-after-send means early events arrive buffered in one batch. See <a href="../../shared/managed-agents-events.html#steering-patterns">Steering Patterns</a>.</p>
 </blockquote>
 <hr />
-<h2>Define an Outcome (default kickoff for deliverables)</h2>
-<p>When the session's job is to produce something checkable - an artifact, a report, a PR - kick off with <code>user.define_outcome</code> instead of <code>user.message</code>: the harness grades each iteration against your rubric and the agent revises until it passes. Send one or the other, never both. See <a href="../../shared/managed-agents-outcomes.html">Outcomes</a> for the event reference and rubric-writing guidance.</p>
+<h2>Define an Outcome (default kickoff for one deliverable)</h2>
+<p>When the session's job is one checkable deliverable - an artifact, a report, a PR - kick off with <code>user.define_outcome</code> instead of <code>user.message</code>: the harness grades each iteration against your rubric and the agent revises until it passes. Send one or the other, never both. See <a href="../../shared/managed-agents-outcomes.html">Outcomes</a> for the event reference and rubric-writing guidance. The job below reads live prices, so its agent needs <code>web_search</code> and <code>web_fetch</code> set to <code>enabled: true</code>. Under the <code>limited</code> networking created above, those tools reach only the hosts in <code>allowed_hosts</code>, and with none listed they return no page or search result: list the sites the job reads there (a listed host is also open to the sandbox). When the sites can't be listed in advance, the other mode is <code>unrestricted</code>, which gives the whole sandbox full egress, not only the web tools: offer it to the user with that warning, do not choose it for them, and if they take it, keep secrets and sensitive files out of the sandbox (see <a href="../../shared/managed-agents-environments.html">Environments</a>).</p>
 <pre><code class="language-python">STARTER_RUBRIC = &quot;&quot;&quot;# Report rubric - starter, tune the criteria
 - Output is a single `report.md` in /mnt/session/outputs/
 - Every claim cites a source URL
@@ -234,8 +251,21 @@ with client.beta.sessions.events.stream(
             print(f&quot;\nCustom tool call: {event.name}&quot;)
             print(f&quot;Input: {json.dumps(event.input)}&quot;)
             # Send result back (see below)
+        elif (event.type == &quot;agent.tool_use&quot; or event.type == &quot;agent.mcp_tool_use&quot;) and event.evaluated_permission == &quot;ask&quot;:
+            # Paused for your decision (always_ask, or auto with no determination)
+            client.beta.sessions.events.send(
+                session_id=session.id,
+                events=[{
+                    &quot;type&quot;: &quot;user.tool_confirmation&quot;,
+                    &quot;tool_use_id&quot;: event.id,
+                    # you write approve(): ask a person or apply your own rule; deny when unattended
+                    &quot;result&quot;: &quot;allow&quot; if approve(event) else &quot;deny&quot;,
+                }],
+            )
         elif event.type == &quot;session.status_idle&quot;:
             print(&quot;\n--- Agent idle ---&quot;)
+            if event.stop_reason.type != &quot;requires_action&quot;:  # requires_action: waiting on you, keep streaming
+                break
         elif event.type == &quot;session.status_terminated&quot;:
             print(&quot;\n--- Session terminated ---&quot;)
             break
@@ -278,41 +308,40 @@ def run_custom_tool(tool_name: str, tool_input: dict) -&gt; str:
 
 
 def run_session(client, session_id: str):
-    &quot;&quot;&quot;Stream events and handle custom tool calls.&quot;&quot;&quot;
-    while True:
-        with client.beta.sessions.events.stream(
-            session_id=session_id,
-        ) as stream:
-            tool_calls = []
-            for event in stream:
-                if event.type == &quot;agent.message&quot;:
-                    for block in event.content:
-                        if block.type == &quot;text&quot;:
-                            print(block.text, end=&quot;&quot;, flush=True)
-                elif event.type == &quot;agent.custom_tool_use&quot;:
-                    tool_calls.append(event)
-                elif event.type == &quot;session.status_idle&quot;:
-                    break
-                elif event.type == &quot;session.status_terminated&quot;:
+    &quot;&quot;&quot;Stream events; answer custom tool calls and paused calls as they arrive.&quot;&quot;&quot;
+    with client.beta.sessions.events.stream(
+        session_id=session_id,
+    ) as stream:
+        for event in stream:
+            if event.type == &quot;agent.message&quot;:
+                for block in event.content:
+                    if block.type == &quot;text&quot;:
+                        print(block.text, end=&quot;&quot;, flush=True)
+            elif event.type == &quot;agent.custom_tool_use&quot;:
+                client.beta.sessions.events.send(
+                    session_id=session_id,
+                    events=[{
+                        &quot;type&quot;: &quot;user.custom_tool_result&quot;,
+                        &quot;custom_tool_use_id&quot;: event.id,
+                        &quot;content&quot;: [{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: run_custom_tool(event.name, event.input)}],
+                    }],
+                )
+            elif (event.type == &quot;agent.tool_use&quot; or event.type == &quot;agent.mcp_tool_use&quot;) and event.evaluated_permission == &quot;ask&quot;:
+                # Paused for your decision (always_ask, or auto with no determination)
+                client.beta.sessions.events.send(
+                    session_id=session_id,
+                    events=[{
+                        &quot;type&quot;: &quot;user.tool_confirmation&quot;,
+                        &quot;tool_use_id&quot;: event.id,
+                        # you write approve(): ask a person or apply your own rule; deny when unattended
+                        &quot;result&quot;: &quot;allow&quot; if approve(event) else &quot;deny&quot;,
+                    }],
+                )
+            elif event.type == &quot;session.status_idle&quot;:
+                if event.stop_reason.type != &quot;requires_action&quot;:  # requires_action: waiting on you, keep streaming
                     return
-
-        if not tool_calls:
-            break
-
-        # Process custom tool calls
-        results = []
-        for call in tool_calls:
-            result = run_custom_tool(call.name, call.input)
-            results.append({
-                &quot;type&quot;: &quot;user.custom_tool_result&quot;,
-                &quot;custom_tool_use_id&quot;: call.id,
-                &quot;content&quot;: [{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: result}],
-            })
-
-        client.beta.sessions.events.send(
-            session_id=session_id,
-            events=results,
-        )
+            elif event.type == &quot;session.status_terminated&quot;:
+                return
 </code></pre>
 <hr />
 <h2>Upload a File</h2>
@@ -325,7 +354,7 @@ def run_session(client, session_id: str):
 session = client.beta.sessions.create(
     agent={&quot;type&quot;: &quot;agent&quot;, &quot;id&quot;: agent.id, &quot;version&quot;: agent.version},
     environment_id=environment.id,
-    resources=[{&quot;type&quot;: &quot;file&quot;, &quot;file_id&quot;: file.id, &quot;mount_path&quot;: &quot;/workspace/data.csv&quot;}],
+    resources=[{&quot;type&quot;: &quot;file&quot;, &quot;file_id&quot;: file.id, &quot;mount_path&quot;: &quot;/data.csv&quot;}],
 )
 </code></pre>
 <hr />
@@ -370,7 +399,14 @@ agent = client.beta.agents.create(
         {&quot;type&quot;: &quot;url&quot;, &quot;name&quot;: &quot;my-tools&quot;, &quot;url&quot;: &quot;https://my-mcp-server.example.com/sse&quot;},
     ],
     tools=[
-        {&quot;type&quot;: &quot;agent_toolset_20260401&quot;, &quot;default_config&quot;: {&quot;enabled&quot;: True}},
+        {
+            &quot;type&quot;: &quot;agent_toolset_20260401&quot;,
+            &quot;default_config&quot;: {&quot;enabled&quot;: True, &quot;permission_policy&quot;: {&quot;type&quot;: &quot;auto&quot;}},
+            &quot;configs&quot;: [
+                {&quot;name&quot;: &quot;web_fetch&quot;, &quot;enabled&quot;: False},
+                {&quot;name&quot;: &quot;web_search&quot;, &quot;enabled&quot;: False},
+            ],
+        },
         {&quot;type&quot;: &quot;mcp_toolset&quot;, &quot;mcp_server_name&quot;: &quot;my-tools&quot;},
     ],
 )

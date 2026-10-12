@@ -251,6 +251,11 @@ detected language code in a delayed final transcript event.</p>
 languages, <code>entityDetection</code> for entity events, and <code>filterBackgroundAudio</code> to reduce false
 activation from background speech and ambient noise. Do not combine <code>filterBackgroundAudio</code> with
 <code>includeTimestamps</code>. Enterprise zero-retention sessions can set <code>enableLogging: false</code>.</p>
+<p>Set <code>transcriptEdit</code> on <code>Scribe.connect</code> to apply a natural-language instruction of up to 2,000
+characters to each committed segment. Listen for <code>RealtimeEvents.EDITED_TRANSCRIPT</code>; each event
+contains the original <code>text</code> and the <code>edited_text</code>. Transcript editing cannot be combined with
+<code>entityDetection</code> and adds a 30% premium, billed for at least 10 seconds of audio per committed
+segment.</p>
 <h2>Manual Audio Chunking</h2>
 <p>For file uploads or custom audio sources, encode to PCM-16 and send in chunks:</p>
 <pre><code class="language-typescript">const chunkSize = 4096;

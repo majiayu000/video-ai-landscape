@@ -77,7 +77,7 @@
 <meta name="twitter:description" content="agents · ElevenLabs 插件。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
 <meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/agents/SKILL.md</span><button onclick="t()">🌓</button></nav>
-<main class="md"><div class="meta"><div class="m-name">agents</div><div class="m-desc">Build voice AI agents with ElevenLabs. Use when creating voice assistants, customer service bots, interactive voice characters, or any real-time voice conversation experience, and when configuring an agent&#x27;s tools, workflows, or procedures, including creating, editing, compiling, and publishing procedure drafts on an agent branch over the SDKs or REST API.</div><div class="m-src">源文件：<a href="https://github.com/elevenlabs/plugin/blob/main/skills/general/agents/SKILL.md" target="_blank" rel="noopener">elevenlabs/plugin/skills/general/agents/SKILL.md</a></div></div><h1>ElevenLabs Agents Platform</h1>
+<main class="md"><div class="meta"><div class="m-name">agents</div><div class="m-desc">Build voice AI agents with ElevenLabs. Use when creating voice assistants, customer service bots, interactive voice characters, or any real-time voice conversation experience, and when configuring an agent&#x27;s tools, workflows, or procedures, including creating, editing, and publishing free-form and structured procedure drafts on an agent branch over the SDKs or REST API.</div><div class="m-src">源文件：<a href="https://github.com/elevenlabs/plugin/blob/main/skills/general/agents/SKILL.md" target="_blank" rel="noopener">elevenlabs/plugin/skills/general/agents/SKILL.md</a></div></div><h1>ElevenLabs Agents Platform</h1>
 <p>Build voice AI agents with natural conversations, multiple LLM providers, custom tools, and easy web embedding.</p>
 <blockquote>
 <p><strong>Setup:</strong> See <a href="references/installation.html">Installation Guide</a> for CLI and SDK setup.</p>
@@ -143,15 +143,6 @@ const agent = await client.conversationalAi.agents.create({
   --json '{&quot;name&quot;: &quot;My Assistant&quot;, &quot;conversation_config&quot;: {&quot;agent&quot;: {&quot;first_message&quot;: &quot;Hello!&quot;, &quot;language&quot;: &quot;en&quot;, &quot;prompt&quot;: {&quot;prompt&quot;: &quot;You are helpful.&quot;, &quot;llm&quot;: &quot;gemini-2.0-flash&quot;}}, &quot;tts&quot;: {&quot;voice_id&quot;: &quot;JBFqnCBsd6RMkjVDRZzb&quot;}}}'
 </code></pre>
 <h2>Starting Conversations</h2>
-<h3>Temporary LiveKit WebSocket Pin</h3>
-<p>Until the ElevenLabs LiveKit server supports <code>/rtc/v1</code>, browser clients using WebRTC can fail or stall during the underlying LiveKit WebSocket handshake with <code>livekit-client</code> versions newer than <code>2.16.1</code>. For React, Next.js, Electron, or other <code>@elevenlabs/client</code> / <code>@elevenlabs/react</code> integrations that use <code>connectionType: "webrtc"</code> or hit <code>wss://livekit.rtc.elevenlabs.io/rtc/v1</code>, add this temporary pin to <code>package.json</code>:</p>
-<pre><code class="language-json">{
-  &quot;overrides&quot;: {
-    &quot;livekit-client&quot;: &quot;2.16.1&quot;
-  }
-}
-</code></pre>
-<p>Use the pin when the app logs <code>/rtc/v1</code> 404s, <code>v1 RTC path not found</code>, or <code>could not establish pc connection</code> during session startup. This is a LiveKit server compatibility workaround for WebRTC sessions, not the ElevenLabs <code>connectionType: "websocket"</code> transport. Remove it after the upstream LiveKit server or SDK issue is fixed.</p>
 <p><strong>Authenticated WebRTC:</strong> Request a session token from your backend. The response includes both
 the token and the conversation ID:</p>
 <pre><code class="language-python">session = client.conversational_ai.conversations.get_webrtc_token(
@@ -175,6 +166,8 @@ const conversation = await Conversation.startSession({
   onMessage: (msg) =&gt; console.log(&quot;Agent:&quot;, msg.message),
   onUserTranscript: (t) =&gt; console.log(&quot;User:&quot;, t.message),
   onPing: (event) =&gt; console.log(&quot;Estimated latency:&quot;, event.ping_ms),
+  onContextUsage: ({ model, context_tokens, context_limit_tokens }) =&gt;
+    console.log(`${model}: ${context_tokens}/${context_limit_tokens} context tokens`),
   onError: (e) =&gt; console.error(e)
 });
 </code></pre>
@@ -208,6 +201,9 @@ function App({ signedUrl }: { signedUrl: string }) {
     &lt;ConversationProvider
       onError={(error) =&gt; console.error(&quot;Conversation error:&quot;, error)}
       onPing={(event) =&gt; console.log(&quot;Estimated latency:&quot;, event.ping_ms)}
+      onContextUsage={({ model, context_tokens, context_limit_tokens }) =&gt;
+        console.log(`${model}: ${context_tokens}/${context_limit_tokens} context tokens`)
+      }
     &gt;
       &lt;Agent signedUrl={signedUrl} /&gt;
     &lt;/ConversationProvider&gt;
@@ -225,19 +221,19 @@ function App({ signedUrl }: { signedUrl: string }) {
 <tbody>
 <tr>
 <td>OpenAI</td>
-<td><code>gpt-5.6-sol</code>, <code>gpt-5.6-terra</code>, <code>gpt-5.6-luna</code>, <code>gpt-5.5</code>, <code>gpt-5.5-2026-04-23</code>, <code>gpt-5.4</code>, <code>gpt-5.4-mini</code>, <code>gpt-5.4-nano</code>, <code>gpt-5.4-2026-03-05</code>, <code>gpt-5.4-mini-2026-03-17</code>, <code>gpt-5.4-nano-2026-03-17</code>, <code>gpt-5</code>, <code>gpt-5-mini</code>, <code>gpt-5-nano</code>, <code>gpt-4.1</code>, <code>gpt-4.1-mini</code>, <code>gpt-4.1-nano</code>, <code>gpt-4o</code>, <code>gpt-4o-mini</code>, <code>gpt-4-turbo</code></td>
+<td><code>gpt-6-sol</code>, <code>gpt-6-luna</code>, <code>gpt-6-astra</code>, <code>gpt-5.6-sol</code>, <code>gpt-5.6-terra</code>, <code>gpt-5.6-luna</code>, <code>gpt-5.5</code>, <code>gpt-5.5-2026-04-23</code>, <code>gpt-5.4</code>, <code>gpt-5.4-mini</code>, <code>gpt-5.4-nano</code>, <code>gpt-5.4-2026-03-05</code>, <code>gpt-5.4-mini-2026-03-17</code>, <code>gpt-5.4-nano-2026-03-17</code>, <code>gpt-5</code>, <code>gpt-5-mini</code>, <code>gpt-5-nano</code>, <code>gpt-4.1</code>, <code>gpt-4.1-mini</code>, <code>gpt-4.1-nano</code>, <code>gpt-4o</code>, <code>gpt-4o-mini</code>, <code>gpt-4-turbo</code></td>
 </tr>
 <tr>
 <td>Anthropic</td>
-<td><code>claude-opus-4-7</code>, <code>claude-sonnet-4-6</code>, <code>claude-sonnet-4-5</code>, <code>claude-sonnet-4</code>, <code>claude-haiku-4-5</code>, <code>claude-3-7-sonnet</code>, <code>claude-3-5-sonnet</code>, <code>claude-3-haiku</code></td>
+<td><code>claude-opus-5-5</code>, <code>claude-opus-5</code>, <code>claude-opus-4-7</code>, <code>claude-sonnet-4-6</code>, <code>claude-sonnet-4-5</code>, <code>claude-sonnet-4</code>, <code>claude-haiku-4-5</code>, <code>claude-3-7-sonnet</code>, <code>claude-3-5-sonnet</code>, <code>claude-3-haiku</code></td>
 </tr>
 <tr>
 <td>Google</td>
-<td><code>gemini-3.7-flash</code>, <code>gemini-3.6-flash</code>, <code>gemini-3.1-flash-lite-preview</code>, <code>gemini-3.1-pro-preview</code>, <code>gemini-3-pro-preview</code>, <code>gemini-3-flash-preview</code>, <code>gemini-2.5-flash</code>, <code>gemini-2.5-flash-lite</code>, <code>gemini-2.0-flash</code>, <code>gemini-2.0-flash-lite</code></td>
+<td><code>gemini-3.8-flash</code>, <code>gemini-3.7-flash</code>, <code>gemini-3.6-flash</code>, <code>gemini-3.1-flash-lite-preview</code>, <code>gemini-3.1-pro-preview</code>, <code>gemini-3-pro-preview</code>, <code>gemini-3-flash-preview</code>, <code>gemini-2.5-flash</code>, <code>gemini-2.5-flash-lite</code>, <code>gemini-2.0-flash</code>, <code>gemini-2.0-flash-lite</code></td>
 </tr>
 <tr>
 <td>ElevenLabs</td>
-<td><code>glm-45-air-fp8</code>, <code>qwen3-30b-a3b</code>, <code>qwen36-35b-a3b</code>, <code>qwen35-35b-a3b</code>, <code>qwen35-397b-a17b</code>, <code>gpt-oss-120b</code></td>
+<td><code>glm-52</code>, <code>deepseek-v41-flash</code>, <code>glm-45-air-fp8</code>, <code>qwen3-30b-a3b</code>, <code>qwen36-35b-a3b</code>, <code>qwen35-35b-a3b</code>, <code>qwen35-397b-a17b</code>, <code>gpt-oss-120b</code></td>
 </tr>
 <tr>
 <td>Custom</td>
@@ -274,8 +270,7 @@ function App({ signedUrl }: { signedUrl: string }) {
     ],
     &quot;built_in_tools&quot;: {
         &quot;end_call&quot;: {},
-        &quot;transfer_to_number&quot;: {&quot;transfers&quot;: [{&quot;transfer_destination&quot;: {&quot;type&quot;: &quot;phone&quot;, &quot;phone_number&quot;: &quot;+1234567890&quot;}, &quot;condition&quot;: &quot;User asks for human support&quot;}]},
-        &quot;start_procedure&quot;: {}
+        &quot;transfer_to_number&quot;: {&quot;transfers&quot;: [{&quot;transfer_destination&quot;: {&quot;type&quot;: &quot;phone&quot;, &quot;phone_number&quot;: &quot;+1234567890&quot;}, &quot;condition&quot;: &quot;User asks for human support&quot;}]}
     }
 }
 </code></pre>
@@ -315,14 +310,6 @@ function App({ signedUrl }: { signedUrl: string }) {
 <td>Multi-agent workflows</td>
 </tr>
 <tr>
-<td><code>start_procedure</code></td>
-<td>Procedure-guided conversations (see <a href="#procedures">Procedures</a>)</td>
-</tr>
-<tr>
-<td><code>end_procedure</code></td>
-<td>Completing active procedures</td>
-</tr>
-<tr>
 <td><code>skip_turn</code></td>
 <td>Tutoring / coaching (silent listening)</td>
 </tr>
@@ -336,6 +323,7 @@ function App({ signedUrl }: { signedUrl: string }) {
 </tr>
 </tbody>
 </table>
+<p><code>start_procedure</code> and <code>end_procedure</code> are not configured here. The platform adds them automatically whenever the agent has at least one procedure (see <a href="#procedures">Procedures</a>).</p>
 <p><code>run_subagent</code> is a system tool for delegating a task to another configured agent. Add it to
 <code>conversation_config.agent.prompt.tools</code> with <code>params.system_tool_type: "run_subagent"</code> and an
 <code>agents</code> array. Each entry requires <code>agent_id</code> and <code>description</code>; <code>branch_id</code> and a JSON-schema
@@ -430,7 +418,7 @@ Add it to <code>conversation_config.agent.prompt.tools</code> with <code>type: "
 <p>For nested agent transfers, set <code>enable_nesting</code> on a <code>standalone_agent</code> node and
 <code>return_when_nested</code> on an <code>end</code> node that should return control to the parent workflow.</p>
 <h2>Procedures</h2>
-<p>Reusable instruction blocks an agent runs when a trigger matches. A procedure is <code>free_form</code> (markdown guidance the agent adapts, and the only type that can reference knowledge base documents) or <code>deterministic</code> (ordered, typed steps for flows that must run consistently). Procedures are in Alpha. See <a href="references/using-procedure-api.html">Using the Procedure API</a> for the full CLI and SDK flow, and <a href="references/writing-procedures.html">Writing Procedures</a> for the step schema and authoring rules.</p>
+<p>Reusable instruction blocks an agent runs when a trigger matches. A procedure is <code>free_form</code> (markdown guidance the agent adapts, and the only type that can reference knowledge base documents) or <code>deterministic</code> (called "structured" in the dashboard: typed steps that run in a fixed order, for flows that must happen the same way every time). See <a href="references/using-procedure-api.html">Using the Procedure API</a> for the full CLI and SDK flow, and <a href="references/writing-procedures.html">Writing Procedures</a> for the step reference, validation rules, and authoring guidance.</p>
 <p>Procedures live on an agent branch, and every write stages a per-user draft:</p>
 <table>
 <thead>
@@ -445,10 +433,6 @@ Add it to <code>conversation_config.agent.prompt.tools</code> with <code>type: "
 <td><code>/v1/convai/agents/{agent_id}/branches/{branch_id}/procedures...</code> (<code>procedures.*</code> and <code>procedures.drafts.*</code> in the SDKs)</td>
 </tr>
 <tr>
-<td>Compile</td>
-<td><code>POST .../procedures/compile</code> (<code>procedures.compile</code>)</td>
-</tr>
-<tr>
 <td>Publish</td>
 <td><code>PATCH /v1/convai/agents/{agent_id}?branch_id=...</code> (<code>agents.update</code>)</td>
 </tr>
@@ -458,11 +442,14 @@ Add it to <code>conversation_config.agent.prompt.tools</code> with <code>type: "
 <ul>
 <li>Nothing reaches the live agent until you publish. Publishing is not a procedure endpoint; one PATCH on the agent versions every changed procedure draft on the branch.</li>
 <li><code>GET .../procedures/{procedure_id}</code> reads branch HEAD and returns <code>404</code> until that procedure's first publish. Read the <code>/draft</code> variant to see a procedure you just created; do not retry the create.</li>
-<li>Compile only when structured (<code>deterministic</code>) procedures changed. Compilation turns them into workflow nodes, so the publish must carry the <code>workflow</code> that compile returned. Free-form-only changes publish without compiling, because the agent loads free-form procedures from their published versions.</li>
-<li>Compile validates structured content and is the only way to check it. On <code>400</code> it returns <code>errors</code> keyed by procedure ID with the offending field <code>path</code>; repair the draft and compile again rather than publishing.</li>
-<li>A draft update replaces the whole body. Read the draft first, then resend <code>name</code>, <code>type</code>, and <code>trigger</code> alongside the new <code>content</code>.</li>
-<li><code>content</code> is markdown for a <code>free_form</code> procedure, and a JSON-encoded object with a <code>trigger</code> and a <code>steps</code> array for a <code>deterministic</code> one. Serialize it; do not hand-escape quotes.</li>
-<li>Routing is driven by the <code>trigger</code> text, not the procedure name. Write concrete, non-overlapping triggers that cover the phrasings a user would actually say.</li>
+<li>Turning a structured procedure's steps into the form the agent executes is called compiling. When you publish, the platform validates every structured procedure on the branch, compiles them, and stores the result with the new version. You do not compile anything yourself and do not send a <code>workflow</code> in the request; <code>agents.update</code> with <code>branch_id</code> publishes, and compilation happens as part of that. The compiled result is currently visible as read-only nodes in the dashboard's Workflow tab. A failed publish writes nothing, so publishing is also the validation step. To validate without publishing, save an agent draft with <code>POST /v1/convai/agents/{agent_id}/drafts?branch_id=...</code>, sending the agent's current <code>name</code>, <code>conversation_config</code>, <code>platform_settings</code>, and <code>workflow</code> unchanged, then discard that agent draft with <code>DELETE</code> on the same path; see <a href="references/using-procedure-api.html#validate-without-publishing">Using the Procedure API</a>.</li>
+<li>If a structured procedure is invalid, the publish or draft save returns <code>400</code> with <code>status</code> <code>procedure_validation_failed</code> and <code>errors</code> keyed by procedure ID, each entry carrying the <code>path</code> of the offending field and a message. Nothing is written; repair the procedure draft and publish again.</li>
+<li>A draft update replaces the whole body. Read the draft first, then resend <code>name</code>, <code>type</code>, and <code>trigger</code> alongside the new <code>content</code>. <code>type</code> cannot change after creation.</li>
+<li><code>content</code> is markdown for a <code>free_form</code> procedure, and a JSON-encoded object with a <code>steps</code> array for a <code>deterministic</code> one. The trigger is the top-level <code>trigger</code> field in both cases, not part of <code>content</code>. Serialize it; do not hand-escape quotes.</li>
+<li>A third <code>type</code>, <code>folder</code>, groups procedures in the dashboard. Folders carry no <code>content</code> or <code>trigger</code>; move a procedure into one with <code>POST .../procedures/{procedure_id}/move</code>.</li>
+<li>The agent keeps the five most recently started procedures in context. When more have been started, the content, inline tools, and knowledge base documents of the oldest free-form ones drop out of the prompt, although the procedures remain active. Keep procedures focused and use sub-procedures so that few are active at once.</li>
+<li>Routing is driven by the <code>trigger</code> text, not the procedure name. Write concrete, non-overlapping triggers that cover the phrasings a user would actually say. The model sees only a numbered menu of triggers; it never sees procedure names or IDs.</li>
+<li>To restrict the starting agent to selected procedures for one conversation, enable <code>platform_settings.overrides.enable_procedure_ids_from_client</code>, then pass their IDs as <code>procedure_ids</code> in conversation initiation data. An empty list disables all procedures for that starting agent.</li>
 <li>Procedure APIs require <code>elevenlabs</code> (Python) or <code>@elevenlabs/elevenlabs-js</code> at <code>2.60.0</code> or newer.</li>
 </ul>
 <h2>Guardrails</h2>
@@ -638,8 +625,8 @@ except Exception as e:
 <li><a href="references/installation.html">Installation Guide</a> - SDK setup and migration</li>
 <li><a href="references/agent-configuration.html">Agent Configuration</a> - All config options and CRUD examples</li>
 <li><a href="references/client-tools.html">Client Tools</a> - Webhook, client, and system tools</li>
-<li><a href="references/using-procedure-api.html">Using the Procedure API</a> - Procedure CLI and SDK flow, compile and publish</li>
-<li><a href="references/writing-procedures.html">Writing Procedures</a> - Trigger and content authoring, step schema</li>
+<li><a href="references/using-procedure-api.html">Using the Procedure API</a> - Procedure CLI and SDK flow, drafts and publish</li>
+<li><a href="references/writing-procedures.html">Writing Procedures</a> - Trigger and content authoring, structured step reference and rules</li>
 <li><a href="references/widget-embedding.html">Widget Embedding</a> - Website integration</li>
 <li><a href="references/outbound-calls.html">Outbound Calls</a> - Phone call integrations</li>
 </ul></main>

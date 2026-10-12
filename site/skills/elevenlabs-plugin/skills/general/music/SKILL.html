@@ -82,7 +82,8 @@
 <blockquote>
 <p><strong>Setup:</strong> See <a href="references/installation.html">Installation Guide</a>. For JavaScript, use <code>@elevenlabs/*</code> packages only.</p>
 </blockquote>
-<p>All examples below default to <code>music_v2</code>, the current generation model. Pass <code>model_id="music_v1"</code> only when explicitly requested to.</p>
+<p>All examples below use <code>music_v2_5</code>, the most advanced generation model. Pass <code>music_v2</code> or
+<code>music_v1</code> only when an older model is explicitly requested.</p>
 <h2>Quick Start</h2>
 <h3>Python</h3>
 <pre><code class="language-python">from elevenlabs import ElevenLabs
@@ -92,7 +93,7 @@ client = ElevenLabs()
 audio = client.music.compose(
     prompt=&quot;A chill lo-fi hip hop beat with jazzy piano chords&quot;,
     music_length_ms=30000,
-    model_id=&quot;music_v2&quot;,
+    model_id=&quot;music_v2_5&quot;,
 )
 
 with open(&quot;output.mp3&quot;, &quot;wb&quot;) as f:
@@ -107,7 +108,7 @@ const client = new ElevenLabsClient();
 const audio = await client.music.compose({
   prompt: &quot;A chill lo-fi hip hop beat with jazzy piano chords&quot;,
   musicLengthMs: 30000,
-  modelId: &quot;music_v2&quot;,
+  modelId: &quot;music_v2_5&quot;,
 });
 audio.pipe(createWriteStream(&quot;output.mp3&quot;));
 </code></pre>
@@ -115,7 +116,7 @@ audio.pipe(createWriteStream(&quot;output.mp3&quot;));
 <pre><code class="language-bash">elevenlabs music compose \
   --prompt &quot;A chill lo-fi beat&quot; \
   --music-length-ms 30000 \
-  --model-id music_v2 \
+  --model-id music_v2_5 \
   --output output.mp3
 </code></pre>
 <h2>Methods</h2>
@@ -195,7 +196,7 @@ accessible finetunes.</p>
 <a href="https://elevenlabs.io/docs/api-reference/music/compose"><code>music.compose</code></a> (<code>POST /v1/music</code>).</p>
 <p>The API combines videos in order, accepts an optional natural-language description, and lets you
 steer style with up to 10 tags such as <code>upbeat</code> or <code>cinematic</code>. This endpoint still defaults to
-<code>music_v1</code>; pass <code>model_id="music_v2"</code> to use the newer model.</p>
+<code>music_v1</code>; pass <code>model_id="music_v2_5"</code> to use the most advanced model.</p>
 <h3>Python</h3>
 <pre><code class="language-python">from elevenlabs import ElevenLabs
 
@@ -205,7 +206,7 @@ audio = client.music.video_to_music(
     videos=[&quot;trailer.mp4&quot;],
     description=&quot;Build suspense, then resolve with a warm cinematic finish.&quot;,
     tags=[&quot;cinematic&quot;, &quot;suspenseful&quot;, &quot;uplifting&quot;],
-    model_id=&quot;music_v2&quot;,
+    model_id=&quot;music_v2_5&quot;,
 )
 
 with open(&quot;video-score.mp3&quot;, &quot;wb&quot;) as f:
@@ -222,7 +223,7 @@ const audio = await client.music.videoToMusic({
   videos: [createReadStream(&quot;trailer.mp4&quot;)],
   description: &quot;Build suspense, then resolve with a warm cinematic finish.&quot;,
   tags: [&quot;cinematic&quot;, &quot;suspenseful&quot;, &quot;uplifting&quot;],
-  modelId: &quot;music_v2&quot;,
+  modelId: &quot;music_v2_5&quot;,
 });
 
 audio.pipe(createWriteStream(&quot;video-score.mp3&quot;));
@@ -232,7 +233,7 @@ audio.pipe(createWriteStream(&quot;video-score.mp3&quot;));
   --videos trailer.mp4 \
   --description &quot;Build suspense, then resolve with a warm cinematic finish.&quot; \
   --tags cinematic \
-  --model-id music_v2 \
+  --model-id music_v2_5 \
   --output video-score.mp3
 </code></pre>
 <p>The CLI currently accepts one <code>--videos</code> file and one <code>--tags</code> value per request; use the Python
@@ -245,15 +246,16 @@ or TypeScript SDK to send multiple videos or tags.</p>
 <li>Use <code>description</code> for high-level musical direction and <code>tags</code> for concise style cues</li>
 </ul>
 <h2>Composition Plans</h2>
-<p><code>music_v2</code> composition plans are an ordered list of <code>chunks</code>. Each chunk specifies its own
+<p><code>music_v2_5</code> composition plans are an ordered list of <code>chunks</code>. Each chunk specifies its own
 <code>text</code> (section label, lyrics, inline cues), <code>duration_ms</code>, <code>positive_styles</code>, <code>negative_styles</code>,
 and <code>context_adherence</code> (<code>low</code>, <code>medium</code>, or <code>high</code>, default <code>high</code>). Up to 30 chunks per plan,
-each 3,000–120,000 ms, total length 3 s to 10 minutes.</p>
+each 3,000–120,000 ms, total length 3 s to 10 minutes. Each chunk's <code>text</code> supports up to 6,132
+characters, with up to 30 lines of 200 characters each.</p>
 <p>Generate a plan first, edit it, then compose:</p>
 <pre><code class="language-python">plan = client.music.composition_plan.create(
     prompt=&quot;An epic orchestral piece building to a climax&quot;,
     music_length_ms=60000,
-    model_id=&quot;music_v2&quot;,
+    model_id=&quot;music_v2_5&quot;,
 )
 
 # Edit chunks in place
@@ -261,20 +263,20 @@ plan[&quot;chunks&quot;][0][&quot;text&quot;] = &quot;[Intro]\nQuiet strings ris
 
 audio = client.music.compose(
     composition_plan=plan,
-    model_id=&quot;music_v2&quot;,
+    model_id=&quot;music_v2_5&quot;,
 )
 </code></pre>
 <pre><code class="language-typescript">const plan = await client.music.compositionPlan.create({
   prompt: &quot;An epic orchestral piece building to a climax&quot;,
   musicLengthMs: 60000,
-  modelId: &quot;music_v2&quot;,
+  modelId: &quot;music_v2_5&quot;,
 });
 
 plan.chunks[0].text = &quot;[Intro]\nQuiet strings rising&quot;;
 
 const audio = await client.music.compose({
   compositionPlan: plan,
-  modelId: &quot;music_v2&quot;,
+  modelId: &quot;music_v2_5&quot;,
 });
 </code></pre>
 <p>Or hand-build a plan to control lyrics and style per section:</p>
@@ -297,7 +299,7 @@ const audio = await client.music.compose({
     ]
 }
 
-audio = client.music.compose(composition_plan=composition_plan, model_id=&quot;music_v2&quot;)
+audio = client.music.compose(composition_plan=composition_plan, model_id=&quot;music_v2_5&quot;)
 </code></pre>
 <pre><code class="language-typescript">const compositionPlan = {
   chunks: [
@@ -320,15 +322,16 @@ audio = client.music.compose(composition_plan=composition_plan, model_id=&quot;m
 
 const audio = await client.music.compose({
   compositionPlan,
-  modelId: &quot;music_v2&quot;,
+  modelId: &quot;music_v2_5&quot;,
 });
 </code></pre>
 <p>Put broader characteristics (genre, instrumentation, vocal style) in <code>positive_styles</code>, not in
 <code>text</code>. The first chunk's styles set the overall tone — include 6–7 styles there.</p>
 <h2>Output Formats</h2>
 <p>Use the <code>output_format</code> query parameter on compose, detailed compose, or stream requests to select
-the generated audio format. <code>auto</code> chooses a model-appropriate MP3 format; for <code>music_v2</code>, it
-selects <code>mp3_48000_192</code>. Higher-bitrate MP3 options include <code>mp3_48000_240</code> and <code>mp3_48000_320</code>.</p>
+the generated audio format. <code>auto</code> chooses a model-appropriate MP3 format; for <code>music_v2</code> and
+<code>music_v2_5</code>, it selects <code>mp3_48000_192</code>. Higher-bitrate MP3 options include
+<code>mp3_48000_240</code> and <code>mp3_48000_320</code>.</p>
 <h2>Streaming</h2>
 <p>For paid plans, stream audio chunks as they are generated instead of waiting for the full file:</p>
 <pre><code class="language-python">from io import BytesIO
@@ -336,7 +339,7 @@ selects <code>mp3_48000_192</code>. Higher-bitrate MP3 options include <code>mp3
 stream = client.music.stream(
     prompt=&quot;A driving synthwave track with arpeggiated leads&quot;,
     music_length_ms=30000,
-    model_id=&quot;music_v2&quot;,
+    model_id=&quot;music_v2_5&quot;,
 )
 
 buffer = BytesIO()
@@ -347,7 +350,7 @@ for chunk in stream:
 <pre><code class="language-typescript">const stream = await client.music.stream({
   prompt: &quot;A driving synthwave track with arpeggiated leads&quot;,
   musicLengthMs: 30000,
-  modelId: &quot;music_v2&quot;,
+  modelId: &quot;music_v2_5&quot;,
 });
 
 const chunks: Buffer[] = [];
@@ -363,7 +366,7 @@ detailed compose, streams <code>text/event-stream</code>, and can include word t
 <pre><code class="language-bash">elevenlabs music compose_detailed_stream \
   --prompt &quot;A bright indie pop hook with warm guitars&quot; \
   --music-length-ms 30000 \
-  --model-id music_v2 \
+  --model-id music_v2_5 \
   --with-timestamps true \
   --output-format auto
 </code></pre>
@@ -375,7 +378,7 @@ of a stored song) with new <strong>generation chunks</strong> in a single compos
 result = client.music.compose_detailed(
     prompt=&quot;An upbeat pop song with verse and chorus&quot;,
     music_length_ms=60000,
-    model_id=&quot;music_v2&quot;,
+    model_id=&quot;music_v2_5&quot;,
     store_for_inpainting=True,
 )
 song_id = result.song_id
@@ -383,7 +386,7 @@ song_id = result.song_id
 # Option B: upload an existing track and extract its plan
 uploaded = client.music.upload(
     file=open(&quot;my-song.mp3&quot;, &quot;rb&quot;),
-    extract_composition_plan=&quot;music_v2&quot;,
+    extract_composition_plan=&quot;music_v2_5&quot;,
 )
 song_id = uploaded.song_id
 composition_plan = uploaded.composition_plan
@@ -394,7 +397,7 @@ composition_plan = uploaded.composition_plan
 const result = await client.music.composeDetailed({
   prompt: &quot;An upbeat pop song with verse and chorus&quot;,
   musicLengthMs: 60000,
-  modelId: &quot;music_v2&quot;,
+  modelId: &quot;music_v2_5&quot;,
   storeForInpainting: true,
 });
 let songId = result.songId;
@@ -402,7 +405,7 @@ let songId = result.songId;
 // Option B: upload an existing track and extract its plan
 const uploaded = await client.music.upload({
   file: createReadStream(&quot;my-song.mp3&quot;),
-  extractCompositionPlan: &quot;music_v2&quot;,
+  extractCompositionPlan: &quot;music_v2_5&quot;,
 });
 songId = uploaded.songId;
 const compositionPlan = uploaded.compositionPlan;
@@ -422,7 +425,7 @@ change:</p>
     ]
 }
 
-audio = client.music.compose(composition_plan=plan, model_id=&quot;music_v2&quot;)
+audio = client.music.compose(composition_plan=plan, model_id=&quot;music_v2_5&quot;)
 </code></pre>
 <pre><code class="language-typescript">const plan = {
   chunks: [
@@ -439,7 +442,7 @@ audio = client.music.compose(composition_plan=plan, model_id=&quot;music_v2&quot
 
 const audio = await client.music.compose({
   compositionPlan: plan,
-  modelId: &quot;music_v2&quot;,
+  modelId: &quot;music_v2_5&quot;,
 });
 </code></pre>
 <p>To match the feel of a stored slice without copying it, attach a <code>conditioning_ref</code> (up to

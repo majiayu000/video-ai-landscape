@@ -461,7 +461,7 @@
 </tr>
 </tbody>
 </table>
-<p>For <code>type: "self_hosted"</code>, <code>config</code> is the bare <code>{"type": "self_hosted"}</code> - <code>networking</code> and <code>packages</code> do not apply. (<code>networking</code> never governs <code>web_search</code> / <code>web_fetch</code> in either type - those are restricted per-tool with <code>allowed_domains</code> / <code>blocked_domains</code> in the agent toolset; see <code>shared/managed-agents-tools.md</code>.)</p>
+<p>For <code>type: "self_hosted"</code>, <code>config</code> is the bare <code>{"type": "self_hosted"}</code> - <code>networking</code> and <code>packages</code> do not apply. (With <code>limited</code> networking, <code>allowed_hosts</code> also applies to <code>web_search</code> / <code>web_fetch</code>; <code>unrestricted</code> networking and self-hosted environments do not limit them. In both environment types they can be turned off (<code>enabled: false</code>) or restricted per-tool with <code>allowed_domains</code> / <code>blocked_domains</code> in the agent toolset; see <code>shared/managed-agents-tools.md</code>.)</p>
 <h2>Deployments</h2>
 <p>Scheduled deployments (<code>depl_</code> IDs) run an agent on a recurring cron schedule - each firing creates a session. See <code>shared/managed-agents-scheduled-deployments.md</code> for the conceptual guide (cron/DST semantics, failure behavior, lifecycle).</p>
 <table>
@@ -884,7 +884,14 @@
   &quot;description&quot;: &quot;string (optional, up to 2048 chars)&quot;,
   &quot;system&quot;: &quot;string (optional, up to 100,000 chars)&quot;,
   &quot;tools&quot;: [
-    { &quot;type&quot;: &quot;agent_toolset_20260401&quot; }
+    {
+      &quot;type&quot;: &quot;agent_toolset_20260401&quot;,
+      &quot;default_config&quot;: { &quot;permission_policy&quot;: { &quot;type&quot;: &quot;auto&quot; } },
+      &quot;configs&quot;: [
+        { &quot;name&quot;: &quot;web_fetch&quot;, &quot;enabled&quot;: false },
+        { &quot;name&quot;: &quot;web_search&quot;, &quot;enabled&quot;: false }
+      ]
+    }
   ],
   &quot;skills&quot;: [
     { &quot;type&quot;: &quot;anthropic&quot;, &quot;skill_id&quot;: &quot;xlsx&quot; },
@@ -911,7 +918,7 @@
 }
 </code></pre>
 <blockquote>
-<p>Limits: <code>tools</code> max 128, <code>skills</code> max 20, <code>mcp_servers</code> max 20 (unique names). <code>multiagent.agents</code> 1-20 entries (string ID | <code>{type:"agent",id,version?}</code> | <code>{type:"self"}</code> | <code>{type:"advisor",model}</code>, at most one advisor) - see <code>shared/managed-agents-multiagent.md</code>.</p>
+<p>Limits: <code>tools</code> max 128, <code>skills</code> max 20, <code>mcp_servers</code> max 20 (unique names). <code>multiagent.agents</code> 1-20 entries (string ID | <code>{type:"agent",id,version?}</code> | <code>{type:"self"}</code> | <code>{type:"advisor",model}</code>, at most one advisor) - see <code>shared/managed-agents-multiagent.md</code>. <code>multiagent</code> can instead be <code>{type:"multiagent_20261001", workflows?, subagents?, advisor?}</code>, each member <code>{type:"enabled"}</code> or <code>{type:"disabled"}</code>; enabled <code>workflows</code> and <code>subagents</code> each take optional <code>predefined_agents</code> (up to 20, same entry forms minus advisor) and <code>inline_agents</code> (<code>{type:"enabled"}</code> or <code>{type:"disabled"}</code>, default enabled; disabled with an empty list is a 400), enabled <code>advisor</code> requires <code>model</code>; <code>workflows</code> and <code>subagents</code> default to enabled, <code>advisor</code> to disabled (§ Dynamic workflows).</p>
 </blockquote>
 <h3>CreateSession Request Body</h3>
 <pre><code class="language-json">{
@@ -994,7 +1001,7 @@
 }
 </code></pre>
 <blockquote>
-<p><code>system.message</code> events (append system-level context for this turn and later ones) use the same envelope with <code>type: "system.message"</code> - supported on Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, and Claude Sonnet 5.5 (not Claude Sonnet 5), checked against the agent's <em>primary</em> model only; see <code>shared/managed-agents-events.md</code> § Adding system context mid-session.</p>
+<p><code>system.message</code> events (append system-level context for this turn and later ones) use the same envelope with <code>type: "system.message"</code> - supported on Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5.5, and Claude Haiku 5.5 (not Claude Sonnet 5), checked against the agent's <em>primary</em> model only; see <code>shared/managed-agents-events.md</code> § Adding system context mid-session.</p>
 </blockquote>
 <h3>Define Outcome Event</h3>
 <pre><code class="language-json">{

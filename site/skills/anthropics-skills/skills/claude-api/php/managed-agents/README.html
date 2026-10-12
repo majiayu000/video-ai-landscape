@@ -98,7 +98,7 @@ $client = new Client(apiKey: 'your-api-key');
 <h2>Create an Environment</h2>
 <pre><code class="language-php">$environment = $client-&gt;beta-&gt;environments-&gt;create(
     name: 'my-dev-env',
-    config: ['type' =&gt; 'cloud', 'networking' =&gt; ['type' =&gt; 'unrestricted']],
+    config: ['type' =&gt; 'cloud', 'networking' =&gt; ['type' =&gt; 'limited', 'allow_package_managers' =&gt; true, 'allow_mcp_servers' =&gt; true]],
 );
 echo &quot;Environment ID: {$environment-&gt;id}\n&quot;; // env_...
 </code></pre>
@@ -108,7 +108,12 @@ echo &quot;Environment ID: {$environment-&gt;id}\n&quot;; // env_...
 <p>Warning: <strong>There is no inline agent config.</strong> <code>model</code>/<code>system</code>/<code>tools</code> live on the agent object, not the session. Always start with <code>$client-&gt;beta-&gt;agents-&gt;create()</code> - the session takes either <code>agent: $agent-&gt;id</code> or the typed <code>BetaManagedAgentsAgentParams::with(type: 'agent', id: $agent-&gt;id, version: $agent-&gt;version)</code>.</p>
 </blockquote>
 <h3>Minimal</h3>
+<p>The examples on this page turn both web tools off. Set <code>enabled</code> to true on <code>web_fetch</code> / <code>web_search</code> only when the job as described needs the web (a general-purpose or open-ended job stays off; tell the user how to switch it on) - see <code>shared/managed-agents-tools.md</code> § Agent Toolset. They also set the <code>auto</code> permission policy (PHP SDK 0.48.0+), under which a call can pause for your approval - the event loop under Stream Events answers it. When nobody is watching the run, answer <code>deny</code>; never answer <code>allow</code> to every paused call.</p>
 <pre><code class="language-php">use Anthropic\Beta\Agents\BetaManagedAgentsAgentToolset20260401Params;
+use Anthropic\Beta\Agents\BetaManagedAgentsAgentToolsetDefaultConfigParams;
+use Anthropic\Beta\Agents\BetaManagedAgentsAutoPolicy;
+use Anthropic\Beta\Agents\BetaManagedAgentsWebFetchToolConfigParams;
+use Anthropic\Beta\Agents\BetaManagedAgentsWebSearchToolConfigParams;
 
 // 1. Create the agent (reusable, versioned)
 $agent = $client-&gt;beta-&gt;agents-&gt;create(
@@ -118,6 +123,13 @@ $agent = $client-&gt;beta-&gt;agents-&gt;create(
     tools: [
         BetaManagedAgentsAgentToolset20260401Params::with(
             type: 'agent_toolset_20260401',
+            defaultConfig: BetaManagedAgentsAgentToolsetDefaultConfigParams::with(
+                permissionPolicy: BetaManagedAgentsAutoPolicy::with(),
+            ),
+            configs: [
+                BetaManagedAgentsWebFetchToolConfigParams::with(enabled: false),
+                BetaManagedAgentsWebSearchToolConfigParams::with(enabled: false),
+            ],
         ),
     ],
 );
@@ -169,7 +181,9 @@ echo &quot;Archived at: {$archived-&gt;archivedAt-&gt;format(DateTimeInterface::
 <blockquote>
 <p>Note: <strong>Streaming transporter:</strong> PHP's default buffered PSR-18 client never returns for the open-ended session event stream. Use a streaming Guzzle transporter for <code>streamStream()</code> calls - other calls keep the default client.</p>
 </blockquote>
-<pre><code class="language-php">$streamingClient = new GuzzleHttp\Client(['stream' =&gt; true]);
+<pre><code class="language-php">use Anthropic\Beta\Sessions\Events\ManagedAgentsUserToolConfirmationEventParams;
+
+$streamingClient = new GuzzleHttp\Client(['stream' =&gt; true]);
 
 // Open the stream first, then send the user message
 $stream = $client-&gt;beta-&gt;sessions-&gt;events-&gt;streamStream(
@@ -196,14 +210,32 @@ foreach ($stream as $event) {
         'session.error' =&gt; printf(&quot;\n[Error: %s]&quot;, $event-&gt;error?-&gt;message ?? 'unknown'),
         default =&gt; null,
     };
-    if ($event-&gt;type === 'session.status_idle' || $event-&gt;type === 'session.error') {
+    if (in_array($event-&gt;type, ['agent.tool_use', 'agent.mcp_tool_use'], true) &amp;&amp; $event-&gt;evaluatedPermission === 'ask') {
+        // Paused for your decision (always_ask, or auto with no determination)
+        $client-&gt;beta-&gt;sessions-&gt;events-&gt;send(
+            $session-&gt;id,
+            events: [
+                ManagedAgentsUserToolConfirmationEventParams::with(
+                    // you write approve(): ask a person or apply your own rule; deny when unattended
+                    result: approve($event) ? 'allow' : 'deny',
+                    toolUseID: $event-&gt;id,
+                    type: 'user.tool_confirmation',
+                ),
+            ],
+        );
+    }
+    // requires_action: waiting on you, keep streaming
+    if ($event-&gt;type === 'session.status_idle' &amp;&amp; $event-&gt;stopReason-&gt;type !== 'requires_action') {
+        break;
+    }
+    if ($event-&gt;type === 'session.error') {
         break;
     }
 }
 $stream-&gt;close();
 </code></pre>
 <h3>Reconnecting and Tailing</h3>
-<p>When reconnecting mid-session, list past events first to dedupe, then tail live events:</p>
+<p>When reconnecting mid-session, list past events first to dedupe, then tail live events. Answer paused calls as in the loop above, including an <code>ask</code> in the history that no <code>user.tool_confirmation</code> follows.</p>
 <pre><code class="language-php">$stream = $client-&gt;beta-&gt;sessions-&gt;events-&gt;streamStream(
     $session-&gt;id,
     requestOptions: ['transporter' =&gt; $streamingClient],
@@ -228,7 +260,8 @@ foreach ($stream as $event) {
         ),
         default =&gt; null,
     };
-    if ($event-&gt;type === 'session.status_idle') {
+    // requires_action: answer the paused call as under Stream Events, then keep streaming
+    if ($event-&gt;type === 'session.status_idle' &amp;&amp; $event-&gt;stopReason-&gt;type !== 'requires_action') {
         break;
     }
 }
@@ -276,7 +309,7 @@ $session = $client-&gt;beta-&gt;sessions-&gt;create(
         BetaManagedAgentsFileResourceParams::with(
             type: 'file',
             fileID: $file-&gt;id,
-            mountPath: '/workspace/data.csv',
+            mountPath: '/data.csv',
         ),
     ],
 );
@@ -328,8 +361,12 @@ $client-&gt;beta-&gt;sessions-&gt;delete($session-&gt;id);
 <hr />
 <h2>MCP Server Integration</h2>
 <pre><code class="language-php">use Anthropic\Beta\Agents\BetaManagedAgentsAgentToolset20260401Params;
+use Anthropic\Beta\Agents\BetaManagedAgentsAgentToolsetDefaultConfigParams;
+use Anthropic\Beta\Agents\BetaManagedAgentsAutoPolicy;
 use Anthropic\Beta\Agents\BetaManagedAgentsMCPToolsetParams;
 use Anthropic\Beta\Agents\BetaManagedAgentsURLMCPServerParams;
+use Anthropic\Beta\Agents\BetaManagedAgentsWebFetchToolConfigParams;
+use Anthropic\Beta\Agents\BetaManagedAgentsWebSearchToolConfigParams;
 use Anthropic\Beta\Sessions\BetaManagedAgentsAgentParams;
 
 // Agent declares MCP server (no auth here - auth goes in a vault)
@@ -344,7 +381,16 @@ $agent = $client-&gt;beta-&gt;agents-&gt;create(
         ),
     ],
     tools: [
-        BetaManagedAgentsAgentToolset20260401Params::with(type: 'agent_toolset_20260401'),
+        BetaManagedAgentsAgentToolset20260401Params::with(
+            type: 'agent_toolset_20260401',
+            defaultConfig: BetaManagedAgentsAgentToolsetDefaultConfigParams::with(
+                permissionPolicy: BetaManagedAgentsAutoPolicy::with(),
+            ),
+            configs: [
+                BetaManagedAgentsWebFetchToolConfigParams::with(enabled: false),
+                BetaManagedAgentsWebSearchToolConfigParams::with(enabled: false),
+            ],
+        ),
         BetaManagedAgentsMCPToolsetParams::with(
             type: 'mcp_toolset',
             mcpServerName: 'github',

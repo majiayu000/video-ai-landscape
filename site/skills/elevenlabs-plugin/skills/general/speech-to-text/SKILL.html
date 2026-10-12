@@ -123,6 +123,11 @@ console.log(result.text);
 <td>Batch transcription, subtitles, long-form audio</td>
 </tr>
 <tr>
+<td><code>scribe_v2_medical</code></td>
+<td>Specialized recognition for medical and clinical audio, 90+ languages</td>
+<td>Clinical documentation, medical dictation, patient calls</td>
+</tr>
+<tr>
 <td><code>scribe_v2_realtime</code></td>
 <td>Low latency (~150ms)</td>
 <td>Live transcription, voice agents</td>
@@ -367,6 +372,10 @@ const connection = await client.speechToText.realtime.connect({
 <tr>
 <td><code>committed_transcript_entities</code></td>
 <td>Entities detected in a committed segment</td>
+</tr>
+<tr>
+<td><code>edited_transcript</code></td>
+<td>Original and edited text for a committed segment when transcript editing is enabled</td>
 </tr>
 <tr>
 <td><code>invalid_request</code></td>

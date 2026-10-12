@@ -110,7 +110,10 @@ ctx := context.Background()
     Config: anthropic.BetaEnvironmentNewParamsConfigUnion{
         OfCloud: &amp;anthropic.BetaCloudConfigParams{
             Networking: anthropic.BetaCloudConfigParamsNetworkingUnion{
-                OfUnrestricted: &amp;anthropic.BetaUnrestrictedNetworkParam{},
+                OfLimited: &amp;anthropic.BetaLimitedNetworkParams{
+                    AllowPackageManagers: anthropic.Bool(true),
+                    AllowMCPServers:      anthropic.Bool(true),
+                },
             },
         },
     },
@@ -126,6 +129,7 @@ fmt.Println(environment.ID) // env_...
 <p>Warning: <strong>There is no inline agent config.</strong> <code>Model</code>/<code>System</code>/<code>Tools</code> live on the agent object, not the session. Always start with <code>Beta.Agents.New()</code> - the session only takes <code>Agent: anthropic.BetaSessionNewParamsAgentUnion{OfString: anthropic.String(agent.ID)}</code> (or the typed <code>OfBetaManagedAgentsAgents</code> variant when you need a specific version).</p>
 </blockquote>
 <h3>Minimal</h3>
+<p>The examples on this page turn both web tools off. Set <code>enabled</code> to true on <code>web_fetch</code> / <code>web_search</code> only when the job as described needs the web (a general-purpose or open-ended job stays off; tell the user how to switch it on) - see <code>shared/managed-agents-tools.md</code> § Agent Toolset. They also set the <code>auto</code> permission policy (Go SDK 1.72.0+), under which a call can pause for your approval - the event loop under Stream Events answers it. When nobody is watching the run, answer <code>deny</code>; never answer <code>allow</code> to every paused call.</p>
 <pre><code class="language-go">// 1. Create the agent (reusable, versioned)
 agent, err := client.Beta.Agents.New(ctx, anthropic.BetaAgentNewParams{
     Name: &quot;Coding Assistant&quot;,
@@ -137,6 +141,15 @@ agent, err := client.Beta.Agents.New(ctx, anthropic.BetaAgentNewParams{
     Tools: []anthropic.BetaAgentNewParamsToolUnion{{
         OfAgentToolset20260401: &amp;anthropic.BetaManagedAgentsAgentToolset20260401Params{
             Type: anthropic.BetaManagedAgentsAgentToolset20260401ParamsTypeAgentToolset20260401,
+            DefaultConfig: anthropic.BetaManagedAgentsAgentToolsetDefaultConfigParams{
+                PermissionPolicy: anthropic.BetaManagedAgentsAgentToolsetDefaultConfigParamsPermissionPolicyUnion{
+                    OfAuto: &amp;anthropic.BetaManagedAgentsAutoPolicyParam{},
+                },
+            },
+            Configs: []anthropic.BetaManagedAgentsAgentToolConfigParamsUnion{
+                {OfWebFetch: &amp;anthropic.BetaManagedAgentsWebFetchToolConfigParams{Enabled: anthropic.Bool(false)}},
+                {OfWebSearch: &amp;anthropic.BetaManagedAgentsWebSearchToolConfigParams{Enabled: anthropic.Bool(false)}},
+            },
         },
     }},
 })
@@ -235,7 +248,27 @@ if _, err := client.Beta.Sessions.Events.Send(ctx, session.ID, anthropic.BetaSes
 
 events:
 for stream.Next() {
-    switch event := stream.Current().AsAny().(type) {
+    current := stream.Current()
+    if current.EvaluatedPermission == anthropic.BetaManagedAgentsAgentEvaluatedPermissionAsk {
+        // A tool call paused for your decision (always_ask, or auto with no determination)
+        result := anthropic.BetaManagedAgentsUserToolConfirmationEventParamsResultDeny
+        // you write approve(e anthropic.BetaManagedAgentsStreamSessionEventsUnion) bool: ask a person or apply your own rule; deny when unattended
+        if approve(current) {
+            result = anthropic.BetaManagedAgentsUserToolConfirmationEventParamsResultAllow
+        }
+        if _, err := client.Beta.Sessions.Events.Send(ctx, session.ID, anthropic.BetaSessionEventSendParams{
+            Events: []anthropic.BetaManagedAgentsEventParamsUnion{{
+                OfUserToolConfirmation: &amp;anthropic.BetaManagedAgentsUserToolConfirmationEventParams{
+                    Type:      anthropic.BetaManagedAgentsUserToolConfirmationEventParamsTypeUserToolConfirmation,
+                    ToolUseID: current.ID,
+                    Result:    result,
+                },
+            }},
+        }); err != nil {
+            panic(err)
+        }
+    }
+    switch event := current.AsAny().(type) {
     case anthropic.BetaManagedAgentsAgentMessageEvent:
         for _, block := range event.Content {
             fmt.Print(block.Text)
@@ -243,7 +276,9 @@ for stream.Next() {
     case anthropic.BetaManagedAgentsAgentToolUseEvent:
         fmt.Printf(&quot;\n[Using tool: %s]\n&quot;, event.Name)
     case anthropic.BetaManagedAgentsSessionStatusIdleEvent:
-        break events
+        if event.StopReason.Type != &quot;requires_action&quot; { // requires_action: waiting on you, keep streaming
+            break events
+        }
     case anthropic.BetaManagedAgentsSessionErrorEvent:
         fmt.Printf(&quot;\n[Error: %s]\n&quot;, event.Error.Message)
         break events
@@ -254,7 +289,7 @@ if err := stream.Err(); err != nil {
 }
 </code></pre>
 <h3>Reconnecting and Tailing</h3>
-<p>When reconnecting mid-session, list past events first to dedupe, then tail live events:</p>
+<p>When reconnecting mid-session, list past events first to dedupe, then tail live events. Answer paused calls as in the loop above, including an <code>ask</code> in the history that no <code>user.tool_confirmation</code> follows.</p>
 <pre><code class="language-go">stream := client.Beta.Sessions.Events.StreamEvents(ctx, session.ID, anthropic.BetaSessionEventStreamParams{})
 defer stream.Close()
 
@@ -282,7 +317,9 @@ for stream.Next() {
             fmt.Print(block.Text)
         }
     case anthropic.BetaManagedAgentsSessionStatusIdleEvent:
-        break tail
+        if event.StopReason.Type != &quot;requires_action&quot; { // requires_action: answer the paused call as under Stream Events, then keep streaming
+            break tail
+        }
     }
 }
 if err := stream.Err(); err != nil {
@@ -332,7 +369,7 @@ session, err := client.Beta.Sessions.New(ctx, anthropic.BetaSessionNewParams{
         OfFile: &amp;anthropic.BetaManagedAgentsFileResourceParams{
             Type:      anthropic.BetaManagedAgentsFileResourceParamsTypeFile,
             FileID:    file.ID,
-            MountPath: anthropic.String(&quot;/workspace/data.csv&quot;),
+            MountPath: anthropic.String(&quot;/data.csv&quot;),
         },
     }},
 })
@@ -424,6 +461,15 @@ agent, err := client.Beta.Agents.New(ctx, anthropic.BetaAgentNewParams{
         {
             OfAgentToolset20260401: &amp;anthropic.BetaManagedAgentsAgentToolset20260401Params{
                 Type: anthropic.BetaManagedAgentsAgentToolset20260401ParamsTypeAgentToolset20260401,
+                DefaultConfig: anthropic.BetaManagedAgentsAgentToolsetDefaultConfigParams{
+                    PermissionPolicy: anthropic.BetaManagedAgentsAgentToolsetDefaultConfigParamsPermissionPolicyUnion{
+                        OfAuto: &amp;anthropic.BetaManagedAgentsAutoPolicyParam{},
+                    },
+                },
+                Configs: []anthropic.BetaManagedAgentsAgentToolConfigParamsUnion{
+                    {OfWebFetch: &amp;anthropic.BetaManagedAgentsWebFetchToolConfigParams{Enabled: anthropic.Bool(false)}},
+                    {OfWebSearch: &amp;anthropic.BetaManagedAgentsWebSearchToolConfigParams{Enabled: anthropic.Bool(false)}},
+                },
             },
         },
         {

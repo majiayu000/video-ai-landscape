@@ -119,6 +119,11 @@ npm install @elevenlabs/elevenlabs-js@latest dotenv
 <td><code>entityDetection</code></td>
 </tr>
 <tr>
+<td>Apply a natural-language edit instruction to committed segments</td>
+<td><code>transcript_edit</code></td>
+<td><code>transcriptEdit</code></td>
+</tr>
+<tr>
 <td>Reduce false activation from background speech and noise</td>
 <td><code>filter_background_audio</code></td>
 <td><code>filterBackgroundAudio</code></td>
@@ -132,7 +137,9 @@ npm install @elevenlabs/elevenlabs-js@latest dotenv
 </table>
 <p><code>secondary_languages</code> accepts additional ISO-639-1 or ISO-639-3 codes. Entity detection accepts
 <code>all</code>, a supported entity type or category, or a list of them. Background audio filtering cannot be
-combined with timestamp output.</p>
+combined with timestamp output. A transcript edit instruction can contain up to 2,000 characters
+and cannot be combined with entity detection. It adds a 30% premium, billed for at least 10 seconds
+of audio per committed transcript.</p>
 <h2>Stream from URL</h2>
 <h3>Python</h3>
 <pre><code class="language-python">from dotenv import load_dotenv

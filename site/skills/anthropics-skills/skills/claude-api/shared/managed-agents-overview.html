@@ -141,6 +141,14 @@
 <td><code>shared/managed-agents-onboarding.md</code> - guided interview (WHERE-&gt;WHO-&gt;WHAT-&gt;WATCH), then emit code</td>
 </tr>
 <tr>
+<td><strong>Build one of the Console's quickstart templates by name</strong></td>
+<td><code>shared/managed-agents-onboarding-from-quickstart.md</code> - one template per file in <code>shared/managed-agents-quickstarts/</code></td>
+</tr>
+<tr>
+<td><strong>Set up the agent a page describes / "build what this URL shows"</strong></td>
+<td><code>shared/managed-agents-onboarding-from-url.md</code> - fetch the page, write <code>agents/&lt;agent-name&gt;/</code> files, <code>ant apply</code></td>
+</tr>
+<tr>
 <td>Understand how the API works</td>
 <td><code>shared/managed-agents-core.md</code></td>
 </tr>
@@ -165,8 +173,8 @@
 <td><code>shared/managed-agents-tools.md</code></td>
 </tr>
 <tr>
-<td>Restrict which sites <code>web_search</code> / <code>web_fetch</code> can reach; localize search; cap fetched content</td>
-<td><code>shared/managed-agents-tools.md</code> (§ Web search &amp; web fetch settings) - <code>allowed_domains</code> / <code>blocked_domains</code> / <code>user_location</code> / <code>max_content_tokens</code> on the toolset <code>configs</code> entry; <strong>not</strong> the environment's <code>networking</code></td>
+<td>Turn <code>web_search</code> / <code>web_fetch</code> on or off; restrict which sites they can reach; localize search; cap fetched content</td>
+<td><code>shared/managed-agents-tools.md</code> (§ Agent Toolset, § Web search &amp; web fetch settings) - <code>enabled</code> / <code>allowed_domains</code> / <code>blocked_domains</code> / <code>user_location</code> / <code>max_content_tokens</code> on the toolset <code>configs</code> entry; with <code>limited</code> networking the environment's <code>allowed_hosts</code> also applies to them (<code>shared/managed-agents-environments.md</code>)</td>
 </tr>
 <tr>
 <td>Set up MCP servers</td>
@@ -237,6 +245,14 @@
 <td><code>shared/managed-agents-tools.md</code> (§ Skills from a GitHub repository) - root <code>.claude/skills</code> discovery at session start</td>
 </tr>
 <tr>
+<td>Let the agent run work too big to hand out one task at a time (hundreds of documents, many sources) as a background workflow run</td>
+<td><code>shared/managed-agents-multiagent.md</code> (§ Dynamic workflows) - <code>multiagent: {type: "multiagent_20261001", workflows: {type: "enabled"}}</code> (can combine with a roster), the system-prompt line that says when to start a run, <code>workflow_run.*</code> events, knowing when the work is done, interrupting with runs open</td>
+</tr>
+<tr>
+<td>Make a workflow run cheaper, faster or better</td>
+<td><code>shared/managed-agents-multiagent.md</code> (§ Dynamic workflows -&gt; Reading the plan the agent wrote) - read the plan the agent wrote before you propose a change</td>
+</tr>
+<tr>
 <td>Give the session an advisor to consult mid-turn</td>
 <td><code>shared/managed-agents-multiagent.md</code> (§ Advisor) - <code>{type: "advisor", model}</code> roster entry, consultation threads, plaintext vs redacted delivery</td>
 </tr>
@@ -247,11 +263,11 @@
 <li><strong>Agent FIRST, then session - NO EXCEPTIONS</strong> - the session's <code>agent</code> field accepts <strong>only</strong> a string ID or <code>{type: "agent", id, version}</code>. <code>model</code>, <code>system</code>, <code>tools</code>, <code>mcp_servers</code>, <code>skills</code> are <strong>top-level fields on <code>POST /v1/agents</code></strong>, never on <code>sessions.create()</code>. If the user hasn't created an agent, that is step zero of every example.</li>
 <li><strong>Agent ONCE, not every run</strong> - <code>agents.create()</code> is a setup step. Store the returned <code>agent_id</code> and reuse it; don't call <code>agents.create()</code> at the top of your hot path. If the agent's config needs to change, <code>POST /v1/agents/{id}</code> - each update creates a new version, and sessions can pin to a specific version for reproducibility.</li>
 <li><strong>MCP auth goes through vaults</strong> - the agent's <code>mcp_servers</code> array declares <code>{type, name, url}</code> only (no auth). Credentials live in vaults (<code>client.beta.vaults.credentials.create</code>) and attach to sessions via <code>vault_ids</code>. Anthropic auto-refreshes OAuth tokens using the stored refresh token. Vaults also hold <code>environment_variable</code> credentials for non-MCP services (CLIs, SDKs, direct API calls) - substituted at egress, never visible in the sandbox.</li>
-<li><strong>Reconcile resources before the first run</strong> - a session with a clear ask but a missing tool, credential, data mount, or context will discover the gap mid-run, then flail and give up. Before creating the session, check that every action in the task maps to a configured tool/MCP server, every MCP server has a vault credential, and every referenced file/host is mounted/reachable. When helping a user set one up, run the reconciliation in <code>shared/managed-agents-onboarding.md</code> -&gt; §3 Pre-flight viability check.</li>
+<li><strong>Reconcile resources before the first run</strong> - a session with a clear ask but a missing tool, credential, data mount, or context will discover the gap mid-run, then flail and give up. Before creating the session, check that every action in the task maps to a configured tool/MCP server, every MCP server has a vault credential, and every referenced file/host is mounted/reachable. When helping a user set one up, run the reconciliation in <code>shared/managed-agents-onboarding.md</code> -&gt; §4 silent viability gate.</li>
 <li><strong>Stream to get events</strong> - <code>GET /v1/sessions/{id}/events/stream</code> is the primary way to receive agent output in real-time.</li>
 <li><strong>SSE stream has no replay - reconnect with consolidation</strong> - if the stream drops while a <code>agent.tool_use</code>, <code>agent.mcp_tool_use</code>, or <code>agent.custom_tool_use</code> is pending resolution (<code>user.tool_confirmation</code> for the first two, <code>user.custom_tool_result</code> for the last one), the session deadlocks (client disconnects -&gt; session idles -&gt; reconnect happens -&gt; no client resolution happens). On every (re)connect: open stream with <code>GET /v1/sessions/{id}/events/stream</code> , fetch <code>GET /v1/sessions/{id}/events</code>, dedupe by event ID, then proceed. See <code>shared/managed-agents-events.md</code> -&gt; Reconnecting after a dropped stream.</li>
 <li><strong>Don't trust HTTP-library timeouts as wall-clock caps</strong> - <code>requests</code> <code>timeout=(c, r)</code> and <code>httpx.Timeout(n)</code> are <em>per-chunk</em> read timeouts; they reset every byte, so a trickling connection can block indefinitely. For a hard deadline on raw-HTTP polling, track <code>time.monotonic()</code> at the loop level and bail explicitly. Prefer the SDK's <code>sessions.events.stream()</code> / <code>sessions.events.list()</code> over hand-rolled HTTP. See <code>shared/managed-agents-events.md</code> -&gt; Receiving Events.</li>
-<li><strong>Messages queue</strong> - you can send events while the session is <code>running</code> or <code>idle</code>; they're processed in order. No need to wait for a response before sending the next message. Exception: a session paused at its budget (<code>stop_reason: budget_reached</code>) accepts only settle events - change or remove the budget to resume (<code>shared/managed-agents-core.md</code> § Session budgets).</li>
+<li><strong>Messages queue</strong> - you can send events while the session is <code>running</code> or <code>idle</code>; they're processed in order. No need to wait for a response before sending the next message. Two exceptions accept only settle events: a session waiting on you (<code>stop_reason: requires_action</code>), where a <code>user.message</code> is a 400, and one paused at its budget (<code>budget_reached</code>) - change or remove the budget to resume (<code>shared/managed-agents-core.md</code> § Session budgets).</li>
 <li><strong>Environment <code>config.type</code> is <code>"cloud"</code> or <code>"self_hosted"</code></strong> - <code>cloud</code> runs the container on Anthropic's infrastructure; <code>self_hosted</code> moves tool execution to your own (see <code>shared/managed-agents-self-hosted-sandboxes.md</code>).</li>
 <li><strong>Archive is permanent on every resource</strong> - archiving an agent, environment, session, vault, credential, or memory store makes it read-only with no unarchive. For agents, environments, and memory stores specifically, archived resources cannot be referenced by new sessions (existing sessions continue). Do not call <code>.archive()</code> on a production agent, environment, or memory store as cleanup - <strong>always confirm with the user before archiving</strong>.</li>
 </ul></main>

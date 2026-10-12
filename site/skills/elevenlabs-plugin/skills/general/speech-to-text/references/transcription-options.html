@@ -99,7 +99,7 @@
 <td><code>model_id</code></td>
 <td>string</td>
 <td>Yes</td>
-<td><code>scribe_v2</code> for batch transcription</td>
+<td><code>scribe_v2</code> for general batch transcription or <code>scribe_v2_medical</code> for medical and clinical audio</td>
 </tr>
 <tr>
 <td><code>token</code></td>
@@ -112,6 +112,12 @@
 <td>string</td>
 <td>No</td>
 <td>Language hint (ISO 639-1 or ISO 639-3, e.g., <code>en</code> or <code>eng</code>)</td>
+</tr>
+<tr>
+<td><code>transcript_edit</code></td>
+<td>string</td>
+<td>No</td>
+<td>Natural-language instruction applied to the final transcript (maximum 2,000 characters). Cannot be combined with <code>entity_detection</code>, <code>entity_redaction</code>, or <code>use_multi_channel</code>. Adds a 30% surcharge, billed for at least 10 seconds of audio.</td>
 </tr>
 <tr>
 <td><code>timestamps_granularity</code></td>
@@ -458,6 +464,11 @@ instead of uploading a local file:</p>
 <td><code>entities</code></td>
 <td>array</td>
 <td>Detected entities with text, type, and character offsets (if entity_detection enabled)</td>
+</tr>
+<tr>
+<td><code>edited_transcript</code></td>
+<td>object or null</td>
+<td>Transcript edit result when <code>transcript_edit</code> is set. A successful result has <code>kind: "transcript"</code> and <code>text</code>; a failed edit has <code>kind: "error"</code>, <code>error_type: "edit_failed"</code>, and <code>message</code>.</td>
 </tr>
 </tbody>
 </table>

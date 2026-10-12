@@ -82,9 +82,30 @@
 <h2>Prerequisites</h2>
 <ol>
 <li>A configured ElevenLabs agent</li>
-<li>A Twilio or Exotel phone number linked to your agent (obtain <code>agent_phone_number_id</code> from the ElevenLabs dashboard)</li>
+<li>A Twilio or Exotel phone number linked to your agent</li>
 <li>Your ElevenLabs API key</li>
 </ol>
+<h2>Find a linked phone number</h2>
+<p>List phone numbers that support outbound calls and filter by the assigned agent:</p>
+<h3>Python</h3>
+<pre><code class="language-python">phone_numbers = client.conversational_ai.phone_numbers.list_v_2(
+    agent_id=&quot;your-agent-id&quot;,
+    supports_outbound=True,
+    page_size=100,
+)
+</code></pre>
+<h3>JavaScript</h3>
+<pre><code class="language-javascript">const phoneNumbers = await client.conversationalAi.phoneNumbers.listV2({
+  agentId: &quot;your-agent-id&quot;,
+  supportsOutbound: true,
+  pageSize: 100,
+});
+</code></pre>
+<p>Use the returned <code>phone_number_id</code> (<code>phoneNumberId</code> in JavaScript) as
+<code>agent_phone_number_id</code>. When <code>has_more</code> (<code>hasMore</code>) is true, pass <code>next_cursor</code>
+(<code>nextCursor</code>) as <code>cursor</code> to retrieve the next page. See the
+<a href="https://elevenlabs.io/docs/api-reference/phone-numbers/list-v-2">phone number list API</a>
+for additional filters.</p>
 <h2>Basic Usage</h2>
 <p>See the <a href="../SKILL.html#outbound-calls">main agents skill</a> for basic Twilio Python, JavaScript, and CLI examples.</p>
 <h2>Request Parameters</h2>
@@ -340,8 +361,18 @@ agent branch and <code>environment</code> to control how environment variables r
 <td>integer</td>
 <td>How long to ring the recipient before giving up (default: <code>60</code>)</td>
 </tr>
+<tr>
+<td><code>twilio_machine_detection</code></td>
+<td>object or null</td>
+<td>Twilio answering-machine detection settings. Omit or set to <code>null</code> to disable. Ignored for non-Twilio providers and inbound calls.</td>
+</tr>
 </tbody>
 </table>
+<p>Set <code>twilio_machine_detection.mode</code> to <code>enable</code> for an early human-or-machine verdict or
+<code>detect_message_end</code> to wait for the end of a voicemail greeting. The default is <code>enable</code>.
+Detection runs asynchronously. Its verdict arrives through the separate
+<code>answering_machine_detection</code> webhook event, which must be enabled in the workspace or agent
+webhook settings.</p>
 <h3>Dynamic Variables</h3>
 <p>Pass custom data to your agent's prompt using <code>dynamic_variables</code>. Reference them in your agent's prompt with <code>{{variable_name}}</code> syntax.</p>
 <h3>Branch and Environment Routing</h3>

@@ -103,7 +103,7 @@ client = Anthropic::Client.new(api_key: &quot;your-api-key&quot;)
   name: &quot;my-dev-env&quot;,
   config: {
     type: &quot;cloud&quot;,
-    networking: {type: &quot;unrestricted&quot;}
+    networking: {type: &quot;limited&quot;, allow_package_managers: true, allow_mcp_servers: true}
   }
 )
 puts &quot;Environment ID: #{environment.id}&quot; # env_...
@@ -114,12 +114,22 @@ puts &quot;Environment ID: #{environment.id}&quot; # env_...
 <p>Warning: <strong>There is no inline agent config.</strong> <code>model</code>/<code>system_</code>/<code>tools</code> live on the agent object, not the session. Always start with <code>client.beta.agents.create()</code> - the session takes either <code>agent: agent.id</code> or the typed hash form <code>agent: {type: "agent", id: agent.id, version: agent.version}</code>.</p>
 </blockquote>
 <h3>Minimal</h3>
+<p>The examples on this page turn both web tools off. Set <code>enabled</code> to true on <code>web_fetch</code> / <code>web_search</code> only when the job as described needs the web (a general-purpose or open-ended job stays off; tell the user how to switch it on) - see <code>shared/managed-agents-tools.md</code> § Agent Toolset. They also set the <code>auto</code> permission policy, under which a call can pause for your approval - the event loop under Stream Events answers it. When nobody is watching the run, answer <code>deny</code>; never answer <code>allow</code> to every paused call.</p>
 <pre><code class="language-ruby"># 1. Create the agent (reusable, versioned)
 agent = client.beta.agents.create(
   name: &quot;Coding Assistant&quot;,
   model: :&quot;claude-opus-5-5&quot;,
   system_: &quot;You are a helpful coding assistant.&quot;,
-  tools: [{type: &quot;agent_toolset_20260401&quot;}]
+  tools: [
+    {
+      type: &quot;agent_toolset_20260401&quot;,
+      default_config: {permission_policy: {type: &quot;auto&quot;}},
+      configs: [
+        {name: &quot;web_fetch&quot;, enabled: false},
+        {name: &quot;web_search&quot;, enabled: false}
+      ]
+    }
+  ]
 )
 
 # 2. Start a session
@@ -179,10 +189,22 @@ stream.each do |event|
   case event.type
   in :&quot;agent.message&quot;
     event.content.each { |block| print block.text }
-  in :&quot;agent.tool_use&quot;
+  in :&quot;agent.tool_use&quot; | :&quot;agent.mcp_tool_use&quot;
     puts &quot;\n[Using tool: #{event.name}]&quot;
+    if event.evaluated_permission == :ask
+      # Paused for your decision (always_ask, or auto with no determination)
+      client.beta.sessions.events.send_(
+        session.id,
+        events: [{
+          type: &quot;user.tool_confirmation&quot;,
+          tool_use_id: event.id,
+          # you write approve: ask a person or apply your own rule; deny when unattended
+          result: approve(event) ? &quot;allow&quot; : &quot;deny&quot;
+        }]
+      )
+    end
   in :&quot;session.status_idle&quot;
-    break
+    break unless event.stop_reason.type == :requires_action # waiting on you, keep streaming
   in :&quot;session.error&quot;
     puts &quot;\n[Error: #{event.error&amp;.message || &quot;unknown&quot;}]&quot;
     break
@@ -195,7 +217,7 @@ end
 <p>Note: Event <code>.type</code> is a Symbol (compare with <code>:"agent.message"</code>, not <code>"agent.message"</code>).</p>
 </blockquote>
 <h3>Reconnecting and Tailing</h3>
-<p>When reconnecting mid-session, list past events first to dedupe, then tail live events:</p>
+<p>When reconnecting mid-session, list past events first to dedupe, then tail live events. Answer paused calls as in the loop above, including an <code>ask</code> in the history that no <code>user.tool_confirmation</code> follows.</p>
 <pre><code class="language-ruby">require &quot;set&quot;
 
 stream = client.beta.sessions.events.stream_events(session.id)
@@ -212,7 +234,8 @@ stream.each do |event|
   in :&quot;agent.message&quot;
     event.content.each { |block| print block.text }
   in :&quot;session.status_idle&quot;
-    break
+    # requires_action: answer the paused call as under Stream Events, then keep streaming
+    break unless event.stop_reason.type == :requires_action
   else
     # ignore other event types
   end
@@ -244,7 +267,7 @@ session = client.beta.sessions.create(
     {
       type: &quot;file&quot;,
       file_id: file.id,
-      mount_path: &quot;/workspace/data.csv&quot;
+      mount_path: &quot;/data.csv&quot;
     }
   ]
 )
@@ -302,7 +325,14 @@ agent = client.beta.agents.create(
     }
   ],
   tools: [
-    {type: &quot;agent_toolset_20260401&quot;},
+    {
+      type: &quot;agent_toolset_20260401&quot;,
+      default_config: {permission_policy: {type: &quot;auto&quot;}},
+      configs: [
+        {name: &quot;web_fetch&quot;, enabled: false},
+        {name: &quot;web_search&quot;, enabled: false}
+      ]
+    },
     {type: &quot;mcp_toolset&quot;, mcp_server_name: &quot;github&quot;}
   ]
 )

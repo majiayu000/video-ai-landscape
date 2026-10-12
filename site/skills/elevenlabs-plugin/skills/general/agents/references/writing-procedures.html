@@ -78,7 +78,7 @@
 <meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/agents/references/writing-procedures.md</span><button onclick="t()">🌓</button></nav>
 <main class="md"><h1>Writing Procedures</h1>
-<p>Check the current documentation before authoring procedure content. Procedures are in Alpha, and the content schema may change:</p>
+<p>Check the current documentation before authoring procedure content:</p>
 <ul>
 <li><a href="https://elevenlabs.io/docs/eleven-agents/customization/procedures.md">Procedures</a> — what a procedure is, and when to use one instead of a workflow or the system prompt.</li>
 <li><a href="https://elevenlabs.io/docs/eleven-agents/customization/procedures/free-form-procedures.md">Free-form procedures</a> — anatomy, inline references, and how to write triggers and content.</li>
@@ -88,13 +88,13 @@
 <ul>
 <li>A procedure has a <code>name</code>, a <code>trigger</code>, and <code>content</code>. The agent uses the trigger for routing and reads the content when the procedure starts.</li>
 <li>Use <code>free_form</code> for natural-language guidance that the agent can adapt. Only free-form procedures can reference knowledge base documents.</li>
-<li>Use <code>deterministic</code> for ordered, typed steps that must run consistently, such as identity verification or payment collection.</li>
-<li>Preserve the procedure type during routine updates unless the user explicitly requests a conversion.</li>
+<li>Use <code>deterministic</code> ("structured" in the dashboard) for typed steps that run in a fixed order, such as identity verification, escalation, or payment collection.</li>
+<li>A procedure's <code>type</code> cannot change after creation. Always resend the existing <code>type</code> on a draft update. To convert between free-form and structured, create a new procedure and re-point any references to it.</li>
 <li>Write concrete, non-overlapping triggers from the user's perspective. Cover likely phrasing: <code>When the user asks to refund, return, or get money back for an order</code> routes better than <code>When the user requests a refund</code>.</li>
-<li>An empty <code>trigger</code> marks a sub-procedure that runs only when another procedure references it. Omit <code>trigger</code> entirely to derive one from the content.</li>
+<li>An empty <code>trigger</code> marks a sub-procedure that runs only when another procedure references it. Set <code>trigger</code> as its own field; do not embed a trigger inside <code>content</code>.</li>
 <li>Content is capped at 50,000 characters for both types.</li>
 <li>Keep each procedure focused on one task. Put tone and refusal policy in the system prompt.</li>
-<li>Extract steps shared across procedures into a separate procedure.</li>
+<li>Extract steps shared across procedures into a separate procedure and reference it, rather than copying the steps. Copies drift.</li>
 </ul>
 <h2>Free-Form Content</h2>
 <p>Write <code>content</code> as markdown. Use numbered steps for sequences and bullets for requirements within a step. Use the imperative. Explain a step's rationale only when it helps the agent handle cases the procedure does not enumerate.</p>
@@ -109,23 +109,140 @@
 </code></pre>
 <p>A trigger can reference a resource's output, for example <code>When get_user returns tier 'gold'</code>.</p>
 <h2>Structured Content</h2>
-<p>Set <code>content</code> to a serialized JSON object containing a <code>trigger</code> and a non-empty <code>steps</code> array. Each step is an object discriminated by <code>type</code>. The step type defines its behavior, so its instruction rarely needs to restate that behavior.</p>
-<p>Each entry in <code>branches</code> pairs a <code>condition</code> with its own <code>steps</code>. A condition is either an LLM condition such as <code>{"type": "llm", "condition": "the caller has no order ID"}</code> or an expression over dynamic variables such as <code>{"type": "expression", "expression": ...}</code>.</p>
-<p>Use the structured procedures documentation for current step types, fields, and valid combinations. To validate against a live agent, save the draft and compile it. Fix every reported error before publishing; <a href="using-procedure-api.html">Using the Procedure API</a> describes the loop.</p>
+<p>Set <code>content</code> to a serialized JSON object containing a non-empty <code>steps</code> array. The trigger goes in the procedure's top-level <code>trigger</code> field, not inside <code>content</code>. Each step is an object discriminated by <code>type</code>. The step type defines its behavior, so its instruction rarely needs to restate that behavior. The names in parentheses are the labels shown in the dashboard editor.</p>
+<table>
+<thead>
+<tr>
+<th><code>type</code></th>
+<th>Editor name</th>
+<th>Fields</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ask</code></td>
+<td>Ask</td>
+<td><code>instruction</code></td>
+<td>Asks the user something and waits. Keeps asking until the user answers. The only step that pauses for the user.</td>
+</tr>
+<tr>
+<td><code>tell</code></td>
+<td>Tell</td>
+<td><code>instruction</code></td>
+<td>Conveys something in the agent's own words, then moves on immediately.</td>
+</tr>
+<tr>
+<td><code>say</code></td>
+<td>Say</td>
+<td><code>message</code>, optional <code>message_translations</code> (<code>{ "&lt;lang&gt;": { "value": "..." } }</code>)</td>
+<td>Says an exact message verbatim, then moves on immediately.</td>
+</tr>
+<tr>
+<td><code>tool_call</code></td>
+<td>Tool</td>
+<td><code>tool_id</code>, <code>tool_name</code>, optional <code>instruction</code>, optional <code>schema_overrides</code>, optional <code>on_failure</code></td>
+<td>Calls the tool. Always calls it; a condition in the instruction cannot skip it.</td>
+</tr>
+<tr>
+<td><code>branch</code></td>
+<td>If</td>
+<td><code>branches</code> (arms), optional <code>fallback</code> (Else)</td>
+<td>Evaluates arms in order; first match wins. <code>fallback</code> runs when nothing matches. With no <code>fallback</code> and no match, control falls through to the next step.</td>
+</tr>
+<tr>
+<td><code>sub_procedure</code></td>
+<td>Sub-procedure</td>
+<td><code>procedure_id</code></td>
+<td>Runs another structured procedure, then returns to the next step here.</td>
+</tr>
+<tr>
+<td><code>system_tool</code></td>
+<td>System tool</td>
+<td><code>system_tool_name</code></td>
+<td>Calls a built-in tool. Only <code>end_call</code> is supported; it ends the conversation.</td>
+</tr>
+<tr>
+<td><code>retry</code></td>
+<td>Retry</td>
+<td><code>max_retries</code> (1–3)</td>
+<td>Only inside <code>on_failure</code>. Re-runs the whole failure handler, tool call included, until the tool succeeds or attempts run out.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>An arm in <code>branches</code> is <code>{ "condition": &lt;condition&gt;, "steps": [...] }</code>. A condition is <code>{ "type": "llm", "condition": "&lt;natural language&gt;" }</code> (a text condition the model evaluates) or <code>{ "type": "expression", "expression": &lt;AST&gt; }</code> (an expression over dynamic variables). Expression conditions cannot read the user's reply; they test variables filled by tool results or set at conversation start.</li>
+<li><code>schema_overrides</code> fixes a tool parameter so the model does not choose it. Keys are parameter paths; each value is <code>{ "source": "constant", "constant_value": ... }</code>, <code>{ "source": "dynamic_variable", "dynamic_variable": "..." }</code>, <code>{ "source": "llm", "prompt": "&lt;optional prompt override&gt;" }</code>, or <code>{ "source": "omit" }</code>.</li>
+<li><code>on_failure</code> is <code>{ "branches": [], "fallback": [...] }</code>. Today the dashboard exposes only <code>fallback</code>, a single block of steps that runs when the tool fails; keep <code>branches</code> empty. The handler's steps run and the procedure continues to the next step. A tool step with no <code>on_failure</code> ends the conversation on failure.</li>
+<li>Where each step is allowed: inside an If arm, any step except <code>branch</code> and <code>retry</code>. Inside <code>on_failure</code>, any step except <code>branch</code> and <code>tool_call</code>.</li>
+</ul>
+<h3>Validation rules</h3>
+<p>Saving an agent draft or publishing rejects a structured procedure that breaks any of these, with the offending step's <code>path</code>:</p>
+<ul>
+<li>Two <code>branch</code> steps cannot be adjacent at the top level.</li>
+<li>A <code>branch</code> that uses expression conditions cannot directly follow an <code>ask</code>.</li>
+<li>All conditions in one <code>branch</code> must be the same kind: all <code>llm</code> or all <code>expression</code>.</li>
+<li><code>retry</code> may only appear in <code>on_failure</code>, and must be the last step there.</li>
+<li><code>end_call</code> must be the last step in whichever list it appears in.</li>
+<li><code>on_failure.fallback</code> must have at least one step.</li>
+<li>A <code>sub_procedure</code> must point at an existing structured procedure on the same agent, and not at itself.</li>
+<li><code>tool_id</code> must be a tool on the agent, <code>tool_name</code> must match, and <code>schema_overrides</code> must match the tool's schema.</li>
+<li><code>steps</code>, <code>instruction</code>, and <code>message</code> cannot be empty.</li>
+</ul>
+<h3>Runtime rules that shape the design</h3>
+<ul>
+<li>Only <code>ask</code> waits for the user. Every other step runs immediately and control moves to the next step within the same turn. There is no step that stops the turn other than <code>ask</code>; use <code>end_call</code> to end the conversation.</li>
+<li>Reaching the end of a procedure does not end the turn. The agent returns to its normal behavior with the turn still open and may say more.</li>
+<li><code>ask</code>, <code>tell</code>, and <code>say</code> steps have no tools. Do not write "do not call tools" into them.</li>
+<li>Decisions made inside a <code>branch</code> arm are not remembered by later steps. Persist anything needed downstream with a tool call or a dynamic variable.</li>
+</ul>
+<h3>Authoring guidance</h3>
+<ul>
+<li>One question per <code>ask</code>. Bundled questions get skipped or merged.</li>
+<li><code>tell</code> is for statements. A <code>tell</code> phrased as a question never waits for an answer.</li>
+<li>Do not insert an unrelated <code>tell</code> or <code>say</code> between two <code>branch</code> steps to satisfy the adjacency rule; fold the second decision into more arms of the first <code>branch</code>, or move it into a <code>sub_procedure</code>.</li>
+<li>Nested branching is not allowed. Put the nested steps in a <code>sub_procedure</code>.</li>
+<li>Place a <code>branch</code> with expression conditions right after the <code>tool_call</code> that fills the variables it tests.</li>
+<li>If a tool call is not always meant to happen, put the condition in a <code>branch</code> before the <code>tool_call</code>.</li>
+<li>When a parameter must always take a specific value, use a <code>constant</code> override rather than saying so in the instruction.</li>
+<li>Give every <code>tool_call</code> an <code>on_failure</code>; without one, any failure ends the conversation.</li>
+<li>Do not describe the next step inside a step, and do not try to end the turn with prose such as "this is the last message of this turn". The runtime does not enforce either.</li>
+</ul>
+<p>Validation happens when you publish, or when you save an agent draft to check without publishing; <a href="using-procedure-api.html#validate-without-publishing">Using the Procedure API</a> describes the loop.</p>
 <pre><code class="language-json">{
-  &quot;trigger&quot;: &quot;When the user asks to refund, return, or get money back for an order&quot;,
   &quot;steps&quot;: [
     { &quot;type&quot;: &quot;ask&quot;, &quot;instruction&quot;: &quot;Ask for the order ID.&quot; },
-    { &quot;type&quot;: &quot;tool_call&quot;, &quot;tool_id&quot;: &quot;tool_abc123&quot;, &quot;tool_name&quot;: &quot;Get order&quot; },
+    {
+      &quot;type&quot;: &quot;tool_call&quot;,
+      &quot;tool_id&quot;: &quot;tool_abc123&quot;,
+      &quot;tool_name&quot;: &quot;Get order&quot;,
+      &quot;schema_overrides&quot;: { &quot;include_history&quot;: { &quot;source&quot;: &quot;constant&quot;, &quot;constant_value&quot;: false } },
+      &quot;on_failure&quot;: {
+        &quot;branches&quot;: [],
+        &quot;fallback&quot;: [
+          { &quot;type&quot;: &quot;tell&quot;, &quot;instruction&quot;: &quot;Apologize that the order lookup failed and say you will try once more.&quot; },
+          { &quot;type&quot;: &quot;retry&quot;, &quot;max_retries&quot;: 1 }
+        ]
+      }
+    },
     {
       &quot;type&quot;: &quot;branch&quot;,
       &quot;branches&quot;: [
         {
           &quot;condition&quot;: { &quot;type&quot;: &quot;llm&quot;, &quot;condition&quot;: &quot;the order is outside the refund window&quot; },
-          &quot;steps&quot;: [{ &quot;type&quot;: &quot;tell&quot;, &quot;instruction&quot;: &quot;Explain the order is no longer eligible.&quot; }]
+          &quot;steps&quot;: [
+            { &quot;type&quot;: &quot;tell&quot;, &quot;instruction&quot;: &quot;Explain the order is no longer eligible.&quot; },
+            { &quot;type&quot;: &quot;sub_procedure&quot;, &quot;procedure_id&quot;: &quot;agtprc_escalate123&quot; }
+          ]
         }
       ],
-      &quot;fallback&quot;: [{ &quot;type&quot;: &quot;say&quot;, &quot;message&quot;: &quot;Your refund is on its way.&quot; }]
+      &quot;fallback&quot;: [
+        {
+          &quot;type&quot;: &quot;say&quot;,
+          &quot;message&quot;: &quot;Your refund is on its way.&quot;,
+          &quot;message_translations&quot;: { &quot;es&quot;: { &quot;value&quot;: &quot;Su reembolso está en camino.&quot; } }
+        }
+      ]
     },
     { &quot;type&quot;: &quot;system_tool&quot;, &quot;system_tool_name&quot;: &quot;end_call&quot; }
   ]
@@ -138,7 +255,6 @@
 
 content = json.dumps(
     {
-        &quot;trigger&quot;: &quot;When the user asks for a refund&quot;,
         &quot;steps&quot;: [
             {&quot;type&quot;: &quot;ask&quot;, &quot;instruction&quot;: &quot;Ask for the order ID.&quot;},
             {&quot;type&quot;: &quot;say&quot;, &quot;message&quot;: &quot;Your refund is on its way.&quot;},
@@ -148,7 +264,6 @@ content = json.dumps(
 </code></pre>
 <h3>JavaScript</h3>
 <pre><code class="language-javascript">const content = JSON.stringify({
-  trigger: &quot;When the user asks for a refund&quot;,
   steps: [
     { type: &quot;ask&quot;, instruction: &quot;Ask for the order ID.&quot; },
     { type: &quot;say&quot;, message: &quot;Your refund is on its way.&quot; },
@@ -158,7 +273,6 @@ content = json.dumps(
 <h3>CLI</h3>
 <pre><code class="language-bash"># Build the JSON string to pass to `elevenlabs agents procedures create --json`
 CONTENT=$(jq -n '{
-  trigger: &quot;When the user asks for a refund&quot;,
   steps: [
     { type: &quot;ask&quot;, instruction: &quot;Ask for the order ID.&quot; },
     { type: &quot;say&quot;, message: &quot;Your refund is on its way.&quot; }

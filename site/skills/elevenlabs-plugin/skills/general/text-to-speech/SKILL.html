@@ -77,8 +77,8 @@
 <meta name="twitter:description" content="text-to-speech · ElevenLabs 插件。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
 <meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/text-to-speech/SKILL.md</span><button onclick="t()">🌓</button></nav>
-<main class="md"><div class="meta"><div class="m-name">text-to-speech</div><div class="m-desc">Convert text to speech using ElevenLabs voice AI. Use when generating audio from text, creating voiceovers, building voice apps, or synthesizing speech in 70+ languages.</div><div class="m-src">源文件：<a href="https://github.com/elevenlabs/plugin/blob/main/skills/general/text-to-speech/SKILL.md" target="_blank" rel="noopener">elevenlabs/plugin/skills/general/text-to-speech/SKILL.md</a></div></div><h1>ElevenLabs Text-to-Speech</h1>
-<p>Generate natural speech from text - supports 70+ languages, multiple models for quality vs latency tradeoffs.</p>
+<main class="md"><div class="meta"><div class="m-name">text-to-speech</div><div class="m-desc">Convert text to speech using ElevenLabs voice AI. Use when generating audio from text, creating voiceovers, building voice apps, or synthesizing speech in 90+ languages.</div><div class="m-src">源文件：<a href="https://github.com/elevenlabs/plugin/blob/main/skills/general/text-to-speech/SKILL.md" target="_blank" rel="noopener">elevenlabs/plugin/skills/general/text-to-speech/SKILL.md</a></div></div><h1>ElevenLabs Text-to-Speech</h1>
+<p>Generate natural speech from text - supports 90+ languages, multiple models for quality vs latency tradeoffs. Examples default to <code>eleven_v4</code>, the latest and highest-quality model.</p>
 <blockquote>
 <p><strong>Setup:</strong> See <a href="references/installation.html">Installation Guide</a>. For JavaScript, use <code>@elevenlabs/*</code> packages only.</p>
 </blockquote>
@@ -91,7 +91,7 @@ client = ElevenLabs()
 audio = client.text_to_speech.convert(
     text=&quot;Hello, welcome to ElevenLabs!&quot;,
     voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,  # George
-    model_id=&quot;eleven_multilingual_v2&quot;
+    model_id=&quot;eleven_v4&quot;
 )
 
 with open(&quot;output.mp3&quot;, &quot;wb&quot;) as f:
@@ -106,14 +106,21 @@ import { Readable } from &quot;stream&quot;;
 const client = new ElevenLabsClient();
 const audio = await client.textToSpeech.convert(&quot;JBFqnCBsd6RMkjVDRZzb&quot;, {
   text: &quot;Hello, welcome to ElevenLabs!&quot;,
-  modelId: &quot;eleven_multilingual_v2&quot;,
+  modelId: &quot;eleven_v4&quot;,
 });
 // convert() returns a web ReadableStream — bridge it to a Node stream to write to disk
 Readable.fromWeb(audio).pipe(createWriteStream(&quot;output.mp3&quot;));
 </code></pre>
 <h3>CLI</h3>
+<p>Use <code>say</code> to play text immediately with the default voice and <code>eleven_v3</code> model:</p>
+<pre><code class="language-bash">elevenlabs say &quot;Hello!&quot;
+</code></pre>
+<p>Pipe text into <code>say</code> when another command produces the input:</p>
+<pre><code class="language-bash">echo &quot;The build finished successfully.&quot; | elevenlabs say
+</code></pre>
+<p>Use the API command when you need to set request parameters directly:</p>
 <pre><code class="language-bash">elevenlabs text-to-speech convert --voice-id JBFqnCBsd6RMkjVDRZzb \
-  --text &quot;Hello!&quot; --model-id eleven_multilingual_v2 --output output.mp3
+  --text &quot;Hello!&quot; --model-id eleven_v4 --output output.mp3
 </code></pre>
 <p>The CLI reads <code>ELEVENLABS_API_KEY</code> from the environment automatically.</p>
 <h2>Models</h2>
@@ -128,43 +135,45 @@ Readable.fromWeb(audio).pipe(createWriteStream(&quot;output.mp3&quot;));
 </thead>
 <tbody>
 <tr>
-<td><code>eleven_v3</code></td>
-<td>70+</td>
+<td><code>eleven_v4</code></td>
+<td>90+</td>
 <td>Standard</td>
-<td>Highest quality, emotional range</td>
+<td><strong>Default.</strong> Highest quality, emotional range, audio tags, voice cloning accuracy</td>
 </tr>
 <tr>
-<td><code>eleven_multilingual_v2</code></td>
-<td>29</td>
-<td>Standard</td>
-<td>High quality, long-form content</td>
+<td><code>eleven_v4_turbo</code></td>
+<td>90+</td>
+<td>~100ms</td>
+<td>Real-time v4 quality for agents and interactive apps (via <a href="references/streaming.html#eleven-v4-turbo-websocket">Text to Dialogue WebSocket</a>)</td>
 </tr>
 <tr>
 <td><code>eleven_flash_v2_5</code></td>
 <td>32</td>
 <td>~75ms</td>
-<td>Ultra-low latency, real-time</td>
+<td>Lowest latency, lowest cost, <code>stream-input</code> WebSocket</td>
 </tr>
 <tr>
 <td><code>eleven_flash_v2</code></td>
 <td>English</td>
 <td>~75ms</td>
-<td>English-only, fastest</td>
+<td>English-only, lowest latency</td>
 </tr>
 <tr>
-<td><code>eleven_turbo_v2_5</code></td>
-<td>32</td>
-<td>~250-300ms</td>
-<td>Balanced quality/speed</td>
+<td><code>eleven_multilingual_v2</code></td>
+<td>29</td>
+<td>Standard</td>
+<td>Previous generation; most stable on very long-form generations</td>
 </tr>
 <tr>
-<td><code>eleven_turbo_v2</code></td>
-<td>English</td>
-<td>~250-300ms</td>
-<td>English-only, balanced</td>
+<td><code>eleven_v3</code></td>
+<td>70+</td>
+<td>Standard</td>
+<td>Previous generation expressive model</td>
 </tr>
 </tbody>
 </table>
+<p><code>eleven_turbo_v2_5</code> and <code>eleven_turbo_v2</code> are superseded by the Flash models (same output, lower latency) — use <code>eleven_flash_v2_5</code> / <code>eleven_flash_v2</code> instead.</p>
+<p><strong>Eleven v4 notes:</strong> supports only <code>stability</code> and <code>similarity_boost</code> voice settings (no <code>style</code> or <code>speed</code>), does not support SSML, and is not available on the <code>stream-input</code> TTS WebSocket. Direct delivery with audio tags such as <code>[whispers]</code>, <code>[laughs]</code>, <code>[sarcastic]</code>.</p>
 <h2>Voice IDs</h2>
 <p>Use pre-made voices or create custom voices in the dashboard.</p>
 <p><strong>Popular voices:</strong>
@@ -181,7 +190,8 @@ for voice in voices.voices:
 <ul>
 <li><strong>Stability</strong>: How consistent the voice stays. Lower values = more emotional range and variation, but can sound unstable. Higher = steady, predictable delivery.</li>
 <li><strong>Similarity boost</strong>: How closely to match the original voice sample. Higher values sound more like the original but may amplify audio artifacts.</li>
-<li><strong>Style</strong>: Exaggerates the voice's unique style characteristics (only works with v2+ models).</li>
+<li><strong>Style</strong>: Exaggerates the voice's unique style characteristics (v2/v3 models; not supported on Eleven v4).</li>
+<li><strong>Speed</strong>: Speech speed multiplier (v2/v3 models; not supported on Eleven v4).</li>
 <li><strong>Speaker boost</strong>: Post-processing that enhances clarity and voice similarity.</li>
 </ul>
 <pre><code class="language-python">from elevenlabs import VoiceSettings
@@ -189,12 +199,10 @@ for voice in voices.voices:
 audio = client.text_to_speech.convert(
     text=&quot;Customize my voice settings.&quot;,
     voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+    model_id=&quot;eleven_v4&quot;,
     voice_settings=VoiceSettings(
-        stability=0.5,
-        similarity_boost=0.75,
-        style=0.5,
-        speed=1.0,             # 0.25 to 4.0 (default 1.0)
-        use_speaker_boost=True
+        stability=0.5,          # Lower = more expressive, higher = more consistent
+        similarity_boost=0.75,  # Higher = closer to the reference voice
     )
 )
 </code></pre>
@@ -203,7 +211,7 @@ audio = client.text_to_speech.convert(
 <pre><code class="language-python">audio = client.text_to_speech.convert(
     text=&quot;Bonjour, comment allez-vous?&quot;,
     voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
-    model_id=&quot;eleven_v3&quot;,
+    model_id=&quot;eleven_v4&quot;,
     language_code=&quot;fr&quot;  # ISO 639-1 code
 )
 </code></pre>
@@ -217,6 +225,7 @@ audio = client.text_to_speech.convert(
 <pre><code class="language-python">audio = client.text_to_speech.convert(
     text=&quot;Call 1-800-555-0123 on 01/15/2026&quot;,
     voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+    model_id=&quot;eleven_v4&quot;,
     apply_text_normalization=&quot;on&quot;
 )
 </code></pre>
@@ -226,6 +235,7 @@ audio = client.text_to_speech.convert(
 audio1 = client.text_to_speech.convert(
     text=&quot;This is the first part.&quot;,
     voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+    model_id=&quot;eleven_v4&quot;,
     next_text=&quot;And this continues the story.&quot;
 )
 
@@ -233,6 +243,7 @@ audio1 = client.text_to_speech.convert(
 audio2 = client.text_to_speech.convert(
     text=&quot;And this continues the story.&quot;,
     voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+    model_id=&quot;eleven_v4&quot;,
     previous_text=&quot;This is the first part.&quot;
 )
 </code></pre>
@@ -300,22 +311,23 @@ audio2 = client.text_to_speech.convert(
 </tbody>
 </table>
 <h2>Streaming</h2>
-<p>For real-time applications, use the <code>stream</code> method (returns audio chunks as they're generated):</p>
+<p>Use the <code>stream</code> method to receive audio chunks as they're generated:</p>
 <pre><code class="language-python">audio_stream = client.text_to_speech.stream(
     text=&quot;This text will be streamed as audio.&quot;,
     voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
-    model_id=&quot;eleven_flash_v2_5&quot;  # Ultra-low latency
+    model_id=&quot;eleven_v4&quot;
 )
 
 for chunk in audio_stream:
     play_audio(chunk)
 </code></pre>
-<p>See <a href="references/streaming.html">references/streaming.md</a> for WebSocket streaming.</p>
+<p>For real-time apps where latency matters most, use <code>eleven_v4_turbo</code> (~100ms) over the Text to Dialogue WebSocket, or <code>eleven_flash_v2_5</code> (~75ms) over HTTP streaming or the <code>stream-input</code> WebSocket. See <a href="references/streaming.html">references/streaming.md</a>.</p>
 <h2>Error Handling</h2>
 <pre><code class="language-python">try:
     audio = client.text_to_speech.convert(
         text=&quot;Generate speech&quot;,
-        voice_id=&quot;invalid-voice-id&quot;
+        voice_id=&quot;invalid-voice-id&quot;,
+        model_id=&quot;eleven_v4&quot;
     )
 except Exception as e:
     print(f&quot;API error: {e}&quot;)
@@ -327,7 +339,7 @@ except Exception as e:
 <h2>Tracking Costs</h2>
 <p>Monitor character usage via response headers (<code>x-character-count</code>, <code>request-id</code>):</p>
 <pre><code class="language-python">response = client.text_to_speech.convert.with_raw_response(
-    text=&quot;Hello!&quot;, voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;, model_id=&quot;eleven_multilingual_v2&quot;
+    text=&quot;Hello!&quot;, voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;, model_id=&quot;eleven_v4&quot;
 )
 audio = response.parse()
 print(f&quot;Characters used: {response.headers.get('x-character-count')}&quot;)

@@ -98,11 +98,11 @@ HEADERS=(
     &quot;name&quot;: &quot;my-dev-env&quot;,
     &quot;config&quot;: {
       &quot;type&quot;: &quot;cloud&quot;,
-      &quot;networking&quot;: { &quot;type&quot;: &quot;unrestricted&quot; }
+      &quot;networking&quot;: { &quot;type&quot;: &quot;limited&quot;, &quot;allow_package_managers&quot;: true, &quot;allow_mcp_servers&quot;: true }
     }
   }'
 </code></pre>
-<h3>With restricted networking</h3>
+<h3>Allowing specific hosts</h3>
 <pre><code class="language-bash">curl -X POST https://api.anthropic.com/v1/environments \
   &quot;${HEADERS[@]}&quot; \
   -d '{
@@ -124,13 +124,23 @@ HEADERS=(
 <p>Warning: <strong>There is no inline agent config.</strong> Under <code>managed-agents-2026-04-01</code>, <code>model</code>/<code>system</code>/<code>tools</code> are top-level fields on <code>POST /v1/agents</code>, not on the session. Always create the agent first - the session only takes <code>"agent": {"type": "agent", "id": "..."}</code>.</p>
 </blockquote>
 <h3>Minimal</h3>
+<p>The examples on this page turn both web tools off. Set <code>enabled</code> to true on <code>web_fetch</code> / <code>web_search</code> only when the job as described needs the web (a general-purpose or open-ended job stays off; tell the user how to switch it on) - see <code>shared/managed-agents-tools.md</code> § Agent Toolset. They also set the <code>auto</code> permission policy, under which a call can pause for your approval - see Confirm a Paused Tool Call. When nobody is watching the run, answer <code>deny</code>; never answer <code>allow</code> to every paused call.</p>
 <pre><code class="language-bash"># 1. Create the agent
 curl -X POST https://api.anthropic.com/v1/agents \
   &quot;${HEADERS[@]}&quot; \
   -d '{
     &quot;name&quot;: &quot;Coding Assistant&quot;,
     &quot;model&quot;: &quot;claude-opus-5-5&quot;,
-    &quot;tools&quot;: [{ &quot;type&quot;: &quot;agent_toolset_20260401&quot; }]
+    &quot;tools&quot;: [
+      {
+        &quot;type&quot;: &quot;agent_toolset_20260401&quot;,
+        &quot;default_config&quot;: { &quot;permission_policy&quot;: { &quot;type&quot;: &quot;auto&quot; } },
+        &quot;configs&quot;: [
+          { &quot;name&quot;: &quot;web_fetch&quot;, &quot;enabled&quot;: false },
+          { &quot;name&quot;: &quot;web_search&quot;, &quot;enabled&quot;: false }
+        ]
+      }
+    ]
   }'
 # -&gt; { &quot;id&quot;: &quot;agent_abc123&quot;, ... }
 
@@ -153,7 +163,14 @@ curl -X POST https://api.anthropic.com/v1/agents \
     &quot;model&quot;: &quot;claude-opus-5-5&quot;,
     &quot;system&quot;: &quot;You are a senior code reviewer. Be thorough and constructive.&quot;,
     &quot;tools&quot;: [
-      { &quot;type&quot;: &quot;agent_toolset_20260401&quot; },
+      {
+        &quot;type&quot;: &quot;agent_toolset_20260401&quot;,
+        &quot;default_config&quot;: { &quot;permission_policy&quot;: { &quot;type&quot;: &quot;auto&quot; } },
+        &quot;configs&quot;: [
+          { &quot;name&quot;: &quot;web_fetch&quot;, &quot;enabled&quot;: false },
+          { &quot;name&quot;: &quot;web_search&quot;, &quot;enabled&quot;: false }
+        ]
+      },
       {
         &quot;type&quot;: &quot;custom&quot;,
         &quot;name&quot;: &quot;run_linter&quot;,
@@ -182,7 +199,7 @@ curl -X POST https://api.anthropic.com/v1/sessions \
         &quot;url&quot;: &quot;https://github.com/owner/repo&quot;,
         &quot;mount_path&quot;: &quot;/workspace/repo&quot;,
         &quot;authorization_token&quot;: &quot;ghp_...&quot;,
-        &quot;branch&quot;: &quot;feature-branch&quot;
+        &quot;checkout&quot;: { &quot;type&quot;: &quot;branch&quot;, &quot;name&quot;: &quot;feature-branch&quot; }
       }
     ]
   }'
@@ -239,8 +256,9 @@ event: agent.message
 data: {&quot;type&quot;:&quot;agent.message&quot;,&quot;id&quot;:&quot;sevt_...&quot;,&quot;content&quot;:[{&quot;type&quot;:&quot;text&quot;,&quot;text&quot;:&quot;I'll review...&quot;}],&quot;processed_at&quot;:&quot;...&quot;}
 
 event: session.status_idle
-data: {&quot;type&quot;:&quot;session.status_idle&quot;,&quot;id&quot;:&quot;sevt_...&quot;,&quot;processed_at&quot;:&quot;...&quot;}
+data: {&quot;type&quot;:&quot;session.status_idle&quot;,&quot;id&quot;:&quot;sevt_...&quot;,&quot;stop_reason&quot;:{&quot;type&quot;:&quot;end_turn&quot;},&quot;processed_at&quot;:&quot;...&quot;}
 </code></pre>
+<p>On <code>requires_action</code> the agent is not finished: the session is waiting on you - see Confirm a Paused Tool Call and Provide Custom Tool Result below.</p>
 <hr />
 <h2>Poll Events</h2>
 <pre><code class="language-bash"># Get all events
@@ -262,6 +280,21 @@ curl &quot;https://api.anthropic.com/v1/sessions/$SESSION_ID/events?page=page_ab
         &quot;type&quot;: &quot;user.custom_tool_result&quot;,
         &quot;custom_tool_use_id&quot;: &quot;sevt_abc123&quot;,
         &quot;content&quot;: [{ &quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;No linting errors found.&quot; }]
+      }
+    ]
+  }'
+</code></pre>
+<hr />
+<h2>Confirm a Paused Tool Call</h2>
+<p>An <code>agent.tool_use</code> / <code>agent.mcp_tool_use</code> event with <code>"evaluated_permission": "ask"</code> (<code>always_ask</code>, or <code>auto</code> with no determination) waits until you answer it. Send that event's <code>id</code> as <code>tool_use_id</code>, with <code>result</code> <code>allow</code> or <code>deny</code>. Ask a person or apply your own rule; deny when unattended:</p>
+<pre><code class="language-bash">curl -X POST https://api.anthropic.com/v1/sessions/$SESSION_ID/events \
+  &quot;${HEADERS[@]}&quot; \
+  -d '{
+    &quot;events&quot;: [
+      {
+        &quot;type&quot;: &quot;user.tool_confirmation&quot;,
+        &quot;tool_use_id&quot;: &quot;sevt_abc123&quot;,
+        &quot;result&quot;: &quot;deny&quot;
       }
     ]
   }'
@@ -298,8 +331,7 @@ curl &quot;https://api.anthropic.com/v1/sessions/$SESSION_ID/events?page=page_ab
 <pre><code class="language-bash">curl -X POST https://api.anthropic.com/v1/files \
   -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
   -H &quot;anthropic-version: 2023-06-01&quot; \
-  -F &quot;file=@path/to/file.txt&quot; \
-  -F &quot;purpose=agent&quot;
+  -F &quot;file=@path/to/file.txt&quot;
 </code></pre>
 <hr />
 <h2>List and Download Session Files</h2>
@@ -333,7 +365,14 @@ curl -X POST https://api.anthropic.com/v1/agents \
       { &quot;type&quot;: &quot;url&quot;, &quot;name&quot;: &quot;my-tools&quot;, &quot;url&quot;: &quot;https://my-mcp-server.example.com/sse&quot; }
     ],
     &quot;tools&quot;: [
-      { &quot;type&quot;: &quot;agent_toolset_20260401&quot; },
+      {
+        &quot;type&quot;: &quot;agent_toolset_20260401&quot;,
+        &quot;default_config&quot;: { &quot;permission_policy&quot;: { &quot;type&quot;: &quot;auto&quot; } },
+        &quot;configs&quot;: [
+          { &quot;name&quot;: &quot;web_fetch&quot;, &quot;enabled&quot;: false },
+          { &quot;name&quot;: &quot;web_search&quot;, &quot;enabled&quot;: false }
+        ]
+      },
       { &quot;type&quot;: &quot;mcp_toolset&quot;, &quot;mcp_server_name&quot;: &quot;my-tools&quot; }
     ]
   }'
@@ -358,9 +397,11 @@ curl -X POST https://api.anthropic.com/v1/sessions \
     &quot;tools&quot;: [
       {
         &quot;type&quot;: &quot;agent_toolset_20260401&quot;,
-        &quot;default_config&quot;: { &quot;enabled&quot;: true },
+        &quot;default_config&quot;: { &quot;enabled&quot;: true, &quot;permission_policy&quot;: { &quot;type&quot;: &quot;auto&quot; } },
         &quot;configs&quot;: [
-          { &quot;name&quot;: &quot;bash&quot;, &quot;enabled&quot;: false }
+          { &quot;name&quot;: &quot;bash&quot;, &quot;enabled&quot;: false },
+          { &quot;name&quot;: &quot;web_fetch&quot;, &quot;enabled&quot;: false },
+          { &quot;name&quot;: &quot;web_search&quot;, &quot;enabled&quot;: false }
         ]
       }
     ]

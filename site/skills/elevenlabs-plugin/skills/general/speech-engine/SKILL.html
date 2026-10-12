@@ -222,13 +222,6 @@ export function VoiceControls() {
   return &lt;button onClick={startConversation}&gt;Start conversation&lt;/button&gt;;
 }
 </code></pre>
-<p>If a WebRTC browser session stalls or logs <code>/rtc/v1</code> 404s, <code>v1 RTC path not found</code>, or <code>could not establish pc connection</code>, pin <code>livekit-client</code> to <code>2.16.1</code> in the app's <code>package.json</code> until the upstream LiveKit compatibility issue is resolved:</p>
-<pre><code class="language-json">{
-  &quot;overrides&quot;: {
-    &quot;livekit-client&quot;: &quot;2.16.1&quot;
-  }
-}
-</code></pre>
 <h2>References</h2>
 <ul>
 <li><a href="references/installation.html">Installation Guide</a></li>

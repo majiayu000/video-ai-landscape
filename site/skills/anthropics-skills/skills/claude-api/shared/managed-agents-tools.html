@@ -106,7 +106,7 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Recommendation:</strong> Enable all prebuilt tools via <code>agent_toolset_20260401</code>, then disable individually as needed.</p>
+<p><strong>Recommendation:</strong> Enable the prebuilt tools via <code>agent_toolset_20260401</code> with <code>web_fetch</code> and <code>web_search</code> disabled and <code>auto</code> as the toolset's permission policy, and turn a web tool on only when the job needs it.</p>
 <p><strong>Versioning:</strong> The toolset is a versioned, static resource. When underlying tools change, a new toolset version is created (hence <code>_20260401</code>) so you always know exactly what you're getting.</p>
 <h3>Agent Toolset</h3>
 <p>The <code>agent_toolset_20260401</code> provides these built-in tools:</p>
@@ -152,22 +152,17 @@
 </tr>
 </tbody>
 </table>
-<p>Enable the full toolset:</p>
-<pre><code class="language-json">{
-  &quot;tools&quot;: [
-    { &quot;type&quot;: &quot;agent_toolset_20260401&quot; }
-  ]
-}
-</code></pre>
+<p><strong>Start with the web tools off.</strong> A bare <code>{ "type": "agent_toolset_20260401" }</code> enables all eight, and of the environment's <code>networking</code> choices only <code>limited</code> restricts the two web tools (§ Web search &amp; web fetch settings). List both in <code>configs</code> explicitly, as in the example below, and set <code>enabled: true</code> only on the ones the job needs (<code>web_search</code> to find pages, <code>web_fetch</code> to read a URL), with the sites in <code>allowed_domains</code> when they are known in advance, and under <code>limited</code> networking in the environment's <code>allowed_hosts</code> too.</p>
 <h3>Per-Tool Configuration</h3>
-<p>Override defaults for individual tools. This example enables everything except bash:</p>
+<p>Override defaults for individual tools. This example enables everything except the web tools and sets the <code>auto</code> permission policy (§ Permission Policies):</p>
 <pre><code class="language-json">{
   &quot;tools&quot;: [
     {
       &quot;type&quot;: &quot;agent_toolset_20260401&quot;,
-      &quot;default_config&quot;: { &quot;enabled&quot;: true },
+      &quot;default_config&quot;: { &quot;enabled&quot;: true, &quot;permission_policy&quot;: { &quot;type&quot;: &quot;auto&quot; } },
       &quot;configs&quot;: [
-        { &quot;name&quot;: &quot;bash&quot;, &quot;enabled&quot;: false }
+        { &quot;name&quot;: &quot;web_fetch&quot;, &quot;enabled&quot;: false },
+        { &quot;name&quot;: &quot;web_search&quot;, &quot;enabled&quot;: false }
       ]
     }
   ]
@@ -200,7 +195,7 @@
 </tbody>
 </table>
 <blockquote>
-<p><strong>Typed SDKs:</strong> each <code>configs</code> entry is a member of a union with one member per built-in tool (eight: <code>BetaManagedAgentsWebFetchToolConfigParams</code>, <code>...WebSearchToolConfigParams</code>, <code>...BashToolConfigParams</code>, ...), discriminated by <code>type</code>. Python/TypeScript/Ruby dicts and hashes with just <code>name</code> + <code>enabled</code> + <code>permission_policy</code> are unchanged. In Go, Java, C#, and PHP, <code>configs</code> is the union itself - build each entry from its per-tool type (Go: <code>BetaManagedAgentsAgentToolConfigUnionParamsUnion{OfWebFetch: &amp;anthropic.BetaManagedAgentsWebFetchToolConfigParams{...}}</code> - the arms are <code>OfBash</code> / <code>OfRead</code> / <code>OfWrite</code> / <code>OfEdit</code> / <code>OfGlob</code> / <code>OfGrep</code> / <code>OfWebFetch</code> / <code>OfWebSearch</code>; Java: <code>.addConfig(BetaManagedAgentsWebFetchToolConfigParams.builder()...build())</code>; C#: <code>new BetaManagedAgentsWebFetchToolConfigParams { Enabled = false }</code>; PHP: <code>BetaManagedAgentsWebFetchToolConfigParams::with(enabled: false)</code>). Code written against an SDK where all tools shared one config type must update how it constructs entries.</p>
+<p><strong>Typed SDKs:</strong> each <code>configs</code> entry is a member of a union with one member per built-in tool (eight: <code>BetaManagedAgentsWebFetchToolConfigParams</code>, <code>...WebSearchToolConfigParams</code>, <code>...BashToolConfigParams</code>, ...), discriminated by <code>type</code>. Python/TypeScript/Ruby dicts and hashes with just <code>name</code> + <code>enabled</code> + <code>permission_policy</code> are unchanged. In Go, Java, C#, and PHP, <code>configs</code> is the union itself - build each entry from its per-tool type (Go: <code>BetaManagedAgentsAgentToolConfigParamsUnion{OfWebFetch: &amp;anthropic.BetaManagedAgentsWebFetchToolConfigParams{...}}</code> - the arms are <code>OfBash</code> / <code>OfRead</code> / <code>OfWrite</code> / <code>OfEdit</code> / <code>OfGlob</code> / <code>OfGrep</code> / <code>OfWebFetch</code> / <code>OfWebSearch</code>; Java: <code>.addConfig(BetaManagedAgentsWebFetchToolConfigParams.builder()...build())</code>; C#: <code>new BetaManagedAgentsWebFetchToolConfigParams { Enabled = false }</code>; PHP: <code>BetaManagedAgentsWebFetchToolConfigParams::with(enabled: false)</code>). Code written against an SDK where all tools shared one config type must update how it constructs entries.</p>
 </blockquote>
 <h3>Permission Policies</h3>
 <p>Control whether server-executed tools (agent toolset + MCP) run automatically, wait for your approval, or have each call evaluated by the server. Does not apply to custom tools (your application executes those).</p>
@@ -222,7 +217,7 @@
 </tr>
 <tr>
 <td><code>auto</code></td>
-<td>The server evaluates each call (tool + input + session content so far) and <strong>runs it, denies it, or pauses for your approval</strong>. Neither toolset kind defaults to <code>auto</code>. See § <code>auto</code> below.</td>
+<td>The server evaluates each call (tool + input + session content so far) and <strong>runs it, denies it, or pauses for your approval</strong>. Neither toolset kind defaults to <code>auto</code> - set it explicitly; recommended for the agent toolset. Leave an <code>mcp_toolset</code> at its <code>always_ask</code> default unless the user asks for fewer approvals: there <code>auto</code> lets calls to a third-party service run with no one reviewing them. See § <code>auto</code> below.</td>
 </tr>
 </tbody>
 </table>
@@ -233,7 +228,9 @@
     &quot;permission_policy&quot;: { &quot;type&quot;: &quot;always_allow&quot; }
   },
   &quot;configs&quot;: [
-    { &quot;name&quot;: &quot;bash&quot;, &quot;permission_policy&quot;: { &quot;type&quot;: &quot;always_ask&quot; } }
+    { &quot;name&quot;: &quot;bash&quot;, &quot;permission_policy&quot;: { &quot;type&quot;: &quot;always_ask&quot; } },
+    { &quot;name&quot;: &quot;web_fetch&quot;, &quot;enabled&quot;: false },
+    { &quot;name&quot;: &quot;web_search&quot;, &quot;enabled&quot;: false }
   ]
 }
 </code></pre>
@@ -274,7 +271,11 @@
     {
       &quot;type&quot;: &quot;agent_toolset_20260401&quot;,
       &quot;default_config&quot;: { &quot;permission_policy&quot;: { &quot;type&quot;: &quot;auto&quot; } },
-      &quot;configs&quot;: [{ &quot;name&quot;: &quot;bash&quot;, &quot;permission_policy&quot;: { &quot;type&quot;: &quot;always_ask&quot; } }]
+      &quot;configs&quot;: [
+        { &quot;name&quot;: &quot;bash&quot;, &quot;permission_policy&quot;: { &quot;type&quot;: &quot;always_ask&quot; } },
+        { &quot;name&quot;: &quot;web_fetch&quot;, &quot;enabled&quot;: false },
+        { &quot;name&quot;: &quot;web_search&quot;, &quot;enabled&quot;: false }
+      ]
     },
     {
       &quot;type&quot;: &quot;mcp_toolset&quot;,
@@ -284,7 +285,7 @@
   ]
 }
 </code></pre>
-<p>Pass the same shape as an untyped dict / object literal / hash in Python, TypeScript, and Ruby. The typed SDKs (Go, Java, C#, PHP) need a generated type for the <code>auto</code> policy that ships with each SDK's release of the feature - until then, build the request in an untyped language or via cURL / <code>ant</code>. Python and TypeScript also only type-check <code>{"type": "auto"}</code> from the release that adds it (the wire API accepts it regardless).</p>
+<p>Pass the same shape as an untyped dict / object literal / hash in Python, TypeScript, and Ruby. The typed SDKs have a type for the policy (Go 1.72.0+: <code>OfAuto: &amp;anthropic.BetaManagedAgentsAutoPolicyParam{}</code> in the <code>PermissionPolicy</code> union; Java 2.63.0+: <code>.permissionPolicy(BetaManagedAgentsAutoPolicy.builder().build())</code>; PHP 0.48.0+: <code>permissionPolicy: BetaManagedAgentsAutoPolicy::with()</code>; C# 12.48.0+: <code>PermissionPolicy = new BetaManagedAgentsAutoPolicy()</code>) - on an older release, upgrade or build the request via cURL / <code>ant</code>. Python and TypeScript also only type-check <code>{"type": "auto"}</code> from the release that adds it (the wire API accepts it regardless).</p>
 <p><strong>What the evaluation trusts.</strong> The server treats session content as material to assess, not instructions to follow. Text you post in <code>user.message</code> events (including end-user text you relay there) counts as <em>your intent</em> and can lead the server to allow a call it would otherwise deny - though some calls are evaluated as high-risk regardless. The same words in a tool result, a fetched webpage, an MCP server response, or a message between session threads carry no such weight. If you relay untrusted end-user input in <code>user.message</code>, the server reads it as your intent too and it can get a call allowed - put <code>always_ask</code> on the tools you would not let that end user run without review.</p>
 <blockquote>
 <p><strong><code>auto</code> is not a human checkpoint.</strong> A call the server determines to be safe runs before any person sees it, and its effects may not be reversible. If a person must review a tool's calls before they run, use <code>always_ask</code> on that tool.</p>
@@ -352,7 +353,7 @@
   &quot;tools&quot;: [
     {
       &quot;type&quot;: &quot;agent_toolset_20260401&quot;,
-      &quot;default_config&quot;: { &quot;enabled&quot;: false },
+      &quot;default_config&quot;: { &quot;enabled&quot;: false, &quot;permission_policy&quot;: { &quot;type&quot;: &quot;auto&quot; } },
       &quot;configs&quot;: [
         { &quot;name&quot;: &quot;bash&quot;, &quot;enabled&quot;: true },
         { &quot;name&quot;: &quot;read&quot;, &quot;enabled&quot;: true }
@@ -362,19 +363,22 @@
 }
 </code></pre>
 <h3>Web search &amp; web fetch settings (domain filters)</h3>
-<p><code>web_search</code> and <code>web_fetch</code> run on Anthropic's servers regardless of environment type, so an environment's <code>networking</code> policy <strong>does not</strong> govern them (see <code>shared/managed-agents-environments.md</code> -&gt; Networking). To control what they can reach, set <code>allowed_domains</code> (only these hosts) <strong>or</strong> <code>blocked_domains</code> (never these hosts) - never both on one entry - on the tool's <code>configs</code> entry. Each tool carries its own list. Organization-level web search/fetch settings in the Console apply to the Messages API only, not to Managed Agents sessions.</p>
+<p><code>web_search</code> and <code>web_fetch</code> run on Anthropic's servers regardless of environment type. With <code>limited</code> networking, <code>allowed_hosts</code> also applies to them: <code>web_fetch</code> returns an error result for a URL on a host that <code>allowed_hosts</code> does not match, <code>web_search</code> omits results from such hosts, and when <code>allowed_hosts</code> lists no hosts neither returns a page or a search result. A host added to <code>allowed_hosts</code> for these tools is also open to the sandbox. <code>unrestricted</code> networking and self-hosted environments do not limit them (see <code>shared/managed-agents-environments.md</code> -&gt; Networking). To control what they can reach whatever the environment, set <code>allowed_domains</code> (only these hosts) <strong>or</strong> <code>blocked_domains</code> (never these hosts) - never both on one entry - on the tool's <code>configs</code> entry. Each tool carries its own list. Organization-level web search/fetch settings in the Console apply to the Messages API only, not to Managed Agents sessions.</p>
 <pre><code class="language-json">{
   &quot;type&quot;: &quot;agent_toolset_20260401&quot;,
+  &quot;default_config&quot;: { &quot;permission_policy&quot;: { &quot;type&quot;: &quot;auto&quot; } },
   &quot;configs&quot;: [
     {
       &quot;type&quot;: &quot;web_search&quot;,
       &quot;name&quot;: &quot;web_search&quot;,
+      &quot;enabled&quot;: true,
       &quot;allowed_domains&quot;: [&quot;docs.example.com&quot;, &quot;arxiv.org&quot;],
       &quot;user_location&quot;: { &quot;type&quot;: &quot;approximate&quot;, &quot;country&quot;: &quot;US&quot;, &quot;timezone&quot;: &quot;America/Los_Angeles&quot; }
     },
     {
       &quot;type&quot;: &quot;web_fetch&quot;,
       &quot;name&quot;: &quot;web_fetch&quot;,
+      &quot;enabled&quot;: true,
       &quot;blocked_domains&quot;: [&quot;ads.example.com&quot;],
       &quot;max_content_tokens&quot;: 50000
     }
@@ -434,7 +438,7 @@
 <li>You send back a <code>user.custom_tool_result</code> event with the output</li>
 <li>Session resumes <code>running</code></li>
 </ol>
-<p>No permission policy needed - you're the one executing.</p>
+<p>No permission policy needed - you're the one executing. A custom tool's name can't start with <code>mcp__</code> or <code>ant__</code> or match a built-in agent tool's name (400); an agent that already stores an <code>ant__</code> tool accepts only an update that sends <code>tools</code> without it, and a new session that would run with such a tool is refused (400).</p>
 <pre><code class="language-json">{
   &quot;tools&quot;: [
     {

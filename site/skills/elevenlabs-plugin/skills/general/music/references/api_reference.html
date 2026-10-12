@@ -78,7 +78,8 @@
 <meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/elevenlabs-plugin/">elevenlabs-plugin</a><span class="crumb">/</span><span class="crumb">skills/general/music/references/api_reference.md</span><button onclick="t()">🌓</button></nav>
 <main class="md"><h1>Music API Reference</h1>
-<p>All endpoints below default to <code>music_v1</code> unless noted for backwards compatibility. Always pass <code>music_v2</code> unless the caller explicitly needs the legacy model.</p>
+<p>All endpoints below default to <code>music_v1</code> unless noted for backwards compatibility. Pass
+<code>music_v2_5</code> unless the caller explicitly needs an older model.</p>
 <h2>Table of Contents</h2>
 <ul>
 <li><a href="#compose">compose</a></li>
@@ -126,7 +127,7 @@
 <td><code>model_id</code></td>
 <td>string</td>
 <td>No</td>
-<td>Music model. Defaults to <code>music_v1</code>.</td>
+<td>Music model: <code>music_v1</code>, <code>music_v2</code>, or <code>music_v2_5</code>. Defaults to <code>music_v1</code>.</td>
 </tr>
 <tr>
 <td><code>force_instrumental</code></td>
@@ -144,13 +145,13 @@
 <td><code>respect_sections_durations</code></td>
 <td>boolean</td>
 <td>No</td>
-<td>Enforce exact <code>duration_ms</code> for each composition plan chunk. Ignored if using <code>music_v2</code> model.</td>
+<td>Enforce exact <code>duration_ms</code> for each composition plan chunk. Ignored for <code>music_v2</code> and <code>music_v2_5</code>.</td>
 </tr>
 <tr>
 <td><code>output_format</code></td>
 <td>string</td>
 <td>No</td>
-<td>Query parameter for output codec/sample-rate/bitrate. <code>auto</code> selects <code>mp3_44100_128</code> for <code>music_v1</code> and <code>mp3_48000_192</code> for <code>music_v2</code>; high-bitrate MP3 options include <code>mp3_48000_240</code> and <code>mp3_48000_320</code>.</td>
+<td>Query parameter for output codec/sample-rate/bitrate. <code>auto</code> selects <code>mp3_44100_128</code> for <code>music_v1</code> and <code>mp3_48000_192</code> for v2 models; high-bitrate MP3 options include <code>mp3_48000_240</code> and <code>mp3_48000_320</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -159,7 +160,7 @@
 <pre><code class="language-python">audio = client.music.compose(
     prompt=&quot;An upbeat electronic track with synth leads&quot;,
     music_length_ms=30000,
-    model_id=&quot;music_v2&quot;,
+    model_id=&quot;music_v2_5&quot;,
 )
 
 with open(&quot;output.mp3&quot;, &quot;wb&quot;) as f:
@@ -170,7 +171,7 @@ with open(&quot;output.mp3&quot;, &quot;wb&quot;) as f:
 <pre><code class="language-typescript">const audio = await client.music.compose({
   prompt: &quot;An upbeat electronic track with synth leads&quot;,
   musicLengthMs: 30000,
-  modelId: &quot;music_v2&quot;,
+  modelId: &quot;music_v2_5&quot;,
 });
 
 const writeStream = createWriteStream(&quot;output.mp3&quot;);
@@ -180,25 +181,25 @@ audio.pipe(writeStream);
 <pre><code class="language-python">plan = client.music.composition_plan.create(
     prompt=&quot;A jazz ballad with piano and saxophone&quot;,
     music_length_ms=60000,
-    model_id=&quot;music_v2&quot;,
+    model_id=&quot;music_v2_5&quot;,
 )
 
 # Modify the plan as needed
 audio = client.music.compose(
     composition_plan=plan,
-    model_id=&quot;music_v2&quot;,
+    model_id=&quot;music_v2_5&quot;,
 )
 </code></pre>
 <pre><code class="language-typescript">const plan = await client.music.compositionPlan.create({
   prompt: &quot;A jazz ballad with piano and saxophone&quot;,
   musicLengthMs: 60000,
-  modelId: &quot;music_v2&quot;,
+  modelId: &quot;music_v2_5&quot;,
 });
 
 // Modify the plan as needed
 const audio = await client.music.compose({
   compositionPlan: plan,
-  modelId: &quot;music_v2&quot;,
+  modelId: &quot;music_v2_5&quot;,
 });
 </code></pre>
 <h2>stream</h2>
@@ -210,7 +211,7 @@ iterable/async-iterable of audio bytes instead of a single response. Available o
 stream = client.music.stream(
     prompt=&quot;A driving synthwave track with arpeggiated leads&quot;,
     music_length_ms=30000,
-    model_id=&quot;music_v2&quot;,
+    model_id=&quot;music_v2_5&quot;,
 )
 
 buffer = BytesIO()
@@ -222,7 +223,7 @@ for chunk in stream:
 <pre><code class="language-typescript">const stream = await client.music.stream({
   prompt: &quot;A driving synthwave track with arpeggiated leads&quot;,
   musicLengthMs: 30000,
-  modelId: &quot;music_v2&quot;,
+  modelId: &quot;music_v2_5&quot;,
 });
 
 const chunks: Buffer[] = [];
@@ -259,11 +260,11 @@ for await (const chunk of stream) {
 <td><code>model_id</code></td>
 <td>string</td>
 <td>No</td>
-<td>Defaults to <code>music_v2</code>. Plan structure differs between models.</td>
+<td>Supports <code>music_v1</code>, <code>music_v2</code>, and <code>music_v2_5</code>. Defaults to <code>music_v1</code>. Plan structure differs between model generations.</td>
 </tr>
 </tbody>
 </table>
-<h3>Plan Structure (<code>music_v2</code>)</h3>
+<h3>Plan Structure (<code>music_v2</code> and <code>music_v2_5</code>)</h3>
 <p>A plan is an ordered list of <code>chunks</code>. Each chunk is either a <strong>generation chunk</strong> or an
 <strong>audio reference chunk</strong> (see <a href="#inpainting">Inpainting</a>).</p>
 <table>
@@ -283,7 +284,7 @@ for await (const chunk of stream) {
 <tr>
 <td><code>chunks[].text</code></td>
 <td>string</td>
-<td>Section labels (<code>[Verse 1]</code>), lyrics, inline cues like <code>{guitar solo}</code></td>
+<td>Section labels (<code>[Verse 1]</code>), lyrics, inline cues like <code>{guitar solo}</code>. Up to 6,132 characters, 30 lines, and 200 characters per line.</td>
 </tr>
 <tr>
 <td><code>chunks[].duration_ms</code></td>
@@ -311,24 +312,24 @@ for await (const chunk of stream) {
 <pre><code class="language-python">plan = client.music.composition_plan.create(
     prompt=&quot;A peaceful ambient track with nature sounds&quot;,
     music_length_ms=60000,
-    model_id=&quot;music_v2&quot;,
+    model_id=&quot;music_v2_5&quot;,
 )
 
 # Inspect or edit the plan in place
 print(plan[&quot;chunks&quot;][0][&quot;positive_styles&quot;])
 plan[&quot;chunks&quot;][0][&quot;text&quot;] = &quot;[Intro]\nSoft pad with rain&quot;
 
-audio = client.music.compose(composition_plan=plan, model_id=&quot;music_v2&quot;)
+audio = client.music.compose(composition_plan=plan, model_id=&quot;music_v2_5&quot;)
 </code></pre>
 <h3>TypeScript</h3>
 <pre><code class="language-typescript">const plan = await client.music.compositionPlan.create({
   prompt: &quot;A peaceful ambient track with nature sounds&quot;,
   musicLengthMs: 60000,
-  modelId: &quot;music_v2&quot;,
+  modelId: &quot;music_v2_5&quot;,
 });
 
 plan.chunks[0].text = &quot;[Intro]\nSoft pad with rain&quot;;
-const audio = await client.music.compose({ compositionPlan: plan, modelId: &quot;music_v2&quot; });
+const audio = await client.music.compose({ compositionPlan: plan, modelId: &quot;music_v2_5&quot; });
 </code></pre>
 <h2>compose_detailed</h2>
 <p>Generate music while returning both the composition plan and metadata alongside the audio.</p>
@@ -365,7 +366,7 @@ const audio = await client.music.compose({ compositionPlan: plan, modelId: &quot
 <td><code>model_id</code></td>
 <td>string</td>
 <td>No</td>
-<td>Defaults to <code>music_v2</code></td>
+<td>Supports <code>music_v1</code>, <code>music_v2</code>, and <code>music_v2_5</code>. Defaults to <code>music_v1</code>.</td>
 </tr>
 <tr>
 <td><code>store_for_inpainting</code></td>
@@ -380,10 +381,16 @@ const audio = await client.music.compose({ compositionPlan: plan, modelId: &quot
 <td>Guarantee an instrumental output (prompt mode only)</td>
 </tr>
 <tr>
+<td><code>with_waveform_visual</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Include a low-resolution waveform preview; defaults to <code>false</code></td>
+</tr>
+<tr>
 <td><code>output_format</code></td>
 <td>string</td>
 <td>No</td>
-<td>Query parameter for output codec/sample-rate/bitrate. <code>auto</code> selects <code>mp3_44100_128</code> for <code>music_v1</code> and <code>mp3_48000_192</code> for <code>music_v2</code>; high-bitrate MP3 options include <code>mp3_48000_240</code> and <code>mp3_48000_320</code>.</td>
+<td>Query parameter for output codec/sample-rate/bitrate. <code>auto</code> selects <code>mp3_44100_128</code> for <code>music_v1</code> and <code>mp3_48000_192</code> for v2 models; high-bitrate MP3 options include <code>mp3_48000_240</code> and <code>mp3_48000_320</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -413,13 +420,17 @@ const audio = await client.music.compose({ compositionPlan: plan, modelId: &quot
 <td><code>song_id</code></td>
 <td>Identifier for the stored song (only when <code>store_for_inpainting=True</code>)</td>
 </tr>
+<tr>
+<td><code>json.waveform_visual</code></td>
+<td>Optional integer array sampled four times per second, with values from -1000 to 1000</td>
+</tr>
 </tbody>
 </table>
 <h3>Python</h3>
 <pre><code class="language-python">result = client.music.compose_detailed(
     prompt=&quot;A pop song about summer adventures&quot;,
     music_length_ms=120000,
-    model_id=&quot;music_v2&quot;,
+    model_id=&quot;music_v2_5&quot;,
     store_for_inpainting=True,
 )
 
@@ -435,7 +446,7 @@ with open(result.filename, &quot;wb&quot;) as f:
 const result = await client.music.composeDetailed({
   prompt: &quot;A pop song about summer adventures&quot;,
   musicLengthMs: 120000,
-  modelId: &quot;music_v2&quot;,
+  modelId: &quot;music_v2_5&quot;,
   storeForInpainting: true,
 });
 
@@ -482,7 +493,7 @@ word timestamps, and completion signal incrementally.</p>
 <td><code>model_id</code></td>
 <td>string</td>
 <td>No</td>
-<td>Defaults to <code>music_v1</code>; pass <code>music_v2</code> for the current model</td>
+<td>Defaults to <code>music_v1</code>; pass <code>music_v2_5</code> for the most advanced model</td>
 </tr>
 <tr>
 <td><code>seed</code></td>
@@ -509,10 +520,16 @@ word timestamps, and completion signal incrementally.</p>
 <td>Include word timestamps in the streamed events</td>
 </tr>
 <tr>
+<td><code>with_waveform_visual</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Include a low-resolution waveform preview in the streamed events</td>
+</tr>
+<tr>
 <td><code>output_format</code></td>
 <td>string</td>
 <td>No</td>
-<td>Query parameter for output codec/sample-rate/bitrate. <code>auto</code> selects <code>mp3_44100_128</code> for <code>music_v1</code> and <code>mp3_48000_192</code> for <code>music_v2</code>.</td>
+<td>Query parameter for output codec/sample-rate/bitrate. <code>auto</code> selects <code>mp3_44100_128</code> for <code>music_v1</code> and <code>mp3_48000_192</code> for v2 models.</td>
 </tr>
 </tbody>
 </table>
@@ -521,7 +538,7 @@ word timestamps, and completion signal incrementally.</p>
 <pre><code class="language-bash">elevenlabs music compose_detailed_stream \
   --prompt &quot;A bright indie pop hook with warm guitars&quot; \
   --music-length-ms 30000 \
-  --model-id music_v2 \
+  --model-id music_v2_5 \
   --with-timestamps true \
   --output-format auto
 </code></pre>
@@ -548,13 +565,19 @@ word timestamps, and completion signal incrementally.</p>
 <td><code>extract_composition_plan</code></td>
 <td>boolean | string</td>
 <td>No</td>
-<td>If <code>true</code> (or a model id such as <code>"music_v2"</code>), the response includes an extracted composition plan; passing a model id chooses the extraction model. The request may take longer to return.</td>
+<td>If <code>true</code> (or a model ID such as <code>"music_v2_5"</code>), the response includes an extracted composition plan; passing a model ID chooses the extraction model. The request may take longer to return.</td>
 </tr>
 <tr>
 <td><code>with_timestamps</code></td>
 <td>boolean</td>
 <td>No</td>
 <td>Transcribe the uploaded song and include word-level timestamps in the response. The request may take longer to return.</td>
+</tr>
+<tr>
+<td><code>with_waveform_visual</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Include a low-resolution waveform preview in the response</td>
 </tr>
 </tbody>
 </table>
@@ -579,12 +602,16 @@ word timestamps, and completion signal incrementally.</p>
 <td><code>words_timestamps</code></td>
 <td>Word-level timestamps when <code>with_timestamps</code> is enabled</td>
 </tr>
+<tr>
+<td><code>waveform_visual</code></td>
+<td>Integer array sampled four times per second, with values from -1000 to 1000, when <code>with_waveform_visual</code> is enabled</td>
+</tr>
 </tbody>
 </table>
 <h3>Python</h3>
 <pre><code class="language-python">response = client.music.upload(
     file=open(&quot;my-song.mp3&quot;, &quot;rb&quot;),
-    extract_composition_plan=&quot;music_v2&quot;,
+    extract_composition_plan=&quot;music_v2_5&quot;,
 )
 song_id = response.song_id
 composition_plan = response.composition_plan
@@ -594,7 +621,7 @@ composition_plan = response.composition_plan
 
 const response = await client.music.upload({
   file: createReadStream(&quot;my-song.mp3&quot;),
-  extractCompositionPlan: &quot;music_v2&quot;,
+  extractCompositionPlan: &quot;music_v2_5&quot;,
 });
 const songId = response.songId;
 const compositionPlan = response.compositionPlan;
@@ -602,7 +629,7 @@ const compositionPlan = response.compositionPlan;
 <h3>CLI</h3>
 <pre><code class="language-bash">elevenlabs music upload \
   --file my-song.mp3 \
-  --extract-composition-plan music_v2
+  --extract-composition-plan music_v2_5
 </code></pre>
 <h2>video_to_music</h2>
 <p>Generate background music from uploaded video clips. This is a <strong>separate endpoint</strong> from
@@ -642,7 +669,7 @@ const compositionPlan = response.compositionPlan;
 <td><code>model_id</code></td>
 <td>string</td>
 <td>No</td>
-<td>Music model to use. Defaults to <code>music_v1</code> on this endpoint — pass <code>music_v2</code> to opt in.</td>
+<td>Music model to use. Defaults to <code>music_v1</code> on this endpoint; pass <code>music_v2_5</code> for the most advanced model.</td>
 </tr>
 <tr>
 <td><code>sign_with_c2pa</code></td>
@@ -663,7 +690,7 @@ const compositionPlan = response.compositionPlan;
     videos=[open(&quot;scene-1.mp4&quot;, &quot;rb&quot;), open(&quot;scene-2.mp4&quot;, &quot;rb&quot;)],
     description=&quot;Cinematic ambient score with a gentle build&quot;,
     tags=[&quot;cinematic&quot;, &quot;ambient&quot;],
-    model_id=&quot;music_v2&quot;,
+    model_id=&quot;music_v2_5&quot;,
 )
 
 with open(&quot;video-score.mp3&quot;, &quot;wb&quot;) as f:
@@ -677,7 +704,7 @@ const audio = await client.music.videoToMusic({
   videos: [createReadStream(&quot;scene-1.mp4&quot;), createReadStream(&quot;scene-2.mp4&quot;)],
   description: &quot;Cinematic ambient score with a gentle build&quot;,
   tags: [&quot;cinematic&quot;, &quot;ambient&quot;],
-  modelId: &quot;music_v2&quot;,
+  modelId: &quot;music_v2_5&quot;,
 });
 
 audio.pipe(createWriteStream(&quot;video-score.mp3&quot;));
@@ -694,13 +721,14 @@ audio.pipe(createWriteStream(&quot;video-score.mp3&quot;));
 or TypeScript SDK to send multiple videos or tags.</p>
 <h2>Inpainting</h2>
 <p>Inpainting edits or extends a stored song by combining <strong>audio reference chunks</strong> (unchanged
-slices of stored audio) with <strong>generation chunks</strong> in a single <code>music_v2</code> composition plan.
+slices of stored audio) with <strong>generation chunks</strong> in a single <code>music_v2</code> or <code>music_v2_5</code>
+composition plan.
 Available to enterprise clients.</p>
 <h3>Getting a <code>song_id</code></h3>
 <ul>
 <li>Call <a href="#compose_detailed"><code>compose_detailed</code></a> or <a href="#compose"><code>compose</code></a> with <code>store_for_inpainting=True</code> to keep a
   generation for later editing.</li>
-<li>Call <a href="#upload"><code>upload</code></a> with <code>extract_composition_plan="music_v2"</code> to import an existing
+<li>Call <a href="#upload"><code>upload</code></a> with <code>extract_composition_plan="music_v2_5"</code> to import an existing
   track and recover its plan.</li>
 </ul>
 <h3>Chunk Types</h3>
@@ -731,7 +759,7 @@ Available to enterprise clients.</p>
 </tr>
 </tbody>
 </table>
-<p><strong>Generation chunk</strong> — same fields as a normal <code>music_v2</code> plan chunk (<code>text</code>,
+<p><strong>Generation chunk</strong> — same fields as a normal v2 model plan chunk (<code>text</code>,
 <code>duration_ms</code>, <code>positive_styles</code>, <code>negative_styles</code>, <code>context_adherence</code>), with two optional
 fields for matching the feel of an existing slice:</p>
 <table>
@@ -807,7 +835,7 @@ fields for matching the feel of an existing slice:</p>
     ]
 }
 
-audio = client.music.compose(composition_plan=plan, model_id=&quot;music_v2&quot;)
+audio = client.music.compose(composition_plan=plan, model_id=&quot;music_v2_5&quot;)
 </code></pre>
 <h3>TypeScript</h3>
 <pre><code class="language-typescript">const plan = {
@@ -825,7 +853,7 @@ audio = client.music.compose(composition_plan=plan, model_id=&quot;music_v2&quot
   ],
 };
 
-const audio = await client.music.compose({ compositionPlan: plan, modelId: &quot;music_v2&quot; });
+const audio = await client.music.compose({ compositionPlan: plan, modelId: &quot;music_v2_5&quot; });
 </code></pre>
 <h2>Error Handling</h2>
 <h3>bad_prompt</h3>

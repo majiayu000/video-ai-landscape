@@ -97,13 +97,16 @@ var client = AnthropicOkHttpClient.fromEnv();
 <hr />
 <h2>Create an Environment</h2>
 <pre><code class="language-java">import com.anthropic.models.beta.environments.BetaCloudConfigParams;
-import com.anthropic.models.beta.environments.BetaUnrestrictedNetwork;
+import com.anthropic.models.beta.environments.BetaLimitedNetworkParams;
 import com.anthropic.models.beta.environments.EnvironmentCreateParams;
 
 var environment = client.beta().environments().create(EnvironmentCreateParams.builder()
     .name(&quot;my-dev-env&quot;)
     .config(BetaCloudConfigParams.builder()
-        .networking(BetaUnrestrictedNetwork.builder().build())
+        .networking(BetaLimitedNetworkParams.builder()
+            .allowPackageManagers(true)
+            .allowMcpServers(true)
+            .build())
         .build())
     .build());
 System.out.println(&quot;Environment ID: &quot; + environment.id()); // env_...
@@ -114,8 +117,13 @@ System.out.println(&quot;Environment ID: &quot; + environment.id()); // env_...
 <p>Warning: <strong>There is no inline agent config.</strong> Model, system, and tools live on the agent object, not the session. Always start with <code>client.beta().agents().create()</code> - the session takes either <code>.agent(agent.id())</code> or the typed <code>BetaManagedAgentsAgentParams.builder()...build()</code>.</p>
 </blockquote>
 <h3>Minimal</h3>
+<p>The examples on this page turn both web tools off. Set <code>enabled</code> to true on <code>web_fetch</code> / <code>web_search</code> only when the job as described needs the web (a general-purpose or open-ended job stays off; tell the user how to switch it on) - see <code>shared/managed-agents-tools.md</code> § Agent Toolset. They also set the <code>auto</code> permission policy (Java SDK 2.63.0+), under which a call can pause for your approval - the event loop under Stream Events answers it. When nobody is watching the run, answer <code>deny</code>; never answer <code>allow</code> to every paused call.</p>
 <pre><code class="language-java">import com.anthropic.models.beta.agents.AgentCreateParams;
 import com.anthropic.models.beta.agents.BetaManagedAgentsAgentToolset20260401Params;
+import com.anthropic.models.beta.agents.BetaManagedAgentsAgentToolsetDefaultConfigParams;
+import com.anthropic.models.beta.agents.BetaManagedAgentsAutoPolicy;
+import com.anthropic.models.beta.agents.BetaManagedAgentsWebFetchToolConfigParams;
+import com.anthropic.models.beta.agents.BetaManagedAgentsWebSearchToolConfigParams;
 import com.anthropic.models.beta.sessions.BetaManagedAgentsAgentParams;
 import com.anthropic.models.beta.sessions.SessionCreateParams;
 
@@ -126,6 +134,11 @@ var agent = client.beta().agents().create(AgentCreateParams.builder()
     .system(&quot;You are a helpful coding assistant.&quot;)
     .addTool(BetaManagedAgentsAgentToolset20260401Params.builder()
         .type(BetaManagedAgentsAgentToolset20260401Params.Type.AGENT_TOOLSET_20260401)
+        .defaultConfig(BetaManagedAgentsAgentToolsetDefaultConfigParams.builder()
+            .permissionPolicy(BetaManagedAgentsAutoPolicy.builder().build())
+            .build())
+        .addConfig(BetaManagedAgentsWebFetchToolConfigParams.builder().enabled(false).build())
+        .addConfig(BetaManagedAgentsWebSearchToolConfigParams.builder().enabled(false).build())
         .build())
     .build());
 
@@ -178,7 +191,24 @@ client.beta().sessions().events().send(session.id(), EventSendParams.builder()
 </blockquote>
 <hr />
 <h2>Stream Events (SSE)</h2>
-<pre><code class="language-java">import com.anthropic.models.beta.sessions.events.StreamEvents;
+<pre><code class="language-java">import com.anthropic.models.beta.sessions.events.BetaManagedAgentsAgentEvaluatedPermission;
+import com.anthropic.models.beta.sessions.events.BetaManagedAgentsUserToolConfirmationEventParams;
+import com.anthropic.models.beta.sessions.events.StreamEvents;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+
+// Answers a tool call that paused for your decision (always_ask, or auto with no determination)
+BiConsumer&lt;String, Boolean&gt; confirm = (toolUseId, allow) -&gt;
+    client.beta().sessions().events().send(session.id(), EventSendParams.builder()
+        .addEvent(BetaManagedAgentsUserToolConfirmationEventParams.builder()
+            .type(BetaManagedAgentsUserToolConfirmationEventParams.Type.USER_TOOL_CONFIRMATION)
+            .toolUseId(toolUseId)
+            .result(allow
+                ? BetaManagedAgentsUserToolConfirmationEventParams.Result.ALLOW
+                : BetaManagedAgentsUserToolConfirmationEventParams.Result.DENY)
+            .build())
+        .build());
+var ask = Optional.of(BetaManagedAgentsAgentEvaluatedPermission.ASK);
 
 // Open the stream first, then send the user message
 try (var stream = client.beta().sessions().events().streamStreaming(session.id())) {
@@ -193,9 +223,16 @@ try (var stream = client.beta().sessions().events().streamStreaming(session.id()
         if (event.isAgentMessage()) {
             event.asAgentMessage().content().forEach(block -&gt; System.out.print(block.text()));
         } else if (event.isAgentToolUse()) {
-            System.out.println(&quot;\n[Using tool: &quot; + event.asAgentToolUse().name() + &quot;]&quot;);
+            var call = event.asAgentToolUse();
+            System.out.println(&quot;\n[Using tool: &quot; + call.name() + &quot;]&quot;);
+            // you write approve(): ask a person or apply your own rule; deny when unattended
+            if (call.evaluatedPermission().equals(ask)) confirm.accept(call.id(), approve(event));
+        } else if (event.isAgentMcpToolUse()) {
+            var call = event.asAgentMcpToolUse();
+            if (call.evaluatedPermission().equals(ask)) confirm.accept(call.id(), approve(event));
         } else if (event.isSessionStatusIdle()) {
-            break;
+            // requires_action: waiting on you, keep streaming
+            if (!event.asSessionStatusIdle().stopReason().isRequiresAction()) break;
         } else if (event.isSessionError()) {
             System.out.println(&quot;\n[Error]&quot;);
             break;
@@ -204,7 +241,7 @@ try (var stream = client.beta().sessions().events().streamStreaming(session.id()
 }
 </code></pre>
 <h3>Reconnecting and Tailing</h3>
-<p>When reconnecting mid-session, list past events first to dedupe, then tail live events. The cross-variant <code>id</code> field is read from the raw <code>_json()</code> value:</p>
+<p>When reconnecting mid-session, list past events first to dedupe, then tail live events. Answer paused calls as in the loop above, including an <code>ask</code> in the history that no <code>user.tool_confirmation</code> follows. The cross-variant <code>id</code> field is read from the raw <code>_json()</code> value:</p>
 <pre><code class="language-java">import com.anthropic.core.JsonValue;
 import java.util.HashSet;
 import java.util.Map;
@@ -225,7 +262,8 @@ try (var stream = client.beta().sessions().events().streamStreaming(session.id()
         if (event.isAgentMessage()) {
             event.asAgentMessage().content().forEach(block -&gt; System.out.print(block.text()));
         } else if (event.isSessionStatusIdle()) {
-            break;
+            // requires_action: answer the paused call as under Stream Events, then keep streaming
+            if (!event.asSessionStatusIdle().stopReason().isRequiresAction()) break;
         }
     }
 }
@@ -261,7 +299,7 @@ var session = client.beta().sessions().create(SessionCreateParams.builder()
     .addResource(BetaManagedAgentsFileResourceParams.builder()
         .type(BetaManagedAgentsFileResourceParams.Type.FILE)
         .fileId(file.id())
-        .mountPath(&quot;/workspace/data.csv&quot;)
+        .mountPath(&quot;/data.csv&quot;)
         .build())
     .build());
 </code></pre>
@@ -333,6 +371,11 @@ var agent = client.beta().agents().create(AgentCreateParams.builder()
         .build())
     .addTool(BetaManagedAgentsAgentToolset20260401Params.builder()
         .type(BetaManagedAgentsAgentToolset20260401Params.Type.AGENT_TOOLSET_20260401)
+        .defaultConfig(BetaManagedAgentsAgentToolsetDefaultConfigParams.builder()
+            .permissionPolicy(BetaManagedAgentsAutoPolicy.builder().build())
+            .build())
+        .addConfig(BetaManagedAgentsWebFetchToolConfigParams.builder().enabled(false).build())
+        .addConfig(BetaManagedAgentsWebSearchToolConfigParams.builder().enabled(false).build())
         .build())
     .addTool(BetaManagedAgentsMcpToolsetParams.builder()
         .type(BetaManagedAgentsMcpToolsetParams.Type.MCP_TOOLSET)

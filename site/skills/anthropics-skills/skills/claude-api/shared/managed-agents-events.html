@@ -131,7 +131,7 @@
 </code></pre>
 <p>Constraints:</p>
 <ul>
-<li><strong>Model-gated: Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, and Claude Sonnet 5.5 (not Claude Sonnet 5).</strong> Only the agent's <strong>primary</strong> model is checked - <code>system.message</code> lands on the primary thread only, so subagent models are not considered. On an unsupported primary model the event is rejected with a <code>model_does_not_support_mid_conversation_system</code> validation error.</li>
+<li><strong>Model-gated: Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5.5, and Claude Haiku 5.5 (not Claude Sonnet 5).</strong> Only the agent's <strong>primary</strong> model is checked - <code>system.message</code> lands on the primary thread only, so subagent models are not considered. On an unsupported primary model the event is rejected with a <code>model_does_not_support_mid_conversation_system</code> validation error.</li>
 <li><strong>While the session is idle with <code>stop_reason: requires_action</code></strong> (blocked on <code>user.custom_tool_result</code> / <code>user.tool_confirmation</code>), a <code>system.message</code> is accepted <strong>only when it trails a tool result event in the same request</strong>. Sent on its own - or alongside a <code>user.message</code> - it is rejected until the pending tool events are resolved.</li>
 <li><code>content</code> accepts 1-1000 text items.</li>
 </ul>
@@ -232,7 +232,7 @@
 </tr>
 <tr>
 <td><code>session.thread_created</code></td>
-<td>Subagent thread spawned (multiagent), or an advisor consultation started (thread name <code>anthropic.advisor</code>) - see <code>shared/managed-agents-multiagent.md</code></td>
+<td>Subagent thread spawned (multiagent), an advisor consultation started (thread name <code>anthropic.advisor</code>), or a workflow run created a thread (<code>workflow_run_id</code> is the run's id, and <code>null</code> on any other thread) - see <code>shared/managed-agents-multiagent.md</code></td>
 </tr>
 <tr>
 <td><code>session.thread_status_running</code> / <code>_idle</code> / <code>_rescheduled</code> / <code>_terminated</code></td>
@@ -241,6 +241,10 @@
 <tr>
 <td><code>agent.thread_message_sent</code> / <code>_received</code></td>
 <td>Cross-thread message, carries <code>to_session_thread_id</code> / <code>from_session_thread_id</code> (multiagent)</td>
+</tr>
+<tr>
+<td><code>workflow_run.created</code> / <code>.status_running</code> / <code>.status_idle</code> / <code>.status_ended</code> / <code>.phase_started</code> / <code>.phase_ended</code> / <code>.error</code></td>
+<td>A workflow run was created, is running or idle, or ended (with <code>result</code>), or one of its phases started or ended, or the server reports an error of a run or a start it refused - see <code>shared/managed-agents-multiagent.md</code> § Dynamic workflows</td>
 </tr>
 </tbody>
 </table>
@@ -337,7 +341,7 @@ await sendMessage(sessionId, &quot;Actually also check the CONTRIBUTING guide&qu
 await sendMessage(sessionId, &quot;And compare the two&quot;);
 // Stream once - agent responds to all three as a coherent turn
 </code></pre>
-<p>Events can be sent up to the Session at any time. There is no need to wait on a specific session status to enqueue new events via <code>client.beta.sessions.events.send()</code>. One exception: a session paused at its budget (<code>stop_reason: budget_reached</code>) accepts only settle events - a <code>user.message</code> there is a 400. See § Reaching a session budget.</p>
+<p>Events can be sent up to the Session at any time. There is no need to wait on a specific session status to enqueue new events via <code>client.beta.sessions.events.send()</code>. Two exceptions: while a call is waiting on you (<code>stop_reason: requires_action</code>) or the session is paused at its budget (<code>budget_reached</code>), only settle events are accepted - a <code>user.message</code> there is a 400. See § Reaching a session budget.</p>
 <h3>Interrupt</h3>
 <p>A <code>user.interrupt</code> event <strong>jumps the queue</strong> (ahead of any pending user messages) and forces the session into <code>idle</code>. Exception: while the session is paused at its budget, an interrupt is accepted and ignored - it is never persisted and changes nothing (§ Reaching a session budget). Use this for "stop" / "nevermind" / "cancel" commands:</p>
 <pre><code class="language-ts">await client.beta.sessions.events.send(sessionId, {
@@ -347,7 +351,7 @@ await sendMessage(sessionId, &quot;And compare the two&quot;);
 <p>The agent stops mid-task. It does not see the interrupt as a message - it just halts. Send a follow-up <code>user</code> event to explain what to do instead. If an outcome is active, the interrupt also marks <code>span.outcome_evaluation_end.result: "interrupted"</code> (see <code>shared/managed-agents-outcomes.md</code>) - though not at a budget pause, where the interrupt is accepted and ignored (see § Reaching a session budget).</p>
 <p><strong>The interrupted turn ends with <code>stop_reason: end_turn</code></strong> - the same value a turn that finishes on its own carries. There is no interruption-specific stop reason, so a drain loop can't distinguish the two from <code>stop_reason</code> alone; track that you sent the interrupt.</p>
 <p><strong>Against an already-<code>idle</code> session an interrupt is normally a no-op.</strong> The exception is a session on a self-hosted environment whose worker failed the claimed work item (a memory-store mount error, for instance): it sits <code>idle</code> with <code>stop_reason: requires_action</code> and no error event, and <code>user.interrupt</code> re-queues the work for the next worker claim (<code>shared/managed-agents-self-hosted-sandboxes.md</code> § Memory stores -&gt; Troubleshooting).</p>
-<p><strong>In a multiagent session, omitting <code>session_thread_id</code> interrupts every non-archived thread, including the primary</strong> - it is not primary-only. Pass <code>session_thread_id</code> to stop one thread. See <code>shared/managed-agents-multiagent.md</code>.</p>
+<p><strong>In a multiagent session, omitting <code>session_thread_id</code> interrupts every non-archived thread, including the primary</strong> - it is not primary-only; with dynamic workflows, <code>shared/managed-agents-multiagent.md</code> § Dynamic workflows -&gt; Interrupting with runs open says what it does to runs. Pass <code>session_thread_id</code> to stop one thread. See <code>shared/managed-agents-multiagent.md</code>.</p>
 <blockquote>
 <p><strong>Note</strong>: Interrupt events may have empty IDs in the current implementation. When troubleshooting, use the <code>processed_at</code> timestamp along with surrounding event IDs. (Not applicable to an interrupt sent at the budget cap - that event is never persisted, so there is nothing to locate.)</p>
 </blockquote>
@@ -358,8 +362,8 @@ await sendMessage(sessionId, &quot;And compare the two&quot;);
 <li><code>session.usage</code> - a snapshot of the session's cumulative usage and tracked list cost.</li>
 <li><code>session.status_idle</code> with <code>stop_reason: budget_reached</code>. The <code>session.usage</code> event always immediately precedes this idle.</li>
 </ol>
-<p>While at the cap the session accepts <strong>only settle events</strong> (<code>user.tool_confirmation</code>, <code>user.tool_result</code>, <code>user.custom_tool_result</code>, <code>user.interrupt</code>); anything that starts new work, including <code>user.message</code>, is a 400 naming that list. A <code>user.interrupt</code> sent while the session is paused at its budget (all threads paused at the cap) is accepted and ignored: it does not appear in the event list and changes nothing. Raise or remove the budget to continue. When one thread waits on a tool ask and another is paused at the cap, the session-level <code>stop_reason</code> is <code>requires_action</code>, not <code>budget_reached</code> - settling the ask doesn't trigger a model request, so respond as usual.</p>
-<p><strong>No event resumes a session paused at its cap.</strong> Update the session's budget instead: change it to a value above the consumed list cost (higher or lower than the old cap), or remove it with <code>"budget": null</code>. An accepted update resumes the paused work automatically.</p>
+<p>While at the cap the session accepts <strong>only settle events</strong> (<code>user.tool_confirmation</code>, <code>user.tool_result</code>, <code>user.custom_tool_result</code>, <code>user.interrupt</code>); anything that starts new work, including <code>user.message</code>, is a 400 naming that list. A <code>user.interrupt</code> sent while the session is paused at its budget (all threads paused at the cap) is accepted and ignored: it does not appear in the event list and changes nothing. Raise or remove the budget to continue. When one thread waits on a tool ask and another is paused at the cap, the session-level <code>stop_reason</code> is <code>requires_action</code>, not <code>budget_reached</code> - settling the ask doesn't trigger a model request, so respond as usual. With a workflow run open, see <code>shared/managed-agents-multiagent.md</code> § Dynamic workflows: an interrupt at the cap ends no run (the budget has already paused them), and each run the budget pauses gets <code>workflow_run.status_idle</code>, then <code>workflow_run.status_running</code> when it resumes.</p>
+<p><strong>No event you send resumes a session paused at its cap.</strong> Update the session's budget instead: change it to a value above the consumed list cost (higher or lower than the old cap), or remove it with <code>"budget": null</code>. An accepted update resumes the paused work automatically.</p>
 <p><strong><code>session.usage</code></strong> carries the session's cumulative token totals, <code>list_cost</code> (<code>{amount, currency}</code>, rounded to the nearest cent), <code>active_seconds</code> (concurrent-thread overlap counted once - the figure runtime cost is priced on), <code>server_tool_use</code> counts (<code>web_search_requests</code>, and <code>web_fetch_requests</code> - informational, currently always 0 since web fetch is not metered), and an echo of the session's <code>budget</code> when one is set. It appears in the events list and the session stream - a stream reader sees the final cost of the work that hit the cap without an extra fetch; child threads' own streams do not carry it. The same totals live on the session object's <code>usage</code> field, and each thread's own <code>usage</code> carries per-thread <code>list_cost</code> and <code>active_seconds</code> - but per-thread costs do <strong>not</strong> sum to the session total: the session figure additionally includes session running time and each figure is rounded independently, so the session figure is the authoritative one. To enforce a spend limit, set a budget rather than polling usage and interrupting the session yourself - the platform's gate runs before each model request.</p>
 <h3>Event payloads</h3>
 <p>some events carry useful metadata beyond the status change itself:</p>

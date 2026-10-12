@@ -299,6 +299,40 @@
 </tr>
 </tbody>
 </table>
+<h3>edited_transcript</h3>
+<p>Edited version of a committed segment. Sent when the connection includes <code>transcript_edit</code>.</p>
+<pre><code class="language-json">{
+  &quot;message_type&quot;: &quot;edited_transcript&quot;,
+  &quot;text&quot;: &quot;our next meeting is on the twelfth of July twenty twenty-six&quot;,
+  &quot;edited_text&quot;: &quot;our next meeting is on 2026-07-12&quot;
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>message_type</code></td>
+<td>string</td>
+<td><code>"edited_transcript"</code></td>
+</tr>
+<tr>
+<td><code>text</code></td>
+<td>string</td>
+<td>Committed transcript text that the instruction was applied to</td>
+</tr>
+<tr>
+<td><code>edited_text</code></td>
+<td>string</td>
+<td>Edited text; identical to <code>text</code> when no edits were made</td>
+</tr>
+</tbody>
+</table>
 <h3>committed_transcript_entities</h3>
 <p>Entities detected in a committed segment when the connection includes <code>entity_detection</code>.</p>
 <pre><code class="language-json">{
@@ -451,6 +485,8 @@
     elif event.type == &quot;committed_transcript_with_timestamps&quot;:
         for word in event.words:
             print(f&quot;  {word.text}: {word.start}s - {word.end}s&quot;)
+    elif event.type == &quot;edited_transcript&quot;:
+        print(f&quot;Edited: {event.edited_text}&quot;)
     elif event.type == &quot;error&quot;:
         print(f&quot;Error: {event.error}&quot;)
     elif event.type == &quot;invalid_request&quot;:
@@ -478,6 +514,10 @@ connection.on(&quot;committed_transcript_with_timestamps&quot;, (data) =&gt; {
   for (const word of data.words) {
     console.log(`  ${word.text}: ${word.start}s - ${word.end}s`);
   }
+});
+
+connection.on(&quot;edited_transcript&quot;, (data) =&gt; {
+  console.log(&quot;Edited:&quot;, data.edited_text);
 });
 
 connection.on(&quot;error&quot;, (error) =&gt; {

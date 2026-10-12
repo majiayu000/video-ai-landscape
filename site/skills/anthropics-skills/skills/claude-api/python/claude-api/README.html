@@ -265,6 +265,7 @@ print(response.usage.input_tokens)                 # uncached tokens (full cost)
 <p><strong>Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:</strong> Use adaptive thinking. <code>budget_tokens</code> is removed on Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
 <strong>Claude Opus 5.5:</strong> thinking is always on - omit <code>thinking</code> (or send <code>{"type": "adaptive"}</code>, which is equivalent); <code>{"type": "disabled"}</code> returns a 400 at every effort, as does a thinking budget. Control depth with <code>output_config.effort</code> instead - the default is <code>medium</code> on this model, where Claude Opus 5 defaults to <code>high</code>.
 <strong>Claude Opus 5:</strong> thinking is on by default - omitting <code>thinking</code> runs adaptive (<code>{"type": "adaptive"}</code> is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. <code>{"type": "disabled"}</code> is accepted only at effort <code>high</code> or lower; pairing it with <code>xhigh</code>/<code>max</code> returns a 400.
+<strong>Claude Haiku 5.5:</strong> adaptive thinking only, on by default; <code>budget_tokens</code> returns a 400.
 <strong>Older models:</strong> Use <code>thinking: {type: "enabled", budget_tokens: N}</code> (must be &lt; <code>max_tokens</code>, min 1024).</p>
 </blockquote>
 <pre><code class="language-python"># Fable 5 / Claude Opus 5.5 / Claude Opus 5 / Opus 4.8 / 4.7 / 4.6: adaptive thinking (recommended)
@@ -504,8 +505,9 @@ standard_response = client.messages.create(
 
 # Use Haiku only for simple, speed-critical tasks
 simple_response = client.messages.create(
-    model=&quot;claude-haiku-4-5&quot;,  # $1.00/$5.00 per 1M tokens
-    max_tokens=256,
+    model=&quot;claude-haiku-5-5&quot;,  # $0.10/$0.50 per 1M tokens
+    max_tokens=1024,
+    output_config={&quot;effort&quot;: &quot;low&quot;},
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Classify this as positive or negative&quot;}]
 )
 </code></pre>

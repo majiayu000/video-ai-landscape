@@ -564,6 +564,10 @@ after the transfer.</p>
 <p>For optional tool parameters that should never be sent in the request payload, set
 <code>is_omitted: true</code> on the JSON schema property. Do not combine it with <code>description</code>,
 <code>dynamic_variable</code>, <code>is_system_provided</code>, or <code>constant_value</code>.</p>
+<p>For an LLM-supplied parameter that must match a runtime list, set
+<code>allowed_values: {"dynamic_variable": "allowed_ids"}</code>. The dynamic variable must resolve to a
+JSON array. Use <code>allowed_values</code> only with a <code>description</code>-sourced property; do not combine it with
+<code>dynamic_variable</code>, <code>is_system_provided</code>, <code>constant_value</code>, or <code>is_omitted</code>.</p>
 <h3>Error Handling</h3>
 <p>Configure how tool errors are shared with the agent using <code>tool_error_handling_mode</code>:</p>
 <table>
@@ -686,7 +690,7 @@ Always verify order ID before lookup. Offer transfer for complex issues.&quot;&q
                 }
             }
         },
-        &quot;tts&quot;: {&quot;voice_id&quot;: &quot;JBFqnCBsd6RMkjVDRZzb&quot;, &quot;model_id&quot;: &quot;eleven_flash_v2_5&quot;}
+        &quot;tts&quot;: {&quot;voice_id&quot;: &quot;JBFqnCBsd6RMkjVDRZzb&quot;, &quot;model_id&quot;: &quot;eleven_v4_turbo&quot;}
     }
 )
 </code></pre></main>

@@ -158,7 +158,7 @@ Environment (template) --&gt; Container (tool execution workspace)
 </tbody>
 </table>
 <ul>
-<li>Events can be sent when the session is <code>running</code> or <code>idle</code>. Messages are queued and processed in order. Exception: a session paused at its budget (<code>stop_reason: budget_reached</code>) accepts only <strong>settle events</strong> - events that resolve work already in progress (<code>user.tool_confirmation</code>, <code>user.tool_result</code>, <code>user.custom_tool_result</code>, <code>user.interrupt</code>) rather than starting new work - see § Session budgets.</li>
+<li>Events can be sent when the session is <code>running</code> or <code>idle</code>. Messages are queued and processed in order. Exceptions: a session waiting on you (<code>stop_reason: requires_action</code>) or paused at its budget (<code>budget_reached</code>) accepts only <strong>settle events</strong> - events that resolve work already in progress (<code>user.tool_confirmation</code>, <code>user.tool_result</code>, <code>user.custom_tool_result</code>, <code>user.interrupt</code>) rather than starting new work - see § Session budgets.</li>
 <li>The agent transitions <code>idle -&gt; running</code> when it receives a new event, then back to <code>idle</code> when done.</li>
 <li>Errors surface as <code>session.error</code> events in the stream, not as a status value.</li>
 </ul>
@@ -297,7 +297,16 @@ const agent = await client.beta.agents.create(
     name: &quot;Coding Assistant&quot;,
     model: &quot;claude-opus-5-5&quot;,
     system: &quot;You are a helpful coding agent.&quot;,
-    tools: [{ type: &quot;agent_toolset_20260401&quot;}],
+    tools: [
+      {
+        type: &quot;agent_toolset_20260401&quot;,
+        default_config: { permission_policy: { type: &quot;auto&quot; } },
+        configs: [
+          { name: &quot;web_fetch&quot;, enabled: false },
+          { name: &quot;web_search&quot;, enabled: false },
+        ],
+      },
+    ],
   },
 );
 
@@ -687,13 +696,20 @@ session = client.beta.sessions.create(
 - <strong>A value</strong> -&gt; replaces the agent's value <strong>in full</strong>. Overrides never merge - a <code>tools</code> override must list every tool the session should have. A <code>model</code> override also replaces the agent's <code>model</code> object in full: the agent's own <code>effort</code> isn't carried over, so set <code>effort</code> inside the override's <code>model</code> object to run the session at a specific effort level (a level the model doesn't support returns a 400 error, and a <code>model</code> override without <code>effort</code> runs at that model's default effort level). An <code>inference_geo</code> inside a <code>model</code> override <strong>is</strong> applied - and because the object is replaced in full, an override that omits it clears the agent's pin, so the session follows the workspace's default inference geo. The overridden value is validated against the workspace's <code>allowed_inference_geos</code> at session create.</p>
 <p>Overrides are session-local: they do <strong>not</strong> modify the agent resource or create a new agent version. The response's <code>agent</code> object reflects the post-override configuration, while its <code>id</code> and <code>version</code> still identify the base agent - so you can trace a session back to its base. In multiagent sessions, overrides apply to the coordinator and its <code>{type: "self"}</code> copies; roster agents referenced by ID always use their own as-created configuration (see <code>shared/managed-agents-multiagent.md</code>).</p>
 <h3>Updating the agent configuration mid-session</h3>
-<p><code>sessions.update()</code> can change <code>agent.tools</code> and <code>agent.mcp_servers</code> (including permission policies and the per-tool web settings - <code>allowed_domains</code> / <code>blocked_domains</code> etc., see <code>shared/managed-agents-tools.md</code> § Web search &amp; web fetch settings) on an <strong>existing</strong> session. Updated domain lists apply to the rest of the session. This is a <strong>session-local override</strong> - it does not create a new agent version and does not propagate back to the agent object. The provided arrays are <strong>full replacements</strong>; to append one tool, <code>GET</code> the session, modify, and <code>POST</code> back. The session must be <code>idle</code> - interrupt first if running. <code>vault_ids</code> is <strong>create-only</strong>: the update param exists in the SDK but is rejected by the API ("Not yet supported") - attach vaults when you create the session.</p>
+<p><code>sessions.update()</code> can change <code>agent.tools</code> and <code>agent.mcp_servers</code> (including permission policies and the per-tool web settings - <code>allowed_domains</code> / <code>blocked_domains</code> etc., see <code>shared/managed-agents-tools.md</code> § Web search &amp; web fetch settings) on an <strong>existing</strong> session. Updated domain lists apply to the rest of the session. This is a <strong>session-local override</strong> - it does not create a new agent version and does not propagate back to the agent object. The provided arrays are <strong>full replacements</strong> (keep the toolset's <code>default_config</code> and <code>configs</code>, or the policy reverts to <code>always_allow</code> and the web tools come back on); to append one tool, <code>GET</code> the session, modify, and <code>POST</code> back. The session must be <code>idle</code> - interrupt first if running. <code>vault_ids</code> is <strong>create-only</strong>: the update param exists in the SDK but is rejected by the API ("Not yet supported") - attach vaults when you create the session.</p>
 <p>Among the agent-configuration fields, only <code>tools</code> and <code>mcp_servers</code> can change after a session is created - to run with a <code>model</code>, <code>system</code>, or <code>skills</code> other than the agent's values, use <code>agent_with_overrides</code> at create time (above). (<code>title</code>, <code>metadata</code>, and <code>budget</code> have their own session-update paths - see § Session operations / § Session budgets.) The agent's model configuration - including its <code>inference_geo</code> pin - and its configured <code>system</code> field are fixed for the session's lifetime; you can still <strong>append system-level context between turns</strong> by sending a <code>system.message</code> event (see <code>shared/managed-agents-events.md</code> § Adding system context mid-session).</p>
 <pre><code class="language-python">client.beta.sessions.update(
     session.id,
     agent={
         &quot;tools&quot;: [
-            {&quot;type&quot;: &quot;agent_toolset_20260401&quot;},
+            {
+                &quot;type&quot;: &quot;agent_toolset_20260401&quot;,
+                &quot;default_config&quot;: {&quot;permission_policy&quot;: {&quot;type&quot;: &quot;auto&quot;}},
+                &quot;configs&quot;: [
+                    {&quot;name&quot;: &quot;web_fetch&quot;, &quot;enabled&quot;: False},
+                    {&quot;name&quot;: &quot;web_search&quot;, &quot;enabled&quot;: False},
+                ],
+            },
             {&quot;type&quot;: &quot;mcp_toolset&quot;, &quot;mcp_server_name&quot;: &quot;linear&quot;},
         ],
         &quot;mcp_servers&quot;: [{&quot;type&quot;: &quot;url&quot;, &quot;name&quot;: &quot;linear&quot;, &quot;url&quot;: &quot;https://mcp.linear.app/sse&quot;}],

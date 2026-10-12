@@ -218,10 +218,11 @@ ant beta:sessions:events list --session-id session_01...
 </code></pre>
 <h2>Input - flags, stdin, <code>@file</code></h2>
 <p><strong>Flags</strong> - scalar fields map directly. Structured fields accept relaxed-YAML syntax (unquoted keys) or strict JSON. Repeatable flags build arrays (each <code>--tool</code>, <code>--event</code>, <code>--message</code> appends one element):</p>
-<pre><code class="language-sh">ant beta:agents create \
+<pre><code class="language-sh"># a research agent needs the web; otherwise set both to false
+ant beta:agents create \
   --name &quot;Research Agent&quot; \
   --model '{id: claude-opus-5-5}' \
-  --tool '{type: agent_toolset_20260401}' \
+  --tool '{type: agent_toolset_20260401, default_config: {permission_policy: {type: auto}}, configs: [{name: web_fetch, enabled: true}, {name: web_search, enabled: true}]}' \
   --tool '{type: custom, name: search_docs, input_schema: {type: object, properties: {query: {type: string}}}}'
 </code></pre>
 <p><strong>Stdin</strong> - pipe a full JSON or YAML body. Merged with flags; flags win on conflict (for array fields, any flag <strong>replaces</strong> the stdin array entirely - it does not append). Quote the heredoc delimiter (<code>&lt;&lt;'YAML'</code>) to disable shell expansion inside the body:</p>
@@ -232,6 +233,10 @@ system: |
   You are a research assistant. Cite sources for every claim.
 tools:
   - type: agent_toolset_20260401
+    default_config: {permission_policy: {type: auto}}
+    configs:   # a research agent needs the web; otherwise set both to false
+      - {name: web_fetch, enabled: true}
+      - {name: web_search, enabled: true}
 YAML
 </code></pre>
 <p><strong><code>@file</code> references</strong> - inline a file's contents into any string-valued field. Inside structured flag values, quote the path. Binary files are auto-base64'd; force with <code>@file://</code> (text) or <code>@data://</code> (base64). Escape a literal leading <code>@</code> as <code>\@</code>.</p>
@@ -246,11 +251,12 @@ ant messages create --model claude-opus-5-5 --max-tokens 1024 \
 </code></pre>
 <p>Flags that natively take a file path (e.g. <code>--file</code> on <code>beta:files upload</code>) accept a bare path without <code>@</code>.</p>
 <h2>Version-controlled Managed Agents resources (<code>ant apply</code>)</h2>
-<p>This is the recommended flow for defining agents, environments, skills, memory stores and deployments: one file (or skill directory) per resource in your repo, synced with <code>ant apply</code> (needs <code>ant</code> 1.30.0 or later - check <code>ant --version</code>). It prints a plan, creates or updates what differs, and records each resource's ID in <code>claude-lock.json</code>. See <code>shared/managed-agents-core.md</code> for the field reference, and the <code>ant apply</code> page in <code>shared/live-sources.md</code> for <code>--force</code>, <code>--prune</code>, <code>--lock-file</code>, renamed or deleted files and CI setup (written for a person at a terminal; the rules below still apply).</p>
+<p>This is the recommended flow for defining agents, environments, skills, memory stores, vaults and deployments: one file (or skill directory) per resource in your repo, synced with <code>ant apply</code> (needs <code>ant</code> 1.30.0 or later, 1.34.0 for vaults - check <code>ant --version</code>). It prints a plan, creates or updates what differs, and records each resource's ID in <code>claude-lock.json</code>. See <code>shared/managed-agents-core.md</code> for the field reference, and the <code>ant apply</code> page in <code>shared/live-sources.md</code> for <code>--force</code>, <code>--prune</code>, <code>--lock-file</code>, renamed or deleted files and CI setup (written for a person at a terminal; the rules below still apply).</p>
 <pre><code>agents/summarizer.md          # YAML frontmatter = agent config, Markdown body = system prompt
 environments/cloud.yaml       # the environment create body
 skills/pr-summary/SKILL.md    # a skill is a directory with SKILL.md at its root
 memory_stores/notes.yaml
+vaults/team.yaml              # display_name (+ metadata) only - the container, never a credential
 deployments/nightly.md        # frontmatter = deployment create body, Markdown body = the message that starts each run
 claude-lock.json              # written by ant apply - commit it
 </code></pre>
@@ -260,26 +266,32 @@ name: Summarizer
 model: claude-sonnet-5-5
 tools:
   - type: agent_toolset_20260401
+    default_config: {permission_policy: {type: auto}}
+    configs:
+      - {name: web_fetch, enabled: false}
+      - {name: web_search, enabled: false}
 ---
 
 You are a helpful assistant that writes concise summaries.
 </code></pre>
 <pre><code class="language-yaml"># environments/cloud.yaml
 name: summarizer-env
-config: {type: cloud, networking: {type: unrestricted}}
+config: {type: cloud, networking: {type: limited, allow_package_managers: true}}
 </code></pre>
 <pre><code class="language-sh">ant apply --dry-run -v agents/summarizer.md environments/cloud.yaml   # print the plan with every field, change nothing
 ant apply agents/summarizer.md environments/cloud.yaml   # print the plan, then ask (y)es / (n)o / (d)etails - needs a terminal
 ant apply   # later: reconcile every file claude-lock.json already tracks
 </code></pre>
 <ul>
-<li><strong>Name the files you wrote; pass <code>.</code> or a directory only when the user asks for the whole tree.</strong> A directory is walked to any depth and everything that looks like a resource is applied: any file that has a top-level <code>type:</code>, sits directly in <code>agents/</code>, <code>environments/</code>, <code>memory_stores/</code> or <code>deployments/</code>, or is named after one of them (<code>environment_staging.yaml</code>), plus any directory holding a <code>SKILL.md</code>. Claude Code plugins, conda (<code>environment.yml</code>) and Kubernetes (<code>deployments/</code>) use the same names, and a cloned repo can hold files its user never read.</li>
+<li><strong>Name the files you wrote; pass <code>.</code> or a directory only when the user asks for the whole tree.</strong> A directory is walked to any depth and everything that looks like a resource is applied: any file that has a top-level <code>type:</code>, sits directly in <code>agents/</code>, <code>environments/</code>, <code>memory_stores/</code>, <code>vaults/</code> or <code>deployments/</code>, or has a filename that is or starts with <code>agent</code>, <code>environment</code>, <code>memory_store</code> or <code>deployment</code> (<code>agent.md</code>, <code>environment_staging.yaml</code>; the kind has to lead, so <code>staging-environment.yaml</code> is not recognized), plus any directory holding a <code>SKILL.md</code>. A filename never makes a vault: outside <code>vaults/</code>, a vault file needs <code>type: vault</code>. Claude Code plugins, conda (<code>environment.yml</code>) and Kubernetes (<code>deployments/</code>) use the same names, and a cloned repo can hold files its user never read.</li>
 <li><strong>Without a terminal (a coding agent's shell), <code>ant apply</code> prints the plan and exits; it applies only with <code>--yes</code>.</strong> If you are a coding agent running this for a user, that flag is their approval, not yours: show them the dry-run plan and add <code>--yes</code> (or answer the prompt) only once they say go ahead. The plan also covers whatever <code>claude-lock.json</code> already tracks: if it would create or change anything you did not write, or a file you did not write sits at a path you need, stop and ask; never add <code>--force</code> or <code>--prune</code> on your own.</li>
 <li><strong>Reference other resources by path, not ID</strong> (relative to the file that names it): <code>skills: [../skills/pr-summary]</code> on an agent; <code>agent: ../agents/summarizer.md</code> and <code>environment_id: ../environments/cloud.yaml</code> on a deployment. <code>ant apply</code> also applies whatever the files you pass reference, in dependency order, and fills in the IDs. For a resource these files don't manage, write its ID (<code>agent_01...</code>, <code>env_01...</code>); anything else is sent as written.</li>
 <li><strong>Commit <code>claude-lock.json</code></strong> (the first run writes it where you run the command - use the repo root). The next run uses it to update the same resources instead of creating duplicates. A resource created any other way (Console, <code>ant beta:agents create</code>, an SDK) cannot be adopted: a file describing it creates a second one.</li>
 <li><strong>To change a resource, edit its file and run <code>ant apply</code> again</strong> (an agent gets a new version; whatever references it is updated in the same run).</li>
 <li><strong>CI in the user's own repository:</strong> run from the directory that holds <code>claude-lock.json</code> (normally the repo root) and name the resource directories the project has, not <code>.</code> (a walk of <code>.</code> also applies look-alike files elsewhere in the repo): <code>ant apply --dry-run agents environments</code> on pull requests, <code>ant apply --yes agents environments</code> only on push to the default branch (there the merge is the approval), then commit <code>claude-lock.json</code>.</li>
-<li><strong>Not managed:</strong> vaults and credentials (<code>ant beta:vaults</code>, <code>ant beta:vaults:credentials</code>, or an SDK), uploaded files, sessions.</li>
+<li><strong>One directory per agent works too:</strong> <code>agents/&lt;agent-name&gt;/agent.md</code> with <code>environment.yaml</code>, <code>vault.yaml</code> (<code>type: vault</code>) and <code>deployment-&lt;name&gt;.yaml</code> beside it. A file named for its kind alone takes the directory's name. Full layout: <code>shared/managed-agents-onboarding-from-url.md</code> §4.</li>
+<li><strong>Vaults are managed as containers only.</strong> The file creates and renames the vault; credentials are added separately (<code>ant beta:vaults:credentials create</code>, or an SDK) and are never read or diffed. <code>vault_ids</code> on a deployment takes <code>vlt_...</code> IDs, not paths: apply the vault first, then copy its ID from <code>claude-lock.json</code>. Removing a vault with <code>--prune</code> archives it, which purges its secrets.</li>
+<li><strong>Not managed:</strong> credentials, uploaded files, sessions.</li>
 </ul>
 <p><strong>One-off provisioning</strong> can still use <code>ant beta:agents create &lt;&lt;'YAML'</code> (see Input above) and <code>ant beta:agents update --agent-id ... --version N</code>; you keep track of the IDs yourself.</p>
 <p>Start a session with the IDs from <code>claude-lock.json</code> (each <code>resources</code> key is the file's path as the plan prints it):</p>
@@ -361,7 +373,7 @@ while IFS= read -r -u &quot;$stream&quot; line; do
 done
 exec {stream}&lt;&amp;-
 </code></pre>
-<p>This works for interactive exploration and demos. For application code that needs to react to <code>agent.tool_use</code> / <code>agent.custom_tool_use</code> events, reconnect after drops, or dedup against <code>events.list</code>, use the SDK - see <code>shared/managed-agents-client-patterns.md</code>.</p>
+<p>This works for interactive exploration and demos; it stops at the first <code>session.status_idle</code>, even one that is waiting on you (<code>stop_reason.type: requires_action</code>, such as a call paused for approval - answer it with <code>ant beta:sessions connect</code>). For application code that needs to react to <code>agent.tool_use</code> / <code>agent.custom_tool_use</code> events, reconnect after drops, or dedup against <code>events.list</code>, use the SDK - see <code>shared/managed-agents-client-patterns.md</code>.</p>
 <h2>Scripting patterns</h2>
 <p><code>--transform id -r</code> on a list endpoint emits one bare ID per line - compose with <code>xargs</code>, or use <code>--max-items N</code> to bound the result set without piping through <code>head</code>:</p>
 <pre><code class="language-sh">FIRST=$(ant beta:agents list --transform id -r --max-items 1)

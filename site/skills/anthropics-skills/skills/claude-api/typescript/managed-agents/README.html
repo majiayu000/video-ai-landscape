@@ -103,7 +103,7 @@ const client = new Anthropic({ apiKey: &quot;your-api-key&quot; });
     name: &quot;my-dev-env&quot;,
     config: {
       type: &quot;cloud&quot;,
-      networking: { type: &quot;unrestricted&quot; },
+      networking: { type: &quot;limited&quot;, allow_package_managers: true, allow_mcp_servers: true },
     },
   },
 );
@@ -115,12 +115,22 @@ console.log(environment.id); // env_...
 <p>Warning: <strong>There is no inline agent config.</strong> <code>model</code>/<code>system</code>/<code>tools</code> live on the agent object, not the session. Always start with <code>agents.create()</code> - the session only takes <code>agent: { type: "agent", id: agent.id }</code>.</p>
 </blockquote>
 <h3>Minimal</h3>
+<p>The examples on this page turn both web tools off. Set <code>enabled</code> to true on <code>web_fetch</code> / <code>web_search</code> only when the job as described needs the web (a general-purpose or open-ended job stays off; tell the user how to switch it on) - see <code>shared/managed-agents-tools.md</code> § Agent Toolset. They also set the <code>auto</code> permission policy, under which a call can pause for your approval - the event loop under Stream Events answers it. When nobody is watching the run, answer <code>deny</code>; never answer <code>allow</code> to every paused call.</p>
 <pre><code class="language-typescript">// 1. Create the agent (reusable, versioned)
 const agent = await client.beta.agents.create(
   {
     name: &quot;Coding Assistant&quot;,
     model: &quot;claude-opus-5-5&quot;,
-    tools: [{ type: &quot;agent_toolset_20260401&quot;, default_config: { enabled: true } }],
+    tools: [
+      {
+        type: &quot;agent_toolset_20260401&quot;,
+        default_config: { enabled: true, permission_policy: { type: &quot;auto&quot; } },
+        configs: [
+          { name: &quot;web_fetch&quot;, enabled: false },
+          { name: &quot;web_search&quot;, enabled: false },
+        ],
+      },
+    ],
   },
 );
 
@@ -141,7 +151,14 @@ console.log(`Trace: https://platform.claude.com/workspaces/default/sessions/${se
     model: &quot;claude-opus-5-5&quot;,
     system: &quot;You are a senior code reviewer.&quot;,
     tools: [
-      { type: &quot;agent_toolset_20260401&quot;, default_config: { enabled: true } },
+      {
+        type: &quot;agent_toolset_20260401&quot;,
+        default_config: { enabled: true, permission_policy: { type: &quot;auto&quot; } },
+        configs: [
+          { name: &quot;web_fetch&quot;, enabled: false },
+          { name: &quot;web_search&quot;, enabled: false },
+        ],
+      },
       {
         type: &quot;custom&quot;,
         name: &quot;run_tests&quot;,
@@ -169,7 +186,7 @@ const session = await client.beta.sessions.create(
         url: &quot;https://github.com/owner/repo&quot;,
         mount_path: &quot;/workspace/repo&quot;,
         authorization_token: process.env.GITHUB_TOKEN,
-        branch: &quot;main&quot;,
+        checkout: { type: &quot;branch&quot;, name: &quot;main&quot; },
       },
     ],
   },
@@ -193,8 +210,8 @@ const session = await client.beta.sessions.create(
 <p>Tip: <strong>Stream-first:</strong> Open the stream <em>before</em> (or concurrently with) sending the message. The stream only delivers events that occur after it opens - stream-after-send means early events arrive buffered in one batch. See <a href="../../shared/managed-agents-events.html#steering-patterns">Steering Patterns</a>.</p>
 </blockquote>
 <hr />
-<h2>Define an Outcome (default kickoff for deliverables)</h2>
-<p>When the session's job is to produce something checkable - an artifact, a report, a PR - kick off with <code>user.define_outcome</code> instead of <code>user.message</code>: the harness grades each iteration against your rubric and the agent revises until it passes. Send one or the other, never both. See <a href="../../shared/managed-agents-outcomes.html">Outcomes</a> for the event reference and rubric-writing guidance.</p>
+<h2>Define an Outcome (default kickoff for one deliverable)</h2>
+<p>When the session's job is one checkable deliverable - an artifact, a report, a PR - kick off with <code>user.define_outcome</code> instead of <code>user.message</code>: the harness grades each iteration against your rubric and the agent revises until it passes. Send one or the other, never both. See <a href="../../shared/managed-agents-outcomes.html">Outcomes</a> for the event reference and rubric-writing guidance. The job below reads live prices, so its agent needs <code>web_search</code> and <code>web_fetch</code> set to <code>enabled: true</code>. Under the <code>limited</code> networking created above, those tools reach only the hosts in <code>allowed_hosts</code>, and with none listed they return no page or search result: list the sites the job reads there (a listed host is also open to the sandbox). When the sites can't be listed in advance, the other mode is <code>unrestricted</code>, which gives the whole sandbox full egress, not only the web tools: offer it to the user with that warning, do not choose it for them, and if they take it, keep secrets and sensitive files out of the sandbox (see <a href="../../shared/managed-agents-environments.html">Environments</a>).</p>
 <pre><code class="language-typescript">const STARTER_RUBRIC = `# Report rubric - starter, tune the criteria
 - Output is a single \`report.md\` in /mnt/session/outputs/
 - Every claim cites a source URL
@@ -233,7 +250,7 @@ const stream = await client.beta.sessions.events.stream(
   session.id,
 );
 
-for await (const event of stream) {
+loop: for await (const event of stream) {
   switch (event.type) {
     case &quot;agent.message&quot;:
       for (const block of event.content) {
@@ -247,12 +264,29 @@ for await (const event of stream) {
       console.log(`\nCustom tool call: ${event.name}`);
       console.log(`Input: ${JSON.stringify(event.input)}`);
       break;
+    case &quot;agent.tool_use&quot;:
+    case &quot;agent.mcp_tool_use&quot;:
+      if (event.evaluated_permission === &quot;ask&quot;) {
+        // Paused for your decision (always_ask, or auto with no determination)
+        await client.beta.sessions.events.send(session.id, {
+          events: [
+            {
+              type: &quot;user.tool_confirmation&quot;,
+              tool_use_id: event.id,
+              // you write approve(): ask a person or apply your own rule; deny when unattended
+              result: (await approve(event)) ? &quot;allow&quot; : &quot;deny&quot;,
+            },
+          ],
+        });
+      }
+      break;
     case &quot;session.status_idle&quot;:
       console.log(&quot;\n--- Agent idle ---&quot;);
+      if (event.stop_reason.type !== &quot;requires_action&quot;) break loop; // requires_action: waiting on you, keep streaming
       break;
     case &quot;session.status_terminated&quot;:
       console.log(&quot;\n--- Session terminated ---&quot;);
-      break;
+      break loop;
   }
 }
 </code></pre>
@@ -290,43 +324,49 @@ for (const event of events.data) {
   return `Unknown tool: ${toolName}`;
 }
 
+// Stream events; answer custom tool calls and paused calls as they arrive
 async function runSession(client: Anthropic, sessionId: string) {
-  while (true) {
-    const stream = await client.beta.sessions.events.stream(
-      sessionId,
-    );
+  const stream = await client.beta.sessions.events.stream(
+    sessionId,
+  );
 
-    const toolCalls: Anthropic.Beta.Sessions.BetaManagedAgentsAgentCustomToolUseEvent[] = [];
-
-    for await (const event of stream) {
-      if (event.type === &quot;agent.message&quot;) {
-        for (const block of event.content) {
-          if (block.type === &quot;text&quot;) {
-            process.stdout.write(block.text);
-          }
+  for await (const event of stream) {
+    if (event.type === &quot;agent.message&quot;) {
+      for (const block of event.content) {
+        if (block.type === &quot;text&quot;) {
+          process.stdout.write(block.text);
         }
-      } else if (event.type === &quot;agent.custom_tool_use&quot;) {
-        toolCalls.push(event);
-      } else if (event.type === &quot;session.status_idle&quot;) {
-        break;
-      } else if (event.type === &quot;session.status_terminated&quot;) {
-        return;
       }
+    } else if (event.type === &quot;agent.custom_tool_use&quot;) {
+      await client.beta.sessions.events.send(sessionId, {
+        events: [
+          {
+            type: &quot;user.custom_tool_result&quot;,
+            custom_tool_use_id: event.id,
+            content: [{ type: &quot;text&quot;, text: runCustomTool(event.name, event.input) }],
+          },
+        ],
+      });
+    } else if (
+      (event.type === &quot;agent.tool_use&quot; || event.type === &quot;agent.mcp_tool_use&quot;) &amp;&amp;
+      event.evaluated_permission === &quot;ask&quot;
+    ) {
+      // Paused for your decision (always_ask, or auto with no determination)
+      await client.beta.sessions.events.send(sessionId, {
+        events: [
+          {
+            type: &quot;user.tool_confirmation&quot;,
+            tool_use_id: event.id,
+            // you write approve(): ask a person or apply your own rule; deny when unattended
+            result: (await approve(event)) ? &quot;allow&quot; : &quot;deny&quot;,
+          },
+        ],
+      });
+    } else if (event.type === &quot;session.status_idle&quot;) {
+      if (event.stop_reason.type !== &quot;requires_action&quot;) return; // requires_action: waiting on you, keep streaming
+    } else if (event.type === &quot;session.status_terminated&quot;) {
+      return;
     }
-
-    if (toolCalls.length === 0) break;
-
-    // Process custom tool calls
-    const results = toolCalls.map((call) =&gt; ({
-      type: &quot;user.custom_tool_result&quot; as const,
-      custom_tool_use_id: call.id,
-      content: [{ type: &quot;text&quot; as const, text: runCustomTool(call.name, call.input) }],
-    }));
-
-    await client.beta.sessions.events.send(
-      sessionId,
-      { events: results },
-    );
   }
 }
 </code></pre>
@@ -336,7 +376,6 @@ async function runSession(client: Anthropic, sessionId: string) {
 
 const file = await client.beta.files.upload({
   file: fs.createReadStream(&quot;data.csv&quot;),
-  purpose: &quot;agent&quot;,
 });
 
 // Use in a session
@@ -344,7 +383,7 @@ const session = await client.beta.sessions.create(
   {
     agent: { type: &quot;agent&quot;, id: agent.id, version: agent.version },
     environment_id: environment.id,
-    resources: [{ type: &quot;file&quot;, file_id: file.id, mount_path: &quot;/workspace/data.csv&quot; }],
+    resources: [{ type: &quot;file&quot;, file_id: file.id, mount_path: &quot;/data.csv&quot; }],
   },
 );
 </code></pre>
@@ -395,7 +434,14 @@ const agent = await client.beta.agents.create({
     { type: &quot;url&quot;, name: &quot;my-tools&quot;, url: &quot;https://my-mcp-server.example.com/sse&quot; },
   ],
   tools: [
-    { type: &quot;agent_toolset_20260401&quot;, default_config: { enabled: true } },
+    {
+      type: &quot;agent_toolset_20260401&quot;,
+      default_config: { enabled: true, permission_policy: { type: &quot;auto&quot; } },
+      configs: [
+        { name: &quot;web_fetch&quot;, enabled: false },
+        { name: &quot;web_search&quot;, enabled: false },
+      ],
+    },
     { type: &quot;mcp_toolset&quot;, mcp_server_name: &quot;my-tools&quot; },
   ],
 });

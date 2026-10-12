@@ -110,16 +110,16 @@
 }
 </code></pre>
 <p>All three <code>limited</code> fields are optional. <code>allow_package_managers</code> (default <code>false</code>) permits PyPI/npm/etc.; <code>allow_mcp_servers</code> (default <code>false</code>) permits the agent's configured MCP server endpoints without listing them in <code>allowed_hosts</code>.</p>
-<p><strong>MCP caveat:</strong> Under <code>limited</code> networking, either set <code>allow_mcp_servers: true</code> or add each MCP server domain to <code>allowed_hosts</code>. Otherwise the container can't reach them and tools silently fail.</p>
+<p><strong>MCP caveat:</strong> Under <code>limited</code> networking, either set <code>allow_mcp_servers: true</code> or add each MCP server domain to <code>allowed_hosts</code>. Otherwise creating a session for an agent that declares those servers fails with a 400 naming the blocked hosts.</p>
 <p><strong>Packages caveat:</strong> Under <code>limited</code> networking, <code>packages</code> requires <code>allow_package_managers: true</code>; otherwise the request fails with a 400. Listing the registry in <code>allowed_hosts</code> is not enough.</p>
-<p><strong><code>networking</code> does not govern <code>web_search</code> / <code>web_fetch</code>.</strong> Those tools run on Anthropic's servers (in cloud <em>and</em> self-hosted environments), so <code>limited</code> egress and <code>allowed_hosts</code> don't restrict them. To restrict the sites they can reach, set <code>allowed_domains</code> / <code>blocked_domains</code> on the tool's <code>configs</code> entry in the agent toolset - see <code>shared/managed-agents-tools.md</code> § Web search &amp; web fetch settings.</p>
+<p><strong>With <code>limited</code> networking, <code>allowed_hosts</code> also applies to <code>web_search</code> / <code>web_fetch</code></strong>, which run on Anthropic's servers. A <code>web_fetch</code> call for a URL on a host that <code>allowed_hosts</code> does not match returns an error result to the agent, and <code>web_search</code> omits results from hosts that it does not match; <code>allow_package_managers</code> and <code>allow_mcp_servers</code> add no hosts for these tools. When <code>allowed_hosts</code> lists no hosts, no <code>web_fetch</code> or <code>web_search</code> call returns a page or a search result. A host that you add to <code>allowed_hosts</code> for these tools is also open to the sandbox. <code>unrestricted</code> networking and self-hosted environments do not limit these tools. Turn them off (<code>enabled: false</code>) unless the job needs the web; when it does, list the sites in <code>allowed_hosts</code> and also in the tool's <code>allowed_domains</code> (or set <code>blocked_domains</code> to shut some out). <code>enabled</code> and the two domain lists go on the tool's <code>configs</code> entry in the agent toolset - see <code>shared/managed-agents-tools.md</code> § Agent Toolset and § Web search &amp; web fetch settings.</p>
 <h3>Creating an environment</h3>
 <p>The SDK adds <code>managed-agents-2026-04-01</code> automatically. TypeScript:</p>
 <pre><code class="language-ts">const env = await client.beta.environments.create({
   name: &quot;my_env&quot;,
   config: {
     type: &quot;cloud&quot;,
-    networking: { type: &quot;unrestricted&quot; },
+    networking: { type: &quot;limited&quot;, allow_package_managers: true, allow_mcp_servers: true },
   },
 });
 </code></pre>
@@ -178,11 +178,10 @@
 <h2>Resources</h2>
 <p>Attach files, GitHub repositories, and memory stores to a session. Resources are resolved during session creation, so a bad <code>file_id</code> or an unreachable repo surfaces on the create call rather than mid-run. Creating a session does <strong>not</strong> by itself start work or provision the sandbox - without <code>initial_events</code> the session is only registered, and the sandbox comes up when the session first needs it (see <code>shared/managed-agents-core.md</code> -&gt; Seeding a session with <code>initial_events</code>). Max <strong>999 file resources</strong> per session. Multiple GitHub repositories per session are supported. For <code>type: "memory_store"</code> resources (persistent cross-session memory - max 8 per session), see <code>shared/managed-agents-memory.md</code>.</p>
 <h3>File Uploads (input - host -&gt; agent)</h3>
-<p>Upload a file first via the Files API, then reference by <code>file_id</code> + <code>mount_path</code>:</p>
+<p>Upload a file first via the Files API, then reference it by <code>file_id</code> (and optionally a <code>mount_path</code>):</p>
 <pre><code class="language-ts">// 1. Upload
 const file = await client.beta.files.upload({
   file: fs.createReadStream(&quot;data.csv&quot;),
-  purpose: &quot;agent&quot;,
 });
 
 // 2. Attach as a session resource
@@ -190,11 +189,11 @@ const session = await client.beta.sessions.create({
   agent: agent.id,
   environment_id: envId,
   resources: [
-    { type: &quot;file&quot;, file_id: file.id, mount_path: &quot;/workspace/data.csv&quot; }
+    { type: &quot;file&quot;, file_id: file.id, mount_path: &quot;/data.csv&quot; }
   ],
 });
 </code></pre>
-<p><strong><code>mount_path</code> is required</strong> and must be absolute. Parent directories are created automatically. Agent working directory defaults to <code>/workspace</code>. Files are mounted read-only - the agent writes modified versions to new paths.</p>
+<p><strong><code>mount_path</code> is optional</strong>; when set, it should be absolute and is rooted under the session's uploads directory: <code>/data.csv</code> lands at <code>/mnt/session/uploads/data.csv</code>. Without it, the file lands at <code>/mnt/session/uploads/&lt;file_id&gt;</code>. A prompt that points the agent at the file should use the full <code>/mnt/session/uploads/...</code> path. Parent directories are created automatically. Agent working directory defaults to <code>/workspace</code>. Files are mounted read-only - the agent writes modified versions to new paths.</p>
 <h3>Session outputs (output - agent -&gt; host)</h3>
 <p>The agent can write files to <code>/mnt/session/outputs/</code> during a session. These are automatically captured by the Files API and can be listed and downloaded afterwards:</p>
 <pre><code class="language-ts">// After the turn completes, list output files scoped to this session:
@@ -275,7 +274,14 @@ const agent = await client.beta.agents.create(
       { type: 'url', name: 'github', url: 'https://api.githubcopilot.com/mcp/' },
     ],
     tools: [
-      { type: 'agent_toolset_20260401', default_config: { enabled: true } },
+      {
+        type: 'agent_toolset_20260401',
+        default_config: { enabled: true, permission_policy: { type: 'auto' } },
+        configs: [
+          { name: 'web_fetch', enabled: false },
+          { name: 'web_search', enabled: false },
+        ],
+      },
       { type: 'mcp_toolset', mcp_server_name: 'github' },
     ],
   },
@@ -308,7 +314,14 @@ agent = client.beta.agents.create(
         &quot;url&quot;: &quot;https://api.githubcopilot.com/mcp/&quot;,
     }],
     tools=[
-        {&quot;type&quot;: &quot;agent_toolset_20260401&quot;, &quot;default_config&quot;: {&quot;enabled&quot;: True}},
+        {
+            &quot;type&quot;: &quot;agent_toolset_20260401&quot;,
+            &quot;default_config&quot;: {&quot;enabled&quot;: True, &quot;permission_policy&quot;: {&quot;type&quot;: &quot;auto&quot;}},
+            &quot;configs&quot;: [
+                {&quot;name&quot;: &quot;web_fetch&quot;, &quot;enabled&quot;: False},
+                {&quot;name&quot;: &quot;web_search&quot;, &quot;enabled&quot;: False},
+            ],
+        },
         {&quot;type&quot;: &quot;mcp_toolset&quot;, &quot;mcp_server_name&quot;: &quot;github&quot;},
     ],
 )

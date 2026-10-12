@@ -444,15 +444,15 @@ if response.stop_reason == &quot;pause_turn&quot;:
 <tbody>
 <tr>
 <td><code>claude-haiku-4-5</code> / <code>claude-sonnet-4-6</code></td>
-<td><code>claude-mythos-5-1</code>, <code>claude-fable-5-1</code>, <code>claude-mythos-5</code>, <code>claude-fable-5</code>, <code>claude-opus-5-5</code>, <code>claude-opus-5</code>, <code>claude-opus-4-8</code>, <code>claude-opus-4-7</code>, <code>claude-opus-4-6</code>, <code>claude-sonnet-5-5</code>, <code>claude-sonnet-5</code>, or <code>claude-sonnet-4-6</code></td>
+<td><code>claude-mythos-5-1</code>, <code>claude-fable-5-1</code>, <code>claude-mythos-5</code>, <code>claude-fable-5</code>, <code>claude-opus-5-5</code>, <code>claude-opus-5</code>, <code>claude-opus-4-8</code>, <code>claude-opus-4-7</code>, <code>claude-opus-4-6</code>, <code>claude-sonnet-5-5</code>, <code>claude-sonnet-5</code>, <code>claude-haiku-5-5</code>, or <code>claude-sonnet-4-6</code></td>
 </tr>
 <tr>
-<td><code>claude-sonnet-5</code></td>
-<td><code>claude-mythos-5-1</code>, <code>claude-fable-5-1</code>, <code>claude-mythos-5</code>, <code>claude-fable-5</code>, <code>claude-opus-5-5</code>, <code>claude-opus-5</code>, <code>claude-opus-4-8</code>, <code>claude-opus-4-7</code>, <code>claude-sonnet-5-5</code>, or <code>claude-sonnet-5</code></td>
+<td><code>claude-sonnet-5</code> / <code>claude-haiku-5-5</code></td>
+<td><code>claude-mythos-5-1</code>, <code>claude-fable-5-1</code>, <code>claude-mythos-5</code>, <code>claude-fable-5</code>, <code>claude-opus-5-5</code>, <code>claude-opus-5</code>, <code>claude-opus-4-8</code>, <code>claude-opus-4-7</code>, <code>claude-sonnet-5-5</code>, <code>claude-sonnet-5</code>, or <code>claude-haiku-5-5</code></td>
 </tr>
 <tr>
 <td><code>claude-opus-4-6</code></td>
-<td><code>claude-mythos-5-1</code>, <code>claude-fable-5-1</code>, <code>claude-mythos-5</code>, <code>claude-fable-5</code>, <code>claude-opus-5-5</code>, <code>claude-opus-5</code>, <code>claude-opus-4-8</code>, <code>claude-opus-4-7</code>, <code>claude-opus-4-6</code>, <code>claude-sonnet-5-5</code>, or <code>claude-sonnet-5</code></td>
+<td><code>claude-mythos-5-1</code>, <code>claude-fable-5-1</code>, <code>claude-mythos-5</code>, <code>claude-fable-5</code>, <code>claude-opus-5-5</code>, <code>claude-opus-5</code>, <code>claude-opus-4-8</code>, <code>claude-opus-4-7</code>, <code>claude-opus-4-6</code>, <code>claude-sonnet-5-5</code>, <code>claude-sonnet-5</code>, or <code>claude-haiku-5-5</code></td>
 </tr>
 <tr>
 <td><code>claude-opus-4-7</code> / <code>claude-opus-4-8</code></td>
@@ -491,7 +491,7 @@ if response.stop_reason == &quot;pause_turn&quot;:
 <tr>
 <td><code>advisor_redacted_result</code></td>
 <td><code>encrypted_content</code>, <code>stop_reason</code></td>
-<td>Advisor returns encrypted output - Claude Opus 5.5, Claude Opus 5, Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Sonnet 5.5</td>
+<td>Advisor returns encrypted output - Claude Opus 5.5, Claude Opus 5, Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Sonnet 5.5, Claude Haiku 5.5</td>
 </tr>
 <tr>
 <td><code>advisor_tool_result_error</code></td>
@@ -612,7 +612,7 @@ if response.stop_reason == &quot;pause_turn&quot;:
 <li><strong>JSON outputs</strong> (<code>output_config.format</code>): Control Claude's response format</li>
 <li><strong>Strict tool use</strong> (<code>strict: true</code>): Guarantee valid tool parameter schemas</li>
 </ul>
-<p><strong>Supported models:</strong> Claude Fable 5, Claude Mythos 5, Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5.5, Claude Sonnet 5, and Claude Haiku 4.5. Legacy models (Claude Opus 4.5, Claude Opus 4.1) also support structured outputs.</p>
+<p><strong>Supported models:</strong> Claude Fable 5, Claude Mythos 5, Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5.5, Claude Sonnet 5, Claude Haiku 5.5, and Claude Haiku 4.5. Legacy models (Claude Opus 4.5, Claude Opus 4.1) also support structured outputs.</p>
 <blockquote>
 <p><strong>Recommended:</strong> Use <code>client.messages.parse()</code> which automatically validates responses against your schema. When using <code>messages.create()</code> directly, use <code>output_config: {format: {...}}</code>. The <code>output_format</code> convenience parameter is also accepted by some SDK methods (e.g., <code>.parse()</code>), but <code>output_config.format</code> is the canonical API-level parameter.</p>
 </blockquote>

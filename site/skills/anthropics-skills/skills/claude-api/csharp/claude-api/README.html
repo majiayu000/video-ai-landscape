@@ -424,7 +424,7 @@ var one = await client.Models.Retrieve(&quot;claude-opus-5-5&quot;);
 </code></pre>
 <h2>Long Output (128k) + Prefill</h2>
 <p>Set <code>MaxTokens = 128000</code> on <code>client.Messages</code> and use the streaming path (see <code>streaming.md</code>). On Claude 4+ models, 128k output is native - no <code>output-128k-*</code> beta header or beta namespace is needed.</p>
-<p><strong>Prefilling the assistant message</strong> (putting a trailing <code>Role.Assistant</code> message in the input) is <strong>not supported</strong> on Claude Fable 5.1, Claude Opus 5.5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6 - requests return a 400. Use <code>OutputConfig.Format</code> (structured outputs) instead.</p>
+<p><strong>Prefilling the assistant message</strong> (putting a trailing <code>Role.Assistant</code> message in the input) is <strong>not supported</strong> on Claude Fable 5.1, Claude Opus 5.5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, Sonnet 4.6, and Claude Haiku 5.5 - requests return a 400. Use <code>OutputConfig.Format</code> (structured outputs) instead.</p>
 <h2>Stop Details</h2>
 <p>When <code>StopReason</code> is <code>"refusal"</code>, the response includes structured <code>StopDetails</code>:</p>
 <pre><code class="language-csharp">if (response.StopReason == &quot;refusal&quot; &amp;&amp; response.StopDetails is { } details)

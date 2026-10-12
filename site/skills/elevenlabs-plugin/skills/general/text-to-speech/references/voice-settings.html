@@ -106,13 +106,13 @@
 <td><code>style</code></td>
 <td>0.0 - 1.0</td>
 <td>0.0</td>
-<td>Exaggerates the unique characteristics of the voice's speaking style (v2+ and v3 models only). Higher values make the voice more "characterful" but can reduce stability.</td>
+<td>Exaggerates the unique characteristics of the voice's speaking style (v2 and v3 models; not supported on Eleven v4). Higher values make the voice more "characterful" but can reduce stability.</td>
 </tr>
 <tr>
 <td><code>speed</code></td>
 <td>0.25 - 4.0</td>
 <td>1.0</td>
-<td>Speech speed multiplier. 1.0 = normal speed. Range is 0.25-4.0 for the REST API; the Agents Platform restricts to 0.7-1.2.</td>
+<td>Speech speed multiplier. 1.0 = normal speed. Range is 0.25-4.0 for the REST API; the Agents Platform restricts to 0.7-1.2. Not supported on Eleven v4.</td>
 </tr>
 <tr>
 <td><code>use_speaker_boost</code></td>
@@ -122,6 +122,7 @@
 </tr>
 </tbody>
 </table>
+<p><strong>Eleven v4</strong> (<code>eleven_v4</code>, <code>eleven_v4_turbo</code>) uses only <code>stability</code> and <code>similarity_boost</code>. Control pacing and emotion with audio tags (<code>[whispers]</code>, <code>[excited]</code>, <code>[sighs]</code>) and punctuation (ellipses for pauses, capitals for emphasis) instead of <code>style</code>/<code>speed</code>. SSML is not supported on v4.</p>
 <h2>Python Example</h2>
 <pre><code class="language-python">from elevenlabs import ElevenLabs
 from elevenlabs import VoiceSettings
@@ -131,24 +132,20 @@ client = ElevenLabs()
 audio = client.text_to_speech.convert(
     text=&quot;Testing different voice settings.&quot;,
     voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
-    model_id=&quot;eleven_v3&quot;,
+    model_id=&quot;eleven_v4&quot;,
     voice_settings=VoiceSettings(
         stability=0.5,
         similarity_boost=0.75,
-        style=0.0,
-        use_speaker_boost=True
     )
 )
 </code></pre>
 <h2>JavaScript Example</h2>
 <pre><code class="language-javascript">const audio = await client.textToSpeech.convert(&quot;JBFqnCBsd6RMkjVDRZzb&quot;, {
   text: &quot;Testing different voice settings.&quot;,
-  modelId: &quot;eleven_v3&quot;,
+  modelId: &quot;eleven_v4&quot;,
   voiceSettings: {
     stability: 0.5,
     similarityBoost: 0.75,
-    style: 0.0,
-    useSpeakerBoost: true,
   },
 });
 </code></pre>
@@ -156,46 +153,44 @@ audio = client.text_to_speech.convert(
 <pre><code class="language-bash">elevenlabs text-to-speech convert \
   --voice-id JBFqnCBsd6RMkjVDRZzb \
   --text &quot;Testing different voice settings.&quot; \
-  --model-id eleven_v3 \
-  --params '{&quot;voice_settings&quot;: {&quot;stability&quot;: 0.5, &quot;similarity_boost&quot;: 0.75, &quot;style&quot;: 0.0, &quot;use_speaker_boost&quot;: true}}' \
+  --model-id eleven_v4 \
+  --params '{&quot;voice_settings&quot;: {&quot;stability&quot;: 0.5, &quot;similarity_boost&quot;: 0.75}}' \
   --output output.mp3
 </code></pre>
 <p>The CLI reads <code>ELEVENLABS_API_KEY</code> from the environment automatically. Pass nested JSON objects like <code>voice_settings</code> via <code>--params</code>.</p>
 <h2>Use Case Recommendations</h2>
+<p>These presets work with <code>eleven_v4</code>. On v2/v3 models you can also add <code>style</code> for extra character.</p>
 <h3>Audiobooks / Narration</h3>
 <pre><code class="language-python">voice_settings=VoiceSettings(
     stability=0.7,        # Consistent tone
     similarity_boost=0.5, # Natural variation
-    style=0.0
 )
 </code></pre>
 <h3>Conversational / Chatbots</h3>
 <pre><code class="language-python">voice_settings=VoiceSettings(
     stability=0.4,        # More expressive
     similarity_boost=0.75,
-    style=0.3             # Slight style emphasis
 )
 </code></pre>
 <h3>News / Professional</h3>
 <pre><code class="language-python">voice_settings=VoiceSettings(
     stability=0.8,        # Very consistent
     similarity_boost=0.6,
-    style=0.0
 )
 </code></pre>
 <h3>Character Voices / Drama</h3>
 <pre><code class="language-python">voice_settings=VoiceSettings(
     stability=0.3,        # Highly expressive
     similarity_boost=0.8,
-    style=0.5             # Strong style
 )
+# Add delivery direction in the text: &quot;[excited] We did it! [laughs]&quot;
 </code></pre>
 <h2>Tips</h2>
 <ul>
 <li><strong>Start with defaults</strong> and adjust incrementally</li>
 <li><strong>Lower stability</strong> if voice sounds monotonous</li>
 <li><strong>Reduce similarity_boost</strong> if you hear audio artifacts</li>
-<li><strong>Style works</strong> with v2+, v3, and multilingual models</li>
+<li><strong>Style and speed</strong> work with v2 and v3 models only; on v4 use audio tags and punctuation</li>
 <li><strong>Test with representative text</strong> from your actual use case</li>
 <li><strong>Flash models</strong> ignore some voice settings for speed</li>
 </ul></main>

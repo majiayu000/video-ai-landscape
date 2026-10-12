@@ -301,6 +301,29 @@ while true; do
     echo &quot;Status: $STATUS...&quot;
   fi
 done
-</code></pre></main>
+</code></pre>
+<h2>From the hosted MCP server (WorkBuddy / Codex): <code>atlas_get_upload_url</code></h2>
+<p>The hosted server cannot read files on your machine, and in that setup there is no
+API key — you are authenticated by OAuth. So instead of the endpoints above, use the
+MCP tool <code>atlas_get_upload_url</code>:</p>
+<ol>
+<li>Call <code>atlas_get_upload_url</code> (optionally with <code>filename_hint</code>). It returns
+   <code>upload_url</code>, <code>expires_at</code>, <code>max_bytes</code> and a ready-to-run <code>curl_example</code>.</li>
+<li>POST the raw bytes, file name (with extension) in the <code>X-Atlas-Filename</code> header:</li>
+</ol>
+<p><code>bash
+   curl -sS -X POST "&lt;upload_url&gt;" \
+     -H "Content-Type: application/octet-stream" \
+     -H "X-Atlas-Filename: product.jpg" \
+     --data-binary @"/path/to/product.jpg"</code></p>
+<ol start="3">
+<li>The JSON response has <code>url</code>. Pass it as <code>image_url</code> (or the audio URL parameter)
+   to <code>atlas_generate_image</code>, <code>atlas_generate_video</code> or <code>atlas_quick_generate</code>.</li>
+</ol>
+<p>One <code>upload_url</code> serves several files until it expires (about 10 minutes). Uploads are
+free; nothing is billed until a generation is submitted. Files over <code>max_bytes</code> (32 MB by
+default) are rejected with HTTP 413 — host those elsewhere and pass the public link. If
+the tool is missing from your tool list, the server you are connected to predates it:
+fall back to a public URL.</p></main>
 <footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
 <script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>
