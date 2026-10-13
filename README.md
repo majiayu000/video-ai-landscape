@@ -5,6 +5,7 @@
 - **线上报告**: https://video-vendor-skills.pages.dev
 - **技能库（466 篇在线渲染）**: https://video-vendor-skills.pages.dev/skills/
 - **研究文档**: https://video-vendor-skills.pages.dev/docs/
+- **Higgsfield CLI 运行时流程图（2026-10-13）**: [打开独立 HTML](site/research/higgsfield-cli-flow/index.html#overview) · 9 条流程、66 条命令中文说明、105 个模型与 22 个 workflow 参数快照
 - **视频技能研究摘要**: https://video-vendor-skills.pages.dev/docs/skills-construction-2026-09-25.html
 
 ## 按任务阅读
@@ -17,7 +18,7 @@
 
 ```
 index.html            # 主报告（11 节 + 附录：103 个 SKILL.md 全清单）
-site/                 # 部署目录 = index.html + skills/ + docs/ + report/
+site/                 # 部署目录 = index.html + skills/ + docs/ + report/ + research/
 docs/skills-research-public-2026-09-25.md  # 可公开的技能研究摘要
 build_research_summary_page.py  # 将研究摘要渲染为 site/docs/ 页面
 build_skills_site.py  # 把 7 个仓库的全部 .md 渲染为 site/skills/*.html
@@ -34,6 +35,14 @@ uv run --with markdown python gen_appendix.py         # 3. 生成附录 → inde
 uv run --with markdown python build_research_summary_page.py  # 4. 渲染研究摘要 → site/docs/
 cp index.html site/
 ```
+
+## Higgsfield CLI 运行时流程图
+
+[`site/research/higgsfield-cli-flow/index.html`](site/research/higgsfield-cli-flow/index.html#overview) 是独立静态专题，默认打开总览；下载 HTML 后也可离线浏览。点击节点可查看对应命令与依据，支持命令搜索、参数检索、缩放、SVG 导出与打印。原始帮助、Skill 摘录、参数契约和覆盖矩阵内嵌在页面中，可在证据弹窗下载，无需本机文件或外部服务。
+
+这是 2026-10-13 的 CLI v1.1.26 / Skills 0.13.0 快照，并非实时能力目录；写操作未逐条实跑。旧视频示例保留原始 prompt 与 enhanced_prompt，公开版隐去了任务 ID、账号标识及成品链接。此专题单独存放在 `site/research/`，重建技能库或文档不会删除它；`gen_docs.py` 保留研究文档首页的入口。
+
+GitHub 中的 HTML 以源码展示；下载后用浏览器打开。部署 `site/` 后访问 `/research/higgsfield-cli-flow/#overview`。设计参考：[Claude Code 运行时流程图](https://blog.silencestar.com/posts/claude-code-agent-internals/#runtime)。
 
 ## 部署（Cloudflare Pages 直传）
 

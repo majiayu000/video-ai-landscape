@@ -68,6 +68,7 @@ def build():
         f'{htmllib.escape(title)}</a></h4>'
         f'<div style="font-size:12px;color:var(--muted)">{date} · {fname}</div></div>'
         for slug, title, date, fname in items)
+    cards = '<div class="card" style="flex:1 1 280px;border:1px solid var(--border);border-radius:12px;padding:16px 18px;background:var(--surface)"><h4 style="margin:0 0 6px;font-size:14.5px"><a href="../research/higgsfield-cli-flow/#overview" style="color:var(--ink);text-decoration:none">Higgsfield CLI · 运行时流程图</a></h4><div style="font-size:12px;color:var(--muted)">2026-10-13 · v1.1.26 · 9 条流程 / 66 条命令 / 内嵌证据</div></div>' + cards
     intro = ('<div class="meta"><div class="m-name">研究文档</div>'
              '<div class="m-desc">全景报告之外的过程性调研与厂商拆解：调研轮次记录、'
              'Higgsfield 技能解剖与生态评估、PromptEnhancer 服务端依赖发现等，'
