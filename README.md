@@ -17,12 +17,12 @@
 ## 结构
 
 ```
-index.html            # 主报告（11 节 + 附录：103 个 SKILL.md 全清单）
+index.html            # 主报告（11 节 + 附录：全部 SKILL.md 清单）
 site/                 # 部署目录 = index.html + skills/ + docs/ + report/ + research/
 docs/skills-research-public-2026-09-25.md  # 可公开的技能研究摘要
 build_research_summary_page.py  # 将研究摘要渲染为 site/docs/ 页面
 build_skills_site.py  # 把 7 个仓库的全部 .md 渲染为 site/skills/*.html
-gen_appendix.py       # 从 7 个仓库提取 103 个 SKILL.md，生成主报告附录章节
+gen_appendix.py       # 从各厂商仓库提取全部 SKILL.md，生成主报告附录章节
 setup.sh              # 按 pinned SHA 重建 7 个厂商仓库的调研快照（不入库，见 .gitignore）
 ```
 

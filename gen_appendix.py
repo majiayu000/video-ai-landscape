@@ -45,9 +45,10 @@ def fm_field(fm, key):
 
 def build_section():
     total = 0
+    # parts[2] is the subtitle; it states the count, so it is filled in after the scan.
     parts = ['<section id="appendix">',
              '  <h2><span class="no">A</span>附录 · 技能全清单</h2>',
-             '  <p class="section-sub">7 个仓库里全部 <b>103 个 SKILL.md</b>，按厂商分组，点名称直达在线渲染页。</p>']
+             '']
     for repo, label in REPOS.items():
         rows = []
         for f in sorted((ROOT / repo).rglob("SKILL.md")):
@@ -70,18 +71,20 @@ def build_section():
         parts.append('  <tr><th>技能</th><th>描述</th></tr>\n  ' + "\n  ".join(rows))
         parts.append('  </table></div>')
     parts.append("</section>")
-    assert total == 103, f"expected 103 SKILL.md, got {total}"
-    return "\n".join(parts)
+    assert total > 0, "no SKILL.md found under vendor repos"
+    parts[2] = (f'  <p class="section-sub">{len(REPOS)} 个仓库里全部 <b>{total} 个 SKILL.md</b>，'
+                '按厂商分组，点名称直达在线渲染页。</p>')
+    return "\n".join(parts), total
 
 
 def main():
-    section = build_section()
+    section, total = build_section()
     html_text = INDEX.read_text(encoding="utf-8")
     assert html_text.count("<footer>") == 1, "expected exactly one <footer>"
     # idempotent: strip a previously generated appendix before inserting
     html_text = re.sub(r'<section id="appendix">.*?</section>\n*', "", html_text, flags=re.S)
     INDEX.write_text(html_text.replace("<footer>", section + "\n\n<footer>"), encoding="utf-8")
-    print(f"OK: appendix with 103 skills inserted into {INDEX}")
+    print(f"OK: appendix with {total} skills inserted into {INDEX}")
 
 
 if __name__ == "__main__":
