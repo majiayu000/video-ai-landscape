@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>pitfalls · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="pitfalls · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/pitfalls">
+<meta property="og:type" content="website">
+<meta property="og:title" content="pitfalls · fal 社区 Skills">
+<meta property="og:description" content="pitfalls · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/pitfalls">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="pitfalls · fal 社区 Skills">
+<meta name="twitter:description" content="pitfalls · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/reels-creator/references/pitfalls.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Pitfalls: symptom → cause → fix</h1>
+<p>Things that go wrong in presenter-led videos, and what fixes them. Look up the symptom first; most have a measurable check. Scene-building faults (blended counters, labels off-centre, glyph gaps, seek-order bugs) are in animation-craft.md §3.</p>
+<h2>1. The presenter on camera</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The lips speak at a different tempo from the voice, or the clip's voice isn't the take</td>
+<td>a reference-to-video talking-head model (for example Seedance with the take as <code>@Audio1</code>) re-performs the line at its own tempo and with pauses the take doesn't have, so the take can't sit on its lips</td>
+<td>make host clips with H3 Max Lip Sync from the take itself (voice-and-host.md §4)</td>
+</tr>
+<tr>
+<td>The face stutters, races or repeats frames</td>
+<td>the clip was retimed to fit the voice (frames picked, skipped or blended), or a 24 fps clip was cut at 30 fps (every 5th frame repeats; a 60 fps source drops frames in a 2:3 pattern)</td>
+<td>never retime the face; a 24 fps master; <code>host_check.py</code> counts repeated frames and must pass</td>
+</tr>
+<tr>
+<td>The face shifts by a pixel every few frames during a slow push</td>
+<td>the zoom used whole-pixel crop boxes</td>
+<td>a sub-pixel crop (host_reel.py's <code>push</code> does this); <code>host_check.py</code> r ≥ 0.95</td>
+</tr>
+<tr>
+<td>A review says the face "jumps to a closed mouth" mid-sentence</td>
+<td>usually a pause in the take, where the mouth closes as it should</td>
+<td>read the take's level at that moment (a pause sits 30 dB or more under the speech) before regenerating anything</td>
+</tr>
+<tr>
+<td>The voice sits early or late on the lips</td>
+<td>the take was put back at a guessed offset</td>
+<td><code>host_lipsync.py measure</code> gives <code>take_at</code> (correlation ≥ 0.98); run <code>host_check.py</code> with the edit's own plan, since a plan rebuilt with guessed in-points shows false offsets of about a frame</td>
+</tr>
+<tr>
+<td>A check or an agent says "lip sync matches", but it looks off</td>
+<td>matching word times is not lip-sync, and an automated claim may not have looked</td>
+<td>a 10 fps mouth strip (crop the mouth, tile 15–20 frames) next to the voice level per 0.1 s, then watch it at full speed</td>
+</tr>
+<tr>
+<td>The presenter flashes on screen for under a second</td>
+<td>a fallback (a card, a cutaway) with no minimum on-camera time</td>
+<td>keep the presenter on camera for at least 1.5 s with matching lips, or drop the presenter from that moment</td>
+</tr>
+<tr>
+<td>A host segment starts on a repeated frame (<code>host_check.py</code>: one repeated at the first frame, or r well under 0.99)</td>
+<td>the clip's in-point fell between two frames, so the decoder filled the first frame twice</td>
+<td>the current host_reel.py snaps every in-point to the frame grid: use it, not an older copy</td>
+</tr>
+<tr>
+<td>The room, light or framing changes between host clips</td>
+<td>each clip came from a different still</td>
+<td>one presenter still per set, reused for every host clip (voice-and-host.md §3)</td>
+</tr>
+<tr>
+<td>The video feels like a talking head</td>
+<td>host clips over about 15 % of the runtime</td>
+<td>the presenter opens and closes; in between only where the story needs a face (voice-and-host.md §1)</td>
+</tr>
+</tbody>
+</table>
+<h2>2. Voice, cuts and captions</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The first sound of a word is clipped ("ine" for "nine")</td>
+<td>cuts were set from Scribe's word times, which mark a word's start 0.01–0.11 s after its sound begins (about 0.05 s typically)</td>
+<td>set every voice cut from the take's sound, in its silence; the plan's cut check lists any cut inside a word</td>
+</tr>
+<tr>
+<td>The presenter seems to stutter on a phrase</td>
+<td>the take was split inside connected speech and a gap opened</td>
+<td>split a take only at real pauses (≥ 40 dB under its speech level); the cut check lists splits inside connected speech</td>
+</tr>
+<tr>
+<td>A brand name or foreign word comes out wrong</td>
+<td>the model guessed the spelling's sound</td>
+<td>respell it in <code>tts</code> (the screen form stays in <code>text</code>), then confirm it with Scribe on every take</td>
+</tr>
+<tr>
+<td>A cloned voice drifts to another accent in another language</td>
+<td>the clone leans to the accent of its source recording</td>
+<td>an accent tag at the start of <code>tts</code> (for example <code>[American accent]</code>), kept out of <code>text</code> and the captions; check the first take with Scribe so the tag is never read aloud</td>
+</tr>
+<tr>
+<td>A caption's tail lands on a UI scene</td>
+<td>a phrase ran past its segment</td>
+<td><code>"captions": false</code> on the scene's segment; the review sheet must show no captions on UI scenes</td>
+</tr>
+<tr>
+<td>A caption hangs over the first frames of the next shot</td>
+<td>a phrase stays up to 0.45 s after its last word</td>
+<td>the current host_reel.py ends every phrase at the next cut</td>
+</tr>
+<tr>
+<td>The voice sits 20–50 ms off the lips after a part join, worse with every join</td>
+<td>the parts' AAC tracks were joined directly, and each part's encoder priming adds up</td>
+<td>join parts with <code>host_reel.py --join</code> (assembly.md §2), which joins the raw mixes and encodes the sound once</td>
+</tr>
+<tr>
+<td>A take looks band-limited above 16 kHz</td>
+<td>ElevenLabs MP3 takes carry nothing up there</td>
+<td>expected: judge takes by ear, not by the top of the spectrum</td>
+</tr>
+</tbody>
+</table>
+<h2>3. Picture and footage</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A scene sits still for seconds</td>
+<td>key moments placed with nothing moving between them</td>
+<td>no scene stays still for more than 1 s: keep a quiet, continuous motion and land the key change on its word; measure it: a whole-frame difference under 0.05 for more than 1 s flags one, then compare that run's first and last frames, since a small object moving slowly can measure as low</td>
+</tr>
+<tr>
+<td>A clip restarts, slows down or freezes to fill its window</td>
+<td>the window was longer than the clip</td>
+<td>one shot is one unbroken take: dock it into a card, morph it, or cut to a second clip</td>
+</tr>
+<tr>
+<td>Logos or text appear inside generated footage</td>
+<td>the prompt left room for them, or the model added them</td>
+<td>say so in the prompt, look at every clip's frames, and regenerate or crop</td>
+</tr>
+<tr>
+<td>Generated footage shows the wrong object for the story (the modern version of a historical thing, the wrong model of a machine)</td>
+<td>the prompt named the category, not the exact object</td>
+<td>name the exact object, era and material in the prompt; check the frames before the edit</td>
+</tr>
+<tr>
+<td>Text covers the presenter's face or hair</td>
+<td>the text was placed by the frame's centre</td>
+<td>on a 9:16 talking head, use the plain area below the captions (design.md §2)</td>
+</tr>
+<tr>
+<td>A regenerated shot still shows the old version in the video</td>
+<td>the edit still points at the old file</td>
+<td>after any retake, compare the edit's file with the new generation (sha256) and look at that shot on the review sheet (assembly.md §3)</td>
+</tr>
+</tbody>
+</table>
+<h2>4. Sound and the ending</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The video stops on the last spoken word, with the music fading under it</td>
+<td>no end card in the edit</td>
+<td>a 3–4 s end card after the last line while the music resolves on a final chord (sound.md §1)</td>
+</tr>
+<tr>
+<td>The music dips for half a second at a part join</td>
+<td>a part before the last kept the music's <code>fade_out</code> (2 s by default), or a part after the first kept its <code>fade_in</code> (0.3 s)</td>
+<td><code>"fade_out": 0</code> on every part but the last and <code>"fade_in": 0</code> on every part but the first; the plan prints a <code>MUSIC</code> line when one is left</td>
+</tr>
+<tr>
+<td>The end card's last seconds stand still</td>
+<td>the card's motion ends early</td>
+<td>keep a slow drift running to the card's last frame</td>
+</tr>
+<tr>
+<td>The finished video has no sound effects</td>
+<td>SFX were skipped to save time</td>
+<td>SFX are part of the video: list each scene's few, price them, and put them in the edit (SKILL.md step 9)</td>
+</tr>
+<tr>
+<td>A sound feels shrill or cheap</td>
+<td>whooshes, risers or bright synthetic hits</td>
+<td>soft, physical sounds for things that land, dock or settle; listen to every SFX in context</td>
+</tr>
+</tbody>
+</table>
+<h2>5. The script</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The lines sound machine-written</td>
+<td>a teaser opener, a negation run ("This cat doesn't exist. Neither does this dog."), a fragment triad ("No camera. No actors. No set.")</td>
+<td>plain declaratives built on facts, at most one question; run the device list in voice-and-host.md §1 before showing lines</td>
+</tr>
+</tbody>
+</table>
+<h2>6. Runtime checks</h2>
+<p>Keep intermediate files and approved scripts in a persistent local project folder.
+Check actual execution limits and split long renders when needed. If a price or
+account permission cannot be verified, report it before a paid call. Save pending
+request IDs and resume those requests rather than submitting replacements.</p>
+<h2>7. Checks that mislead</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A contact sheet seems a couple of seconds off</td>
+<td>ffmpeg <code>fps=1/4</code> samples at about 4n + 2 s, not 4n</td>
+<td>label each tile with its real time, or pick exact times with <code>select</code></td>
+</tr>
+<tr>
+<td><code>host_check.py</code> reports a whole-frame voice offset on a clean render</td>
+<td>the plan it read wasn't the one the video was rendered from</td>
+<td>check against the plan written by the render itself</td>
+</tr>
+</tbody>
+</table></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

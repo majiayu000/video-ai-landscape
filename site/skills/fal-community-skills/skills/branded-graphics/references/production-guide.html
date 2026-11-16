@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>production-guide · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/branded-graphics/references/production-guide">
+<meta property="og:type" content="website">
+<meta property="og:title" content="production-guide · fal 社区 Skills">
+<meta property="og:description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/branded-graphics/references/production-guide">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="production-guide · fal 社区 Skills">
+<meta name="twitter:description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/branded-graphics/references/production-guide.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Branded graphics</h1>
+<p>A finished branded graphic includes the required brand assets and copy at the
+requested dimensions. A generated background can be an intermediate asset.</p>
+<h2>Brand sources and output</h2>
+<p>Use supplied brand files or the brand's official site for the logo, palette,
+type and approved copy. Do not infer brand colors from the company name or a
+model's output. Keep the original logo's shape, proportions and clear space.
+If a complete logo or wordmark SVG exists, place that asset intact. Do not
+rebuild its lettering with a font.
+If a required asset is inaccessible, identify the missing asset instead of
+inventing it or claiming a complete result.</p>
+<p>Honor the requested dimensions, format and safe areas. When the brief names a
+platform without dimensions, verify its current specifications. Do not add
+unrequested slogans or change exact copy.
+For a brand-only brief with no supplied copy, use the original logo or wordmark
+without extra claims or slogans. A phrase from memory is not approved brand copy.</p>
+<h2>Choose the method</h2>
+<p>Use the simplest method that satisfies the brief with the tools available.</p>
+<ul>
+<li>For exact logos, typography or layout, code composition keeps those assets
+  intact. A text-free generated background plus original logo and real text is
+  one useful approach. SVG, HTML with a raster export, or a raster compositor
+  can all work. Pure composition needs no model call.</li>
+<li>A model can produce a complete graphic when its reference inputs and output
+  quality meet the brief. Check the actual result for logo drift and text errors.</li>
+<li>For a background-only request, deliver the background. Do not add a logo or
+  copy that the user excluded.</li>
+</ul>
+<p>Use current model guidance and the endpoint's actual input contract for any
+generation. Preserve the user's model choice and existing authorization.
+Do not assume the client has code execution, a browser or a particular renderer.
+If required tools are absent, explain the remaining step and deliver only what
+you can verify.</p>
+<h2>Verify and deliver</h2>
+<p>Inspect the final rendered image, including exact copy, logo fidelity, palette,
+legibility, cropping and safe areas. Read the exported file's dimensions and
+format. Check font and image loading when a browser renders the composition.
+Repair observed defects within the authorized scope; avoid speculative reruns.</p>
+<p>Deliver the finished image in the requested format. Include editable source when
+requested or useful. An HTML source file or a preview link alone does not replace
+a requested PNG. State any checks that remain unverified.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>examples · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="examples · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/h3-cinematic-prompter/references/examples">
+<meta property="og:type" content="website">
+<meta property="og:title" content="examples · fal 社区 Skills">
+<meta property="og:description" content="examples · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/h3-cinematic-prompter/references/examples">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="examples · fal 社区 Skills">
+<meta name="twitter:description" content="examples · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/h3-cinematic-prompter/references/examples.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Original worked examples</h1>
+<p>These examples are invented for this skill. Use them as structural patterns,
+not reusable story content.</p>
+<h2>Thin premise to silent prompt</h2>
+<p>Premise: A night custodian in a botanical dome realizes the plants are turning
+toward a sealed service hatch.</p>
+<p>Planning:</p>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Selection</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Duration</td>
+<td>10 seconds</td>
+</tr>
+<tr>
+<td>Mode</td>
+<td><code>t2va</code></td>
+</tr>
+<tr>
+<td>Shot budget</td>
+<td><code>M(10)=2</code>; use 2</td>
+</tr>
+<tr>
+<td>Causal spine</td>
+<td>routine inspection → collective plant motion → hatch flexes</td>
+</tr>
+<tr>
+<td>Dialogue</td>
+<td>none</td>
+</tr>
+<tr>
+<td>Music</td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+<p>Prompt:</p>
+<p>integrated_multimodal_description: [Shot 1] Live-action, cinematic, a wide night shot inside a glass botanical dome frames custodian Imani Vale sweeping a flashlight across misted planting beds; broad leaves remain still until her beam reaches a sealed steel service hatch, then every stem slowly inclines toward it. [Shot 2] At 00:05.500, the camera cuts to a low close shot beside the hatch as Imani's boots stop at the edge of the beam; the rubber seal bows outward once, and her flashlight hand freezes above it.
+overall_soundscape: Ventilation hum and condensation ticks fill the dome as soft foliage brushes in one gathering wave; the broom wheels stop, then the hatch seal gives a low rubber groan.
+non_diegetic_music: N/A</p>
+<p>Checks: two 4.5-second-or-longer spans; no speech; final state is visible;
+sound follows the causal sequence.</p>
+<h2>Dialogue-bearing prompt</h2>
+<p>Premise: At dawn, a canal engineer confronts a courier who has delivered a
+key made of ice.</p>
+<p>Planning:</p>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Selection</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Duration</td>
+<td>12 seconds</td>
+</tr>
+<tr>
+<td>Mode</td>
+<td><code>t2va</code></td>
+</tr>
+<tr>
+<td>Shot budget</td>
+<td><code>M(12)=3</code>; use 3</td>
+</tr>
+<tr>
+<td>Speech reserve</td>
+<td><code>U=7</code>; cap <code>floor(2.5*7)=17</code> words</td>
+</tr>
+<tr>
+<td>Dialogue count</td>
+<td>13 words</td>
+</tr>
+<tr>
+<td>Music</td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+<p>Prompt:</p>
+<p>integrated_multimodal_description: [Shot 1] Live-action, cinematic, a wide dawn shot frames an empty canal lock under pale amber light as engineer Mara Quill waits beside the control wheel and a bicycle courier coasts to a stop across the wet concrete. [Shot 2] At 00:04.500, the camera cuts to a tight overhead shot of the courier setting a translucent ice key in Mara's gloved palm; a rain-dark courier with a breathless, bright tenor (S1) warns, <d>[English] It opens once, then forgets the door.</d> [Shot 3] At 00:08.500, a closer shot frames frost spreading across Mara's glove as she closes her fist; (S1) backs toward the bicycle while Mara looks from the melting key to the submerged gate.
+overall_soundscape: Water presses steadily against the lock beneath gull calls and the courier's clicking freewheel; the ice key chimes against the glove, then crackles as frost spreads.
+non_diegetic_music: N/A</p>
+<p>Checks: timestamps are half-second-quantized and below 12; spans are 4.5,
+4, and 3.5 seconds; one 13-word line fits the computed cap; S1 is introduced
+once.</p>
+<h2>First-frame image prompt</h2>
+<p>Input image state: A copper-suited weather observer stands on a snowy roof at
+blue hour, holding a red kite reel; a radio mast rises behind her.</p>
+<p>Planning:</p>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Selection</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Duration</td>
+<td>8 seconds</td>
+</tr>
+<tr>
+<td>Mode</td>
+<td><code>i2va</code></td>
+</tr>
+<tr>
+<td>Shot budget</td>
+<td><code>M(8)=2</code>; use 2</td>
+</tr>
+<tr>
+<td>Image anchor</td>
+<td>Shot 1 begins in the supplied composition</td>
+</tr>
+<tr>
+<td>Music</td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+<p>Prompt:</p>
+<p>integrated_multimodal_description: For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced. [Shot 1] Live-action, cinematic, a wide blue-hour shot frames the copper-suited observer on the snowy roof with the red kite reel held at her waist and the radio mast behind her; the reel begins turning by itself, drawing its taut line upward into cloud. [Shot 2] At 00:04.500, the camera cuts to a low-angle close shot along the vibrating line as blue sparks race down it toward her gloves; she releases the reel, but it hangs motionless in the air.
+overall_soundscape: Thin rooftop wind moves around the mast with a faint cable whistle; the reel ratchets faster, the line thrums, and a dry electrical fizz stops when the reel leaves her hands.
+non_diegetic_music: N/A</p>
+<p>Checks: exact preamble appears once; Picture 1 is not repeated; Shot 1 starts
+from the reference state; both spans exceed 3 seconds.</p>
+<h2>Worked 15-second timeline</h2>
+<p>Premise: In a flooded subway archive, a cartographer discovers that a paper map
+is predicting the water's next rise.</p>
+<p>Budget:</p>
+<ul>
+<li><code>D=15</code>.</li>
+<li><code>M(15)=3</code>; use three shots.</li>
+<li>Starts: <code>00:00</code>, <code>00:05.500</code>, <code>00:11.000</code>.</li>
+<li>Spans: <code>5.5</code>, <code>5.5</code>, <code>4</code> seconds.</li>
+<li>Final-start ratio: <code>11/15=0.733</code>.</li>
+<li><code>U=9</code>; ordinary dialogue cap is <code>floor(2.5*9)=22</code> words.</li>
+<li>Actual dialogue: 9 words.</li>
+</ul>
+<p>Prompt:</p>
+<p>integrated_multimodal_description: [Shot 1] Live-action, cinematic, a wide interior shot frames cartographer Edda Moss wading between tilted archive shelves under green emergency lamps, holding a dry paper transit map above the black water. [Shot 2] At 00:05.500, the camera cuts to an overhead close shot as a blue line draws itself across the map and stops at a station circle; a compact cartographer with a hushed, sandpapery alto (S1) murmurs, <d>[English] That's here. And the ink is still moving.</d> Water begins spilling over the matching shelf marker beside her. [Shot 3] At 00:11.000, a low wider shot frames Edda folding the map into her coat as the blue line races toward the only lit stairwell; she turns and wades after it while the emergency lamps extinguish behind her in sequence.
+overall_soundscape: Submerged ventilation drones beneath slow drips and the wash of each step; pencil-dry scratching crosses the map, water slaps the shelf marker, then electrical relays snap dark behind Edda.
+non_diegetic_music: N/A</p>
+<p>Checks: exact 15-second arithmetic; three distinct causal beats; the spoken
+line fits Shot 2; the final shot receives 4 seconds; no score is needed.</p>
+<h2>Non-default score case</h2>
+<p>Premise: A clockmaker releases a roomful of repaired mechanical birds at the
+instant the town's power returns. The user explicitly requests a restrained
+score beginning with the release.</p>
+<p>Reason before prompt: Non-diegetic music is included because the user
+explicitly requested a cue synchronized to the release.</p>
+<p>integrated_multimodal_description: [Shot 1] Live-action, cinematic, a dim interior shot frames elderly clockmaker Sorin Pell among shelves of dormant brass birds as he lifts the latch on their wire enclosure; only a battery lantern lights his hands. [Shot 2] At 00:05.000, a slow tracking shot follows the first brass bird through the open door as the workshop bulbs flare back to life and dozens of repaired wings unfold behind it. [Shot 3] At 00:09.500, the camera cuts to a wide exterior dusk shot as the flock streams from the attic window above the newly illuminated square; Sorin remains in the warm window, lowering the empty enclosure door.
+overall_soundscape: The workshop's close ticking and faint lantern hiss are joined by a latch click and overlapping brass wingbeats; power relays knock on, glass bulbs buzz awake, and the flock's mechanisms recede above the square.
+non_diegetic_music: A restrained celesta and bowed-glass pulse enters when the first bird clears the enclosure, opens into slow luminous chords as the flock reaches the square, and remains low beneath the mechanical wingbeats.</p>
+<p>Checks: explicit authorization permits score; onset is tied to the visible
+release; three legal timestamps spans fit a 14-second prompt.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

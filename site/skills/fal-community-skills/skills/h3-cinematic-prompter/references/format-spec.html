@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>format-spec · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="format-spec · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/h3-cinematic-prompter/references/format-spec">
+<meta property="og:type" content="website">
+<meta property="og:title" content="format-spec · fal 社区 Skills">
+<meta property="og:description" content="format-spec · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/h3-cinematic-prompter/references/format-spec">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="format-spec · fal 社区 Skills">
+<meta name="twitter:description" content="format-spec · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/h3-cinematic-prompter/references/format-spec.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>H3 format specification</h1>
+<p>Use this reference as the mechanical source of truth for prompt assembly and
+repair.</p>
+<h2>Record grammar</h2>
+<p>The output has exactly three fields in this order:</p>
+<ol>
+<li><code>integrated_multimodal_description:</code> — all shots, blocking, camera,
+   performance, and dialogue.</li>
+<li><code>overall_soundscape:</code> — one or two sentences of environmental bed and
+   action-synchronous sound.</li>
+<li><code>non_diegetic_music:</code> — <code>N/A</code> by default; score only.</li>
+</ol>
+<p>Do not put duration, mode, commentary, or extra metadata inside the record.
+If an adjustment or non-default music reason must be reported, place one short
+sentence before the record.</p>
+<h2>Mode invariant</h2>
+<p>Set mode from input state:</p>
+<table>
+<thead>
+<tr>
+<th>Condition</th>
+<th>Mode</th>
+<th>Description start</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No image supplied</td>
+<td><code>t2va</code></td>
+<td><code>[Shot 1] Live-action, cinematic,</code></td>
+</tr>
+<tr>
+<td>First-frame image supplied</td>
+<td><code>i2va</code></td>
+<td>Exact preamble, then <code>[Shot 1] Live-action, cinematic,</code></td>
+</tr>
+</tbody>
+</table>
+<p>The exact <code>i2va</code> preamble is:</p>
+<p><code>For the target video, at 0.00 seconds into the target video, &lt;Picture 1&gt; (from [Shot 1]) is fully referenced.</code></p>
+<p>Apply these <code>i2va</code> rules:</p>
+<ol>
+<li>Describe Shot 1 completely; the preamble does not replace visual prose.</li>
+<li>Make Shot 1's first state coincide with the image.</li>
+<li>Express motion as emerging from that state.</li>
+<li>Do not place a hidden cut inside Shot 1.</li>
+<li>Do not mention Picture 1 after the preamble.</li>
+<li>Preserve reference-visible identity, wardrobe, props, lighting, and place.</li>
+<li>Add off-frame details only when continuity requires them.</li>
+</ol>
+<h2>Shot and timestamp grammar</h2>
+<p>Let total duration be integer <code>D</code>, <code>5 &lt;= D &lt;= 15</code>.</p>
+<ul>
+<li>Shot 1: <code>[Shot 1] Live-action, cinematic, ...</code></li>
+<li>Shot <code>n &gt; 1</code>: <code>[Shot n] At MM:SS.mmm, ...</code></li>
+<li>Shot IDs: contiguous integers <code>1..S</code>.</li>
+<li>Timestamp values: absolute from clip start, not relative to the prior shot.</li>
+<li>Timestamp grid: fractional part is <code>.000</code> or <code>.500</code> only.</li>
+<li>Timestamp bounds: <code>0 &lt; t_n &lt; D</code>.</li>
+<li>Ordering: <code>t_n &lt; t_(n+1)</code>.</li>
+<li>Spans: <code>t_(n+1) - t_n &gt;= 2</code>; final span <code>D - t_S &gt;= 2</code>.</li>
+</ul>
+<p>Treat a timestamp as the start of a new edit. Name its transition and landing
+view. Do not place multiple coverage changes inside one numbered shot.</p>
+<h2>Dialogue grammar</h2>
+<p>Wrap one complete utterance per tag:</p>
+<p><code>&lt;d&gt;[Language] line text&lt;/d&gt;</code></p>
+<p>Use a real language name matching the spoken line. Keep punctuation inside the
+tag. Do not wrap narration, camera direction, or nonverbal sound in <code>&lt;d&gt;</code>.</p>
+<p>Assign speaker IDs by first audible speech:</p>
+<ol>
+<li>Start at <code>(S1)</code> and increment without gaps.</li>
+<li>On first use, write a visually grounded descriptor ending with stable vocal
+   qualities and the ID.</li>
+<li>On every later use, write the bare ID only.</li>
+<li>Preserve the same ID through cuts, off-screen speech, radio, or voiceover.</li>
+<li>Mark the channel when mediated speech could be confused with visible lips.</li>
+<li>Give no ID to a silent person or sound source.</li>
+</ol>
+<p>The grammar controls audible speech but does not warrant claims of exact
+transcription, lip-sync, or speaker-identity persistence.</p>
+<h2>Dialogue arithmetic</h2>
+<p>Compute:</p>
+<ul>
+<li><code>U_clip = D - B_clip</code>, where <code>B_clip</code> covers entrances, action, pauses, and
+  reactions.</li>
+<li><code>W_clip &lt;= floor(2.5 * U_clip)</code>.</li>
+<li>For a dialogue-dominant span only, <code>W_span &lt;= floor(3 * U_span)</code>.</li>
+<li>For every shot <code>i</code>, <code>W_i &lt;= floor(2.5 * U_i)</code> unless the preceding exception
+  applies to that shot.</li>
+</ul>
+<p>Count words inside dialogue tags only. Contractions count as one word. Trim a
+failed budget in this order: filler within lines, redundant lines, whole turns.
+Retain causal information over verbal texture.</p>
+<p>For calibration, use these measured upper bounds only as ceilings, never as
+targets:</p>
+<table>
+<thead>
+<tr>
+<th>D</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+<th>10</th>
+<th>11</th>
+<th>12</th>
+<th>13</th>
+<th>14</th>
+<th>15</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dialogue-word ceiling</td>
+<td>5</td>
+<td>8</td>
+<td>12</td>
+<td>15</td>
+<td>20</td>
+<td>23</td>
+<td>28</td>
+<td>31</td>
+<td>36</td>
+<td>39</td>
+<td>44</td>
+</tr>
+</tbody>
+</table>
+<p>The usable-seconds formula is stricter whenever action consumes time.</p>
+<h2>Sound grammar</h2>
+<p>Build <code>overall_soundscape</code> as:</p>
+<p><code>continuous environmental bed + foreground events in screen order</code>.</p>
+<p>Enforce:</p>
+<ol>
+<li>One or two sentences only.</li>
+<li>No shot numbers or timestamps.</li>
+<li>Every foreground sound has an on-screen cause or grounded source.</li>
+<li>Use material-and-action specificity: surface, object, and audible event.</li>
+<li>Preserve a continuous bed within one space; change foreground events with
+   the edit.</li>
+<li>For silence, identify the sound that ceases, the residual bed, and the first
+   sound that returns.</li>
+<li>Put visible or implied source music here by default.</li>
+</ol>
+<h2>Score decision</h2>
+<p>Set <code>non_diegetic_music: N/A</code> unless either condition is true:</p>
+<ol>
+<li>The user explicitly requests a song, score, instrument, or musical
+   continuation.</li>
+<li>A discrete visible hinge can govern the cue: a montage, subjective memory,
+   reveal, decisive launch, parting, or final fade.</li>
+</ol>
+<p>Mood alone is insufficient. When score is permitted, specify only ensemble or
+lead instrument, rhythmic behavior, tempo, emotional color, mix relation to
+speech, and onset/change at the hinge. Never transcribe lyrics.</p>
+<h2>Repair order</h2>
+<p>When validating an existing prompt, repair in this order:</p>
+<ol>
+<li>Clamp duration to a legal integer.</li>
+<li>Restore the exact three-header topology.</li>
+<li>Restore the conditional preamble and Shot 1 opener.</li>
+<li>Renumber shots and quantize timestamps.</li>
+<li>Reduce shots to the duration ceiling.</li>
+<li>Repair dialogue tags and speaker IDs.</li>
+<li>Trim dialogue to both timing formulas.</li>
+<li>Replace forbidden camera qualifier values.</li>
+<li>Rebuild soundscape causally.</li>
+<li>Reset music to <code>N/A</code> unless a valid reason survives.</li>
+</ol>
+<p>For a fully specified prompt destined for fal, recommend turning prompt
+expansion off; rewriting preserves structure but reduces timing precision.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

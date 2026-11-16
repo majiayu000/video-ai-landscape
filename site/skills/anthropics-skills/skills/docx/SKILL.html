@@ -115,13 +115,15 @@
 <li><strong><code>ImageRun</code> requires <code>type:</code></strong> (<code>"png"</code>, <code>"jpg"</code>, …).</li>
 <li><strong><code>PageBreak</code> must be inside a <code>Paragraph</code>.</strong></li>
 <li><strong>Never use <code>\n</code></strong> — use separate <code>Paragraph</code> elements.</li>
+<li><strong>Headings:</strong> style every level you use (<code>title</code>, <code>heading1</code>, <code>heading2</code>…) in <code>styles.default</code>: <code>heading1: { run: { font: "Arial", size: 32, bold: true }, paragraph: { spacing: { before: 240, after: 120 }, keepNext: true } }</code>. Every level needs its own font (even with a document default), <code>before</code> and <code>after</code> (even if 0) and <code>keepNext</code>: the built-in styles set none of them.</li>
 <li><strong>TOC:</strong> headings must use built-in <code>HeadingLevel.*</code>; custom heading styles need <code>outlineLevel</code> set or they won't appear.</li>
 <li><strong>Don't use a table as a horizontal rule</strong> — use a paragraph bottom border instead.</li>
 <li><strong>Dot-leader / right-aligned-on-same-line:</strong> use <code>PositionalTab</code> (<code>alignment: PositionalTabAlignment.RIGHT</code>, <code>leader: PositionalTabLeader.DOT</code>) inside a <code>TextRun</code>, not literal <code>.</code> or space padding.</li>
 </ul>
 <h2>Verify the output</h2>
 <p>After writing a <code>.docx</code>, render it and look at it:</p>
-<pre><code class="language-bash">python scripts/office/soffice.py --headless --convert-to pdf output.docx
+<pre><code class="language-bash">zip -d output.docx '*/' &gt;/dev/null || true   # drop the ZIP's folder entries: Word has refused a file that has them when opened through a cloud co-editing service
+python scripts/office/soffice.py --headless --convert-to pdf output.docx
 pdftoppm -jpeg -r 100 output.pdf page
 ls page-*.jpg   # then Read the images
 </code></pre>
@@ -132,7 +134,7 @@ ls page-*.jpg   # then Read the images
 find unpacked -type l -delete   # strip symlink entries — docx from external parties is untrusted
 python scripts/merge_runs.py unpacked/   # coalesce fragmented runs so text is findable
 # edit unpacked/word/document.xml in place — do NOT reformat or pretty-print
-(cd unpacked &amp;&amp; rm -f ../out.docx &amp;&amp; zip -Xr ../out.docx .)
+(cd unpacked &amp;&amp; rm -f ../out.docx &amp;&amp; zip -XrD ../out.docx .)
 python scripts/office/validate.py out.docx --original doc.docx   # XSD checks; --auto-repair fixes common issues
 # redlining? add --author &quot;&lt;the name you redlined under&gt;&quot; to check every edit is tracked
 </code></pre>

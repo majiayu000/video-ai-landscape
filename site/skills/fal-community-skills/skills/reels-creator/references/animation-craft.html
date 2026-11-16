@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>animation-craft · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="animation-craft · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/animation-craft">
+<meta property="og:type" content="website">
+<meta property="og:title" content="animation-craft · fal 社区 Skills">
+<meta property="og:description" content="animation-craft · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/animation-craft">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="animation-craft · fal 社区 Skills">
+<meta name="twitter:description" content="animation-craft · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/reels-creator/references/animation-craft.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Animation craft in the local workspace</h1>
+<p>Scenes are seek(t) HTML pages: plain JS, with GSAP when it helps. <code>render.mjs</code> opens a page in Playwright, seeks every frame and pipes the screenshots into ffmpeg, so the MP4 holds exactly what the page draws at each t. Render scenes this way rather than through another compositing tool: host_reel.py and the word timings expect these MP4s. This page adds what makes every frame exact and every word land on its spoken time.</p>
+<h2>1. One page per scene</h2>
+<p><strong>Files.</strong> Start from <code>references/code/scene.html</code>. Write it to <code>./project-work/scenes/&lt;scene&gt;/index.html</code>, next to <code>textkit.js</code> and a <code>fonts/</code> folder.
+- Fonts: OFL faces downloaded by URL (Geist, Inter, Space Grotesk…), or the user's licensed files with their OK.
+- The page sets <code>W</code>, <code>H</code> (the frame) and <code>LOOP</code> (the scene length from <code>wordtimes.py</code>), exposes <code>window.seek</code>, <code>W</code>, <code>H</code> and <code>LOOP</code>, and sets <code>window.__ready = true</code> last.</p>
+<p><strong>The scene is <code>seek(t)</code></strong>, a function of t alone. Build and measure everything once; seek(t) only sets values. Nothing may depend on what was drawn before (<code>check.mjs --order</code> catches it).</p>
+<p><strong>GSAP</strong> is welcome for curves and choreography: build one paused timeline once and call <code>tl.seek(t, true)</code> inside seek(t). Values are set on every seek and callbacks are suppressed, so never draw in <code>onUpdate</code> or <code>call()</code>, and never let a tween run on the clock.</p>
+<p><strong>Real footage inside a scene:</strong> decode the clip to frames (<code>ffmpeg -i clip.mp4 -vf fps=24 frames/f%03d.jpg</code>) and show it with <code>textkit.seq()</code>, whose <code>at(t, t0)</code> resolves only once that frame is decoded. Make seek async and await it; <code>render.mjs</code> and <code>check.mjs</code> await every seek. A <code>&lt;video&gt;</code> seeked through <code>currentTime</code> also works when seek awaits its <code>seeked</code> event.</p>
+<p><strong>Times come from the voice.</strong> <code>python3 ./project-work/tools/wordtimes.py ./project-work/vo/&lt;take&gt; [a] [b]</code> prints each word's time in the scene and the scene length. Its rule is the one <code>host_reel.py</code> uses: the first word at 0.16 s, length = span + 0.44 s. Put labels on their words, and start a move 0.1–0.2 s before its word.</p>
+<h2>2. textkit.js in one screen</h2>
+<pre><code class="language-js">const T = TextKit({ W: 1080, H: 1920, stroke: 3, radius: 8, tracking: -0.02 });   // every value is a per-video choice
+const F = { head: T.font(500, 88, &quot;Face&quot;), chip: T.font(400, 40, &quot;Face&quot;) };
+await T.K.assertFonts(Object.values(F));
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>What it guarantees</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>text</code>, <code>word</code>, <code>line</code></td>
+<td>DOM-measured baseline; widths without tracking's trailing space</td>
+</tr>
+<tr>
+<td><code>reveal</code>, <code>rline</code></td>
+<td>each word rises whole out of its own mask on its time: paused frames show whole glyphs</td>
+</tr>
+<tr>
+<td><code>chip</code>, <code>tab</code></td>
+<td>a box that hugs its label, with the caps centred <code>(h + cap) / 2</code>; cut on/off with <code>.at(t, t0)</code></td>
+</tr>
+<tr>
+<td><code>frame</code></td>
+<td>a stroke box that draws on from its top-left corner</td>
+</tr>
+<tr>
+<td><code>media</code>, <code>seq</code></td>
+<td>a picture, or a clip's frames, in a rounded window</td>
+</tr>
+<tr>
+<td><code>timer</code></td>
+<td>tabular stopwatch, right edge fixed, one value per 60 fps frame</td>
+</tr>
+<tr>
+<td><code>mark</code></td>
+<td>an official SVG mark from its path data</td>
+</tr>
+<tr>
+<td><code>bar</code>, <code>field</code>, <code>layer</code>, <code>circle</code></td>
+<td>fills and strokes, grounds, groups that move together, circle-reveal clip paths</td>
+</tr>
+<tr>
+<td><code>house</code>, <code>prog</code>, <code>rise</code></td>
+<td>the arrival curve (house bezier 0.085, 0.648, 0, 1), progress, a rise offset</td>
+</tr>
+</tbody>
+</table>
+<p>textkit needs no other library. Every string and every chip is registered for the checks.</p>
+<h2>3. Lessons: symptom → fix</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Counter shows two values blended</td>
+<td>value evaluated between frames</td>
+<td><code>timer()</code> quantises to the frame</td>
+</tr>
+<tr>
+<td>The same moment differs with what came before</td>
+<td>state kept between seeks (a <code>+=</code>, a leftover src, a tween on the clock)</td>
+<td>derive everything from t; <code>check.mjs --order</code> must report nothing</td>
+</tr>
+<tr>
+<td>A label sits high or low in its pill</td>
+<td>centred on the line box, not the caps</td>
+<td><code>chip()</code>; <code>check.py</code> measures the ink (baseline ±1.5 px, caps dy ±2, dx ±2)</td>
+</tr>
+<tr>
+<td>A character renders in another font</td>
+<td>the face lacks the glyph (≈, ±, U+202F and the thin space are common gaps)</td>
+<td><code>check.py</code>'s glyph check; rewrite ("about", a plain space, "-")</td>
+</tr>
+<tr>
+<td>Half the frame stays empty for seconds</td>
+<td>the second object arrives late</td>
+<td>centre the first object alone, then slide it aside when the second arrives</td>
+</tr>
+<tr>
+<td>Two consecutive animation scenes jump</td>
+<td>two unrelated grounds</td>
+<td>the incoming scene starts on the previous scene's last ground and opens its own as a circle (0.45 s, <code>T.circle()</code>); the hard cut is then invisible</td>
+</tr>
+<tr>
+<td>A 5 s clip must fill a 9 s window</td>
+<td>—</td>
+<td>never slow it, restart it, freeze it or dissolve it into itself; dock it into a card, morph it, or cut to another clip</td>
+</tr>
+<tr>
+<td>The voice's caption lands on a UI scene</td>
+<td>a phrase's tail spills past its segment</td>
+<td><code>"captions": false</code> on the scene's segment</td>
+</tr>
+<tr>
+<td>Motion feels cheap</td>
+<td>linear or symmetric ease-in-out</td>
+<td>front-loaded arrivals (house curve, or GSAP <code>expo.out</code>, 0.55–0.85 s), chips cut on, springs for settling; never linear</td>
+</tr>
+<tr>
+<td>A render hits the command limit</td>
+<td>a long scene, or PNG frames</td>
+<td>one scene per command; JPEG frames (the default); split a long scene in two pages</td>
+</tr>
+</tbody>
+</table>
+<h2>4. Set up once per local workspace</h2>
+<pre><code>pip install fonttools brotli
+mkdir -p ./project-work/scenes &amp;&amp; cd ./project-work/scenes &amp;&amp; npm i playwright &amp;&amp; npx playwright install chromium
+</code></pre>
+<p>Check for a working Chromium installation first. Use Playwright's public installer if needed and authorized. Set <code>CHROME</code> only to a browser installed in this environment.</p>
+<h2>5. Check before showing anything</h2>
+<ol>
+<li><strong>Per scene:</strong>
+   <code>cd ./project-work/scenes/&lt;scene&gt; &amp;&amp; node ./project-work/tools/check.mjs --order index.html:4.4,6.2,9.0 | python3 ./project-work/tools/check.py --faces faces.json</code>
+   - The viewport comes from the page's <code>W</code>/<code>H</code>. <code>faces.json</code> maps <code>{"Family|100-900": "fonts/Face.woff2"}</code>; <code>--css fonts.css</code> works when the faces are in a stylesheet.
+   - The run must end in <code>ALL OK</code>.
+   - Choose the times at the key moments: each new chip, the "everything visible" moment, and the last frame. The stills land in <code>out/</code>: send them to the user as images.</li>
+<li><strong>Look at the stills yourself:</strong>
+   - Is the text inside its box?
+   - Is anything overlapping?
+   - Is the dated source line there?</li>
+</ol>
+<h2>6. Render</h2>
+<ul>
+<li><strong>Command:</strong> <code>cd ./project-work/scenes/&lt;scene&gt; &amp;&amp; node ./project-work/tools/render.mjs index.html ./project-work/scenes/&lt;scene&gt;.mp4 --fps 24</code>. The size comes from the page's <code>W</code>/<code>H</code> and the length from <code>LOOP</code> (or <code>--dur</code>). One scene per command; a 5 s 1080×1920 scene renders in about 12 s.</li>
+<li><strong>Frame rate:</strong> 24, the edit's fps (assembly.md §1). A 30 fps scene in a 24 fps edit loses every 5th frame, and a 60 fps one loses frames in a 2:3 pattern.</li>
+<li><strong>Verify:</strong> <code>ffprobe</code> the duration against <code>LOOP</code>, and make a frame grid with <code>python3 ./project-work/tools/sheet.py &lt;scene&gt;.mp4 &lt;scene&gt;_sheet.jpg --fps=2</code>.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

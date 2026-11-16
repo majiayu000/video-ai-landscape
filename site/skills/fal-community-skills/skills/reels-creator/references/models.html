@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>models · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="models · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/models">
+<meta property="og:type" content="website">
+<meta property="og:title" content="models · fal 社区 Skills">
+<meta property="og:description" content="models · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/models">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="models · fal 社区 Skills">
+<meta name="twitter:description" content="models · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/reels-creator/references/models.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Models: endpoints, inputs, prices</h1>
+<p>These are the recommended models, as verified in <strong>October 2026</strong> from each endpoint's public OpenAPI schema and fal's model pages. They are a starting point, not a cage. When a shot needs something else, search the live catalogue and say why you chose it.</p>
+<h2>0. Check on the day</h2>
+<p><strong>Check current prices and account access.</strong> Historical figures below are examples,
+not a quote. Use the current model page, genmedia pricing or the connected MCP
+pricing tools. An unavailable or zero rate is not evidence of a free job; report
+uncertainty and resolve it before spending.</p>
+<p><strong>Inputs change too:</strong>
+- Read the schema before the first call of a session. It's public, no key needed:
+  <code>curl -s 'https://fal.ai/api/openapi/queue/openapi.json?endpoint_id=&lt;id&gt;'</code>
+- Watch the enums: H3 Max wants <code>"1080P"</code>, FLUX 3 Max wants <code>"1080p"</code>.</p>
+<p><strong>Search the live catalogue</strong> for alternatives (more than 1,500 endpoints). Lead with current models, never last year's.</p>
+<h2>1. Voice: ElevenLabs v4 TTS</h2>
+<p><code>fal-ai/elevenlabs/tts/eleven-v4</code> (also <code>elevenlabs/tts/eleven-v4</code>). <strong>$0.08 per 1,000 characters.</strong></p>
+<p><strong>Inputs:</strong>
+- <code>text</code>: required. It supports audio tags like <code>[curious]</code> and IPA between slashes, e.g. <code>/ˈnaɪki/</code>.
+- <code>voice</code>: the ElevenLabs voice id given for the video.
+- <code>stability</code>: 0–1. Use 0.5.
+- <code>similarity_boost</code>: 0–1, schema default 0.75. <strong>Use 0.95.</strong>
+- <code>seed</code>.
+- <code>language_code</code>: ISO 639-1.
+- <code>timestamps</code>: true gives character timings.
+- <code>apply_text_normalization</code>: auto / on / off.
+- <code>output_format</code>: use <code>mp3_44100_192</code>.</p>
+<p><strong>Settings:</strong>
+- 3 seeds per line, so the user picks.
+- Never <code>[softly]</code> or any whisper tag: it sounds affected.</p>
+<h2>2. The host on camera: H3 Max Lip Sync</h2>
+<p><code>minimax/h3-max/lip-sync/image-to-video</code>: fal's H3 Max animates one image so that its face says the given audio. The clip carries the voice take exactly, at up to 2K and 24 fps, the master's rate.</p>
+<p><strong>Inputs</strong> (schema read October 2026):
+- <code>image_url</code>: required. The presenter still; aspect ratio 0.4–2.5.
+- <code>audio_url</code>: required, at least 5 s and up to 15 min. The output lasts exactly as long as the audio, so a short take is padded with silence (<code>host_lipsync.py prep</code>).
+- <code>resolution</code>: 480P, 768P, 1080P or 2K. <strong>The default is 768P</strong>, so set <code>"1080P"</code>. The output takes the supported aspect ratio nearest the image: 1080×1920 for a 9:16 still.
+- <code>enable_transcription</code>: default false. Pass true: the model transcribes the audio to guide the lips.
+- <code>seed</code>, and <code>enable_safety_checker</code> (default true).
+- There is no prompt.</p>
+<p><strong>Output:</strong> <code>video</code> at 24 fps carrying the audio resampled to 32 kHz (the mix uses the original take), plus <code>seed</code> and <code>duration</code>.</p>
+<p><strong>Price</strong> (model page, October 2026; the pricing API can show 0 in early access, and 0 is never quoted): <strong>$0.16/s at 1080P</strong>; $0.05/s at 480P, $0.08/s at 768P, $0.32/s at 2K. Past 15 s each second costs 1.2×. It is billed on the audio's length, so a host line padded to 5 s costs about $0.80 at 1080P.</p>
+<h2>3. Real-life b-roll: FLUX 3 Max</h2>
+<p>FLUX 3 Max is fal Research's video model, built on Black Forest Labs' FLUX 3 and post-trained with them (model page, October 2026). Use it when the shot must look filmed: people, places, products, everyday scenes.</p>
+<p><strong>Routes:</strong>
+- <code>blackforestlabs/flux-3-max/text-to-video</code>: <code>prompt</code>;
+- <code>blackforestlabs/flux-3-max/image-to-video</code>: <code>prompt</code> and <code>image_url</code>, plus an optional <code>end_image_url</code>;
+- <code>blackforestlabs/flux-3-max/keyframes-to-video</code>: <code>prompt</code> and <code>keyframes</code> (≤ 10 <code>{image_url, frame_index}</code>, frames at 24 fps).</p>
+<p><strong>Inputs (all routes):</strong>
+- <code>duration</code>: integer 5–20, default 5.
+- <code>resolution</code>: 720p or 1080p. <strong>The default is 720p</strong>, so set 1080p.
+- <code>aspect_ratio</code>: auto, 21:9, 2:1, 16:9, 4:3, 1:1, 3:4 or 9:16. auto is 16:9 for text and follows the image otherwise.
+- <code>reasoning_level</code>: low or high, default high.
+- <code>generate_audio</code>: default true. The clip's own sound becomes the ambience under the voice.
+- <code>seed</code>.</p>
+<p><strong>Price:</strong>
+- List: <strong>$0.29/s at 1080p, $0.17/s at 720p</strong>.
+- Promos come and go: check the model page.
+- The pricing API shows 0 (EAP).</p>
+<p><strong>Prompts:</strong> describe the shot plainly: subject, action, place, light, camera. No logos, no text, no public figures.</p>
+<h2>4. Everything else: H3 Max</h2>
+<p>H3 Max is fal's post-trained variant of MiniMax H3 (model page, October 2026). Use it for stylised, abstract, illustrated or designed footage: plates, textures, metaphors, motion behind type.</p>
+<p><strong>Routes:</strong>
+- <code>minimax/h3-max/text-to-video</code>;
+- <code>minimax/h3-max/image-to-video</code>: <code>image_url</code> and/or <code>end_image_url</code>.</p>
+<p><strong>Inputs:</strong>
+- <code>prompt</code>: required.
+- <code>prompt_expansion_mode</code>: <strong>required</strong>; disabled, balanced or quality. Use <code>"disabled"</code>, so the prompt you showed is the prompt that ran.
+- <code>duration</code>: 0.92–15 s, default 5. The output can run about 0.7 s longer.
+- <code>resolution</code>: 480P, 768P or 1080P. <strong>The default is 768P.</strong> 1080P is a latent refinement of a 768P source.
+- <code>aspect_ratio</code>: 21:9, 16:9, 4:3, 1:1, 3:4 or 9:16.
+- <code>target_audio_url</code>: ≥ 2 s, ≤ 15 MB, pins a sound to the soundtrack.
+- <code>seed</code>.</p>
+<p><strong>Price:</strong> list <strong>$0.16/s at 1080P</strong> (model page; the pricing API shows 0 in EAP).</p>
+<p><strong>Other routes</strong> exist (reference-to-video, turbo, styles, extend, relight; lip-sync/image-to-video is the host route, §2). Read their schemas when needed.</p>
+<h2>5. SFX: Mirelo SFX 2.0</h2>
+<p><strong>$0.015 per second per sample. <code>num_samples</code> defaults to 2 and each sample is billed, so pass 1</strong> unless the user wants options.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>Inputs</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mirelo-ai/sfx2.0/video-to-audio</code></td>
+<td><code>video_url</code> (required), <code>text_prompt</code>, <code>negative_prompt</code>, <code>preserve_speech</code> (default true), <code>return_speech</code>, <code>duration</code> 1–600</td>
+<td><code>duration</code> defaults to <strong>10 s</strong>, clamped to the video's length: set it to the clip's length. Over 10 s it generates in 10 s windows</td>
+</tr>
+<tr>
+<td><code>mirelo-ai/sfx2.0/video-to-video</code></td>
+<td>same inputs</td>
+<td>returns the video with its new sound mixed in</td>
+</tr>
+<tr>
+<td><code>mirelo-ai/sfx2.0/text-to-audio</code></td>
+<td><strong><code>prompt</code></strong> (required; not <code>text_prompt</code>), <code>negative_prompt</code>, <code>duration</code> 0.1–600 (default <strong>30</strong>)</td>
+<td>one-shot sounds for animation scenes</td>
+</tr>
+</tbody>
+</table>
+<p>All three routes also take <code>num_samples</code> (1–4), <code>seed</code>, <code>upload_audio_format</code> (wav, mp3, aac or flac) and <code>upload_audio_bitrate_kbps</code>.</p>
+<h2>6. Word timings: Scribe v2</h2>
+<p><code>fal-ai/elevenlabs/speech-to-text/scribe-v2</code>. <strong>$0.008 per minute.</strong></p>
+<p><strong>Inputs:</strong>
+- <code>audio_url</code>.
+- <code>language_code</code>.
+- <code>diarize</code>: default true. Pass false.
+- <code>tag_audio_events</code>.
+- <code>keyterms</code>: up to 100. It adds a 30 % premium; use it for brand names Scribe misspells.</p>
+<h2>7. Music: ElevenLabs Music v2.5</h2>
+<p><code>elevenlabs/music/v2.5</code>. <strong>$0.60 per minute.</strong></p>
+<p><strong>Inputs:</strong>
+- <code>composition_plan</code> (chunks with <code>text</code>, <code>duration_ms</code>, <code>positive_styles</code> and <code>negative_styles</code>), or <code>prompt</code> with <code>music_length_ms</code> (3,000–600,000).
+- <code>force_instrumental</code>.
+- <code>seed</code>: only with a plan.
+- <code>output_format</code>: default <code>mp3_48000_192</code>.</p>
+<h2>8. Keyframes and start frames: Nano Banana Pro</h2>
+<p><code>fal-ai/nano-banana-pro</code>. <strong>$0.15 per image</strong> (as listed; the 4K price may differ: check).</p>
+<p><strong>Inputs:</strong>
+- <code>prompt</code>.
+- <code>resolution</code>: 1K, 2K or 4K.
+- <code>aspect_ratio</code>.
+- <code>num_images</code>: 1–4.
+- <code>context</code>: reference images.
+- <code>seed</code>.</p>
+<p>Use it for the start frame of an i2v shot, or as a cheaper presenter still for H3 Max Lip Sync (check the likeness against the photos; voice-and-host.md §3).</p>
+<h2>9. Fallbacks and other routes</h2>
+<p><strong>Seedance 2.5 US reference-to-video</strong>, <code>bytedance/seedance-2.5/us/reference-to-video</code>, makes the presenter stills: frame 0 of a short clip from the presenter's photos (voice-and-host.md §3). It is not a talking-host route for a separate voice take: given the take as <code>@Audio1</code>, it re-performs the line at its own tempo and with its own pauses, so its lips never match the real take without retiming one of them.
+- Price: billed per token, about <strong>$1.16/s at 1080p, $0.47/s at 720p, $0.22/s at 480p</strong> (October 2026).
+- Inputs: <code>image_urls</code> (the presenter's photos), <code>prompt</code>, <code>duration</code> as a string (<code>"auto"</code> or <code>"4"</code>–<code>"30"</code>), <code>resolution</code> (default 720p), <code>generate_audio</code> (default true), and <code>audio_urls</code> (1.8–30.2 s, <code>@Audio1</code>) when it should speak.</p>
+<p><strong>sync-lipsync v3</strong>, <code>fal-ai/sync-lipsync/v3</code>, re-syncs the lips of an existing clip to a take.
+- Inputs: <code>video_url</code> and <code>audio_url</code>; <code>sync_mode</code> is one of cut_off, loop, bounce, silence or remap.
+- <strong>$8 per minute:</strong> the expensive last resort. It changes only the mouth of an existing clip, so the clip's own motion stays.</p>
+<p><strong>Other lip-sync routes:</strong> <code>fal-ai/kling-video/lipsync/audio-to-video</code> (a clip's lips to an audio file), <code>fal-ai/kling-video/ai-avatar/v2/pro</code> (an image and an audio file to a talking video) and <code>veed/fabric-1.0</code> (the same, 720p at most). Read each one's schema and price on the day, and check one line's frame rate and size before using it: the master is 24 fps (voice-and-host.md §4).</p>
+<h3>Kling v4 reference-to-video (a presenter only when the user asks)</h3>
+<p><code>kling/v4/reference-to-video</code>. <strong>$0.157 per second at 720p, $0.235 at 1080p</strong> (October 2026).</p>
+<p>The presenter route is H3 Max Lip Sync (§2). With Kling's own voice the lips don't follow a separate take, and its create-voice step can return an empty result.</p>
+<p><strong>Inputs:</strong>
+- <code>prompt</code>: ≤ 26,000 characters. It references the inputs as <code>@Element1</code>, <code>@Image1</code>, <code>@Video1</code> and <code>@Voice1</code>. Either <code>prompt</code> or <code>multi_prompt</code> is required.
+- <code>multi_prompt</code>: shots as <code>[{prompt, duration}]</code>. The video's length is the sum of the shot durations.
+- <code>elements</code>: up to 7 characters or objects.
+  - Each element has <code>frontal_image_url</code>, <code>reference_image_urls</code> (1–3 other angles), <code>voice_id</code>, or <code>video_url</code>.
+  - <code>video_url</code> is 3–8.05 s, ≥ 700 × 700 px, 24–60 fps, used instead of the images.
+  - Up to 3 elements may carry a voice and up to 3 may be video elements.
+- <code>image_urls</code>: up to 10.
+- <code>video_urls</code>: up to 5, each 3–30 s, 30 s combined with the element videos.
+- <code>voice_ids</code>: up to 3, counting voices bound to elements.
+- Frames: <code>start_image_url</code>, <code>middle_image_urls</code> (≤ 8) and <code>end_image_url</code>.
+- <code>duration</code>: integer 3–30, default 5.
+- <code>resolution</code>: 720p or 1080p, default 1080p.
+- <code>aspect_ratio</code>: auto, 16:9, 9:16, 1:1 or 21:9, default 16:9.</p>
+<p><strong>No audio file goes in.</strong> The voice enters as a <code>voice_id</code> made by <strong><code>fal-ai/kling-video/create-voice</code></strong>:
+- input <code>voice_url</code>: an mp3, wav, mp4 or mov of 5–30 s of one clean voice;
+- output <code>voice_id</code>;
+- price not always readable. Read it before the first call on the model page (fal.ai/models/fal-ai/kling-video/create-voice). If it isn't shown, tell the user the price is unknown (it is a one-off per voice) and ask.</p>
+<p>create-voice can come back empty with no error: check that a <code>voice_id</code> came back before building on it.</p>
+<p><strong>Same family:</strong> <code>kling/v4/image-to-video</code> ($0.157/s; <code>start_image_url</code> required, plus <code>end_image_url</code>, <code>middle_image_urls</code> and <code>multi_prompt</code>), and Kling v4 text-to-video and edit routes. Check their prices on the day.</p>
+<h2>10. What a 2-minute reel costs (list prices, October 2026)</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Voice takes: ~1,500 characters × 3 seeds × $0.08/1k</td>
+<td>$0.36</td>
+</tr>
+<tr>
+<td>Presenter still: one Seedance clip, 4 s at 1080p (once per set)</td>
+<td>$4.66</td>
+</tr>
+<tr>
+<td>Host clips: 4 lines × 5 s × $0.16/s (H3 Max Lip Sync, 1080P)</td>
+<td>$3.20</td>
+</tr>
+<tr>
+<td>B-roll: 5 FLUX 3 Max clips × 5 s × $0.29/s (1080p)</td>
+<td>$7.25</td>
+</tr>
+<tr>
+<td>Music: 2.5 min × $0.60/min</td>
+<td>$1.50</td>
+</tr>
+<tr>
+<td>SFX: 10 sounds × 2 s × $0.015/s, one sample each</td>
+<td>$0.30</td>
+</tr>
+<tr>
+<td>Scribe: every take</td>
+<td>cents</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>about $17</strong> (about $13 when the set's still already exists)</td>
+</tr>
+</tbody>
+</table>
+<p>Animation scenes are drawn in code and cost nothing. Promos lower the b-roll line.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>production-guide · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/production-guide">
+<meta property="og:type" content="website">
+<meta property="og:title" content="production-guide · fal 社区 Skills">
+<meta property="og:description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/production-guide">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="production-guide · fal 社区 Skills">
+<meta name="twitter:description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/reels-creator/references/production-guide.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Reels creator</h1>
+<p>A finished video with a presenter on camera:
+- their face and voice open it and close it, and come back in between only when the story needs a face;
+- animations drawn in code explain the ideas, each word landing as it is spoken;
+- generated footage shows the real world;
+- an end card closes it while the music resolves;
+- one mix holds it together.</p>
+<p>The presenter is the person the user names, who must have agreed to appear. The voice is the ElevenLabs voice id the user gives for the video: ask for it when the brief has none, and never pick one yourself.</p>
+<p>Reply in the user's language, briefly, results first. Show stills, sheets and clips, not scores.</p>
+<h2>Local runtime</h2>
+<ul>
+<li><strong>Models:</strong> use genmedia or the connected public fal MCP tools. Verify current
+  schemas, account access and prices; stay within the user's authorized budget.
+  If a price is unavailable, report that uncertainty instead of using a hidden
+  price assumption or treating the job as free.</li>
+<li><strong>Dependencies:</strong> check Python, Pillow, numpy, ffmpeg, Node and a supported
+  Chromium/Playwright installation. Follow the public package documentation for
+  missing dependencies. Save intermediate files in a persistent project folder.</li>
+<li><strong>Helper code</strong> is in this skill's <code>references/code/</code>. Copy the required files into the local project tools folder before use:</li>
+<li><code>host_lipsync.py</code>: the H3 Max Lip Sync inputs (<code>prep</code>) and each clip's <code>take_at</code> (<code>measure</code>);</li>
+<li><code>host_reel.py</code>: host clips played 1:1 with the take back on, captions, mix, MP4;</li>
+<li><code>host_check.py</code>: the finished video's host segments, picture against the clip and voice against the lips;</li>
+<li><code>wordtimes.py</code>;</li>
+<li><code>scene.html</code> (a seek(t) page; GSAP optional), <code>textkit.js</code> and <code>render.mjs</code> (page → MP4 through Playwright and ffmpeg): scenes;</li>
+<li><code>check.mjs</code> + <code>check.py</code>: stills, glyphs, centring;</li>
+<li><code>preview_mux.py</code>, <code>review_sheet.py</code>, <code>mix_check.py</code>, <code>sheet.py</code>.</li>
+<li><strong>Animation scenes</strong> are seek(t) HTML pages in plain JS, with GSAP when it helps, rendered frame by frame by <code>render.mjs</code>. This skill decides the look (design.md) and the exactness (animation-craft.md).</li>
+<li><strong>The final video</strong> is assembled by <code>host_reel.py</code>, because it puts the real voice on the presenter's lips and draws word-timed captions.</li>
+<li><strong>Project:</strong> keep the script, sources and decisions in local project files.</li>
+</ul>
+<h2>Router ()</h2>
+<table>
+<thead>
+<tr>
+<th>You need</th>
+<th>Read</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>What the animations should look like</td>
+<td>design.md, <strong>always, before the first frame</strong></td>
+</tr>
+<tr>
+<td>Building, checking and rendering scenes in the local workspace</td>
+<td>animation-craft.md</td>
+</tr>
+<tr>
+<td>A model, its inputs, its price</td>
+<td>models.md (re-read prices on the day)</td>
+</tr>
+<tr>
+<td>Script, voice takes, pronunciation, the presenter on camera, non-English videos</td>
+<td>voice-and-host.md</td>
+</tr>
+<tr>
+<td>Music, SFX, the mix</td>
+<td>sound.md</td>
+</tr>
+<tr>
+<td>Local workspace layout, the edit file, the final render, delivery</td>
+<td>assembly.md</td>
+</tr>
+<tr>
+<td>Something looks or sounds wrong</td>
+<td>pitfalls.md</td>
+</tr>
+</tbody>
+</table>
+<h2>Non-negotiables</h2>
+<p><strong>Money and permission</strong>
+- <strong>Cost before every paid step.</strong> Generate nothing paid until the user asked for that work, and show each paid step's cost before running it. The gates below say when.
+- <strong>Presenter lines:</strong> show them before rendering the presenter's mouth saying them. The language is fixed before the first host clip.
+- <strong>Picks:</strong> the user picks takes, looks and directions. Show options, briefly.
+- <strong>Publishing:</strong> post nothing anywhere unless the user asks for that exact post.</p>
+<p><strong>Content</strong>
+- <strong>Facts:</strong> every claim at its source's strength (web search, dated), and every number on screen with a dated source line. Current models only.
+- <strong>Scripts:</strong> plain declaratives built on facts. No teaser openers, negation runs or fragment triads (voice-and-host.md §1).
+- <strong>People:</strong> no public figures. Another person's face, or a voice cloned from a real person, needs that person's consent.
+- <strong>Generated footage:</strong> no logos and no text.</p>
+<p><strong>Shape</strong>
+- <strong>Host time:</strong> the presenter opens and closes the video. In between, the face comes back only when the story needs one. Host clips take about 15 % of the runtime or less (voice-and-host.md §1).
+- <strong>The ending:</strong> after the last line comes a 3–4 s end card in the video's own look, while the music resolves on a final chord. A video never ends on its last spoken word.</p>
+<p><strong>The presenter's face</strong>
+- <strong>Never retimed.</strong> Host clips play 1:1 at their own frame rate: no speed-up, slow-down, frame skip, frame blend or warp to fit the voice. The lips follow the take because the clip was made from it (voice-and-host.md §4).
+- <strong>Ask first</strong> before any change that alters how the presenter looks or sounds: a new route, a new default, a fallback.</p>
+<p><strong>Craft</strong>
+- <strong>The look is free and the slop is not.</strong> No palette, font or motion style is prescribed: each video finds its own (design.md). What's fixed:
+  - little text;
+  - no border-left or border-top accent bars;
+  - no grey card grids;
+  - no uppercase tracked labels;
+  - no fade-and-rise as the only motion;
+  - no template transitions.
+- <strong>The object explains:</strong> every scene has one thing whose movement makes the point.
+- <strong>Frame rate:</strong> a 24 fps master, with the animation scenes rendered at 24 fps. H3 Max, Seedance and FLUX clips are 24 fps, and a 30 fps cut repeats every 5th frame of them.
+- <strong>One shot is one unbroken take:</strong> no slow-motion stretch, restart, freeze or self-dissolve to fill time.
+- <strong>Exact text:</strong>
+  - glyphs covered;
+  - labels centred within ±2 px (<code>check.py</code> must end in ALL OK);
+  - counters show one value per frame.
+- <strong>The mix:</strong> −14 LUFS, true peak ≤ −1 dBFS, voice 15–25 dB over the bed. No whooshes, risers or shrill sounds.</p>
+<h2>Models (recommended; exact endpoint ids, inputs and prices in models.md)</h2>
+<table>
+<thead>
+<tr>
+<th>Job</th>
+<th>Model</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Voice</td>
+<td>ElevenLabs v4 TTS</td>
+<td>the voice id given for this video, stability 0.5, similarity 0.95, 3 seeds per line</td>
+</tr>
+<tr>
+<td>Presenter on camera</td>
+<td>H3 Max Lip Sync (image to video)</td>
+<td>the presenter still + the picked take padded to ≥ 5 s (<code>host_lipsync.py prep</code>); <code>resolution: "1080P"</code>, <code>enable_transcription: true</code>; ≈ $0.16/s; the clip is as long as the audio, 24 fps, and plays 1:1 (voice-and-host.md §4)</td>
+</tr>
+<tr>
+<td>Presenter still, once per set</td>
+<td>Seedance 2.5 US reference-to-video</td>
+<td>frame 0 of a short clip from the presenter's photos (≈ $1.16/s at 1080p); the user confirms the likeness first (voice-and-host.md §3)</td>
+</tr>
+<tr>
+<td>Real-life b-roll</td>
+<td>FLUX 3 Max (text, image or keyframes to video)</td>
+<td><code>resolution: "1080p"</code> (the default is 720p); its own sound becomes the ambience</td>
+</tr>
+<tr>
+<td>Everything else</td>
+<td>H3 Max (text or image to video)</td>
+<td><code>prompt_expansion_mode: "disabled"</code> (required); <code>resolution: "1080P"</code> (the default is 768P)</td>
+</tr>
+<tr>
+<td>SFX</td>
+<td>Mirelo SFX 2.0 (video-to-audio, text-to-audio, video-to-video)</td>
+<td><code>num_samples: 1</code>; video-to-audio makes 10 s unless <code>duration</code> is set; text-to-audio takes <code>prompt</code></td>
+</tr>
+<tr>
+<td>Word times</td>
+<td>ElevenLabs Scribe v2</td>
+<td>every take; save the JSON in the local workspace</td>
+</tr>
+<tr>
+<td>Music</td>
+<td>ElevenLabs Music v2.5</td>
+<td>a composition plan, one section per part of the edit</td>
+</tr>
+<tr>
+<td>Start frames</td>
+<td>Nano Banana Pro</td>
+<td>i2v starts</td>
+</tr>
+</tbody>
+</table>
+<p>These are where to start, not a cage. Pick another model when a shot needs it, and say why.</p>
+<h2>Workflow (every gate waits for the user)</h2>
+<ol start="0">
+<li><strong>Setup.</strong>
+   - Create a persistent local folder with a source manifest and notes.
+   - The presenter, who must have agreed: their character in Assets if there is one; otherwise ask for three photos: front, a second front, three-quarter.
+   - The voice: the ElevenLabs voice id the user gives for this video. Ask for it when the brief has none; never fall back to a voice on your own.</li>
+<li><strong>Brief.</strong> Ask only for what's missing: topic, audience, format (9:16 or 16:9), length, language, the presenter and the voice id.</li>
+<li><strong>Research.</strong> Web search, a dated source for every claim, and models and prices checked on the day.</li>
+<li><strong>Script, scene list and a whole-video cost estimate.</strong>
+   - Host hook, voice-over sections, host close, end card. A host line in the middle only where the story needs a face (voice-and-host.md §1).
+   - Per line: what the screen shows, and its one moving object. The end card's short line is on the list too.
+   - <code>tts</code> holds the spoken spelling; <code>text</code> holds the screen form.
+   - Save approved lines as a local JSON file so later steps can read them.
+   - <strong>Gate 1:</strong> the user approves the lines. That yes also covers the voice takes, which are cheap; say their cost. Then write the approved lines and the scene plan to <code>./project-work/script.json</code>, save it as an output, and read it from there in later turns.</li>
+<li><strong>Voice.</strong>
+   - Make the takes (3 seeds). Run Scribe on each and save its JSON next to the take in <code>./project-work/vo/</code>.
+   - Send them. <strong>Gate 2:</strong> the user picks.</li>
+<li><strong>Look.</strong> 2–3 directions as stills (<code>check.mjs</code>) on the same two scenes (design.md §6).
+   - <strong>Gate 3:</strong> the user picks or mixes.
+   - Then a short motion test of those two scenes with their takes (<code>preview_mux.py</code>).</li>
+<li><strong>Host clips.</strong> The presenter still first (once per set; show it, and the user confirms the likeness), then one H3 Max Lip Sync clip per host line from that still and the line's picked take (<code>host_lipsync.py prep</code>, voice-and-host.md §3–4). They go into the footage plan of step 7; afterwards <code>host_lipsync.py measure</code> gives each clip's <code>take_at</code> for the edit.</li>
+<li><strong>Footage.</strong> One plan covering the host clips and the b-roll, with costs. <strong>Gate 4:</strong> go.</li>
+<li><strong>Scenes.</strong>
+   - <code>wordtimes.py</code> gives each scene's word times and length.
+   - The end card is one more scene, 3–4 s long, with no words to time.
+   - Build one seek(t) page per scene from <code>scene.html</code>, with textkit for type and chips and GSAP where it helps.
+   - Take stills with <code>check.mjs</code>, run <code>check.py</code>, and look at them. Render each scene with <code>render.mjs --fps 24</code>, one scene per command.</li>
+<li><strong>Sound.</strong>
+   - Run <code>host_reel.py --plan</code> with the end card in the edit, and take the music's sections from it: the last section resolves over the card (sound.md §1).
+   - List each scene's few SFX: an object that lands, docks or settles gets its sound. They are part of the video; never skip them to save time.
+   - Price them. <strong>Gate 5:</strong> go. Then put the bed and the SFX into the edit.</li>
+<li><strong>Render once.</strong> Keep the inputs in the local project and run <code>host_reel.py</code> at the edit frame rate. Split large renders into scene segments if the local execution limit requires it. Then run <code>host_check.py</code> (every host segment 1:1 with its clip, the voice within ±20 ms of the lips), <code>review_sheet.py</code> and <code>mix_check.py</code>, and watch it, through the end card.</li>
+<li>
+<p><strong>Deliver.</strong> Give:</p>
+<ul>
+<li>the inspected MP4 through the client's normal file interface;</li>
+<li>the sheet;</li>
+<li>what's real and what's generated;</li>
+<li>the sources;</li>
+<li>the money spent;</li>
+<li>the deviations from the plan.</li>
+</ul>
+<p>Save the decisions to the local project notes.</p>
+</li>
+</ol></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -77,45 +77,29 @@
 <meta name="twitter:description" content="runway-dev-model-routers · Runway 官方 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
 <meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/runwayml-skills/">runwayml-skills</a><span class="crumb">/</span><span class="crumb">skills/runway-dev-model-routers/SKILL.md</span><button onclick="t()">🌓</button></nav>
-<main class="md"><div class="meta"><div class="m-name">runway-dev-model-routers</div><div class="m-desc">Build, modify, debug, or verify Runway Model Routers: inspect live config and eligible models via MCP, manage approved settings, integrate routed SDK calls, and inspect routing results. Use with +runway-dev. Not for direct per-model endpoints or agent REST CLI.</div><div class="m-src">源文件：<a href="https://github.com/runwayml/skills/blob/main/skills/runway-dev-model-routers/SKILL.md" target="_blank" rel="noopener">runwayml/skills/skills/runway-dev-model-routers/SKILL.md</a></div></div><h1>Runway Dev — Model Routers</h1>
-<blockquote>
-<p><strong>Companion:</strong> Use <code>+runway-dev</code> for shared guidance when available. If it is not installed, inspect the workspace, probe <code>RUNWAYML_API_SECRET</code> without printing it, and read current docs. Encourage connecting Dev MCP to inspect or manage router configs. If the user declines or cannot connect, continue integration from current docs and an existing <code>configId</code>.</p>
-</blockquote>
-<h2>Goal</h2>
-<p>Keep a Model Router and its application integration correct. Verify changes with one routed SDK call (<code>client.generate.{video|image|audio}.create({ configId, input })</code>) when safe.</p>
-<h2>MCP tools</h2>
-<ul>
-<li><code>list_model_routers</code> / <code>get_model_router</code> — find a router by <code>configId</code>, then inspect it using the returned record UUID.</li>
-<li><code>list_models</code> — inspect eligible models and capabilities.</li>
-<li><code>create_model_router</code> / <code>update_model_router</code> / <code>delete_model_router</code> — manage routers after user approval; updates replace the full configuration.</li>
-<li><code>get_credit_balance</code> — check budget before proposing credit ceilings or testing.</li>
-<li><code>get_task_routing</code> — explain which model handled an existing routed task.</li>
-</ul>
-<h2>New router</h2>
+<main class="md"><div class="meta"><div class="m-name">runway-dev-model-routers</div><div class="m-desc">Use when an application should send image, video, or audio generation through a saved Runway Model Router configuration, or when the user asks to inspect or manage one. Resolve the live config and follow current router docs. For a fixed direct model endpoint, use runway-dev-models instead.</div><div class="m-src">源文件：<a href="https://github.com/runwayml/skills/blob/main/skills/runway-dev-model-routers/SKILL.md" target="_blank" rel="noopener">runwayml/skills/skills/runway-dev-model-routers/SKILL.md</a></div></div><h1>Runway Dev Model Routers</h1>
+<p>Model Routers let an application refer to a saved routing preference instead of embedding a particular model choice. Consult <code>runway-dev</code> for account setup, credential handling, and SDK task guidance when that skill is installed.</p>
+<h2>Existing integration</h2>
 <ol>
-<li><code>list_models</code> across relevant endpoints — do not guess eligible models or capabilities.</li>
-<li><code>get_credit_balance</code> — understand budget before proposing credit ceilings.</li>
-<li>Propose: name, immutable <code>configId</code> slug, description, routing preference, model-list policy, capacity fallback, optional credit caps. <strong>Wait for user approval</strong> unless they supplied all fields.</li>
-<li><code>create_model_router</code>, then <code>update_model_router</code> for settings if needed.</li>
-<li>Validate the intended payload with HTTP <code>dryRun: true</code> before a billable generation; the SDK does not currently support dry runs.</li>
-<li>When billable verification is appropriate, make one routed SDK call with the wait helper chained directly from <code>create()</code>, then use <code>get_task_routing</code> to explain which model ran.</li>
+<li>Inspect the application's existing <code>configId</code> and its server-side request path.</li>
+<li>When the live configuration or access must be verified, use Dev MCP to locate the router by <code>configId</code>, then fetch details using the identifier returned by the tool. A router record UUID and its <code>configId</code> are distinct values; pass the configured <code>configId</code> in SDK requests.</li>
+<li>Read the current overview and generation guide at <code>https://docs.dev.runwayml.com/model-routers/</code> and <code>https://docs.dev.runwayml.com/model-routers/generating/</code>. Router request fields and types differ from direct-model endpoints; use the schema for the modality being called.</li>
+<li>Integrate the documented SDK method (<code>generate.video</code>, <code>generate.image</code>, or <code>generate.audio</code>) behind the application's server boundary. Chain the SDK task wait helper directly from <code>create()</code>.</li>
+<li>For a non-billable routing check, the current API supports HTTP <code>dryRun: true</code>; SDK dry-run support is not documented. Keep the dry-run and eventual live input equivalent, and use current docs for response fields. Do not issue the live call unless the user requested or approved billable verification.</li>
 </ol>
-<h2>Existing router</h2>
-<ol>
-<li>Use <code>list_model_routers</code> to resolve the application's <code>configId</code> slug to a router record, then call <code>get_model_router</code> with its UUID.</li>
-<li>Clarify integration goal (wire into app vs test call).</li>
-<li>Implement the routed generate call behind the application's server boundary per https://docs.dev.runwayml.com/model-routers.md, chaining the SDK wait helper directly from <code>create()</code>.</li>
-<li>Validate the same payload with HTTP <code>dryRun: true</code> before any billable verification.</li>
-<li>After an approved live test, use <code>get_task_routing</code> to confirm which model ran.</li>
-</ol>
-<h2>Terminology</h2>
+<h2>Creating or changing a router</h2>
+<p>Use live MCP tools to inspect or manage router state. Clarify missing targets or routing preferences; when the user has specified them, carry out the requested creation or update without requiring another confirmation or a JSON preview. Summarize the result in plain English unless the user asks for raw configuration.</p>
+<p>Updating <code>settings</code> replaces the full settings object and clears omitted optional fields. Read the current configuration before updating it and preserve settings the user did not ask to change. Updating only <code>name</code> or <code>description</code> leaves settings unchanged. Confirm before deleting a router unless the user already explicitly requested deletion of that exact router.</p>
+<p>Check current eligible models and constraints through Dev MCP when they affect the configuration. Do not hardcode a model catalog, pricing, or model eligibility in this skill. Check project credit balance immediately before an approved billable test.</p>
+<p>Use the available MCP tools for the requested action: <code>list_model_routers</code> and <code>get_model_router</code> for inspection; <code>create_model_router</code>, <code>update_model_router</code>, or <code>delete_model_router</code> for changes; <code>list_models</code> for current eligible models; <code>get_credit_balance</code> before an approved billable test; and <code>get_task_routing</code> to inspect an existing task's routing.</p>
+<h2>Explain a routed result</h2>
+<p>The response and task detail can expose routing information such as the selected model and estimated or actual cost. Use the live response or documented task inspection tool to describe what happened; do not assume the router chose a model based only on its preference settings. If the user asks why an existing task routed a certain way, inspect its routing details through the available MCP tool.</p>
+<h2>Current docs</h2>
 <ul>
-<li>Router record <strong>id</strong> (UUID) ≠ <strong>configId</strong> (immutable slug used in SDK <code>configId</code> field).</li>
-</ul>
-<h2>Docs</h2>
-<ul>
-<li>https://docs.dev.runwayml.com/llms.txt (model routers section)</li>
-<li>https://docs.dev.runwayml.com/model-routers.md</li>
+<li><a href="https://docs.dev.runwayml.com/model-routers/">Model Routers overview</a></li>
+<li><a href="https://docs.dev.runwayml.com/model-routers/generating/">Generating through a Router</a></li>
+<li><a href="https://docs.dev.runwayml.com/model-routers/configuration/">Configure a Router</a></li>
+<li><a href="https://docs.dev.runwayml.com/ai-context.md">Runway Dev agent context</a></li>
 </ul></main>
 <footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
 <script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

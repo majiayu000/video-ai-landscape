@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>voice-and-host · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="voice-and-host · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/voice-and-host">
+<meta property="og:type" content="website">
+<meta property="og:title" content="voice-and-host · fal 社区 Skills">
+<meta property="og:description" content="voice-and-host · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/voice-and-host">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="voice-and-host · fal 社区 Skills">
+<meta name="twitter:description" content="voice-and-host · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/reels-creator/references/voice-and-host.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Script, voice and the presenter on camera</h1>
+<h2>1. The script</h2>
+<p><strong>Shape.</strong> A presenter-led video is mostly voice-over over scenes. The presenter's face frames it.
+- <strong>The hook:</strong> the presenter on camera, 1–2 sentences. It states the question or the surprising fact.
+- <strong>Sections:</strong> voice-over, one idea each, each with its scene (an animation or b-roll).
+- <strong>The presenter in the middle, only when needed:</strong> a verdict or a personal judgement the pictures can't carry, or the turn between the two halves of a long video. Never out of habit between sections.
+- <strong>The close:</strong> the presenter's last line: the verdict or the one takeaway. At most one question, and only as the very last spoken line.
+- <strong>The end card:</strong> 3–4 s after the close (below). The video never ends on its last spoken word.
+- <strong>Lengths:</strong> ask for one. Without an answer, propose 90–150 s for a 9:16 reel and about 2 min for a 16:9 explainer. Plan 4–7 b-roll clips or scenes per 30 s of voice-over.</p>
+<p><strong>How much presenter.</strong> A face in the hook keeps viewers watching; too many appearances in between slow the story down. Keep host clips to about 15 % of the runtime or less:
+- a reel under 45 s: the hook and the close only, one short sentence each;
+- up to about 2 min: the hook, the close, and at most one appearance in the middle;
+- longer: at most two in the middle.</p>
+<p><strong>The end card.</strong>
+- One more animation scene in the video's own look (design.md), 3–4 s, placed as a <code>card</code> segment after the last line (assembly.md §1).
+- It shows the video's main object, or the ground it ended on, at rest, plus one short line: the takeaway in at most six words, or the user's handle or channel name when they gave one.
+- Optionally, a small "Follow for more" in the video's language under that line. Set it quiet, in the card's own type: not a button, a badge or an animated arrow. Never invent a handle, a URL or any other call to action.
+- It moves: the object settles and the line lands within the first second, then a slow drift carries the rest. A still image would be a freeze.
+- No voice and no captions. The music resolves on a final chord over it (sound.md §1). At most one soft SFX, as the object settles.</p>
+<p><strong>Writing.</strong> Use plain declaratives built on checked facts, numbers and dates. Run this device list over every line before showing it:
+- <strong>Teaser openers:</strong> "Nothing you're about to see ever happened." Start on the first fact instead.
+- <strong>Negation runs and fragment triads:</strong> "This cat doesn't exist. Neither does this dog." / "No camera. No actors. No set." Say what happened.
+- <strong>"Not X but Y" and maxim closers:</strong> a second sentence that repeats the first as a slogan. Cut it, unless both halves are facts the video established.
+- <strong>The straw man:</strong> "It's tempting to think X. It isn't." If someone really held the wrong belief, name who and when.
+- <strong>Aphorisms, PR closers and taglines</strong> with no fact in them. At most one closing line, built from the video's own material.
+- <strong>Reveal punchlines and payoff fragments:</strong> "Now there is." Explain in full sentences instead.
+- <strong>Hype words and "imagine":</strong> amazing, incredible, surprising, picture this. Give the fact with its number instead.
+- <strong>Stacked rhetorical questions:</strong> one question at most, and never before the first fact.
+- <strong>Meta and agenda lines:</strong> "In this video I'll…". Start on the first real fact or action.
+- <strong>Disclaimers:</strong> no "made with AI" line unless the user asks for one.
+- <strong>Determination filler:</strong> "they never gave up". Let a fact carry the effort.</p>
+<p><strong>Facts.</strong>
+- Research on the day, and put the sources (URLs with the date read) in <code>script.json</code>.
+- Say each fact at its source's strength. A number on screen needs its source line in the scene.
+- No praise for a company or product unless the user asks for it; let the facts speak.</p>
+<p><strong><code>text</code> and <code>tts</code>.</strong>
+- <code>text</code> is the screen and caption form ("2019", "84%").
+- <code>tts</code> is what the voice reads ("twenty nineteen", "eighty-four percent", a name respelled the way it is said).
+- <code>host_reel.py</code> maps the captions back to <code>text</code> through difflib.</p>
+<p><strong>The script</strong> as one JSON document in the project (the line ids become the edit's <code>lines</code>; save it in the local workspace as <code>./project-work/script.json</code>):</p>
+<pre><code class="language-json">{&quot;voice&quot;: &quot;&lt;ElevenLabs voice id&gt;&quot;, &quot;language_code&quot;: &quot;en&quot;, &quot;stability&quot;: 0.5, &quot;similarity_boost&quot;: 0.95, &quot;seeds&quot;: [101, 202, 303],
+ &quot;topic&quot;: &quot;…&quot;, &quot;sources&quot;: [&quot;https://… (read &lt;date&gt;)&quot;, …],
+ &quot;lines&quot;: [{&quot;id&quot;: &quot;H1&quot;, &quot;kind&quot;: &quot;host&quot;, &quot;text&quot;: &quot;Honey sealed in a jar can stay edible for centuries.&quot;},
+           {&quot;id&quot;: &quot;V1&quot;, &quot;kind&quot;: &quot;vo&quot;, &quot;text&quot;: &quot;Its water content is about 17%.&quot;, &quot;tts&quot;: &quot;Its water content is about seventeen percent.&quot;}, …]}
+</code></pre>
+<p><strong>Approval (gate 1).</strong> Show the lines with the scene list (per line, what the screen shows) and the whole video's estimated cost. Make no takes before the user says yes. The presenter's lines especially need approval, because the presenter's own mouth will say them.</p>
+<h2>2. Voice takes</h2>
+<ul>
+<li><strong>Takes:</strong> one <code>fal-ai/elevenlabs/tts/eleven-v4</code> call per line and seed (101, 202, 303): <code>text</code> = the line's <code>tts</code> (or <code>text</code>), <code>voice</code>, <code>stability</code> 0.5, <code>similarity_boost</code> 0.95, <code>language_code</code>, <code>seed</code>, <code>output_format</code> <code>mp3_44100_192</code>. The cost is $0.08 per 1,000 characters × 3.</li>
+<li><strong>Files:</strong> download each take into the local workspace as <code>./project-work/vo/&lt;id&gt;_s&lt;seed&gt;.mp3</code>.</li>
+<li><strong>Scribe:</strong> one call per take (<code>language_code</code> <code>eng</code>, <code>tag_audio_events</code> true, <code>diarize</code> false). Save the result JSON as <code>./project-work/vo/&lt;id&gt;_s&lt;seed&gt;.scribe.json</code>. <code>host_reel.py</code> and <code>wordtimes.py</code> read these files.</li>
+</ul>
+<p><strong>Settings.</strong>
+- The voice is the ElevenLabs voice id given for this video, with stability 0.5 and similarity 0.95. Fix <code>language_code</code> now.
+- No <code>[softly]</code> or whisper tags: they sound affected. A light <code>[curious]</code> is the most a narrator gets.
+- <strong>Accent:</strong> when a cloned voice reads with an accent the user doesn't want, an Eleven v4 audio tag at the start of <code>tts</code> steers it (<code>[American accent]</code>, <code>[British accent]</code>…). Keep the tag out of <code>text</code> and the captions, and run Scribe on the first take to make sure the tag isn't read aloud before recording the rest.</p>
+<p><strong>Picking (gate 2).</strong>
+- Send the takes as one numbered clip or a few files, and the user picks.
+- Measure first:
+  - Scribe text against the script, to catch dropped or added words;
+  - length: the faster take is not automatically better.</p>
+<p><strong>Names and brand words.</strong>
+- Respell them in <code>tts</code> until they sound right. IPA between slashes (<code>/ˈnaɪki/</code>) works in Eleven v4, but at the start of a sentence it can add an odd pause: use a plain respelling there.
+- Let the user hear every brand instance in context, in one numbered clip, <strong>before paying for host clips</strong>.</p>
+<h2>3. The presenter and the set</h2>
+<p><strong>Identity.</strong>
+- The presenter's character in Assets if there is one. Otherwise ask for three photos: front, a second front and a three-quarter view.
+- Keep what the presenter wears on camera (glasses, clothes) the same across the video.</p>
+<p><strong>The presenter still.</strong> H3 Max Lip Sync animates one still (§4), so the room, the light, the clothes and the framing are the still's, and every host line made from it matches.
+- <strong>One per set, made once:</strong> the presenter in the set, mouth closed, eyes open, looking into the lens, framed for the format (9:16: head and shoulders in the upper half, a plain area below where the captions sit; design.md §2). Keep it as <code>./project-work/refs/&lt;set&gt;_still.jpg</code>, saved as an output, and reuse it for every host line in that set.
+- <strong>Strongest likeness:</strong> frame 0 of a Seedance 2.5 US reference-to-video clip made from the presenter's three photos and the set described in words (desk, lamp light, bookshelf, clothes), taken before the model starts to speak (models.md §9; 4 s at 1080p is about $4.70, once per set).
+- <strong>Cheaper:</strong> a Nano Banana Pro still from the same photos ($0.15). Likeness varies more; compare it with the photos.
+- <strong>The user's yes first:</strong> whichever way it was made, show the still and get a yes on the likeness before the first lip-sync clip.
+- <strong>A little variety:</strong> another frame of the same Seedance clip, mouth closed, gives a host line a slightly different pose in the same set.</p>
+<p><strong>Third parties.</strong> Never show public figures. Any other real person, and any voice cloned from one, needs that person's consent. Stock ElevenLabs voices need none.</p>
+<p><strong>Language.</strong> Lip-sync makes host clips language-specific, so the language is fixed before the first paid clip.</p>
+<h2>4. The presenter on camera: H3 Max Lip Sync with the voice take</h2>
+<p><code>minimax/h3-max/lip-sync/image-to-video</code> animates the presenter still (§3) so that the presenter says the picked take. The lips are made from the take itself, so nothing is retimed in assembly: the clip plays 1:1 and the take goes back on where it sits.
+- <strong>Audio:</strong> <code>python3 tools/host_lipsync.py prep vo/H1_s101.mp3 refs/set_still.jpg clips/H1</code> (from <code>./project-work</code>) places the take's speech (from 0.04 s before its first sound to 0.12 s after its last) at 0.30 s, adds 0.40 s of silence and pads to the model's 5 s minimum. The level is untouched. The clip lasts exactly as long as this audio.
+- <strong>Inputs:</strong> <code>image_url</code> (the still; aspect ratio 0.4–2.5), <code>audio_url</code> (that wav), <code>resolution: "1080P"</code> (the default is 768P), <code>enable_transcription: true</code> (the model transcribes the audio to guide the lips). There is no prompt.
+- <strong>Output:</strong> 1080×1920 from a 9:16 still, 24 fps, as long as the audio. The head, the eyes and the hands move naturally, the mouth closes in the take's pauses, and the set stays the still's. The clip's sound is the wav resampled to 32 kHz: the mix uses the take itself.
+- <strong>Price:</strong> about $0.16/s at 1080P (the pricing API can show 0 while a model is in early access; never quote 0), so about $0.80 for a 5 s line. Past 15 s each second costs 1.2×.
+- <strong>Into the edit:</strong> <code>python3 tools/host_lipsync.py measure vo/H1_s101.mp3 clips/H1.mp4 H1</code> cross-correlates the clip's sound with the take. It prints <code>take_at</code>, where the take's 0 s sits in the clip (0.30 − (first sound − 0.04), usually 0.20–0.29 s), with a correlation of at least 0.98 (lower means the clip isn't that take), and the host segment for the edit: <code>{"kind": "host", "line": "H1", "clip": "clips/H1.mp4", "take_at": 0.28, "lead": 0.12, "tail": 0.25, "push": 0.03}</code>. host_reel.py plays the clip 1:1 (<code>"sync": "clip"</code>, the default) and puts the take back on at <code>take_at</code>.
+- <strong>Check:</strong> run <code>host_check.py</code> on the finished video (assembly.md §3). Each host segment's picture is compared with its clip (r ≈ 0.99, no frame off) and the voice with the clip's own sound (within ±20 ms). Then watch every host segment at full size: lips, identity, hands.
+- <strong>A closed mouth in a pause is right.</strong> An automatic video analysis can call the mouth closing in the take's pauses a "jump". Look at the take's level there before regenerating a clip.
+- <strong>Language:</strong> the lips follow whatever language the take speaks; nothing else to set.</p>
+<p><strong>Never retime the presenter's face.</strong> No speed-up, slow-down, frame skip, frame blend or warp to fit a voice. A retimed face reads as broken video and loses the voice's own rhythm. Anything that changes how the presenter looks or sounds waits for the user's yes.</p>
+<p><strong>Other lip-sync routes</strong> (models.md §9) need the user's yes, like any change to how the presenter looks or sounds. Before using one, make a single line with it and check its output frame rate and size: a clip that isn't 24 fps repeats or drops frames in the master, and the face is where that shows. A reference-to-video model given the take as an audio reference (Seedance's <code>@Audio1</code>) re-performs the line at its own tempo, so the take can't sit on its lips; use it for presenter stills (§3).</p>
+<h2>5. Host segment keys (the edit)</h2>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>What it does</th>
+<th>Used</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>take_at</code></td>
+<td>where the take's 0 s sits in the clip, from <code>host_lipsync.py measure</code></td>
+<td>required</td>
+</tr>
+<tr>
+<td><code>lead</code> / <code>tail</code></td>
+<td>seconds kept before the take's first sound and after its last</td>
+<td>0.12 / 0.25 (0.4–0.6 on the last host clip: a breath before the end card)</td>
+</tr>
+<tr>
+<td><code>push</code></td>
+<td>slow zoom-in across the segment, with a sub-pixel crop (whole-pixel steps make the face jump every few frames)</td>
+<td>0.03</td>
+</tr>
+<tr>
+<td><code>sync</code></td>
+<td><code>"clip"</code>: the clip plays 1:1 and the take goes on at <code>take_at</code>. <code>"video"</code> and <code>"audio"</code> are for clips that re-voiced the line: they retime the face or cut the take, so they need the user's yes</td>
+<td><code>"clip"</code>, the default</td>
+</tr>
+</tbody>
+</table>
+<p>The plan ends with the cut check: every voice cut, b-roll ones too, must fall in a real pause of its take, because Scribe marks word starts 0.01–0.11 s after the sound begins. A <code>CUT</code> line is a cut inside a word or inside connected speech; fix it before rendering (at a b-roll join, move the line's <code>words</code> split to a word followed by a real pause). A host segment in clip mode never cuts its take.</p>
+<h2>6. Non-English videos</h2>
+<p>Everything above holds, with these settings:
+- The script: the language's <code>language_code</code> (<code>"de"</code>, <code>"es"</code>, <code>"tr"</code>…). Respell foreign words the way the language would say them, write a lone letter out as a word, and listen to every name.
+- Scribe with the language's code for the takes.
+- The host clips are made from those takes (§4); nothing else changes for them.
+- Captions: <code>"caption_func_words"</code> in the edit lists the language's function words (its words for and, with, a, this…), so no phrase ends on one (assembly.md §1). Check that the caption font has every letter the language uses (for example İ and ı in Turkish, ł and ż in Polish, ő and ű in Hungarian).
+- Scene pages: run <code>check.py</code> on every string. Some display faces lack accented capitals.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

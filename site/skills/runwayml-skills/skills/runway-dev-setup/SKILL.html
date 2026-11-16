@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>runway-dev-setup · Runway 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="runway-dev-setup · Runway 官方 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/runwayml-skills/skills/runway-dev-setup/SKILL">
+<meta property="og:type" content="website">
+<meta property="og:title" content="runway-dev-setup · Runway 官方 Skills">
+<meta property="og:description" content="runway-dev-setup · Runway 官方 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/runwayml-skills/skills/runway-dev-setup/SKILL">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="runway-dev-setup · Runway 官方 Skills">
+<meta name="twitter:description" content="runway-dev-setup · Runway 官方 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/runwayml-skills/">runwayml-skills</a><span class="crumb">/</span><span class="crumb">skills/runway-dev-setup/SKILL.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><div class="meta"><div class="m-name">runway-dev-setup</div><div class="m-desc">Use when the user installs or starts using Runway Dev, needs to sign in or create a Developer Portal account, connect Dev MCP, verify account/project access, or finish setup after a developer_not_found error. Guide the user through the browser steps and continue with the task once setup succeeds.</div><div class="m-src">源文件：<a href="https://github.com/runwayml/skills/blob/main/skills/runway-dev-setup/SKILL.md" target="_blank" rel="noopener">runwayml/skills/skills/runway-dev-setup/SKILL.md</a></div></div><h1>Set up Runway Dev</h1>
+<p>Guide the user from plugin installation to a connected Developer Portal account. This skill is included with the plugin; use it directly and do not install or fetch a duplicate copy.</p>
+<p>First check whether the bundled Runway Dev MCP is already connected. If <code>whoami</code> succeeds, skip sign-in and continue with project selection. If the server is configured but needs authentication, use the host's connection flow rather than adding another server entry.</p>
+<h2>1. Sign in or create an account</h2>
+<p>Ask whether the user already has a Runway Dev account only if that is not clear from the conversation. Send them to the <a href="https://dev.runway.com/">Runway Dev Developer Portal</a>: they can sign in with an existing account or create one there. Let the user complete any sign-up, verification, and consent steps themselves in their browser. Do not automate the browser authentication or create an account on the user's behalf.</p>
+<p>If they are building an application integration, explain that Developer Portal access alone does not configure the application. They may need to select or create a project and create a project API key in the portal. Follow <a href="https://docs.dev.runwayml.com/guides/setup/">API setup</a> for current project and key steps. Do not request that the user paste the key into chat.</p>
+<h2>2. Connect Dev MCP</h2>
+<p>Connect the host to <code>https://dev.runwayml.com/mcp</code> using the host's documented MCP setup at <a href="https://docs.dev.runwayml.com/guides/mcp/">Connect Runway Dev</a>. MCP uses browser OAuth. The application SDK uses a separate project API key; never put that key in MCP configuration.</p>
+<p>If the MCP server is not configured, help add it using the exact configuration format documented for the user's host. Do not assume every host supports the same plugin-install flow or command. If the host is unknown, link the connection guide and ask which host they are using before editing host-specific config.</p>
+<p>When prompted, have the user complete Runway OAuth in their normal browser, return to the same agent session, and retry the MCP check. Never ask for their Runway password, OAuth code, or API key.</p>
+<p>For the Codex CLI, run <code>codex mcp login runway-dev</code> after installing the plugin to authenticate its bundled connection. Credentials are associated with the configured MCP connection, so signing in through a separately named test entry does not authenticate the bundled server.</p>
+<h2>3. Confirm the account and project</h2>
+<p>After OAuth completes, call <code>whoami</code> and report the connected Developer Portal email or identity shown by the tool. If the user has an app to connect, call <code>list_projects</code> and let them choose among accessible projects. Do not guess or silently select a project when there are multiple candidates.</p>
+<p>If the user has no project, direct them to create or select one in the Developer Portal, then call <code>list_projects</code> again. Do not invent a project-creation MCP tool or call a REST endpoint as a substitute.</p>
+<h2>4. Recover account setup errors</h2>
+<p>If MCP returns HTTP 403 with the explicit <code>developer_not_found</code> error, the OAuth identity is valid but its Developer Portal setup is incomplete. Use <code>signup_url</code> from the error response for a new account and <code>login_url</code> for an existing account. Older server versions may return only <code>login_url</code>; use that link and the current account-setup guide. Show the applicable link and let the user complete setup in their browser. Then have them retry or reconnect Runway Dev in the same coding client, call <code>whoami</code> again, and call <code>list_projects</code> if the task needs a project.</p>
+<p>Do not replace the error's supplied signup/login URL with a guessed account path, infer missing account state from another tool's output, create credentials, change OAuth scopes, or try alternate identity endpoints. If the same error remains after the user reconnects, stop the MCP-dependent action and report the exact blocker. Continue any work that can proceed from public docs and existing application configuration.</p>
+<h2>5. Configure the application key only when needed</h2>
+<p>For SDK integration work, check whether <code>RUNWAYML_API_SECRET</code> is configured without printing its value. If not, direct the user to create a project key in Developer Portal and store it in the app server's environment or secret manager. Keep the key server-side and out of browser bundles, chat, source control, and MCP config. A key is not required merely to connect MCP.</p>
+<h2>Links</h2>
+<ul>
+<li><a href="https://docs.dev.runwayml.com/guides/mcp/">Runway Dev account and MCP setup</a></li>
+<li><a href="https://docs.dev.runwayml.com/guides/setup/">Project and API key setup</a></li>
+<li><a href="https://docs.dev.runwayml.com/guides/go-live/">Runway Dev API security guidance</a></li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

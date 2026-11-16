@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sound · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="sound · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/sound">
+<meta property="og:type" content="website">
+<meta property="og:title" content="sound · fal 社区 Skills">
+<meta property="og:description" content="sound · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/sound">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="sound · fal 社区 Skills">
+<meta name="twitter:description" content="sound · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/reels-creator/references/sound.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Sound: voice first, then the bed, then a few effects</h1>
+<p><strong>The voice carries the video.</strong> Everything else sits under it and never competes.</p>
+<p><strong>Targets for the finished mix</strong> (<code>host_reel.py</code> mixes to them; <code>mix_check.py</code> measures them):</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Integrated loudness</td>
+<td>−14 LUFS</td>
+</tr>
+<tr>
+<td>True peak</td>
+<td>≤ −1 dBFS (loudnorm at −1.5)</td>
+</tr>
+<tr>
+<td>Voice over the bed</td>
+<td>15–25 dB (RMS while speaking vs in the pauses)</td>
+</tr>
+</tbody>
+</table>
+<h2>1. Music bed</h2>
+<p><strong>Score it to the cut, not the other way round.</strong>
+1. Run <code>host_reel.py --plan</code> first, with the end card already in the edit. The segment starts become the sections: intro, each scene, each host appearance, the close, the end card.
+2. Write <code>music.json</code> with one section per part, each with a mood that fits its picture.
+3. Call <code>elevenlabs/music/v2.5</code> with a composition plan of one chunk per section:
+   - <code>{text: "[name]", duration_ms, positive_styles, negative_styles, context_adherence: "high"}</code>;
+   - the first chunk carries the global styles plus its mood;
+   - later chunks carry their mood, "flows continuously from the previous section with no pause and no hard stop", and the same instruments, key and tempo;
+   - the last chunk is the end card's: its positive styles add "resolves to the home chord" and "ends on a final held chord that rings out", and it bans an abrupt ending and a fade-out; the others ban endings, final chords and fades;
+   - <code>output_format</code> is <code>mp3_48000_192</code>.
+   It costs $0.60 a minute: say the cost first (Gate 5).</p>
+<p><strong>Instruments:</strong>
+- <strong>Use</strong> warm acoustic or soft electric: felt piano, upright or soft electric bass, brushed kit, strings, pizzicato, soft pads that breathe.
+- <strong>Never use</strong> synth leads, hi-hat rolls, risers, whooshes, cymbal swells, or bright ringing tones. They read as shrill and digital, above all on phone speakers.
+- Put the bans in <code>global_neg</code>.</p>
+<p><strong>Behaviour:</strong>
+- The music never cuts to silence mid-scene. It flows across sections: every later chunk says "flows continuously" and repeats the anchor.
+- <strong>It ends on a resolution, with the video.</strong> The last section is the end card's: a short cadence to the home chord, then a final held chord that rings out to the end of the video. Only that chunk may end; the ones before it ban endings and fades (step 3 above).
+- The bed comes back up by itself once the voice stops, and the card's <code>"music_db"</code> lifts it further (−14 over a bed at −20), so the ending is heard. Never fade the music out under the last word: the video then has no close.</p>
+<p><strong>In the edit:</strong> <code>"music": {"file": "audio/bed.mp3", "from": 0, "db": -20, "duck_db": -25, "fade_in": 0.4, "fade_out": 1.0}</code>. The bed ducks under the voice by itself. <code>fade_out</code> only softens the last second of the ring-out.</p>
+<h2>2. Clip sound</h2>
+<ul>
+<li><strong>FLUX 3 Max clips</strong> come with their own sound (<code>generate_audio</code> defaults to true). host_reel keeps it as ambience: <code>ambience_db</code> −14 and <code>duck_db</code> −24 for 16:9, −12 and −22 for 9:16.</li>
+<li><strong>Host clips' audio is discarded.</strong> An H3 Max Lip Sync clip carries the take resampled to 32 kHz; the mix uses the take itself (voice-and-host.md §4).</li>
+<li><strong>H3 Max clips:</strong> their own audio track is seldom what a scene needs. Prefer Mirelo for their sound.</li>
+<li><strong>A b-roll clip with no or wrong sound:</strong> use Mirelo <code>video-to-audio</code>.</li>
+<li>Set <code>duration</code> to the clip's length (the default is 10 s), <code>num_samples: 1</code>, a <code>text_prompt</code> naming off-screen sounds, and a <code>negative_prompt</code> such as "music, whoosh, riser, swell, bright ring".</li>
+<li>Or use <code>video-to-video</code> to get the clip back with its sound mixed in.</li>
+</ul>
+<h2>3. SFX for animation scenes</h2>
+<p><strong>Few and soft.</strong> A scene can carry one or two sounds that belong to its objects:
+- a soft tick as a chip lands;
+- a paper slide as a card docks;
+- a low thud as a big number settles.</p>
+<p>No sound on every label, and none on the circle reveals.</p>
+<p><strong>Make them:</strong>
+- Mirelo <code>text-to-audio</code> with <code>prompt</code> (not <code>text_prompt</code>), a short <code>duration</code>, <code>num_samples: 1</code> (or 2 when the user wants a choice), and the same negative prompt.
+- Or Mirelo <code>video-to-audio</code> on the rendered scene MP4, with a <code>text_prompt</code> naming the actions. It finds the motion by itself.</p>
+<p><strong>Screen them</strong> by ear and by spectrum (ffmpeg <code>showspectrumpic</code> in the local workspace). Reject sweeps (a rising or falling band) and bright, ringing highs.</p>
+<p><strong>Place them</strong> in the edit's <code>sfx</code> list, at segment-relative times taken from the scene's own timeline (<code>wordtimes.py</code> and the scene's seek times):</p>
+<pre><code class="language-json">&quot;sfx&quot;: [{&quot;file&quot;: &quot;sfx/chip_tick.wav&quot;, &quot;seg&quot;: 3, &quot;at&quot;: 4.62, &quot;db&quot;: -20}, {&quot;file&quot;: &quot;sfx/dock.wav&quot;, &quot;seg&quot;: 5, &quot;at&quot;: 13.40, &quot;db&quot;: -18, &quot;duck&quot;: true}]
+</code></pre>
+<h2>4. Checks</h2>
+<pre><code class="language-bash">python3 ./project-work/tools/mix_check.py ./project-work/out/Video.mp4 ./project-work/out/Video_plan.json          # voice vs pauses, LUFS, true peak
+python3 ./project-work/tools/review_sheet.py ./project-work/out/Video.mp4 ./project-work/out/Video_plan.json ./project-work/out/Video_sheet.jpg
+</code></pre>
+<p>Then listen to the whole video once, from start to end:
+- the first word of each host appearance;
+- the music under the first scene after a cut;
+- every SFX in context;
+- the ending: the card plays out and the music resolves on it, with no fade under the last word and no hard stop.</p>
+<p>Numbers don't catch a shrill sound; ears do.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

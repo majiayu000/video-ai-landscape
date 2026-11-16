@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>song · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="song · Higgsfield 官方 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-faceless-video/references/song">
+<meta property="og:type" content="website">
+<meta property="og:title" content="song · Higgsfield 官方 Skills">
+<meta property="og:description" content="song · Higgsfield 官方 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-faceless-video/references/song">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="song · Higgsfield 官方 Skills">
+<meta name="twitter:description" content="song · Higgsfield 官方 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-faceless-video/references/song.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Sung children's video</h1>
+<p>Use this mode for an explicitly requested sung kids song or music video. A background-music request alone does not select it. Validate the original requested duration before all paid generation; only 60 or 120 seconds is supported. Ask for an explicit supported choice if another duration was requested. Never replace a song with narration or silently shorten it. The song is the only voice and music track. Captioning singing is not supported by this workflow; if captions are required, explain that before generation.</p>
+<pre><code class="language-bash">python3 &quot;$SKILL_DIR/scripts/validate_song_prompt.py&quot; --duration-seconds &quot;$REQUESTED_SECONDS&quot; --duration-only
+</code></pre>
+<p>Write lyrics in the requested language, using verse and a repeating chorus. Keep the prompt under 2048 characters. State a single steady 100 or 112 BPM, 4/4, no tempo changes, eight-syllable lines, one syllable per beat, each line starting on beat one, four-bar phrases, and a verbatim repeating chorus. Validate the actual prompt before submission:</p>
+<pre><code class="language-bash">python3 &quot;$SKILL_DIR/scripts/validate_song_prompt.py&quot; --duration-seconds &quot;$REQUESTED_SECONDS&quot; --prompt song_prompt.txt --lyrics-language &quot;$LANGUAGE_CODE&quot;
+</code></pre>
+<p>The meter counter supports English and Russian; for another language it reports that manual meter review is required. Check the lyrics in that language before submission. Generate the song first with <code>higgsfield generate create seed_audio --prompt "$(cat song_prompt.txt)" --wait --json</code>; omit voice ID and voice type. Check the returned track is within three seconds of the requested length. Make at most three generation attempts in total, including the initial request and any failed jobs; after the third failure or wrong-length result, stop. Change the prompt for each retry. Do not stretch, concatenate or substitute a different duration.</p>
+<p>Build six or twelve 10-second scene blocks matching the song's lyrics and repeated chorus. Keep visual style and characters consistent, show the named action, and avoid lip-sync. Inspect the first generated clip before submitting the rest. Save the actual completed clips in <code>clips.txt</code>, one local path per line in chronological order. Assemble with one song and no extra music bed:</p>
+<pre><code class="language-bash">bash &quot;$SKILL_DIR/scripts/assemble_final.sh&quot; --out final.mp4 --blocks &quot;$BLOCKS&quot; \
+  --manifest clips.txt --song song.wav
+</code></pre>
+<p>The script checks block count, song length, audio coverage and decode. Review the audio against the planned lyrics, repeating chorus and timing, and review the video against those lyrics before delivering it. Automatic speech recognition may help flag discrepancies but does not reliably verify singing; report any unverified wording or chorus rather than claiming they match. Do not ship a partial result if any gate fails.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>higgsfield-faceless-video · Higgsfield 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="higgsfield-faceless-video · Higgsfield 官方 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-faceless-video/SKILL">
+<meta property="og:type" content="website">
+<meta property="og:title" content="higgsfield-faceless-video · Higgsfield 官方 Skills">
+<meta property="og:description" content="higgsfield-faceless-video · Higgsfield 官方 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-faceless-video/SKILL">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="higgsfield-faceless-video · Higgsfield 官方 Skills">
+<meta name="twitter:description" content="higgsfield-faceless-video · Higgsfield 官方 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">higgsfield-faceless-video/SKILL.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><div class="meta"><div class="m-name">higgsfield-faceless-video<span class="m-tag">v0.14.0</span></div><div class="m-desc">| Create a finished faceless explainer, documentary, illustrated story or children&#x27;s music video, or edit a previously created faceless video. Use when: &quot;make a faceless video&quot;, &quot;create a narrated explainer&quot;, &quot;make a children&#x27;s song video&quot;, &quot;edit this faceless video&quot;. NOT for: a single silent clip, ads or UGC, unrelated footage edits, or script-only requests.</div><div class="m-src">源文件：<a href="https://github.com/higgsfield-ai/skills/blob/main/higgsfield-faceless-video/SKILL.md" target="_blank" rel="noopener">higgsfield-ai/skills/higgsfield-faceless-video/SKILL.md</a></div></div><h1>Faceless video</h1>
+<p>Create one finished video with a consistent visual style and narration. For an illustrated explainer use deliberate, diagram-led scenes; for a story or documentary adapt the pacing and visuals to the brief. Do not treat an explainer as a request for rapid cuts. Preserve choices and assets supplied by the user.</p>
+<p>Choose the requested mode before generating: illustrated explainers use <code>references/production.md</code>; fast-cut channel motion uses <code>references/channel-motion.md</code>; stills and picture stories use <code>references/picture-story.md</code>; a sung children's music video uses <code>references/song.md</code>; explicitly requested talking characters use <code>references/talking-characters.md</code>; a requested presenter overlay uses <code>references/presenter.md</code> alongside the motion workflow; edits to a previously generated video use <code>references/editing.md</code>. A request for background music alone is not a song request. Never infer a presenter from an incidental photo.</p>
+<p>When the brief supplies <code>animation_mode</code>, treat <code>fully_animated</code> as motion and <code>scene_based</code> as stills without asking again. Resolve song intent from the complete brief, including topic and script; an explicitly sung children's video uses song mode even when a voice is supplied. Preserve the production mode when continuing or editing an existing video.</p>
+<h2>Before spending credits</h2>
+<p>Resolve missing topic, approximate duration, aspect ratio, language, visual style, voice, music and subtitle choices. Never invent a preset or voice ID. Use <code>higgsfield preset list video-explainer --json</code> and <code>higgsfield voices list --json</code> for current choices, and resolve a selected preset with <code>higgsfield preset resolve video-explainer &lt;id&gt; --json</code>. Confirm photo roles before using reference images. Honor the requested duration; never silently round it up.</p>
+<p>Find this skill's installed directory and retain its absolute path as <code>SKILL_DIR</code>. Keep all work in a persistent session directory, not the skill directory. Before generation verify <code>higgsfield account status</code>, <code>ffmpeg</code>, <code>ffprobe</code>, <code>python3</code>, <code>curl</code>, and <code>awk</code>, and inspect the live schemas using <code>higgsfield model get</code> for each planned model. Estimate generation costs with <code>higgsfield generate cost</code> where supported; if an estimate is unavailable, disclose that before generation. If any required stage, model, dependency, or requested feature is unavailable, explain and stop before paid work. Do not call <code>explainer_video</code> or <code>video_explainer</code>.</p>
+<p>Read <code>references/production.md</code> for the generation, assembly, QC, recovery and delivery procedure. For subtitles, read <code>references/captions.md</code> and check its dependencies before paid generation. Read <code>references/creative.md</code> for style, assets, long-form planning and review, <code>references/styles.md</code> for style guidance, and <code>references/prompts.md</code> when writing the scene plan. The executable helper <code>scripts/assemble_blocks.sh</code> assembles ordered video/audio pairs without changing speech speed; read its usage before running it. The previous skill name is supported for existing installations.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

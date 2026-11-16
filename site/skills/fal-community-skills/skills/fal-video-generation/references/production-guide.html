@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>production-guide · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-video-generation/references/production-guide">
+<meta property="og:type" content="website">
+<meta property="og:title" content="production-guide · fal 社区 Skills">
+<meta property="og:description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-video-generation/references/production-guide">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="production-guide · fal 社区 Skills">
+<meta name="twitter:description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/fal-video-generation/references/production-guide.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Video Generation</h1>
+<p>A routing skill, not a pipeline. Nine intents, each with a primary endpoint and
+a named fallback: identify the intent, settle the settings that drive cost,
+submit, poll, hand back the file. Anything needing a bespoke multi-stage
+workflow belongs to a sibling skill.</p>
+<h2>Hand off instead of routing here</h2>
+<ul>
+<li><strong>A new camera angle on an existing shot</strong> — same subject, same moment, new
+  viewpoint: re-angle a frame of the shot as <strong>character-sheet</strong> does for angle
+  variants (<code>fal-ai/qwen-image-edit-2511-multiple-angles</code>), or with the
+  image-edit pick from <code>recommend_model</code>; check it, then animate it on the
+  image-to-video row below.</li>
+<li><strong>Two or more characters staged across several clips</strong> — who stands where and
+  faces which way, held across shots that never see each other: write each
+  character's screen side, facing and eyeline into every shot's row and keep
+  them identical across cuts (see <strong>fal-shot-craft</strong>, continuity anchors). To
+  continue from a previous clip, extract its last frame and pass it as
+  the route's start-frame field on the image-to-video row (<code>image_url</code> on H3,
+  Seedance and Veo; <code>start_image_url</code> on Wan and Kling v3 pro; Flux 3 also needs an end frame).</li>
+<li><strong>Captions burned onto a finished cut</strong>: word timings from scribe-v2 as
+  described in <strong>fal-audio-generation</strong> (transcribing the cut's demuxed audio,
+  so a transcript is never a prerequisite), grouped per the "Caption cues" rule
+  in <strong>fal-motion-graphics</strong>, burned in the sandbox per <strong>video-compositing</strong>.
+  Captions and any other on-screen text owed on the same file burn in one pass,
+  in one skill. Never invent caption copy for a commercial asset.</li>
+<li><strong>Resizing a finished still creative to platform specs</strong>:
+  <code>prepare_media_transform</code> only upscales, cuts out or downscales a still — it
+  does not change its aspect ratio. Recompose it with an image edit that sets
+  <code>aspect_ratio</code> (<code>recommend_model</code> with the image attached), say it was
+  regenerated, and check copy and logo against the source. Reframing a <em>video</em>
+  stays here.</li>
+</ul>
+<p>Route here whenever none of those claims the request.</p>
+<p><strong>What handing off means, mechanically.</strong> Find the sibling with
+<code>search_guidance</code> and load it with <code>read_guidance</code> (<code>kind: "skill"</code>, plus the
+<code>id</code> and <code>version_id</code> that search returns; the skill name alone does not load
+it), then
+follow that document for the item it owns, and
+tell the user in one line which item went to which skill. If the sibling is not
+installed or will not load, do not quietly build the thing yourself: name the
+skill the job needs, and offer a substitute only if you label it explicitly as
+not the specialist output.</p>
+<p><strong>A request can split.</strong> One message can hold items this skill owns and items a
+sibling owns — that is the normal case, not an edge. Do the owned items in
+full, hand the rest off, and close out by naming the file being passed onward
+and anything the sibling still needs.
+If every item hands off, stop there — the submit and delivery steps below are
+n/a, and forcing an output into existence to satisfy them is the bug.</p>
+<p><strong>A delegated step still imposes an order.</strong> Extend, reframe, restyle and
+upscale re-render every pixel, so anything burned into the frame — captions,
+timestamps, watermarks, lower-thirds — does not survive passing through them.
+On-screen text is burned <strong>last</strong>, after every re-rendering step, whatever order
+the user listed the asks in. If the user wants captions first and a reframe
+second, reorder the plan and say so in one line; following the stated order
+silently ruins the text and neither skill will own the failure.</p>
+<p><strong>This paragraph was already here when a production run dropped its on-screen
+text entirely</strong> — the script specified lower-thirds, every clip rendered, and the
+words never appeared, because "burn last" told nobody to burn <em>at all</em>. An
+ordering rule is not an owner. So the obligation is now explicit and it is
+yours: when a request carries on-screen text and you are handing the burn-in to a
+sibling, <strong>your closing line must name the text still owed, and the file it is
+owed on</strong>, in the same sentence that names the file you are passing over. "Handing
+<code>cut-final.mp4</code> to video-compositing; owed in that one burn: voiceover captions and lower-thirds NINE FATHOMS,
+FREE SHIPPING, ninefathoms.co.uk, burned after this reframe, not before." A
+hand-off that names the file but not the debt is how the debt disappears — and
+if no sibling is available to burn it, the text is an undelivered part of the
+request and you say so, rather than delivering silent footage as complete.</p>
+<h2>Cost comes first</h2>
+<p>Video bills <strong>per second of generated output</strong>, not per call. One
+default-length clip costs more than a whole image pack, and the same prompt at
+8s/audio-on can cost several times what it costs at 4s/audio-off.
+<strong>Four</strong> multipliers run at once here. <strong>Duration</strong> is linear — 8s is exactly
+twice 4s, and every generation primary stops at 15s, so a careless <code>duration</code> is
+a nearly 4× overspend. <strong>Resolution</strong> is roughly linear and then a cliff: the H3
+Max primaries serve <code>480P</code>/<code>768P</code> (fal's routing), and an exact 2K/4K take
+leaves Max for base <code>minimax/h3/*</code>; Veo 3.1 Fast's 4k rate is
+$0.30/s silent and $0.35/s with audio. <strong>Audio</strong> costs more only on Veo (about half again on Veo 3.1 Fast at
+720p/1080p, double on full Veo 3.1) and Kling (+50–75%), and it is
+<strong>on by default on every Seedance and Veo route, both LTX 2.5 routes, both Kling v3 pro routes,
+Flux 3 first-last-frame and the Wan 3.0 Prime routes (there the field is
+<code>audio</code>)</strong>, so it is the multiplier most likely to be paid by accident. H3 routes have no audio switch.
+<strong>Route</strong> is the fourth and the one under your control before a single frame
+renders: on H3 Max, reference-to-video can bill differently from text or image,
+so price the route you will actually send.</p>
+<p><strong>Price the tier you send.</strong> <code>get_pricing</code> returns one unit price per endpoint
+for the account you are working in, which is a single tier (on H3 Max, the
+480P rate; on Veo, the with-audio rate), not a split by resolution or audio.
+Call it to confirm the account's rate, and quote the tier you will actually
+send from the published per-tier rates below, saying which tier the quote
+assumes. Where the table below has the route, quote its tier and use
+<code>get_pricing</code> only as a check: a unit price that matches no tier (or is 0) is
+noted as "<code>get_pricing</code> returns a different unit price", not quoted. For a
+route not in the table, quote the per-tier rate in that route's own block where
+one is given, else <code>get_pricing</code>'s rate. When neither gives a price for a route, say the cost is unknown and
+show the confirmation card. A missing price never changes the route choice.</p>
+<p>Published per-tier rates, from the fal model pages on 2026-10-28 (they change):</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>Per second of output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>H3 Max text, image</td>
+<td>$0.0325 at 480P, $0.052 at 768P, $0.104 at 1080P (promotional until Oct 31, then $0.05 / $0.08 / $0.16)</td>
+</tr>
+<tr>
+<td>H3 Max reference</td>
+<td>$0.05 at 480P, $0.08 at 768P, $0.16 at 1080P, plus reference tokens past 4,096 at $0.02 per 1,000</td>
+</tr>
+<tr>
+<td>Seedance 2.5 (<code>/us</code>)</td>
+<td>about $0.2205 at 480p, $0.473 at 720p, $1.164 at 1080p ($0.0214 per 1,000 tokens at 480p/720p, $0.0234 at 1080p; tokens ≈ height × width × seconds × 24 ÷ 1024, and video references add their input seconds, with the whole price then ×0.6, about $0.2838/s at 720p); same with or without audio</td>
+</tr>
+<tr>
+<td>Wan 3.0 Prime</td>
+<td>$0.068 at 480p, $0.14 at 720p, $0.28 at 1080p</td>
+</tr>
+<tr>
+<td>LTX 2.5 pro</td>
+<td>$0.12 at 720p, $0.17 at 1080p</td>
+</tr>
+<tr>
+<td>Kling v3 pro</td>
+<td>$0.112 silent, $0.168 with audio, $0.196 with voice control</td>
+</tr>
+<tr>
+<td>Flux 3 first-last-frame</td>
+<td>$0.17 at 720p, $0.29 at 1080p</td>
+</tr>
+<tr>
+<td>Ray v3.2 reframe</td>
+<td>$0.06 at 540p, $0.12 at 720p, $0.36 at 1080p, per started source second</td>
+</tr>
+<tr>
+<td>Never inherit a number from the route a pick replaced. A quote carrying a stale</td>
+<td></td>
+</tr>
+<tr>
+<td>rate is worse than no quote: it reads as verified.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Two routes bill on something other than output seconds. <strong>Reframe bills the
+input</strong> — <code>fal-ai/ltx-2.3/reframe</code> charges on the source's duration, so a 30s
+clip is a 30s bill however trivial the reframe. <strong>SeedVR bills megapixels</strong> —
+$0.001 per <code>width × height × frames</code>, so length and frame rate multiply.</p>
+<p><strong>Quote before you spend.</strong> Compute <code>rate × seconds</code> for the chosen route and
+put the figure in the intake card. Ask before submitting whenever the estimate
+clears roughly $1, the user named no duration, or the request is exploratory.
+For a re-run of an approved shape — same route, same length, new prompt — skip
+the card and go.</p>
+<p><strong>A chained job is quoted per step, and ordered by what each step bills on.</strong>
+Chained video work is the normal case, not the exception. Quote one line per
+paid route plus a running total, and gate the card on the total, not on any
+single line — two sub-$1 steps that sum past $1 still get the card. When a
+later step's bill depends on an earlier step's <em>output</em> (reframe bills its
+input's duration, so reframing an extended clip costs more than reframing the
+original), compute it from the planned output length and mark it an estimate.
+Then sequence for cost: extend pays only for new seconds while reframe pays for
+the whole source, so reframe-then-extend is cheaper than extend-then-reframe —
+unless the un-reframed extended cut is itself a deliverable, in which case the
+user's order stands. Say which order you chose and why in the quote.</p>
+<p><strong>Draft when the concept is unproven.</strong> <code>fal-ai/veo3.1/lite</code> (720p) is the
+low-cost Veo route for a short test before you commit to a long finish; price it
+with <code>get_pricing</code>. Two
+caveats now that the primaries are H3 Max. It is <strong>Veo's</strong> prompt grammar, so a
+draft that works there is evidence about the shot, not about the wording you will
+send to H3 Max. And the primary has its own draft lane: H3 Max at <code>480P</code> keeps the
+final route's grammar, so prefer it unless Veo lite is clearly cheaper for the
+length. Compare H3 Max's unit rate with Veo lite's <code>get_pricing</code>
+rate, which is its with-audio rate; send <code>generate_audio: false</code> and say the
+silent rate is lower.</p>
+<h2>Step 0 — One intake card</h2>
+<p>Call <code>ask_user_questions</code> <strong>once</strong> (if your host has no question tool, ask the same questions in one plain message and wait for the
+reply before spending; that reply counts as the card), carrying only the questions still
+unanswered. Every field has a default; if the request already answers one, drop
+that question rather than asking it back.</p>
+<p>These are the <strong>user-facing</strong> options. Every one of them is spelled differently
+   per route, so read the route's block before building the payload: what the card
+   offers and what the endpoint accepts are two different vocabularies, and the
+   card must never offer a value the chosen route cannot take.</p>
+<ol>
+<li><strong>Duration</strong> (header <code>Length</code>) — default <strong>4s</strong>, deliberately short. Offer
+   <code>4s</code>, <code>6s</code>, <code>8s</code>, plus free text where the route takes arbitrary integers,
+   and put each option's dollar cost in its option text. <strong>On the wire the
+   spelling differs</strong>: H3 Max wants a number of seconds (<code>4</code>, decimals allowed,
+   0.92–15), base MiniMax H3 an integer 5–15, Seedance a bare string <code>"4"</code>, Veo
+   <code>"4s"</code>. The card's <code>4s</code> is a label, not a payload value. Every generation
+   primary stops at 15s; a longer ask is a routing change, not a bigger number:
+   up to 30s goes to <code>bytedance/seedance-2.5/us/*</code>; with both end frames,
+   16–20s goes to Flux 3 first-last-frame and 21–30s to
+   <code>bytedance/seedance-2.5/us/image-to-video</code> with <code>end_image_url</code>.</li>
+<li><strong>Resolution</strong> (header <code>Resolution</code>) — default <strong>768P</strong> on the H3 Max
+   primaries (<code>480P</code> for drafts; fal's routing serves Max at these two), and
+   exact <code>2K</code>/<code>4K</code> only as a move to base <code>minimax/h3/*</code>. A <code>1080p</code> ask goes to
+   H3 Max <code>1080P</code>, which refines a native 768P render; say so, and say that the
+   routing does not cover it. Decide resolution before you decide the fallback,
+   not after.</li>
+<li><strong>Aspect</strong> (header <code>Shape</code>) — default <strong>16:9</strong>, with <code>9:16</code> for vertical and
+   <code>1:1</code> only where supported. H3 Max text-to-video takes <code>21:9</code>, <code>16:9</code>, <code>4:3</code>,
+   <code>1:1</code>, <code>3:4</code>, <code>9:16</code>; reference-to-video adds <code>adaptive</code> (its default); the
+   image route has no aspect field and follows the supplied frame, so on H3 Max
+   image-to-video drop this question unless the user asked for a shape; if the
+   asked shape differs from the still, recompose the still first with an image
+   edit that sets <code>aspect_ratio</code> (as the still-resize hand-off does), say so,
+   then animate. On other
+   image routes, <code>auto</code> inherits the source frame; naming an aspect that differs
+   from the source re-composes rather than reframes, so if the user wants the
+   <em>same</em> footage in a new shape that is a reframe job (see the guardrail).</li>
+<li><strong>Audio</strong> (header <code>Sound</code>) — default <strong>off</strong>. On means a native soundtrack
+   generated with the video; Veo and Kling charge more for it, while Seedance,
+   LTX 2.5, Flux 3 and Wan bill the same either way. H3 routes have no
+   audio flag, so this card applies only when the pick is a Seedance, Veo, LTX 2.5, Kling,
+   Flux 3 or Wan route. On H3 there is no switch; skip the card and say that
+   any soundtrack the route returns is discarded unless the user wants it.</li>
+<li><strong>Motion brief</strong> (header <code>What happens</code>) — free text; default is to derive it
+   from the supplied image or the user's sentence and echo that derived brief
+   back inside this same card for confirmation.</li>
+<li><strong>Framing</strong> (header <code>Framing</code>, conditional) — only when the request could
+   mean either a generative reframe or a free crop (see the guardrail): offer
+   both with the dollar figure on the paid one. The guardrail's default applies
+   if this goes unanswered; it never blocks on the answer.</li>
+</ol>
+<p>The five standing headers fit a single-route job. A real request can raise
+questions none of them ask — reframe-versus-crop, what to do about an item that
+hands off to a sibling — and those go on the <strong>same single card</strong> under their
+own headers. Adding a needed header is correct; spending a second card is not.</p>
+<p>If the brief answers everything and the estimate is under $1, make <strong>zero</strong>
+<code>ask_user_questions</code> calls and submit. If it answers everything but the estimate
+clears $1, still show a single one-question confirmation card carrying the
+figure. Never treat a spend as confirmed without a reply: use the card (on a host with no question tool, one plain message, then wait for the reply).</p>
+<p>When the answer to a priced question is a preference rather than one of the
+offered options ("keep it roughly as it is, no upscaling"), map it to the
+nearest option that honours the preference, state the mapping and its price in
+the delivery note, and proceed — do not spend a second card re-asking.</p>
+<h2>Routing table</h2>
+<p>Every row was checked against a live schema. Fallbacks are named, not implied.
+A pure restyle stays on the Restyle row even when <code>recommend_model</code> returns H3
+Max reference. The H3 Max primaries follow fal's published routing (<code>recommend_model</code> returns
+these picks, plus others such as LTX 2.5 for fast subject motion, with an
+input contract). Use <code>recommend_model</code>'s pick when it differs from the row's
+primary only because of a capability it names (for example LTX 2.5 for fast
+subject motion: <code>fps: 50</code>, 720p or 1080p, <code>duration</code> <code>6</code>, <code>8</code> or <code>10</code> sent
+explicitly since it defaults to <code>auto</code>, <code>resolution: "720p"</code> for a <code>480P</code> or
+<code>768P</code> shot since it defaults to <code>1080p</code>, <code>generate_audio</code> sent explicitly;
+only when the shot is 10s or less and <code>16:9</code> or <code>9:16</code>, rounding the duration
+up to 6, 8 or 10 and re-quoting, otherwise keep the row's primary); the Restyle, Extend,
+Upscale and Reframe rows and the moderation rule always win.</p>
+<table>
+<thead>
+<tr>
+<th>Intent</th>
+<th>Primary</th>
+<th>Fallback</th>
+<th>Why the primary wins</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Text to video</td>
+<td><code>minimax/h3-max/text-to-video</code></td>
+<td><code>minimax/h3/text-to-video</code></td>
+<td>fal's published default for every unnamed video request up to 15s; base H3 is the exact 2K/4K route and the fallback when Max can't serve</td>
+</tr>
+<tr>
+<td>Image to video</td>
+<td><code>minimax/h3-max/image-to-video</code></td>
+<td><code>minimax/h3/image-to-video</code></td>
+<td>Published default for one starting still; the canvas follows the supplied frame</td>
+</tr>
+<tr>
+<td>First and last frame</td>
+<td><code>minimax/h3-max/image-to-video</code></td>
+<td><code>blackforestlabs/flux-3/first-last-frame-to-video</code></td>
+<td>Same endpoint as image-to-video — add the optional <code>end_image_url</code>; Flux 3 when both ends must be <em>required</em>, or 16–20s (21–30s → <code>bytedance/seedance-2.5/us/image-to-video</code> with <code>end_image_url</code>)</td>
+</tr>
+<tr>
+<td>Reference to video</td>
+<td><code>minimax/h3-max/reference-to-video</code></td>
+<td><code>minimax/h3/reference-to-video</code></td>
+<td>Published default for image/video/audio references and footage edits other than a pure restyle: <code>reference_image_urls</code> (max 9), <code>reference_video_urls</code> and <code>reference_audio_urls</code> (max 3 each), 12 files total; audio can't be the only reference</td>
+</tr>
+<tr>
+<td>Restyle footage</td>
+<td><code>decart/lucy-edit/pro</code></td>
+<td><code>fal-ai/luma-dream-machine/ray-2/modify</code></td>
+<td>Purpose-built video edit; Ray adds adherence control</td>
+</tr>
+<tr>
+<td>Extend a clip</td>
+<td><code>fal-ai/ltx-2.3/extend-video</code></td>
+<td><code>fal-ai/veo3.1/fast/extend-video</code></td>
+<td>Only route that honours an arbitrary length (2–20s, either end); Veo extend is locked to exactly +7s at 720p</td>
+</tr>
+<tr>
+<td>Upscale</td>
+<td><code>fal-ai/topaz/upscale/video</code></td>
+<td><code>fal-ai/seedvr/upscale/video</code></td>
+<td>Per-second billing is predictable; 19 restoration models</td>
+</tr>
+<tr>
+<td>Reframe to new aspect</td>
+<td><code>fal-ai/ltx-2.3/reframe</code></td>
+<td><code>luma/agent/ray/v3.2/reframe</code></td>
+<td>Needs no prompt; Ray adds <code>3:4</code>, <code>4:3</code> and <code>21:9</code> and takes a prompt, but drops LTX's <code>4:5</code>/<code>5:4</code> — the enums overlap, neither contains the other</td>
+</tr>
+<tr>
+<td>Add sound to a clip</td>
+<td><code>sonilo/v1.1/video-to-video-sound-effects</code></td>
+<td><code>fal-ai/kling-video/video-to-audio</code></td>
+<td>Returns a muxed video at $0.009/s; Kling is flat $0.035</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Route on content as well as on intent, and do it on the first attempt.</strong> The
+table above picks a route by <em>what kind of job</em> it is. One thing overrides it:
+<strong>moderation exposure.</strong> A frame carrying a photorealistic human likeness — a
+supplied face, a realistic person as the subject — or heavy gore-adjacent imagery
+can be refused, and the families differ in what you can do about it. Veo 3.1
+exposes <strong><code>safety_tolerance</code></strong>, a string <code>"1"</code>–<code>"6"</code>, so a refusal there has a lever.
+<strong>No Seedance route exposes any moderation field at all</strong>: its filtering is
+server-side and undocumented, so a refusal has no remedy except changing route.
+The H3 Max primaries expose only <code>enable_safety_checker</code> (default <code>true</code>); how
+they treat photoreal faces is not mapped here, so record a refusal you hit
+rather than assuming either way.</p>
+<p><strong>Veo fit test:</strong> a shot fits Veo 3.1 Fast when it is 8s or less, <code>16:9</code> or
+<code>9:16</code>, with image references only (<code>image_urls</code>), no <code>target_audio_url</code>, no
+middle or exact first/last frame on a reference row, and both frames present
+for a first-last shot (an image-route shot fits when its still is <code>16:9</code> or
+<code>9:16</code>). Round the duration up to <code>4s</code>, <code>6s</code> or <code>8s</code>
+(reference-to-video is always <code>8s</code>); send <code>720p</code> for a 480P/480p/720p/768P shot,
+<code>1080p</code> for 1080P/1080p, and <code>4k</code> for 2K/4K (re-quote); send <code>generate_audio</code> per the Sound or Clip audio
+answer (no answer → <code>false</code>); send <code>safety_tolerance</code> at its default <code>"4"</code> and
+never raise it to get past a refusal. When the pick is a <strong>Seedance</strong> route, a
+moderation-sensitive shot that fits goes to Veo 3.1 Fast from the start; one
+that does not fit is tried once on Seedance. Any other pick (H3 Max, base H3,
+Wan, Kling, Flux 3, LTX) is tried once: a refusal moves a fitting shot to Veo
+3.1 Fast and counts toward the retry ceiling; a refusal on Veo, whether the shot went
+there first or was moved there, ends the shot, and a refused shot is never retried with <code>enable_safety_checker:
+false</code>. A moderation refusal is not a
+"Max can't serve" case: it never goes to base H3 or the cross-family escapes,
+and a refused shot that does not fit Veo stops; offer the user a re-cut that
+fits Veo, a rewritten shot, or dropping it. One run spent <strong>three
+separate rounds of 422s</strong> discovering this by collision — refused on a photoreal
+human reference, re-prompted, refused again on a skull-heavy frame — because
+route-by-content was treated as a repair rather than a first-pass decision. A 422 on
+a route with no tolerance control is not a transient failure to retry; it is the
+wrong route, and the retry ceiling below applies to it.</p>
+<p><em>Observed on the Seedance 2.5 family. The 2.0 routes have the same absent
+field, so the same reasoning holds, but the specific refusals were measured on 2.5
+— treat the boundary as unmapped rather than known, and record what you hit.</em></p>
+<p><strong>Three of the four generation fallbacks are same-family on purpose — and that
+is a known limit, not an oversight.</strong> Base H3 is the right fallback for an exact
+2K/4K ask or a request Max can't serve, and it needs little prompt rewriting
+because the grammar is shared. Its payload is not shared: base H3 takes
+<code>duration</code> as an integer from 5 to 15 and defaults <code>resolution</code> to <code>2K</code>, so
+round the duration up to a whole number of at least 5 (a 4s or 4.5s card value
+becomes <code>5</code>) and send <code>resolution</code> explicitly. It is the <em>wrong</em> fallback for a family-wide
+outage or a capability the family lacks. When MiniMax as a whole is unavailable
+or cannot do the job, the cross-family escapes are
+<code>bytedance/seedance-2.5/us/text-to-video</code> (fal's published Seedance pick) and
+its <code>/image-to-video</code> and <code>/reference-to-video</code> siblings (see the Seedance 2.5
+block below),
+<code>alibaba/wan-3.0-prime/text-to-video</code>, <code>/image-to-video</code> or
+<code>/reference-to-video</code> when a request's inputs fit nothing else (and always
+<code>/reference-to-video</code> with <code>file_url</code> or <code>web_url</code> plus <code>enable_thinking: true</code>
+for document or webpage conditioning), and
+<code>blackforestlabs/flux-3/first-last-frame-to-video</code> for 16–20s with both end
+frames. Say which you took
+and why. Never retry the same family a third time — see the retry ceiling below.</p>
+<p><strong>Lipsync is deliberately absent.</strong> A talking head driven by supplied speech is
+a different job — search the registry for <code>lipsync</code> and read the schema first,
+because those endpoints bill on <em>input</em> seconds.</p>
+<h2>Per-endpoint parameters</h2>
+<p>These endpoints disagree constantly. Read the block for the route you take.</p>
+<p><strong>Negative prompts do not travel.</strong> This census is exhaustive for the table
+above, so a route in neither list is a route this table does not carry.
+Accepts <code>negative_prompt</code>: Veo 3.1's text, image, first-last, <strong>extend</strong> and
+<strong>lite</strong> routes, and both Kling v3 pro routes. Does not: <strong>every Seedance 2.5
+route</strong>, every Seedance 2.0 route, every Wan 3.0 Prime route, both LTX 2.5 routes, Flux 3
+first-last-frame, both Veo reference routes, every MiniMax H3 route, and all
+the restyle, reframe, upscale and sound routes.
+Where the field is absent, carry the avoidance as a positive clause in the
+prompt itself — "empty concrete floor" rather than "no furniture" — and tell the
+user the exclusion is unenforced on that route. Never append a negative list to
+a positive prompt; that asks for exactly what you were avoiding.</p>
+<p><strong><code>minimax/h3-max/text-to-video</code> · <code>/image-to-video</code> · <code>/reference-to-video</code></strong> —
+the primaries. <code>prompt</code> and <code>prompt_expansion_mode</code> are required:
+<code>disabled</code>, <code>balanced</code> (default, about a second) or <code>quality</code> (up to ~30s);
+send it explicitly, and use <code>disabled</code> when the prompt was already written to a
+validated format such as <strong>h3-cinematic-prompter</strong>. <code>duration</code> is a <strong>number</strong>
+from 0.92 to 15, default <code>5</code>; the output can run about 0.7s longer than asked.
+<code>resolution</code>: fal's routing serves Max at <code>480P</code> or <code>768P</code> (default); the
+schema also lists <code>1080P</code>, a refinement of a native 768P source, which the
+routing does not cover. Text-to-video takes <code>aspect_ratio</code> (<code>21:9</code>, <code>16:9</code>, <code>4:3</code>, <code>1:1</code>,
+<code>3:4</code>, <code>9:16</code>; default <code>16:9</code>). The image route takes optional <code>image_url</code> and
+<code>end_image_url</code> and <strong>no aspect field</strong> — the canvas follows the first frame,
+or the last when only that is given. Reference adds <code>aspect_ratio</code> with
+<code>adaptive</code> (default), <code>image_url</code> as an exact first frame, <code>end_image_url</code>, and
+<code>middle_image_url</code> with <code>middle_frame_time</code> (needs <code>image_url</code> and
+<code>end_image_url</code>, and 480P or 768P); refer to references in the prompt
+as Image 1, Video 1, Audio 1. <code>reference_conditions</code> is an ordered alternative
+to the <code>reference_*_urls</code> arrays; never combine the two. <code>target_audio_url</code>
+(text and image routes) pins a supplied clip of at least 2s as the soundtrack.
+<strong>No <code>negative_prompt</code> and no audio switch.</strong> <code>enable_safety_checker</code> defaults
+<code>true</code>.</p>
+<p><strong><code>bytedance/seedance-2.5/us/text-to-video</code> · <code>/image-to-video</code> ·
+<code>/reference-to-video</code></strong> — the cross-family fallback. fal's routing picks it
+for text-to-video; the image and reference siblings are this skill's choice.
+<code>prompt</code> is required on text-to-video; the image route requires <code>image_url</code>
+(prompt optional) and takes an optional <code>end_image_url</code>; reference carries
+<code>image_urls</code>, <code>video_urls</code> and <code>audio_urls</code> arrays and a <code>task</code> enum
+(<code>reference</code> default, <code>editing</code>, <code>extension</code>, <code>auto</code>). <strong><code>duration</code> is a string
+enum</strong> — <code>"auto"</code> (default) and <code>"4"</code> through <code>"30"</code>. <code>resolution</code> is <code>480p</code>,
+<code>720p</code> (default) or <code>1080p</code>; there is no 4k. <code>aspect_ratio</code> defaults to <code>auto</code>
+(and is fixed to <code>auto</code> on image-to-video).
+<code>generate_audio</code> <strong>defaults <code>true</code></strong>, and there is no <code>negative_prompt</code>. Billing
+is per 1,000 tokens, so read the rate with <code>get_pricing</code> and price the exact
+length and resolution before sending.</p>
+<p><strong><code>bytedance/seedance-2.0/text-to-video</code> · <code>/image-to-video</code> ·
+<code>/reference-to-video</code></strong>, and their <code>/fast/</code> and <code>/mini/</code> siblings — an
+alternative to 2.5 that fal's routing no longer picks; use it only when it is
+named or 2.5 cannot serve the request. Only the base tier reaches <code>4k</code>. <code>prompt</code> required on
+all of them; <code>image_url</code> also required on the image routes. <strong><code>duration</code> is a string enum of bare integers</strong> —
+<code>"auto"</code> (default) and <code>"4"</code> through <code>"15"</code>, one per second. Note the shape: it is
+<code>"4"</code>, <strong>not</strong> <code>"4s"</code>. Veo's <code>"4s"</code> spelling 422s here, and a pre-flight that
+checks the field <em>name</em> will not catch it (rule 20). Past 15s leaves this family
+entirely. <code>aspect_ratio</code> is the widest enum in the table and is identical on all
+three routes: <code>auto</code>, which is the default, plus <code>21:9</code>, <code>16:9</code>, <code>4:3</code>, <code>1:1</code>,
+<code>3:4</code> and <code>9:16</code>. On an image route the default inherits the source frame's own
+ratio rather than imposing one. <code>generate_audio</code> <strong>defaults
+<code>true</code></strong> on every tier. <strong>No <code>negative_prompt</code> field exists</strong> on any of them.
+First-and-last-frame is this same image-to-video endpoint with the optional
+<code>end_image_url</code> added — unlike Flux 3, where both ends are required.
+Reference-to-video carries <code>image_urls</code>, <code>video_urls</code> and <code>audio_urls</code> as separate
+arrays.</p>
+<p><strong>The tiers differ in exactly two ways, and one of them is a routing decision.</strong>
+<code>resolution</code> on the <strong>base</strong> routes is <code>480p</code>, <code>720p</code>, <code>1080p</code> or <code>4k</code>, default
+<code>720p</code> — the only Seedance routes that reach 4k. On both <code>/fast/</code> and
+<code>/mini/</code> it is <code>480p</code> or <code>720p</code> only, so <em>a request above 720p cannot be served by
+the fallback column</em> — it stays on base or leaves the family. <code>bitrate_mode</code>
+(<code>standard</code> default, or <code>high</code>) exists on base and <code>/fast/</code> but <strong>not on
+<code>/mini/</code></strong>; it raises quality at the same resolution, and therefore the bill.
+Everything else — duration enum, aspect enum, audio default, required fields — is
+identical across all three, which is why <code>/fast/</code> needs no prompt rewriting.</p>
+<p><strong><code>alibaba/wan-3.0-prime/text-to-video</code> · <code>/image-to-video</code> ·
+<code>/reference-to-video</code></strong> — text requires <code>prompt</code>; image requires
+<code>start_image_url</code> (not <code>image_url</code>); reference takes <code>reference_image_urls</code>
+(up to 10), <code>reference_video_urls</code> and <code>reference_audio_urls</code> (up to 5 each,
+15 s total each), and <code>file_url</code> or <code>web_url</code> with <code>enable_thinking: true</code> for
+document or webpage conditioning. <code>duration</code> is an integer from 2 to 30,
+default <code>5</code> (null lets the model choose; never send <code>null</code>, and round a decimal
+card value up). <code>resolution</code> is <code>480p</code>, <code>720p</code> or <code>1080p</code> and <strong>defaults to <code>1080p</code></strong>, so
+send it explicitly. <code>aspect_ratio</code> defaults to <code>adaptive</code> (no <code>21:9</code>).
+<code>audio</code> (not <code>generate_audio</code>) <strong>defaults <code>true</code></strong>; <code>enable_prompt_expansion</code>
+defaults <code>true</code>. See the per-tier rates above;
+the <code>1080p</code> default is the most expensive tier.</p>
+<p><strong>Rates are not in the OpenAPI schema for any Seedance tier.</strong> Quote the Seedance 2.5 row above; for 2.0 tiers quote <code>get_pricing</code>'s token
+rate with the same token formula, and never carry a figure over from a route this one
+replaced. A quote with a stale rate is worse than no quote: it reads as verified.</p>
+<p><strong><code>fal-ai/veo3.1/fast</code> · <code>/image-to-video</code> · <code>/first-last-frame-to-video</code></strong> —
+no longer primary for any row (it takes shots refused on H3 Max and
+moderation-sensitive shots that would otherwise go to Seedance); kept because it is the only 1080p/4k route here
+with <code>negative_prompt</code> support, and the extend fallback's source.
+<code>prompt</code> required. <code>duration</code> is a <strong>string enum</strong>: <code>"4s"</code>, <code>"6s"</code>, <code>"8s"</code>,
+default <code>"8s"</code>. <code>resolution</code>: <code>720p</code>, <code>1080p</code> or <code>4k</code>, default <code>720p</code>. Aspect
+on text-to-video is <code>16:9</code> or <code>9:16</code>; the image routes add <code>auto</code> and default
+to it. <code>negative_prompt</code> accepted. <code>safety_tolerance</code> is a <strong>string</strong> <code>"1"</code>–<code>"6"</code>
+(default <code>"4"</code>). <code>generate_audio</code> <strong>defaults <code>true</code></strong>. <code>auto_fix</code> defaults
+<code>true</code> on text-to-video, <code>false</code> on the image routes. Image routes need
+<code>image_url</code>; first-last needs <code>first_frame_url</code> and <code>last_frame_url</code>.
+<strong>$0.10/s silent, $0.15/s with audio at 720p or 1080p; $0.30/$0.35 at 4k.</strong></p>
+<p><strong><code>fal-ai/veo3.1/fast/reference-to-video</code></strong> — <code>image_urls</code> (array) and <code>prompt</code>
+required, <code>duration</code> a <strong><code>const</code> of <code>"8s"</code></strong> — this route makes 8-second clips
+and nothing else, so any other length belongs elsewhere — aspect <code>16:9</code> or
+<code>9:16</code> with no <code>auto</code>, and <strong>no <code>negative_prompt</code> at all</strong>. <code>generate_audio</code>
+<strong>defaults <code>true</code></strong>. Same rates as above. The non-fast
+<code>fal-ai/veo3.1/reference-to-video</code> is the identical shape at <strong>$0.20/$0.40 per
+second</strong> — an 8s 1080p clip with sound is <strong>$3.20</strong>. Use it only on request.</p>
+<p><strong><code>fal-ai/veo3.1/fast/extend-video</code></strong> — the fallback, and a narrow one.
+<code>video_url</code> and <code>prompt</code> required. <code>duration</code> and <code>resolution</code> are both OpenAPI
+<strong><code>const</code></strong> values — <code>"7s"</code> and <code>"720p"</code> — so this route adds exactly seven
+seconds at 720p and can do nothing else. Any extend for a different length, or
+above 720p, goes straight to <code>fal-ai/ltx-2.3/extend-video</code>; reach for this one
+only when the source is Veo's own output and +7s at 720p is acceptable, where
+it continues natively. <strong>Note what that precondition now means:</strong> the generation
+primaries are H3 Max, so a clip this skill produced itself is <em>not</em> Veo output
+and this fallback does not apply to it. It is for a Veo clip the user brings in,
+or one made deliberately via the Veo row. For everything else the extend fallback
+is effectively <code>fal-ai/ltx-2.3/extend-video</code> alone — if that route is down, say so
+rather than sending an H3 clip here. <code>aspect_ratio</code> is <code>auto</code>, <code>16:9</code> or <code>9:16</code> (default
+<code>auto</code>) — never use it to get a vertical "for free": that re-renders the whole
+source through the model, and the aspect change belongs to reframe. Extend
+re-encodes the entire file either way — a source that is not exactly 16:9 comes
+back rescaled (a 2544x1456 input returns 1920x1080), so even the untouched
+seconds are not bit-identical. <code>negative_prompt</code> accepted. <code>generate_audio</code>
+<strong>defaults <code>true</code></strong>. You pay for the new seconds only: <strong>$0.10/s silent,
+$0.15/s with audio.</strong>
+<strong><code>fal-ai/veo3.1/lite</code></strong> is the Veo draft lane (see Draft above for when H3 Max
+<code>480P</code> is preferred): same <code>"4s"</code>/<code>"6s"</code>/<code>"8s"</code> duration
+enum as fast, <code>resolution</code> only <code>720p</code> or <code>1080p</code> (<strong>no 4k</strong>),
+<code>negative_prompt</code> accepted, <code>generate_audio</code> again <strong><code>true</code></strong>, at <strong>$0.03/s
+silent and $0.05/s with audio at 720p</strong>.</p>
+<p><strong><code>fal-ai/kling-video/v3/pro/text-to-video</code> · <code>/image-to-video</code></strong> — <code>duration</code>
+is a <strong>string enum of every integer from <code>"3"</code> to <code>"15"</code></strong>, default <code>"5"</code>: the
+route for anything past 8 seconds. Text aspect is <code>16:9</code>, <code>9:16</code> or square
+<code>1:1</code>; the image route has <strong>no aspect field at all</strong> and derives shape from
+<code>start_image_url</code> (plus optional <code>end_image_url</code>, and an <code>elements</code> array whose
+objects carry <code>reference_image_urls</code>, <code>frontal_image_url</code>, <code>video_url</code> and
+<code>voice_id</code> — those four are element members, not top-level fields).
+<code>negative_prompt</code> <strong>ships with a non-empty default</strong> —
+<code>blur, distort, and low quality</code> — so replace it rather than appending.
+<code>cfg_scale</code> 0.5; <code>shot_type</code> <code>customize</code> or <code>intelligent</code>; <strong>no <code>resolution</code>
+field</strong>. <code>generate_audio</code> <strong>defaults <code>true</code></strong>, and audio or voice control
+raises the rate (see the per-tier rates above).</p>
+<p><strong><code>minimax/h3/image-to-video</code> · <code>/text-to-video</code> · <code>/reference-to-video</code></strong> —
+<code>duration</code> is a plain <strong>integer, bounded 5–15</strong>, default <code>5</code> — a 4s ask is a
+422, not a short clip. <code>resolution</code> is
+<code>480P</code>, <code>768P</code>, <code>2K</code> or <code>4K</code> and <strong>defaults to <code>2K</code></strong> — more than the <code>768P</code>
+rate you likely budgeted, so send <code>768P</code> explicitly unless 2K was asked for.
+<code>prompt_expansion_mode</code> defaults to <code>balanced</code> and rewrites your prompt;
+<code>enable_safety_checker</code> also defaults <code>true</code>. The image route takes <code>image_url</code>
+plus optional <code>end_image_url</code> and has <strong>no aspect field</strong>; text and reference
+routes do, reference defaulting to <code>adaptive</code>. Reference takes three arrays —
+<code>reference_image_urls</code> (max 9), <code>reference_video_urls</code> and
+<code>reference_audio_urls</code> (max 3 each). <strong>No
+audio flag exists on any H3 route.</strong> Read the rate per route with
+<code>get_pricing</code>: it returns one unit price, not one per resolution, and may
+return none for a route. Never auto-select base H3: fal's routing reserves
+it for exact 2K/4K takes, a named request, or a request Max can't serve.</p>
+<p><strong><code>blackforestlabs/flux-3/first-last-frame-to-video</code></strong> — <code>start_image_url</code> and
+<code>end_image_url</code> both required. <code>duration</code> is an <strong>integer enum from 5 to 20</strong>,
+default <code>5</code>; <code>resolution</code> is <code>720p</code> (default), <code>1080p</code>, <code>1440p</code> or <code>2160p</code>
+(above 720p is finished by an upsampler); the aspect enum is the widest
+here, covering <code>auto</code>, ultrawide, wide, square and both verticals.
+<code>safety_tolerance</code> is an <strong>integer</strong> (default <code>2</code>), unlike Veo's string.
+<code>generate_audio</code> <strong>defaults <code>true</code></strong> (same price either way). See the per-tier
+rates above.</p>
+<p><strong><code>decart/lucy-edit/pro</code></strong> — <code>video_url</code> and <code>prompt</code> required. The <code>resolution</code>
+enum holds <strong>only <code>720p</code></strong>, so the cheaper 480p tier in the price list is not
+reachable here. <code>enhance_prompt</code> <strong>defaults <code>true</code></strong> and rewrites a restyle
+instruction that was probably already exact — send <code>false</code> when it is precise.
+<code>sync_mode</code> <strong>defaults <code>true</code></strong>, blocking rather than queuing; send <code>false</code> for
+anything beyond a few seconds. Read the rate with <code>get_pricing</code>.</p>
+<p><strong><code>fal-ai/luma-dream-machine/ray-2/modify</code></strong> — <code>video_url</code> required, <code>prompt</code>
+and an <code>image_url</code> style reference optional. The lever is <code>mode</code>, a nine-value
+enum: <code>adhere_1</code>–<code>adhere_3</code> stay close to the source, <code>flex_1</code>–<code>flex_3</code> (default
+<code>flex_1</code>) allow moderate change, <code>reimagine_1</code>–<code>reimagine_3</code> change the most. No
+duration or resolution field — it follows the source. Read the rate with
+<code>get_pricing</code>.</p>
+<p><strong><code>fal-ai/ltx-2.3/extend-video</code></strong> — the general-purpose extend and the primary.
+<code>video_url</code> required, <code>prompt</code> optional. <code>duration</code> is a plain <strong>number,
+bounded 2–20</strong>, default <code>5</code> — the only extend route that honours an arbitrary
+length. <code>mode</code> is <code>start</code> or <code>end</code> (default <code>end</code>) — also the only route here
+that can prepend footage <em>before</em> a clip. <code>context</code> (1–20) sets how many source
+seconds condition the continuation, and it is the only adherence lever this
+route has — there is no cfg or mode-style control. Two consequences. Set
+<code>context</code> so it covers only the final shot: if the source has an internal cut,
+a window spanning the cut feeds the model a montage and invites it to cut
+again. And when an extension wanders — an uninvited camera move, the subject
+drifting out of frame, a fresh cut — the retry is <code>context</code> lowered (2 is a
+working floor) plus a prompt that pins the camera explicitly ("locked, no
+pull-back, no zoom, no reveal"), not the same payload resubmitted.
+<strong>$0.10/s of new video.</strong></p>
+<p><strong><code>fal-ai/topaz/upscale/video</code></strong> — <code>video_url</code> required, <code>upscale_factor</code> number
+default <code>2</code>. <code>model</code> is a 19-value enum, default <code>Proteus</code>; the <code>Starlight</code>
+family is the detail-synthesis tier and <code>Gaia 2</code> bills at half price. Optional
+<code>target_fps</code> (16–60) — pushing past 30 doubles the bill. <strong>$0.01/s for output to
+720p, $0.02/s to 1080p, $0.08/s above 1080p; doubled at 60fps.</strong></p>
+<p><strong><code>fal-ai/seedvr/upscale/video</code></strong> — <code>video_url</code> required. <code>upscale_mode</code> is
+<code>factor</code> (default, reads <code>upscale_factor</code>) or <code>target</code> (reads
+<code>target_resolution</code>: <code>720p</code>, <code>1080p</code>, <code>1440p</code> or <code>2160p</code>, default <code>1080p</code>).
+<strong>$0.001 per megapixel of <code>width × height × frames</code></strong> — check the frame count
+before submitting, not the running time.</p>
+<p><strong><code>fal-ai/ltx-2.3/reframe</code></strong> — <code>video_url</code> required. Aspect options are square,
+<code>4:5</code>, <code>5:4</code>, and both <code>9:16</code> / <code>16:9</code>, defaulting to widescreen; <code>resolution</code>
+is <code>720p</code> or <code>1080p</code> and <strong>defaults to <code>1080p</code>, double the price</strong>. There is
+<strong>no prompt field here</strong> — a user instruction about what should fill the new
+edges cannot be carried on this route, so either accept the model's own
+extension or switch to the Ray fallback, which does take one. <strong>$0.10/s at
+720p, $0.20/s at 1080p, billed on the input's duration.</strong></p>
+<p><strong><code>luma/agent/ray/v3.2/reframe</code></strong> — <code>video_url</code>, <code>prompt</code> <strong>and</strong> the aspect
+field are all <strong>required</strong>; the prompt is not optional here. Its aspect enum
+adds portrait <code>3:4</code>, landscape <code>4:3</code> and <code>21:9</code> over LTX's, but <strong>drops <code>4:5</code>
+and <code>5:4</code></strong> — a 4:5 job cannot fall back here. <code>resolution</code> is
+<code>540p</code>, <code>720p</code> or <code>1080p</code>, default <code>540p</code>; optional <code>source_position</code> places the
+original inside the new frame. Billed per started second of source; see the
+per-tier rates above and say which resolution the quote assumes.</p>
+<p><strong><code>sonilo/v1.1/video-to-video-sound-effects</code></strong> — <code>video_url</code> required, <code>prompt</code>
+optional (describe the sound, not the picture), <code>segments</code> to time individual
+effects, <code>audio_format</code> default <code>aac</code>. <strong>$0.009/s of output per sample.</strong></p>
+<p><strong><code>fal-ai/kling-video/video-to-audio</code></strong> — <code>video_url</code> required, and <strong>both
+prompt fields ship with content-bearing defaults</strong>: <code>background_music_prompt</code> is
+<code>intense car race</code>, <code>sound_effect_prompt</code> is <code>Car tires screech as they
+accelerate in a drag race</code>. Send both explicitly every time — omitting them does
+not mean silence, it means a car chase. <code>asmr_mode</code> defaults <code>false</code>. <strong>$0.035
+flat per video.</strong></p>
+<h2>Default-on flags to pin explicitly</h2>
+<p>Set each of these on the payload even when you want the default value, so the
+intent is visible in the request.</p>
+<ul>
+<li><strong><code>generate_audio: true</code></strong> on <strong>every Seedance route, 2.0 and 2.5, at all three
+  tiers</strong>, on every Veo 3.1 route (fast, lite, image, first-last, reference,
+  extend), on both Kling v3 pro routes and on Flux 3 first-last-frame, and
+  <code>generate_audio: true</code> on both LTX 2.5 routes, <code>audio: true</code> on the Wan 3.0 Prime routes — that is every route here that can
+  make sound (H3 has no audio switch).
+  Veo and Kling charge 50–100% more for audio; Seedance, LTX 2.5, Flux 3 and
+  Wan bill the same either way, so there <code>false</code> only drops an unwanted track. Step 0 defaults <code>Sound</code> to <strong>off</strong>, so on
+  the default path you are always sending <code>false</code> explicitly, never by omission.</li>
+<li><strong>Prompt rewriters:</strong> <code>prompt_expansion_mode: "balanced"</code> on every MiniMax H3
+  and H3 Max route, <code>enhance_prompt: true</code> on <code>decart/lucy-edit/pro</code>.</li>
+<li><strong>Expensive resolution defaults:</strong> <code>2K</code> on MiniMax H3 (billed above <code>768P</code>;
+  read the rate with <code>get_pricing</code>) and <code>1080p</code> on <code>fal-ai/ltx-2.3/reframe</code>
+  (double price).</li>
+<li><strong><code>sync_mode: true</code></strong> on <code>decart/lucy-edit/pro</code> — blocks instead of queuing.</li>
+<li><strong>Non-empty text defaults:</strong> <code>negative_prompt</code> on Kling v3 pro, and both
+  prompt fields on <code>fal-ai/kling-video/video-to-audio</code>.</li>
+<li><strong><code>duration: "auto"</code></strong> on every Seedance route. The 2.0 enum runs to <code>"15"</code>
+  and the 2.5 enum to <code>"30"</code>. Never send <code>auto</code>: you are letting the model
+  choose the bill, and on 2.5 the ceiling is more than 7× the 4s default.
+  Always send an explicit value, and price it first.</li>
+</ul>
+<h2>Model IDs drift — query, never remember</h2>
+<p>The table above is a snapshot. Endpoints get renamed, versioned and retired —
+and fields get pinned. <strong>Before the first submit of a session, print the
+route's fields with their constraints, not just its name:</strong></p>
+<pre><code>curl -s &quot;https://fal.ai/api/openapi/queue/openapi.json?endpoint_id=&lt;slug&gt;&quot; \
+  | python3 -c &quot;
+import json,sys
+doc=json.load(sys.stdin)
+sch=(doc or {}).get('components',{}).get('schemas',{})
+if not sch: print('UNRESOLVED'); sys.exit(1)
+for n,s in sch.items():
+    if n.endswith('Input'):
+        print(n,'required:',s.get('required',[]))
+        for f,p in s.get('properties',{}).items():
+            print(' ',f,{k:p[k] for k in ('type','const','enum','default') if k in p})
+&quot;
+</code></pre>
+<p><code>UNRESOLVED</code> means the slug is gone. Then <strong>check every value the payload will
+carry against the printed <code>const</code> or <code>enum</code></strong> — a check that only confirms a
+field's name exists will pass a route that rejects your value. A <code>const</code> is not
+a default you can override: <code>duration</code> on <code>fal-ai/veo3.1/fast/extend-video</code> is
+a <code>const</code> <code>"7s"</code>, so a <code>"4s"</code> payload is a guaranteed 422 that field-name
+pre-flight pronounces healthy. If a <code>const</code> or <code>enum</code> excludes the value the
+job needs, the route cannot serve the request — move to the row that can before
+building a payload. <strong>If the slug fails, or the intent matches no row above,
+search the registry rather than guessing a name:</strong></p>
+<pre><code class="language-sh">genmedia models &quot;&lt;intent words&gt;&quot; --json
+genmedia pricing &lt;verified-endpoint-id&gt; --json
+</code></pre>
+<p>In a connected MCP host, use its model discovery/recommendation and pricing tools.
+Check the caller's actual access before choosing a route. Then
+read the new endpoint's schema for its real field names before building a
+payload. Never assemble one from a sibling endpoint's parameters.</p>
+<h2>Submit, poll, deliver</h2>
+<ol>
+<li>Fetch the schema for the settled route and build the payload from that
+   schema's field names and enums only.</li>
+<li>Submit one run. Do not fan out into variants unless the user asked for them
+   and approved the multiplied cost — two 8s clips is two full bills.</li>
+<li>Poll to completion. Video jobs run minutes, not seconds, and 1080p or 4k can
+   take several — do not resubmit on slowness.</li>
+<li>On a 4xx, read the error before retrying. A rejected enum or unknown field is
+   a payload bug, not a transient failure — resubmitting unchanged fails again,
+   while a queued-then-failed render may already have been billed.</li>
+<li><strong>Check the clip moved, before you deliver it.</strong> A generation route can return
+   a technically valid video in which nothing happens — a frozen macro shot, a
+   still in a video container — and every other check in this skill passes it,
+   because they all ask whether the <em>source</em> survived. Liveness fails in the
+   opposite direction from preservation and neither implies the other.</li>
+<li>Deliver the URL, and state the route, final duration, resolution, whether
+   audio was generated, the measured motion figure from step 5, and the actual
+   cost.</li>
+</ol>
+<h3>The motion check, and why the obvious version does not work</h3>
+<p>Decode every frame. Take the mean absolute luminance difference of each adjacent
+pair, at the delivered resolution, and <strong>sum</strong> those within each one-second window
+at the delivered fps. Judge the <strong>minimum</strong> window, never the average — a clip
+that freezes only in its middle seconds must fail here, and averaging hides
+exactly that.</p>
+<p><strong>Do not ship a fixed floor.</strong> A hard-coded threshold is how this check fails
+while looking like it works: the same measure reads ~0.25 on a single adjacent
+pair of a visibly alive texture and ~8 as a summed one-second window, so a
+threshold without its window and its resolution attached is meaningless. Worse, a
+floor set below the route's own re-render noise passes anything: a sibling skill's
+liveness floor sat at 6 while its route's noise floor was ~70, and a confirmation
+run measured 69.64 and passed on a clip that had not changed at all.</p>
+<p>So calibrate, per route, before trusting the number:</p>
+<ol>
+<li><strong>Known-bad control.</strong> Build a deliberately frozen clip — one frame repeated
+   for the full duration, encoded through the same settings — and measure it. That
+   is your zero. If it does not read near zero, the measurement is broken, not the
+   clip.</li>
+<li><strong>Known-good control.</strong> Measure a clip you can see is moving. That is your
+   ceiling.</li>
+<li><strong>Set the floor between them, nearer the bad end</strong>, and record all three
+   numbers alongside the verdict. A verdict without its controls is an opinion.</li>
+</ol>
+<p>Report the figure, not a pass/fail: "min 1-second window 7.9, frozen control
+0.001, floor 2.0" is auditable. "Motion check: PASS" is not, and is what let a
+frozen shot reach a human reviewer.</p>
+<h2>Guardrails</h2>
+<ul>
+<li><strong>One retry, then change route — and the retry changes a named lever.</strong>
+  Resubmitting the same payload pays twice for the same failure. Move the lever
+  in the direction of the fault (a wandering LTX extension: <code>context</code> down and
+  the camera pinned in the prompt; a frozen or too-timid result wants the
+  opposite correction); if the second attempt fails the same way, move to the
+  named fallback rather than paying a third time.
+  <strong>This ceiling is per shot, and it is the one that gets broken.</strong> A real
+  production run took three attempts on a single shot, because on a multi-shot
+  job the count lives in your head instead of on the page. So keep it on the
+  page: track attempts per shot, and on the second failure stop retrying that
+  shot and either change route or take it to the review pause with the failure
+  named. Two attempts on eight shots is sixteen renders — the ceiling exists
+  because that is a bill, not a nuisance.</li>
+<li><strong>A shot prompt carries exactly one physical action.</strong> The same run lost three
+  renders to a shot brief that asked for two things at once — tie the bag <em>and</em>
+  set it by the window. Models do not refuse the second action, they blend it,
+  and the result reads as a mistake rather than a miss. One clear beat per clip;
+  if the idea needs two, that is two clips, which by the rule above is also the
+  cheaper way to get it.</li>
+<li><strong>Never raise duration to fit more of the idea in.</strong> Two 4s clips cost what
+  one 8s clip costs and give two attempts. Length is the user's creative
+  decision, not a quality lever.</li>
+<li><strong>A generative route redraws every frame — and that includes extend and
+  reframe, not just animating a still.</strong> If a logo, product, face or specific
+  room must survive <em>as itself</em>, nothing that passes through a generative model
+  preserves it. Extend can walk the subject out of frame: a product ad whose
+  hero drifts off-screen in the added seconds is a failed deliverable, so check
+  the extension holds the subject before delivering. Reframe fills the new
+  regions with invented picture — around people that means faces, torsos and
+  limbs that were never shot, a rights and approvals problem on advertising
+  footage, not a cosmetic one — and it re-renders the pixels that were already
+  correct, so logos and any burned-in text degrade. Keep motion small, keep
+  duration short, and check every generative output against the source before
+  delivering.</li>
+<li><strong>Reframe invents, crop discards — and the agent decides which by looking at
+  the frame, not by asking.</strong> A "vertical cut" can mean either. A crop is a
+  free ffmpeg operation that loses the edges; reframe is a paid render that
+  fabricates them. When the frame contains people, faces, logos or a product
+  that must survive as shot, default to the free crop whenever the subject fits
+  the target frame; reach for reframe when the scene must genuinely extend and
+  the frame tolerates invention. This is read off the footage itself — a user's
+  intake answer is evidence, not the verdict. State the choice, the rejected
+  alternative and both prices in the delivery note; the conditional <code>Framing</code>
+  header (Step 0) is the optional escalation and never blocks the run. And
+  upscaling does not restore missing content: from a 480p source, 4k output is
+  a clean 4k render of 480p detail.</li>
+<li><strong>Probe the source before spending, and not only for limits.</strong> <code>ffprobe</code> the
+  dimensions, duration, fps and audio track — several routes constrain input
+  video (Kling's element inputs cap at 200MB, 3–10s, 24–60fps), and an
+  out-of-bounds source fails after the upload, not before. Then check whether
+  the clip is a single take: an extend route continues only the <strong>last shot</strong>,
+  so on a multi-shot montage "extend this clip" silently means "extend the
+  final shot". Proceed on that reading, say which shot is being continued in
+  the delivery note, and size LTX's <code>context</code> to that shot alone.</li>
+<li><strong>Never substitute a route silently.</strong> Name the fallback and its different
+  rate in the reply.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

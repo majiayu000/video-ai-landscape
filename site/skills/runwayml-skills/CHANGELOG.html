@@ -78,10 +78,21 @@
 <meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/runwayml-skills/">runwayml-skills</a><span class="crumb">/</span><span class="crumb">CHANGELOG.md</span><button onclick="t()">🌓</button></nav>
 <main class="md"><h1>Changelog</h1>
+<h2>4.0.1</h2>
+<ul>
+<li>Added tool title annotations and improved skill instructions.</li>
+</ul>
+<h2>4.0.0</h2>
+<ul>
+<li>Runway Dev plugin bundles the hosted Dev MCP and seven refreshed integration/setup skills for Codex, Claude Code, and Cursor. Replit can use the same skills and a separate MCP install link.</li>
+<li>Setup guides browser sign-in or signup, account/project verification, and server-side application credentials.</li>
+<li><strong>Migration:</strong> The repository root is the Dev plugin, keeping the <code>runway-api</code> install ID and using the Runway Dev display name. Earlier skills and helpers are no longer shipped; older commit-pinned installs stay on their prior version until updated.</li>
+<li><strong>Claude plugin:</strong> Claude installs load <code>claude/</code>, which connects to the <code>/mcp/claude</code> endpoint without <code>create_avatar</code> and uses skill copies that leave live generations, Sessions, Recipe calls and Workflow invocations to the user's application.</li>
+<li>Allowlisted reproducible ZIP export without copied plugin trees, portable schema validation, packaging tests, and draft review cases.</li>
+</ul>
 <h2>3.0.0</h2>
 <ul>
 <li><strong>Breaking:</strong> Removed legacy <code>rw-integrate-*</code>, setup, compatibility, and static API-reference skills. Use <code>runway-dev</code> with the relevant <code>runway-dev-*</code> surface skill for application integration.</li>
-<li><strong>Direct API actions remain separate:</strong> <code>rw-generate-*</code>, <code>use-runway-api</code>, and <code>rw-check-org-details</code> remain available.</li>
 <li><strong>Durable guidance:</strong> Moved server-boundary, API-key, uploads, Characters UI, and lifecycle guidance into the new Dev Platform skill set.</li>
 </ul>
 <h2>2.2.0</h2>
@@ -98,9 +109,7 @@
 </ul>
 <h2>2.0.0</h2>
 <ul>
-<li><strong>Media generation:</strong> New <code>rw-generate-video</code>, <code>rw-generate-image</code>, <code>rw-generate-audio</code> skills that run Python scripts directly via <code>uv run</code> — no SDK setup required</li>
-<li><strong>Runnable scripts:</strong> Added <code>scripts/</code> directory with <code>generate_video.py</code>, <code>generate_image.py</code>, <code>generate_audio.py</code>, <code>list_models.py</code>, <code>get_task.py</code>, and shared <code>runway_helpers.py</code></li>
-<li><strong>Seedance 2 support:</strong> Added <code>seedance2</code> model across all generation scripts and skills (TTV, ITV, VTV, 36 credits/sec)</li>
+<li><strong>Seedance 2 support:</strong> Added <code>seedance2</code> model documentation (TTV, ITV, VTV, 36 credits/sec)</li>
 <li><strong>Plugin metadata:</strong> Updated descriptions and keywords for both Claude and Cursor plugins</li>
 </ul>
 <h2>1.1.0</h2>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>plugin-release · Runway 官方 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="plugin-release · Runway 官方 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/runwayml-skills/docs/plugin-release">
+<meta property="og:type" content="website">
+<meta property="og:title" content="plugin-release · Runway 官方 Skills">
+<meta property="og:description" content="plugin-release · Runway 官方 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/runwayml-skills/docs/plugin-release">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="plugin-release · Runway 官方 Skills">
+<meta name="twitter:description" content="plugin-release · Runway 官方 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/runwayml-skills/">runwayml-skills</a><span class="crumb">/</span><span class="crumb">docs/plugin-release.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Maintaining the Runway Dev plugin</h1>
+<p>Edit the root manifests, MCP configuration, and active <code>skills/</code> directly. The MCP server is hosted separately; this repository packages its connection and skills.</p>
+<p>The Claude plugin in <code>claude/</code> is a separate copy for Anthropic's directory policy. It connects to <code>https://dev.runwayml.com/mcp/claude</code>, which omits <code>create_avatar</code>, and its skills must not tell Claude to run live generations, Sessions, Recipe calls or Workflow invocations, or to create avatars. Mirror other skill changes into <code>claude/skills/</code>; the tests check the skill set, the endpoint and those restrictions.</p>
+<h2>Validate and build</h2>
+<p>Use Node.js 24.12 or newer:</p>
+<pre><code class="language-sh">npm --prefix tooling ci --ignore-scripts
+npm --prefix tooling run check
+npm --prefix tooling run typecheck
+mkdir -p .build/schemas
+curl --fail --silent --show-error https://agent-plugins.org/schemas/1.0.0/plugin.schema.json -o .build/schemas/plugin.schema.json
+curl --fail --silent --show-error https://agent-plugins.org/schemas/1.0.0/mcp.schema.json -o .build/schemas/mcp.schema.json
+shasum -a 256 -c tooling/scripts/portable-schemas.sha256
+npm --prefix tooling test
+npm --prefix tooling run build:plugin
+npm --prefix tooling run validate:plugin
+claude plugin validate claude/.claude-plugin/plugin.json
+claude plugin validate .claude-plugin/marketplace.json
+</code></pre>
+<p>The exporter writes <code>.build/runway-api-&lt;version&gt;.zip</code> from an explicit allowlist. CI checks the package; installation, OAuth, and marketplace acceptance require separate verification.</p>
+<p>If schema checksums change, review the upstream schema diff before updating <code>tooling/scripts/portable-schemas.sha256</code>.</p>
+<h2>Updating a release</h2>
+<ul>
+<li>Keep the version aligned in <code>plugin.json</code>, <code>claude/.claude-plugin/plugin.json</code>, <code>.cursor-plugin/plugin.json</code>, and <code>.claude-plugin/marketplace.json</code>. Update the changelog and manifest release notes.</li>
+<li>When adding skill resources, update the export allowlist in <code>tooling/scripts/build-dev-plugin.ts</code> and Cursor's explicit skill paths. Keep model contracts in linked current docs.</li>
+<li>Test installation, setup, authenticated tool calls, and reconnect behavior in each supported host. Keep the manifest's reviewer cases aligned with supported behavior; record results against the release commit outside the package.</li>
+</ul>
+<h2>Distribution</h2>
+<p>The install ID is <code>runway-api</code>; the display name is Runway Dev.</p>
+<ul>
+<li>Codex and ChatGPT use the portable ZIP; Codex also supports <code>.agents/plugins/marketplace.json</code>.</li>
+<li>Claude Code uses the root <code>.claude-plugin/marketplace.json</code>, whose entry points at <code>claude/</code>. Anthropic manages its official listing and commit pin, so merging here does not update that listing automatically; its source must point at the <code>claude/</code> folder.</li>
+<li>Cursor uses the root <code>.cursor-plugin/plugin.json</code> and native <code>.mcp.json</code>.</li>
+</ul>
+<p>Keep MCP configuration free of credentials. Check current <a href="https://developers.openai.com/plugins/deploy/submission">OpenAI</a> and <a href="https://cursor.com/docs/reference/plugins">Cursor</a> requirements when publishing an update.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

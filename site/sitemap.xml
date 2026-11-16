@@ -13,6 +13,7 @@
   <url><loc>https://video-vendor-skills.pages.dev/docs/skills-construction-2026-09-25</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/report/</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/research/higgsfield-cli-flow/</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/README</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/THIRD_PARTY_NOTICES</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/</loc></url>
@@ -124,10 +125,11 @@
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/mcp-builder/reference/evaluation</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/mcp-builder/reference/mcp_best_practices</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/mcp-builder/reference/node_mcp_server</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/mcp-builder/reference/node_mcp_server_v2</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/mcp-builder/reference/python_mcp_server</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/pdf/FORMS</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/pdf/REFERENCE</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/pdf/SKILL</loc></url>
-  <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/pdf/forms</loc></url>
-  <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/pdf/reference</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/pptx/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/skill-creator/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/anthropics-skills/skills/skill-creator/agents/analyzer</loc></url>
@@ -310,11 +312,23 @@
   <url><loc>https://video-vendor-skills.pages.dev/skills/elevenlabs-plugin/skills/mcp/agents-platform/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/elevenlabs-plugin/skills/mcp/creative-studio/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/README</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/distribution/gemini/GEMINI</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/distribution/openclaw/README</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/docs/cline</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/docs/consolidation</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/docs/distribution</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/docs/install</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/llms-install</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/branded-graphics/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/branded-graphics/references/production-guide</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/character-design/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/character-design/references/anchor-system</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/character-design/references/examples</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/character-design/references/prompt-patterns</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/character-sheet/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/character-sheet/references/production-guide</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/character-sheet/references/sheet-patterns</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/cinematography/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/cinematography/references/examples</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/cinematography/references/lighting-lens-color</loc></url>
@@ -323,7 +337,11 @@
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/commercial/references/examples</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/commercial/references/prompt-patterns</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/commercial/references/workflows</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/ecommerce-product-photography/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-audio-generation/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-audio-generation/references/production-guide</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-gamedev/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-media/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-models-catalog/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-models-catalog/references/audio-to-text</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-models-catalog/references/image-to-3d</loc></url>
@@ -335,6 +353,8 @@
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-models-catalog/references/text-to-image</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-models-catalog/references/text-to-video</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-models-catalog/references/video-to-video</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-motion-graphics/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-motion-graphics/references/production-guide</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-prompting/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-prompting/references/gpt-image-2</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-prompting/references/happy-horse</loc></url>
@@ -355,6 +375,14 @@
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-redesign/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-redesign/runtime/README</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-regenerate-3d/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-script-writer/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-script-writer/references/production-guide</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-shot-craft/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-shot-craft/references/production-guide</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-video-generation/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-video-generation/references/production-guide</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-video-production/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-video-production/references/production-guide</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-workflow/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-workflow/references/EXAMPLES</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-workflow/references/MODELS</loc></url>
@@ -368,18 +396,40 @@
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fan-cam/references/examples</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fan-cam/references/genmedia-commands</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fan-cam/references/prompt-contract</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/game-asset-production/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/genmedia/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/genmedia/references/full-reference</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/genmedia/references/production-plans</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/genmedia-workflow/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/genmedia-workflow/references/node-rules</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/genmedia-workflow/references/pipeline-patterns</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/genmedia-workflow/references/recipes</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/genmedia-workflow/references/utility-endpoints</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/h3-cinematic-prompter/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/h3-cinematic-prompter/references/breakdown-guidance-deluxe-100</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/h3-cinematic-prompter/references/camera-and-craft</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/h3-cinematic-prompter/references/examples</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/h3-cinematic-prompter/references/format-spec</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/h3-cinematic-prompter/references/production-guide</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/localize-and-repurpose/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/marketing/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/marketing/references/campaign-patterns</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/marketing/references/examples</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/marketing/references/workflows</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/model-routing/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/photo-editing/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/photo-editing/references/production-guide</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/product-ad-campaign/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/animation-craft</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/assembly</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/design</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/models</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/pitfalls</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/production-guide</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/sound</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/voice-and-host</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/storyboard-to-short-film/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/storytelling/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/storytelling/references/examples</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/storytelling/references/shot-planning</loc></url>
@@ -387,7 +437,12 @@
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/ugc/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/ugc/references/examples</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/ugc/references/formats</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/ugc/references/product-intake</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/ugc/references/workflows</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/video-compositing/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/video-compositing/references/production-guide</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/wrap-it-up/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/wrap-it-up/references/production-guide</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/.github/ISSUE_TEMPLATE/bug_report</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/.github/ISSUE_TEMPLATE/feature_request</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/.github/ISSUE_TEMPLATE/new_skill_request</loc></url>
@@ -426,6 +481,18 @@
   <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-brandkit/references/social-templates</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-brandkit/references/state-payloads</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-brandkit/references/typography</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-faceless-video/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-faceless-video/references/captions</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-faceless-video/references/channel-motion</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-faceless-video/references/creative</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-faceless-video/references/editing</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-faceless-video/references/picture-story</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-faceless-video/references/presenter</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-faceless-video/references/production</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-faceless-video/references/prompts</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-faceless-video/references/song</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-faceless-video/references/styles</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-faceless-video/references/talking-characters</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-generate/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-generate/references/marketing-ad-references</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-generate/references/marketing-avatars</loc></url>
@@ -445,7 +512,6 @@
   <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-soul-id/references/photo-guide</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-soul-id/references/troubleshooting</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-video-explainer/SKILL</loc></url>
-  <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-video-explainer/references/prompts</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-websites/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-websites/references/app-cover</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/higgsfield-skills/higgsfield-websites/references/app-flow</loc></url>
@@ -496,17 +562,20 @@
   <url><loc>https://video-vendor-skills.pages.dev/skills/runway-mcp-plugin/skills/runway-workflows/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/CHANGELOG</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/README</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/claude/skills/runway-dev/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/claude/skills/runway-dev-characters/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/claude/skills/runway-dev-model-routers/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/claude/skills/runway-dev-models/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/claude/skills/runway-dev-recipes/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/claude/skills/runway-dev-setup/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/claude/skills/runway-dev-workflows/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/docs/plugin-release</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/skills/runway-dev/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/skills/runway-dev-characters/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/skills/runway-dev-model-routers/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/skills/runway-dev-models/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/skills/runway-dev-recipes/SKILL</loc></url>
+  <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/skills/runway-dev-setup/SKILL</loc></url>
   <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/skills/runway-dev-workflows/SKILL</loc></url>
-  <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/skills/rw-check-org-details/SKILL</loc></url>
-  <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/skills/rw-generate-audio/SKILL</loc></url>
-  <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/skills/rw-generate-image/SKILL</loc></url>
-  <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/skills/rw-generate-video/SKILL</loc></url>
-  <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/skills/use-runway-api/AUTH</loc></url>
-  <url><loc>https://video-vendor-skills.pages.dev/skills/runwayml-skills/skills/use-runway-api/SKILL</loc></url>
 </urlset>

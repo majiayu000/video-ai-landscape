@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>distribution · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="distribution · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/fal-community-skills/docs/distribution">
+<meta property="og:type" content="website">
+<meta property="og:title" content="distribution · fal 社区 Skills">
+<meta property="og:description" content="distribution · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/fal-community-skills/docs/distribution">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="distribution · fal 社区 Skills">
+<meta name="twitter:description" content="distribution · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">docs/distribution.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Registry, Gemini CLI and OpenClaw distribution</h1>
+<p>These adapters prepare review files. The builder does not install clients, change
+agent settings, contact a registry or publish anything. Validation CI runs local
+checks only. The separate Registry publisher runs only through a manual dispatch.</p>
+<h2>Published packages and catalog status</h2>
+<p>The <a href="https://github.com/fal-ai-community/skills/releases/tag/v0.1.0">v0.1.0 library release</a>
+provides complete packages from source commit <code>dc48d7d7329b8fe3bb5fa696486d07e687905488</code>:</p>
+<ul>
+<li><a href="https://github.com/fal-ai-community/skills/releases/download/v0.1.0/fal-claude-v0.1.0.zip">Claude MCP archive</a></li>
+<li><a href="https://github.com/fal-ai-community/skills/releases/download/v0.1.0/fal-cli-v0.1.0.zip">CLI skill archive</a></li>
+<li><a href="https://github.com/fal-ai-community/skills/releases/download/v0.1.0/fal-gemini-v0.1.0.zip">Gemini extension archive</a></li>
+<li><a href="https://github.com/fal-ai-community/skills/releases/download/v0.1.0/fal-openclaw-v0.1.0.zip">OpenClaw bundle archive</a></li>
+<li><a href="https://github.com/fal-ai-community/skills/releases/download/v0.1.0/fal-library-v0.1.0.sha256">SHA-256 checksums</a></li>
+</ul>
+<p>Verify checksums before installation. The archives include the complete skill
+library and its source locks. The <a href="https://github.com/fal-ai-community/fal-grok-plugin/releases/tag/v0.2.0">Grok/Cursor v0.2.0 release</a>
+contains the compact plugin. Its marketplace synchronization or review remains
+pending; the release alone does not prove marketplace visibility.</p>
+<p>The <a href="https://github.com/cline/mcp-marketplace/issues/3593">Cline submission</a> is open
+for marketplace review. Users can connect the hosted MCP now with the
+<a href="cline.html">Cline setup guide</a>. ClawHub publication still requires publisher sign-in
+and ownership confirmation. The prepared ClawHub package is not published.</p>
+<h2>Build a review bundle</h2>
+<p>Use Python 3.10+ and a checkout with a reviewed commit:</p>
+<pre><code class="language-sh">python3 scripts/build-distribution.py --output /tmp/fal-distribution-review
+</code></pre>
+<p>The builder defaults to <code>HEAD</code>. To select another local commit, pass its full
+SHA with <code>--source-ref</code>. Uncommitted edits, ignored files and untracked files
+never enter the export. Commit intended changes before rebuilding.</p>
+<p>The builder reads Git blobs from that commit. It includes only the explicitly allowlisted
+client/Registry templates, the canonical tracked <code>skills/</code> tree, the license,
+and the two package/index helpers. It rejects symlinks and submodules in these
+inputs before materialization. Other tracked files in <code>distribution/</code> are not
+automatically exported; update the template allowlist for an intended addition.</p>
+<p>The destination must be absent or empty and outside the checkout. The output
+contains Registry metadata, a root-level Gemini extension, and an OpenClaw
+configuration example. Gemini defaults to the six-skill hybrid bundle: the fal
+router and five outcome guides, with specialist guidance retrieved through MCP.
+OpenClaw retains the complete library, including references, scripts and assets.
+The builder reuses the existing MCP package adapter.</p>
+<p>To export the complete Gemini library explicitly:</p>
+<pre><code class="language-sh">python3 scripts/build-distribution.py --gemini-bundle full --output /tmp/fal-distribution-full
+</code></pre>
+<p><code>distribution.lock.json</code> records the full source commit and each file's SHA-256.
+Inspect it before installation. Rebuild from the reviewed commit for release.
+Generation uses the connected fal account's credits. Local composition still
+requires the tools specified by each skill.</p>
+<h2>Official MCP Registry</h2>
+<p>The official identity is <code>io.github.fal-ai-community/mcp</code>. Publication uses GitHub
+Actions OIDC from this organization-owned repository. It needs no stored token,
+private key or DNS change. The public remote endpoint uses Streamable HTTP and
+browser OAuth. This entry requests no API key or static authorization header.
+Version <code>0.1.0</code> is active in the
+<a href="https://registry.modelcontextprotocol.io/v0.1/servers/io.github.fal-ai-community%2Fmcp/versions/latest">official Registry</a>.</p>
+<p><code>distribution/registry/server.json</code> follows the official <code>2025-12-11</code> schema.
+The complete schema fixture in <code>tests/fixtures/mcp-registry-server.schema.json</code>
+comes from the <a href="https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json">official schema URL</a>.
+Tests validate the file offline. No server source repository is declared because
+this repository contains skills and adapters, rather than the hosted server.</p>
+<p>To publish a reviewed version from <code>main</code>, run the <strong>Publish MCP Registry</strong>
+workflow. Enter <code>io.github.fal-ai-community/mcp</code> as the confirmation value. The
+workflow verifies the pinned publisher's Sigstore bundle and validates the
+metadata before authentication and publication. Pushes, pull requests and tags
+do not trigger it. Forks and other branches cannot run the publishing job.</p>
+<pre><code class="language-sh">gh workflow run publish-mcp-registry.yml --repo fal-ai-community/skills --ref main -f confirm=io.github.fal-ai-community/mcp
+</code></pre>
+<p>Check the <a href="https://registry.modelcontextprotocol.io/v0.1/servers/io.github.fal-ai-community%2Fmcp/versions/latest">latest Registry entry</a>
+after the workflow succeeds. Registry versions are immutable; update the
+metadata version before publishing a changed entry. See the
+<a href="https://github.com/modelcontextprotocol/registry/blob/main/docs/modelcontextprotocol-io/quickstart.mdx">remote-only quickstart</a>
+and <a href="https://github.com/modelcontextprotocol/registry/blob/main/docs/modelcontextprotocol-io/github-actions.mdx">OIDC publishing guide</a>.
+Publishing to the upstream Registry does not guarantee a curated client listing.</p>
+<h2>Gemini CLI</h2>
+<p>Install the <a href="https://github.com/fal-ai-community/fal-gemini-extension">published fal extension</a>:</p>
+<pre><code class="language-sh">gemini extensions install https://github.com/fal-ai-community/fal-gemini-extension
+</code></pre>
+<p>The adapter repository has a root manifest and the required
+<code>gemini-cli-extension</code> topic. Direct repository installation works now. Google
+gallery indexing remains pending; its documentation describes a daily crawl.</p>
+<p>The generated <code>gemini/</code> folder is an installable extension. By default, it carries
+<code>fal-media</code> and the five creative outcome guides. The full library remains in the
+community repository; model catalogs and specialist guidance load through live
+MCP tools when needed. No local runtime scripts or optional CLI installers are
+included in the hybrid bundle. Its manifest uses <code>httpUrl</code> for Streamable HTTP.
+Gemini discovers its <code>skills/</code> folders on demand.
+It requests no installation scripts, hooks or automatic tool approvals.</p>
+<p>For a local review installation, use an isolated Gemini profile:</p>
+<pre><code class="language-sh">fal_gemini_review_profile=$(mktemp -d)
+GEMINI_CLI_HOME=&quot;$fal_gemini_review_profile&quot; gemini extensions install /tmp/fal-distribution-review/gemini
+GEMINI_CLI_HOME=&quot;$fal_gemini_review_profile&quot; gemini extensions list
+GEMINI_CLI_HOME=&quot;$fal_gemini_review_profile&quot; gemini
+</code></pre>
+<p>Restart Gemini, then use <code>/mcp auth fal</code> when the client requests sign-in. Confirm
+that fal tools load before a generation task. Preserve any existing <code>fal</code> server
+configuration: Gemini's user settings can override the extension's MCP entry.
+The installer above changes only the temporary profile. It is not part of the
+builder. Keep the profile path if a later review session must reuse it.</p>
+<p>The repository root deliberately has no Gemini manifest. Therefore this checkout
+is not directly installable through <code>gemini extensions install &lt;repo-url&gt;</code>.
+Use the published adapter repository above, a release archive, or a locally built
+folder. Maintain the adapter through canonical exports rather than independent
+skill edits.
+See <a href="https://geminicli.com/docs/extensions/reference/">extension installation</a>
+and <a href="https://geminicli.com/docs/extensions/releasing/">gallery indexing</a>.</p>
+<h2>OpenClaw</h2>
+<p><code>openclaw/mcp.config.json</code> is a configuration fragment, not a replacement for a
+user's settings. Merge only the <code>mcp.servers.fal</code> entry into the chosen profile.
+Alternatively, use the current native CLI:</p>
+<pre><code class="language-sh">openclaw mcp add fal --url https://mcp.fal.ai/mcp-relay --transport streamable-http --auth oauth
+</code></pre>
+<p>This command changes the selected OpenClaw profile. The explicit <code>auth: "oauth"</code>
+field enables native OAuth; the URL alone does not enable it. For a running
+Gateway, use <strong>Settings → MCP → Sign in</strong> to authorize the shared connection.</p>
+<p>For CLI authorization, first stop the Gateway for the selected installation.
+The CLI login command runs offline and refuses a server without <code>auth: "oauth"</code>.
+Complete sign-in, then restart the Gateway if it was running:</p>
+<pre><code class="language-sh">openclaw mcp login fal
+openclaw mcp doctor fal --probe
+</code></pre>
+<p>Run these steps only for a requested installation. Do not put tokens in the
+fragment. See <a href="https://docs.openclaw.ai/cli/mcp/transports">OAuth transport requirements</a>
+for the current CLI workflow.
+Copy the generated <code>openclaw/skills/</code> folders into an empty workspace <code>skills/</code>
+directory when the complete library is wanted. Review collisions first. Keep
+the source lock beside the installed library. See <a href="https://docs.openclaw.ai/tools/mcp">native MCP setup</a>
+and <a href="https://docs.openclaw.ai/tools/skills">skill discovery</a>.</p>
+<h2>ClawHub bundle</h2>
+<p>Status: not published. Publisher sign-in and ownership confirmation remain pending.</p>
+<p>Publish the generated <code>openclaw/</code> folder as one <code>bundle-plugin</code>. It uses the
+supported Claude bundle format and contains all canonical skills and companions.
+The included MIT license remains with the package. Do not publish the five
+outcome folders alone: they reference companion skills and shared helpers.</p>
+<p>Preview the complete artifact with a pinned CLI before publication:</p>
+<pre><code class="language-sh">npx --yes clawhub@0.25.1 package publish /tmp/fal-distribution-review/openclaw --family bundle-plugin --bundle-format claude --name @fal-ai-community/creative-suite --owner fal-ai-community --version 0.1.0 --source-repo fal-ai-community/skills --source-commit REVIEWED_FULL_COMMIT_SHA --source-path distribution/openclaw --changelog &quot;Initial complete creative workflow bundle&quot; --dry-run
+</code></pre>
+<p>Replace <code>REVIEWED_FULL_COMMIT_SHA</code> with the commit recorded in the generated
+source lock. The source repository and exporter are canonical; publication uploads
+the reviewed generated bundle, including the complete <code>skills/</code> tree. The source
+path names the adapter templates, not a separately maintained skill library.</p>
+<p>Confirm the authenticated publisher can manage <code>@fal-ai-community</code> before
+removing <code>--dry-run</code>. Do not publish under an unrelated personal owner or claim a
+third-party listing. After approval and successful publication checks, users can
+install the complete package:</p>
+<pre><code class="language-sh">openclaw plugins install clawhub:@fal-ai-community/creative-suite
+</code></pre>
+<p>Then authorize the fal MCP connection using the OpenClaw setup above. Installation
+does not grant automatic approval for paid generations. No publisher workflow or
+credential is added to this repository.</p>
+<p>See <a href="https://docs.openclaw.ai/plugins/bundles">bundle mapping</a> and
+<a href="https://docs.openclaw.ai/clawhub/publishing">ClawHub publishing</a>.</p>
+<h2>Required runtime checks before publication</h2>
+<p>Record the client and CLI versions. Test browser sign-in, tool discovery, schema
+and price reads, refresh, reconnect and result delivery. Use an approved budget
+for a real generation task. Verify long jobs without duplicate submissions.
+The local tests prove bundle integrity and manifest contracts. They do not prove
+OAuth interoperability, generation quality or marketplace acceptance.</p>
+<h2>Goose</h2>
+<p>The current Goose contributor instructions retire new third-party directory
+entries. Use the official Registry route instead of a directory PR. For a
+requested local installation, open <code>goose configure</code>, choose Add Extension, then
+Remote Extension (Streamable HTTP). Enter <code>https://mcp.fal.ai/mcp-relay</code> and complete
+the browser OAuth flow when requested. The current client handles discovery and
+client registration. Do not supply a client identifier from another installation.</p>
+<p>For a session-only connection:</p>
+<pre><code class="language-sh">goose session --with-streamable-http-extension &quot;https://mcp.fal.ai/mcp-relay&quot;
+</code></pre>
+<p>See the <a href="https://github.com/aaif-goose/goose/blob/main/documentation/docs/getting-started/using-extensions.md">current extension guide</a>
+and <a href="https://github.com/aaif-goose/goose/discussions/10830">directory retirement discussion</a>.
+No Goose catalog submission or authenticated runtime check is performed here.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>production-guide · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-script-writer/references/production-guide">
+<meta property="og:type" content="website">
+<meta property="og:title" content="production-guide · fal 社区 Skills">
+<meta property="og:description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-script-writer/references/production-guide">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="production-guide · fal 社区 Skills">
+<meta name="twitter:description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/fal-script-writer/references/production-guide.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Script Writer</h1>
+<p><strong>Revision 2026-10-28a.</strong> Name this revision in the delivery; an upload that
+cannot quote it is an older copy of this skill.</p>
+<p>A script for generated video is not a screenplay. Every shot is synthesised
+independently by a model that has never seen the shot before it, so an unbroken
+take, an "as previously", or a page of two-hander dialogue are all instructions
+nothing downstream can execute. What ships is a <strong>shot table</strong>: discrete
+generatable rows, a duration on each, a word-counted voiceover line, and an
+explicit statement of what carries from the row above. Two modes, chosen once
+and never mixed — <strong>Cinematic</strong> (acts, a turn, a resolution) and <strong>Ad</strong> (beats,
+a clock, an offer) — and both feed <code>fal-video-production</code> when the ask is a whole
+assembled ad, or <code>fal-video-generation</code> (one row, one clip),
+<code>fal-audio-generation</code> (one clip per row, length-constrained) when it is not;
+the continuity column stays in the table (a dedicated blocking skill is not
+published).</p>
+<h2>What makes this different from writing for camera</h2>
+<ol>
+<li><strong>Discrete shots, or nothing usable.</strong> Write each row so it could be
+   generated by someone who has read only that row; anything it needs from
+   earlier — a face, a jacket, a kitchen, the time of day — is named again
+   inside it. "Continues from before" generates a different scene.</li>
+<li><strong>Timing is arithmetic, not feel.</strong> Words per second is a number. Budget the
+   script before writing a line of it (Step 1); hold every row to its cap.</li>
+<li><strong>On-camera dialogue is the expensive way to say anything.</strong> Lip-sync is the
+   least reliable thing a video model does, and it spends a whole clip on a
+   talking head. <strong>Default to VO over visuals</strong>; reserve on-camera speech for a
+   line whose value is the performance, and give it its own row.</li>
+</ol>
+<h2>Step 0 — Intake, once</h2>
+<p><strong>One bundled <code>ask_user_questions</code> call for intake</strong> (if your host has no question tool, ask the same questions in one plain message, then in the same turn take the card's
+stated no-answer action and say so), covering all five items
+below. If the brief already answers everything, make <strong>zero</strong> calls and go to
+Step 1. Conditional cards that fire later have their own budget — see the card
+roster at the end of this step.</p>
+<ol>
+<li><strong>Mode</strong> (header <code>Mode</code>) — <code>Cinematic / narrative</code> or <code>Ad / commercial</code>.</li>
+<li><strong>Target duration</strong> (header <code>Length</code>) — <code>15s</code>, <code>30s</code>, <code>60s</code>, <code>90s</code>, or free
+   text in seconds.</li>
+<li><strong>Voice</strong> (header <code>Voice</code>) — <code>VO over visuals</code> (default), <code>On-camera
+   dialogue</code>, or <code>No words — visuals and music only</code>.</li>
+<li><strong>Delivery aspect</strong> (header <code>Aspect</code>) — <code>16:9</code>, <code>9:16</code>, <code>1:1</code>.</li>
+<li><strong>The brief</strong> (free text) — product or premise, audience, tone, must-say
+   lines, and any claim the user wants stated.</li>
+</ol>
+<p>Fill any blank from this table, never re-ask, and list every fill at delivery.</p>
+<table>
+<thead>
+<tr>
+<th>Unanswered</th>
+<th>Use</th>
+<th>Unless</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Mode</code></td>
+<td><code>Ad / commercial</code></td>
+<td>the brief names a character or a story → <code>Cinematic</code></td>
+</tr>
+<tr>
+<td><code>Length</code></td>
+<td><code>30s</code> for an ad, <code>60s</code> for cinematic</td>
+<td>a platform is named → its native length</td>
+</tr>
+<tr>
+<td><code>Voice</code></td>
+<td><code>VO over visuals</code></td>
+<td>the brief quotes a character speaking</td>
+</tr>
+<tr>
+<td><code>Aspect</code></td>
+<td><code>16:9</code></td>
+<td>a vertical platform is named — TikTok, Shorts, Reels, Stories → <code>9:16</code>; a bare "social media" with no platform is the one case that keeps <code>Aspect</code> on the intake card</td>
+</tr>
+<tr>
+<td><code>Rate</code> (never asked)</td>
+<td><code>2.8</code></td>
+<td>tone is luxury/sombre → <code>2.3</code>; retail urgency → <code>3.3</code></td>
+</tr>
+<tr>
+<td>Brief detail</td>
+<td>invented, then flagged</td>
+<td>see below</td>
+</tr>
+</tbody>
+</table>
+<h3>Step 0b — Read the brief back before you write it</h3>
+<p><strong>A brief can be perfectly clear and still not fit.</strong> Do this before writing a
+line, and report it in the reply whether or not anything is wrong — a triage that
+only speaks up on failure trains the reader to skip it.</p>
+<p>Four questions, in this order:</p>
+<ol>
+<li><strong>Does the beat list fit the shot budget?</strong> Count the distinct visual beats the
+   brief asks for — every named location change, every new object introduced, every
+   escalation step. Compare that to the shot budget from Step 1 —
+   <code>target ÷ 4s</code> at default pacing, more when a fast-paced brief buys
+   short cuts. Report the ratio. <strong>Over-subscription is the most common brief defect and it is
+   invisible until assembly</strong>: a 30-second piece naming twelve beats has seven
+   shots to hold them, so five beats will be dropped by <em>someone</em>, and it should be
+   the author rather than whoever renders it. Name which beats you would merge or
+   cut, in priority order, and why.</li>
+<li><strong>Is every structurally required moment actually a shot?</strong> A piece that turns on
+   a change — a transformation, a reveal, a before-and-after — needs the <em>causing
+   moment</em> to be its own shot, and needs the shots either side to make the change
+   legible. If the brief names the cause but the budget leaves no room to build to
+   it, say so: the cause will read as arbitrary, and no amount of execution fixes a
+   pivot that had nothing leading into it.</li>
+<li><strong>Does anything the brief insists on have no room at all?</strong> A character who must
+   appear, a product that must be seen, a line that must be said. Each needs a
+   shot or a window. If the budget is already full, that requirement is in conflict
+   with the beat list, and the author chooses — not you, silently.</li>
+<li><strong>What is genuinely underspecified?</strong> Not "vague" — <em>unexecutable</em>. A brief can
+   set a mood in one line and be entirely shootable. What matters is anything a row
+   cannot be written without: what the thing looks like, where it is, what
+   physically happens, and what carries from the row before.</li>
+</ol>
+<p><strong>Then, if any answer is a conflict, ask once.</strong> One card, header <code>Scope</code>,
+declared in the roster at the end of this step. Put your recommended cut list in
+the question text and offer <code>Use your cuts</code> / <code>Extend the runtime</code> / <code>I'll revise
+the brief</code>. <strong>With no answer, take your own cut list and proceed</strong> — the beats you
+dropped and the reason are then part of the delivery, not a silent loss. Never
+stall a script on this; an over-subscribed brief still produces a shootable piece,
+it just produces a shorter one than the author imagined.</p>
+<p><strong>When you have to invent.</strong> Count how many of these four the brief leaves
+open: the product's benefit, the character's want, the offer, a claim. That
+list is exhaustive — tone and audience are style choices the defaults table
+already covers, not inventions. <strong>Two or fewer:</strong> invent, write, list them at
+delivery as assumptions. <strong>Three or more, or an invented benefit or offer:</strong>
+raise the <code>Assumptions</code> card — its text your drafted list in full, options
+<code>Use these</code> / <code>Change them</code>. Unanswered, proceed with the drafted list and mark
+it unconfirmed at delivery.</p>
+<p><strong>Every card this skill can ever raise, declared here.</strong> Ask with a card (on a host with no question tool, one plain message, then in
+the same turn take the card's stated no-answer action and say so); never treat
+an unanswered message as an answer. The first row is the intake
+bundle above; the other four are conditional: each fires only when its
+condition holds, and none of them blocks, because its row states the action
+taken when no answer comes, so the pipeline never stalls on a card.</p>
+<table>
+<thead>
+<tr>
+<th>Header</th>
+<th>Fires when</th>
+<th>Without an answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>header <code>Mode</code> / <code>Length</code> / <code>Voice</code> / <code>Aspect</code> (the intake bundle)</td>
+<td>the brief leaves any of the five items open</td>
+<td>fill from the defaults table</td>
+</tr>
+<tr>
+<td>header <code>Scope</code></td>
+<td>Step 0b finds the beat list over-subscribed against the shot budget, or a required moment with no room</td>
+<td>take the drafted cut list and proceed; the dropped beats and the reason go in the delivery</td>
+</tr>
+<tr>
+<td>header <code>Assumptions</code></td>
+<td>three or more inventions, or an invented benefit or offer</td>
+<td>proceed with the drafted list, marked unconfirmed at delivery</td>
+</tr>
+<tr>
+<td>header <code>Claim substantiation</code></td>
+<td>supplied copy carries a regulated or superlative claim and the brief asserts no sign-off (Step 3)</td>
+<td>the claim does not ship — Step 3 states exactly what is delivered instead</td>
+</tr>
+<tr>
+<td>header <code>Must-say budget</code></td>
+<td>must-say lines alone exceed the target's word budget (guardrails)</td>
+<td>deliver at the next length up, every line verbatim, override flagged first</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Call arithmetic: at most two <code>ask_user_questions</code> calls per run.</strong> The intake
+bundle is the first; every conditional card that fires goes into <strong>one</strong> second
+call, bundled. The cap counts calls, not questions.</p>
+<p>If <code>Voice</code> is <code>No words</code>, write <code>—</code> in the VO and <code>W</code> columns; every word-count
+check in Step 5 is then <code>n/a</code>, which is a pass.</p>
+<h2>Step 1 — The word budget, before a word is written</h2>
+<p>Speaking rate, words per second: <strong>2.3</strong> measured/premium/sombre · <strong>2.8</strong>
+conversational — <strong>the default</strong>, and roughly what TTS returns at default speed
+· <strong>3.3</strong> urgent retail or fast comedy, above which you cut copy instead. Apply
+a <strong>0.9 headroom factor</strong> so lines land inside their shot rather than butting
+the cut, making every budget here <code>floor(seconds x rate x 0.9)</code> — applied to the
+whole script and to each shot's <code>Cut</code>. At the 2.8 default: <strong>30s carries 75
+words, total.</strong> 15s carries 37. 60s carries 151. An 8-second shot carries 20. A
+2-second hook carries <strong>five</strong>.</p>
+<p>Compute it in one sandbox pass, never by eye — one mechanism, so the numbers in
+the delivered table are the numbers you checked:</p>
+<pre><code class="language-python">rate, cuts = 2.8, [2.0, 4.0, 10.0]          # cut seconds, one per shot
+print([int(s * rate * 0.9) for s in cuts], sum(cuts), int(sum(cuts) * rate * 0.9))
+</code></pre>
+<h3>Cut length is not generated length</h3>
+<p>A model generates in the lengths its endpoint allows, not the length your beat
+wants. Verified against the live schemas: <strong>H3 Max, the default route, takes a
+number of seconds from <code>0.92</code> to <code>15</code></strong> (decimals allowed; the output can run
+about 0.7s longer than asked), so a 2-second hook is generated at 2 seconds.
+Most fallbacks floor higher (Wan 3.0 Prime takes integers from <code>2</code>): <strong>Seedance 2.5, the cross-family fallback, takes
+whole seconds <code>4</code> to <code>30</code></strong> (bare integers as strings — <code>"4"</code>, not <code>"4s"</code>;
+Seedance 2.0 stops at <code>15</code>); <strong>Veo 3.1 Fast takes only <code>4s</code>,
+<code>6s</code> or <code>8s</code></strong> and defaults to <code>8s</code>; <strong>Kling v3 Pro takes <code>3</code> to <code>15</code></strong>, default
+<code>5</code>; base MiniMax H3 takes integers <code>5</code> to <code>15</code>. On those routes a 2-second hook
+is generated at the route's shortest allowed length and trimmed in the edit.</p>
+<p><strong>Pacing sets your shot budget; the route floor prices it.</strong> At default pacing
+<code>Cut ≈ Gen</code> at about 4 seconds a shot, so a 30-second piece holds about <strong>7</strong>
+shots. A fast-paced brief — TikTok, frenetic, montage — is allowed to break that
+ceiling the way the hook already does: every row cut at 1–2.5 seconds. On H3 Max
+<code>Gen</code> can then match <code>Cut</code>; on a fallback route each row is generated at the
+route's minimum, so eight quick shots in a 15-second ad bill about 32 generated
+seconds on Seedance or Veo. Either way the budget is set by cost rather than
+arithmetic, so report the generated total in the delivery and let the shot count
+follow the brief's energy. A beat list that exceeds even that is cut
+by the author in Step 0b, never silently at assembly.</p>
+<p><strong>Default to the route <code>fal-video-generation</code> actually uses, which is H3 Max</strong>
+— do not re-derive a route from this paragraph. Rows with photoreal people still plan on H3 Max;
+a shot H3 Max refuses moves to Veo 3.1 Fast (<code>4s</code>/<code>6s</code>/<code>8s</code>) per
+<code>fal-video-generation</code>'s moderation rule, so say in the delivery that such a
+row's <code>Gen</code> may rise to the next Veo length (4s, 6s or 8s; 8s for a reference
+row) at Veo 3.1 Fast's rate, so quote that cost too; a row that fails <code>fal-video-generation</code>'s Veo fit test goes back to the user if refused. This skill picking a different one
+silently overrides the video skill's whole routing table: a run whose rows were
+planned against Veo's three-value enum came back <code>4/4/8/8/6/4</code> for a
+<code>2/4/8/8/5/3</code> contract and had to be rescued by trimming, purely because this step
+named Veo first. Choose otherwise only for a stated reason — a row cut longer than
+8s excludes Veo; a row that must render under 4s rules out Seedance and Veo, under 5s also rules out base H3, and under 6s rules out LTX 2.5 — and say which route you
+took and why, so the video skill can honour it rather than re-decide.</p>
+<p>Every row therefore carries two numbers: <code>Cut</code>, what the finished video uses and
+what must sum to target, and <code>Gen</code>, what to ask the video skill for, with
+<code>Gen &gt;= Cut</code> always and <code>Gen</code> a length the route actually offers.</p>
+<p><strong>One rule for choosing <code>Gen</code>, not three.</strong> Take the shortest allowed length that
+is at least <code>Cut</code>, on the route the video skill will use. Confirm the route's
+allowed lengths from its schema rather than from this paragraph — these change,
+and an earlier draft of this skill asserted Veo was fixed at 8 seconds, which the
+schema disproves. If the route is genuinely undecided, pick the candidate whose
+allowed lengths cover your <strong>longest</strong> <code>Cut</code> — Veo 3.1 Fast caps at 8s, so any
+row cut longer than that excludes it — then take every row's <code>Gen</code> from that
+one route's schema, and say which routes you checked.</p>
+<h2>Step 2A — Cinematic mode</h2>
+<p>Write four one-sentence lines first — the reason the shots are in that order,
+and part of the delivery.</p>
+<ul>
+<li><strong>Premise</strong> — who, where, and what is about to be disturbed.</li>
+<li><strong>Want</strong> — what the character is chasing, visible in action.</li>
+<li><strong>Need</strong> — what they actually lack. Want and need must not be the same thing.</li>
+<li><strong>Turn</strong> — the single moment the want stops working. Name the shot number.</li>
+</ul>
+<p>Then shape the rows: <strong>setup</strong> (the world, plus the want made physical) →
+<strong>pressure</strong> (the want fails once) → <strong>the turn</strong> → <strong>escalation</strong> (a costlier
+attempt) → <strong>resolution</strong> (the need answered, or refused). At 60s that is
+roughly 8s / 16s / 8s / 16s / 12s; scale proportionally. Under 30 seconds drop
+escalation, not the turn — a piece with no turn is a mood reel. Cast <strong>two
+speaking characters at most</strong>, each with a one-word ALL-CAPS tag reused verbatim
+in every row, so staging can be read off the table as-is.</p>
+<table>
+<thead>
+<tr>
+<th>Symptom in the draft</th>
+<th>What is actually wrong</th>
+<th>Structural fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Every row is the same temperature</td>
+<td>no turn; the want never fails</td>
+<td>show the want <em>working</em> in row 1, then break it at the midpoint</td>
+</tr>
+<tr>
+<td>The last row explains itself in VO</td>
+<td>the need was never dramatised</td>
+<td>give the resolution a physical action that only reads if the need was met — then delete the line</td>
+</tr>
+<tr>
+<td>The middle rows are interchangeable</td>
+<td>repetition posing as escalation</td>
+<td>each attempt costs more than the last; raise the price, not the volume</td>
+</tr>
+<tr>
+<td>Two characters talk for three rows</td>
+<td>dialogue is carrying the plot</td>
+<td>convert to VO over visuals, keep at most one on-camera line</td>
+</tr>
+<tr>
+<td>Nothing can be cut to reach target</td>
+<td>two premises in one piece</td>
+<td>delete the second premise, never the turn</td>
+</tr>
+</tbody>
+</table>
+<h3>Cinematic output template — fill and hand over as-is</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Slug</th>
+<th>Cut</th>
+<th>Gen</th>
+<th>Action (shot seed)</th>
+<th>Dialogue / VO</th>
+<th>W</th>
+<th>Carries in</th>
+<th>Audio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3</td>
+<td>INT. GARAGE — NIGHT</td>
+<td>8s</td>
+<td>8s</td>
+<td>MAYA, 30s, oil-stained grey coveralls, kneels beside a stripped motorbike under one caged worklight; she stops turning the wrench and looks at the empty doorway. Slow push-in, waist to chest.</td>
+<td>VO (MAYA): <em>He never once came down here.</em></td>
+<td>6</td>
+<td>WARDROBE grey coveralls, LOCATION garage, PROP stripped motorbike, TIME night — all restated in this row</td>
+<td>worklight hum, distant rain</td>
+</tr>
+</tbody>
+</table>
+<h2>Step 2B — Ad mode</h2>
+<p>Six beats, budgeted at 30s and rate 2.8. At any other length: drop the beats
+the <code>Cut it when</code> column names, scale each surviving <code>Cut</code> by <code>target / 30</code> in
+whole seconds — trimming or padding <strong>Demo</strong> so the column still sums exactly —
+then recompute every <code>Words</code> cap with the Step 1 formula. When supplied
+verbatim copy fixes a row's word count instead, invert that arithmetic and
+derive the duration from the words: <code>Cut = ceil(W / (rate x 0.9))</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Beat</th>
+<th>Job</th>
+<th>30s cut</th>
+<th>Words</th>
+<th>Cut it when</th>
+<th>Fold into</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hook</td>
+<td>Stop the scroll. One image, one idea.</td>
+<td>2s</td>
+<td>5</td>
+<td>never</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Problem</td>
+<td>The cost of not having it, shown not stated.</td>
+<td>4s</td>
+<td>10</td>
+<td>length ≤ 15s</td>
+<td>the hook, as the "before" half</td>
+</tr>
+<tr>
+<td>Demo</td>
+<td>The product doing the thing. The only mandatory beat.</td>
+<td>10s</td>
+<td>25</td>
+<td>never</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Proof</td>
+<td>Why believe it — but see Step 3.</td>
+<td>6s</td>
+<td>15</td>
+<td>no substantiated claim exists</td>
+<td>drop entirely, extend Demo</td>
+</tr>
+<tr>
+<td>Offer</td>
+<td>What to do, where, by when.</td>
+<td>5s</td>
+<td>12</td>
+<td>brand film with no CTA</td>
+<td>the tagline card</td>
+</tr>
+<tr>
+<td>Tagline</td>
+<td>Logo, line, hold.</td>
+<td>3s</td>
+<td>7</td>
+<td>never</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Durations sum to 30s; words sum to 74, inside the 75-word budget.</p>
+<p><strong>Beats are not shots.</strong> At fast pacing — TikTok, frenetic — a beat, usually
+Demo, splits into several rows of 1–2.5 second cuts (a montage), each generated
+at its <code>Cut</code> on H3 Max (at the route floor and trimmed on a fallback), each row still one action with its anchors
+restated. The beat's words divide across its rows and the caps apply per row.</p>
+<p><strong>When verbatim copy consumes the clock at full length</strong> — nothing in <code>Cut it
+when</code> fires, yet must-say words leave no room for six beats — verbatim copy
+outranks beat count. Fold beats using their own <code>Fold into</code> cells, in the order
+Problem, then Proof, then Offer, until the remaining rows fit, and name every
+fold in the delivery.</p>
+<p><strong>The hook is not an intro.</strong> Five words and one legible image; a logo sting in
+the first two seconds spends the hook on a beat the tagline already owns.</p>
+<h3>Ad output template — fill and hand over as-is</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Beat</th>
+<th>Cut</th>
+<th>Gen</th>
+<th>Visual (shot seed)</th>
+<th>VO</th>
+<th>W</th>
+<th>On-screen text</th>
+<th>Carries in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Hook</td>
+<td>2s</td>
+<td>2s</td>
+<td>Overhead macro, matte-black kettle on pale oak, a single drip hangs off the spout and falls into a white cup. Locked off, no camera move.</td>
+<td>Ninety seconds. That's it.</td>
+<td>4</td>
+<td><strong>90 SECONDS</strong> lower third</td>
+<td>opens the film — nothing carries in. PRODUCT matte-black kettle and SURFACE pale oak established here and restated in every later row</td>
+</tr>
+</tbody>
+</table>
+<p><code>Gen</code> here assumes H3 Max; on a fallback it is the route floor (2s Wan, 3s Kling, 6s LTX 2.5, 4s Seedance or Veo, 5s base H3).</p>
+<h2>Step 3 — Continuity, and claims</h2>
+<p><strong>The <code>Carries in</code> column is the only continuity that exists.</strong> Write it as
+named, describable properties — <code>WARDROBE</code>, <code>LOCATION</code>, <code>PROP</code>, <code>TIME</code>,
+<code>PALETTE</code>, character tag — each restated inside that row's shot seed. Two tags
+may depend on something stronger, and both are planned, never assumed:</p>
+<ul>
+<li><strong><code>FRAME</code></strong> — starts on the previous row's last frame. Downstream extracts
+  that frame and passes it as the start image to an image-to-video route. Cap
+  at one <code>FRAME</code> link per script unless the user asks for more.</li>
+<li><strong><code>MAP</code></strong> — two or more characters whose positions must not swap. Record per
+  row each character's screen side, facing and eyeline in <code>Carries in</code>, and
+  keep them identical across rows that cut together.</li>
+</ul>
+<p>Anything else reading as "same as the last shot" is a defect; Step 5 greps for it.</p>
+<p><strong>Claims.</strong> An ad script puts words in a brand's mouth. <strong>Never invent</strong> a
+statistic, a percentage, a superlative (<code>best</code>, <code>#1</code>, <code>fastest</code>), a comparative
+(<code>twice as long as</code>), an award, a rating, a review or an endorsement — not as a
+placeholder, not as an example, not in on-screen text where it reads as fine
+print. If Proof has nothing substantiated to say, cut it per the beat table.</p>
+<p><strong>A claim the user typed is not a claim the user can make.</strong> Where supplied copy
+touches health, safety, medical, financial or environmental territory, or any
+superlative or comparative, it needs substantiation — and you make that call by
+reading the copy itself, never by reading an intake answer. Two sources satisfy
+it:</p>
+<ul>
+<li><strong>The brief asserts a sign-off</strong> — "legal signed off on this exact wording",
+  "we hold the study". That counts as answered; record the assertion as the
+  source in check 8.</li>
+<li><strong>The <code>Claim substantiation</code> card</strong> (header declared in Step 0), listing each
+  such line verbatim, options <code>We hold evidence for all of these</code> / <code>Remove
+  them</code> / <code>I'll revise them</code>.</li>
+</ul>
+<p>An unsubstantiated claim does not ship — even verbatim, even must-say;
+substantiation outranks the must-say guardrail. With neither source, deliver
+the script with that line omitted, mark its row, list the omission in the
+delivery note, and raise the card so an answer can reinstate the line in a
+revision. Never stall the run waiting on the card.</p>
+<h2>Step 4 — Write the rows</h2>
+<ol>
+<li>Fill <code>Cut</code> for every row and make the column sum to target <strong>before</strong> writing
+   any copy — copy expands to fill the space it is given. Then compute each
+   row's <code>W</code> cap with the Step 1 script.</li>
+<li>Write the VO line and count it. Over cap, cut words — never raise the rate,
+   never lengthen the shot to fit the line.</li>
+<li>Write the shot seed as a self-contained visual: subject, wardrobe, location,
+   light, framing, camera move. Present tense, one action, and everything the
+   <code>Carries in</code> cell names restated in full. Find <code>fal-shot-craft</code> with
+   <code>search_guidance</code> and load it with <code>read_guidance</code> (<code>kind: "skill"</code>, with the returned <code>id</code> and <code>version_id</code>) for how to word it — slot-composed framing, a motivated or
+   explicitly locked camera, the specific gesture rather than the named
+   emotion — and print its validator lines per row. If it will not load,
+   this item's minimums stand and the delivery says the craft reference was
+   unavailable.</li>
+<li>Fill <code>On-screen text</code> (ad) with the literal string to burn, or <code>—</code>; under six
+   words, echoing the VO rather than duplicating it. Then fill <code>Gen</code>.</li>
+</ol>
+<h2>Step 5 — Verification: arithmetic, not taste</h2>
+<p>Run all of these and answer each explicitly. Checks 6 to 9 are conditional; an
+inapplicable check is <code>n/a</code>, which is a pass.</p>
+<ol>
+<li><strong>Every row has a numeric <code>Cut</code>.</strong> No blanks, no ranges, no "approx".</li>
+<li><strong><code>Cut</code> sums to the target</strong>, exactly, and report the sum. A 31s cut of a
+   30s spot is a fail, not a rounding.</li>
+<li><strong>Every row has <code>Gen &gt;= Cut</code></strong>, and <code>Gen</code> is a length the route can produce.</li>
+<li><strong>Per-row words <code>&lt;= floor(Cut x rate x 0.9)</code>.</strong> List every row and its cap;
+   one overrun fails the check.</li>
+<li><strong>Total VO words <code>&lt;= floor(target x rate x 0.9)</code>.</strong> Report both numbers.</li>
+<li><em>(any row depending on an earlier one)</em> <strong>No <code>Carries in</code> cell says
+   "continues", "same as above", "as before", or names the previous shot's final
+   frame</strong> — unless tagged <code>FRAME</code> and planned in Step 3. Grep the <code>Carries in</code>
+   column only; a whole-document grep flags the sentence reporting this check.</li>
+<li><em>(ad only)</em> <strong>Hook <code>Cut</code> &lt;= 2.0s and hook words &lt;= 5</strong>, and no logo or brand
+   name occupies row 1's visual. The restriction is the image only — the VO may
+   name the brand, since a must-say line is allowed to open the film.</li>
+<li><em>(any claim present)</em> <strong>Every number, superlative and comparative traces to a
+   user-supplied line Step 3 records as substantiated</strong> — a sign-off asserted in
+   the brief, or an answered <code>Claim substantiation</code> card. List them with their
+   sources; a size, volume or count printed on the product counts as substantiated, with the label as its source; a printed performance, health or safety figure ("SPF 50", "24 h cold") still needs substantiation. A line Step 3 withheld appears nowhere, including
+   on-screen text.</li>
+<li><em>(on-camera dialogue only)</em> <strong>No row has two speaking characters</strong>, and every
+   on-camera line sits in a row of at least 3s. Count the rows with dialogue: if
+   it is most of them, the piece should have been VO.</li>
+</ol>
+<p>Fix and re-run. If a script fails check 2 or 4 twice, the target length is wrong
+for the piece. Do not compress a third time: write the script at the next length
+up (15s → 30s → 60s → 90s), deliver it with the override flagged first in the
+delivery, and list what staying at the brief's length would have required
+cutting. This escalation needs no answer from anyone; when the cause is must-say
+overflow, the <code>Must-say budget</code> card is optional and additive on top of it.</p>
+<h2>Step 6 — Deliver</h2>
+<p>Hand back, in order: mode and target; the four cinematic lines or the beat
+budget; the filled table; the Step 5 numbers; then the hand-off. Name every
+field filled from the defaults table, and everything invented.</p>
+<p><strong>If the brief is a whole finished ad, hand off once, not three times.</strong> A request
+that wants clips <em>and</em> narration <em>and</em> music <em>and</em> on-screen text assembled into a
+delivered file goes to <strong><code>fal-video-production</code></strong>, with this table as its stage-1
+output. Hand it the filled table and the Step 1 word budgets intact — it derives
+each shot's audio placement from the <code>dur</code> column, so the windows computed here are
+its contract, not a suggestion. Splitting the same brief across the three hand-offs
+below instead is how an ad ends up with clips nobody reviewed, narration bunched
+into the opening seconds and on-screen text that never got burned: each sibling
+does its own part correctly and no one owns the joins.</p>
+<p>If <code>fal-video-production</code> will not load, take the hand-offs below and <strong>say
+plainly that nothing is then orchestrating them</strong> — the caller has to sequence the
+stages and burn any on-screen text last, after every re-render.</p>
+<p>For a single shot, a single clip, or a script the user will assemble themselves,
+the individual hand-offs are correct:</p>
+<ul>
+<li>→ <strong><code>fal-video-generation</code></strong> — one row = one clip: shot seed, <code>Gen</code>, aspect.</li>
+<li>→ <strong><code>fal-audio-generation</code></strong> — the VO column <strong>one clip per row</strong>, each with that
+  row's target window, so narration is generated to length rather than trimmed.
+  Never hand it the column as a single continuous script: a one-piece read has to
+  be cut apart afterwards by detecting silence, and it fails by crowding every
+  word into the first seconds and leaving the tail silent.</li>
+<li><strong><code>MAP</code> and <code>FRAME</code> rows</strong> travel with the clip hand-off: <code>MAP</code> rows keep
+  their screen side, facing and eyeline in <code>Carries in</code>; for <code>FRAME</code>, extract
+  the previous clip's last frame and pass it as the start image to an
+  image-to-video route.</li>
+</ul>
+<p><strong>House rules that do not apply here:</strong> 2, 3, 5 and 11 govern endpoint schemas,
+optimise flags and sandbox uploads; 4 governs edit models redrawing assets; 15
+and 19 measure change in a generated artifact. This skill submits nothing, names
+no parameters and generates nothing, so all of those land on the downstream
+skills — including the named-fallback rule: with no model calls there is no
+primary route to fall back from, so no fallback is named. 1, 6–10, 12, 13, 14
+(the hand-offs above are pipeline hand-offs, not routing), 16, 17 and 18 are
+applied above.</p>
+<h2>Guardrails</h2>
+<ul>
+<li><strong>A row a model cannot generate alone is not a row.</strong> If you cannot delete
+  every other row and still generate this one, it is under-specified.</li>
+<li><strong>Two speaking characters, maximum</strong>, and never two in one row — crosstalk and
+  overlapping dialogue do not survive generation.</li>
+<li><strong>Never put text in a shot seed.</strong> On-screen text lives in its own column and
+  is burned in the edit; models render lettering unreliably, and a misspelled
+  brand name in frame is a reshoot.</li>
+<li><strong>Must-say lines are load-bearing.</strong> They go in verbatim and count against the
+  budget like everything else — never paraphrase one, never raise the rate to
+  fit one, whatever the brief instructs. If they alone exceed the target's
+  budget, the arithmetic decides on its own: report the numbers (their word
+  count, the budget, the seconds they need at the stated rate), then take the
+  Step 5 escalation — the next length up, every line intact, override flagged
+  first in the delivery. Optionally raise the <code>Must-say budget</code> card (declared
+  in Step 0; one option per line to cut, plus <code>Go to the longer length</code>), but
+  never wait on it — unanswered, the longer script stands.</li>
+<li><strong>Not the clean case.</strong> A brief that is already a finished script → convert it
+  to rows and run Step 5 on it, reporting failures rather than rewriting the
+  voice. A mood with no product or character → invent nothing, go to the
+  <code>Assumptions</code> card. Under 8 seconds → hook and tagline only, and say the other
+  beats do not fit. More than about a dozen rows for 30 seconds at default
+  pacing, or a generated total past roughly three times the finished length at
+  fast pacing → the cutting is faster than generated clips hold up under;
+  consolidate and say why.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

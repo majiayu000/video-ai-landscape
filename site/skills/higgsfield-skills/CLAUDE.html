@@ -79,13 +79,13 @@
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">CLAUDE.md</span><button onclick="t()">🌓</button></nav>
 <main class="md"><h1>CLAUDE.md — Higgsfield Skills</h1>
 <h2>What this is</h2>
-<p>Eight skills that drive the <a href="https://github.com/higgsfield-ai/cli"><code>higgsfield</code> CLI</a> — image/video generation, narrated explainers, browser games, Marketing Studio, Virality Predictor scoring, Soul Character training, branded product photography, marketplace cards, and full-stack websites.</p>
+<p>Skills that drive the <a href="https://github.com/higgsfield-ai/cli"><code>higgsfield</code> CLI</a> — image/video generation, narrated explainers, browser games, Marketing Studio, Virality Predictor scoring, Soul Character training, branded product photography, marketplace cards, and full-stack websites.</p>
 <pre><code>higgsfield-soul-id     →  trains identity, returns reference_id
 higgsfield-generate →  consumes reference_id, plus 30+ models, plus Marketing Studio
 higgsfield-product-photoshoot  →  self-contained, brand visuals via gpt_image_2
 higgsfield-marketplace-cards  →  marketplace main, secondary, and A+ style images
 higgsfield-websites  →  build/edit/deploy full-stack sites via `higgsfield website …`
-higgsfield-video-explainer  →  audio + video blocks assembled by `explainer_video`
+higgsfield-faceless-video  →  narrated video assembled from audio and video blocks
 </code></pre>
 <h2>Repository structure</h2>
 <pre><code>skills/
@@ -130,9 +130,13 @@ higgsfield-video-explainer  →  audio + video blocks assembled by `explainer_vi
 ├── higgsfield-websites/
 │   ├── SKILL.md
 │   └── references/                    # stack, wow-maker, auth, fnf-sdk, seo-*, security-*
+├── higgsfield-faceless-video/
+│   ├── SKILL.md
+│   ├── scripts/
+│   └── references/
 ├── higgsfield-video-explainer/
 │   ├── SKILL.md
-│   └── references/prompts.md
+│   └── SKILL.md
 ├── evals/                             # dev-only test infrastructure
 │   ├── README.md
 │   └── scenarios.md
@@ -211,7 +215,7 @@ higgsfield-video-explainer  →  audio + video blocks assembled by `explainer_vi
 <li><code>higgsfield-generate</code> consumes it via <code>--soul-id</code> for Soul-aware models (<code>text2image_soul_v2</code>, <code>soul_cinematic</code>) or as <code>custom</code> avatar in Marketing Studio.</li>
 <li><code>higgsfield-product-photoshoot</code> does not chain — it owns its own pipeline.</li>
 <li><code>higgsfield-marketplace-cards</code> does not chain by default; it can reuse an existing main image job through <code>--main-job</code>.</li>
-<li><code>higgsfield-video-explainer</code> owns complete narrated explainers: live style resolve, Seed Audio blocks, Gemini Omni clips, then <code>explainer_video</code> assembly. Generic short video generation stays in <code>higgsfield-generate</code>.</li>
+<li><code>higgsfield-faceless-video</code> owns narrated videos: live style selection, narration, scene generation, and local assembly. Generic short video generation stays in <code>higgsfield-generate</code>.</li>
 <li><code>higgsfield-websites</code> owns browser games (<code>--type game</code>): game-wide design, assets, build, verification, and deployment through <code>higgsfield website deploy</code>.</li>
 </ul>
 <p>When the user asks for both identity AND output in one request ("train Soul on these photos AND make a video of me"), run <code>higgsfield-soul-id</code> first, then <code>higgsfield-generate</code>. Don't batch-ask questions across skills — finish Soul, then start the video conversation.</p>

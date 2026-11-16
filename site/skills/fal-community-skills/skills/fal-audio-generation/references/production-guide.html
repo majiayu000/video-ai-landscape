@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>production-guide · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-audio-generation/references/production-guide">
+<meta property="og:type" content="website">
+<meta property="og:title" content="production-guide · fal 社区 Skills">
+<meta property="og:description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/fal-audio-generation/references/production-guide">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="production-guide · fal 社区 Skills">
+<meta name="twitter:description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/fal-audio-generation/references/production-guide.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Audio Generation</h1>
+<p>One router for six jobs: <strong>Voiceover</strong>, <strong>Voice swap</strong>, <strong>Dub</strong>, <strong>Sound effect</strong>,
+<strong>Music</strong>, <strong>Transcript</strong>. Decide the job, take its route, run its verification.</p>
+<p>Two things go wrong more than everything else combined. <strong>A voice is a stored
+decision, not a taste call made fresh each time</strong> — clip four does not match clip
+one because nobody wrote down what clip one used. And <strong>speech length is set by
+the words</strong>, because not one speech endpoint on fal has a duration parameter.</p>
+<h2>Step 0 — Intake, once, up front</h2>
+<p>One <code>ask_user_questions</code> call (if your host has no question tool, ask the same questions in one plain message and wait for the
+reply before spending; that reply counts as the card). Drop any question the request already answers, and
+any question that does not apply to the job (audio plus "make this Spanish" is a
+Dub — do not ask about voice or length). If every field is already answered, make
+<strong>zero</strong> calls and state the four resolved values in one line before starting.</p>
+<ol>
+<li><strong>Job</strong> (header <code>Audio job</code>) — <code>Voiceover</code>, <code>Voice swap</code>, <code>Dub</code>,
+   <code>Sound effect</code>, <code>Music</code>, <code>Transcript</code>. <em>Default:</em> infer — text alone is
+   <code>Voiceover</code>, audio plus a target language is <code>Dub</code>, audio alone is
+   <code>Transcript</code>; if still ambiguous, <code>Voiceover</code>.</li>
+<li><strong>Voice</strong> (header <code>Voice</code>) — <code>Reuse the project voice</code>, <code>Warm male narrator
+   (Brian)</code>, <code>Bright female narrator (Rachel)</code>, <code>Conversational young female
+   (Jessica)</code>, <code>Deep authority (George)</code>, <code>A voice I supply</code> (gated by
+   <strong>Whose voice</strong>, next section). Free text takes any preset name or a raw
+   ElevenLabs voice ID.
+   <strong>A real person's name is not a voice value.</strong> An answer naming a real
+   person — <code>David Attenborough</code>, the CEO, a streamer — is not a registry miss
+   to resolve or a string to submit: it trips the impersonation limit in the
+   next section, before any routing. <em>Default:</em> the registry entry if one
+   exists, else <code>Brian</code>. <em>Applies to:</em> Voiceover, Voice swap. <code>n/a</code> elsewhere.</li>
+<li><strong>Length</strong> (header <code>Length</code>) — <code>No target</code>, <code>Match a clip I gave you</code>,
+   <code>Exact seconds</code>. <em>Default:</em> <code>No target</code>.
+   <em>Applies to:</em> Voiceover, Sound effect, Music. <code>n/a</code> elsewhere.</li>
+<li><strong>Delivery</strong> (header <code>Delivery</code>) — <code>MP3 128k</code>, <code>MP3 192k</code>, <code>WAV / PCM 44.1k</code>.
+   <em>Default:</em> <code>MP3 128k</code>. <em>Applies to:</em> everything but Transcript.</li>
+</ol>
+<p>If the user says <code>just make it</code>, take all four defaults and skip the card.</p>
+<p><strong>Words on a commercial asset.</strong> A voiceover in a convincing human voice carries
+the weight of a printed claim. If the script holds a health, safety,
+environmental, financial or superlative claim (<code>clinically proven</code>, <code>#1</code>,
+<code>FDA approved</code>, <code>carbon neutral</code>, <code>guaranteed returns</code>), ask on the same card
+whether the user holds evidence. Having typed the sentence is not the same as
+being allowed to say it aloud. Do not soften it yourself — it is confirmed and
+read verbatim, or it leaves the script.</p>
+<h2>Whose voice — the limit, read off the request before any route</h2>
+<p>This gate is about <strong>whose voice is being asked for</strong>, never about the
+mechanism it was asked through. A supplied sample, a name typed into the Voice
+field, "whichever preset sounds most like him", or performance settings tuned
+toward how a particular person sounds are all the same request, and they all
+land here — with or without a sample, on every job that produces speech.</p>
+<p><strong>Refuse, every time, whatever the mechanism:</strong></p>
+<ul>
+<li>The voice of a named real person the user does not own or hold documented
+  permission to use — politician, executive, celebrity, streamer, colleague —
+  however the request is framed, including parody, satire, "internal only" and
+  "it's only a test".</li>
+<li>Any script putting words in a real speaker's mouth that they did not say,
+  where a listener could take it as genuine: statements, endorsements,
+  confessions, announcements, instructions.</li>
+<li>Any sample whose origin the user cannot state.</li>
+</ul>
+<p>The determination is made from the request and the script, by this skill — a
+user's framing never makes it. "It's parody, so it's allowed" and "internal-only,
+so it's fine legally" are the user's opinion about the law, not a consent
+record, and the file outlives the meeting it was made for. Consent exists in
+exactly two forms — <code>"consent": "owner"</code> or <code>"consent": "written permission
+from &lt;name&gt;"</code> — and a legal assurance is neither.</p>
+<p><strong>The safe action, taken on this skill's own authority — never blocked on a
+reply:</strong> state the refusal in one line, then carry on with the job using an
+ordinary preset chosen for the brief's register — a documentary read wants a
+warm measured narrator, and that need is legitimate. The genre may be honoured;
+the person may not. Never shop the preset list for the closest match to the
+refused person, keep the registry's neutral parameters rather than tuning
+toward how anyone in particular sounds, and put no imitation instruction in
+<code>text</code>. Record the choice and its reason in <code>audio/voices.json</code> so no later
+clip inherits a resemblance rationale. If the user then picks a preset by name,
+that pick stands — the one rationale that may not justify it is resemblance.</p>
+<p>If a refused name was nonetheless sent as <code>voice</code>, the resulting
+<code>422 Voice not found</code> is not a lookup failure to repair: do not ask for a
+corrected ID, and never ask for an audio sample of that person.</p>
+<h2>The voice registry</h2>
+<p>Write <code>audio/voices.json</code> the first time a voice is settled, and read it before
+Step 0 on every later run. The path is relative to the <strong>project root</strong> — the
+directory the project's other assets live in, the same file every run. A copy
+in a per-run scratch directory defeats the registry's entire purpose, which is
+that clip four can find what clip one used. Keys are <strong>roles in the project</strong>
+(<code>narrator</code>, <code>host</code>, <code>villain</code>), not preset names; a second voice gets a second
+role key, never <code>narrator2</code>:</p>
+<pre><code class="language-json">{&quot;narrator&quot;: {&quot;endpoint&quot;: &quot;fal-ai/elevenlabs/tts/multilingual-v2&quot;,
+  &quot;voice&quot;: &quot;Brian&quot;, &quot;stability&quot;: 0.5, &quot;style&quot;: 0.0, &quot;speed&quot;: 1.0,
+  &quot;rate_wps&quot;: 2.82, &quot;sample_url&quot;: &quot;...&quot;, &quot;consent&quot;: null}}
+</code></pre>
+<ul>
+<li><code>voice</code> on every ElevenLabs endpoint is a string that is <strong>either a preset name
+  or an ElevenLabs voice ID</strong> — both verified accepted. Store what the user gave,
+  verbatim. Verified preset names: <code>Aria</code>, <code>Roger</code>, <code>Sarah</code>, <code>Laura</code>, <code>Charlie</code>,
+  <code>George</code>, <code>Callum</code>, <code>River</code>, <code>Liam</code>, <code>Charlotte</code>, <code>Alice</code>, <code>Matilda</code>, <code>Will</code>,
+  <code>Jessica</code>, <code>Eric</code>, <code>Chris</code>, <code>Brian</code>, <code>Daniel</code>, <code>Lily</code>, <code>Bill</code>, <code>Rachel</code>.</li>
+<li><strong>Always send <code>voice</code> explicitly.</strong> Omitted, it silently defaults to <code>Rachel</code>,
+  and a run that never chose a voice then looks like one that did.</li>
+<li>An unknown value returns <code>422 Voice not found: &lt;name&gt;</code>. Stop and ask — unless
+  the value named a real person, which is <strong>Whose voice</strong> territory, not a
+  lookup to repair. A silent substitution is how a project ends up with two
+  narrators.</li>
+<li>MiniMax is a separate namespace: <code>voice_setting.voice_id</code>, from <code>Wise_Woman</code>,
+  <code>Friendly_Person</code>, <code>Deep_Voice_Man</code>, <code>Calm_Woman</code>, <code>Casual_Guy</code>, <code>Patient_Man</code>,
+  <code>Elegant_Man</code>, <code>Lively_Girl</code>, <code>Sweet_Girl_2</code>, or a <code>custom_voice_id</code> from a
+  clone. ElevenLabs names are invalid there.</li>
+<li><code>rate_wps</code> is measured, never assumed. See Step 2.</li>
+</ul>
+<h2>Routing</h2>
+<table>
+<thead>
+<tr>
+<th>Job</th>
+<th>Primary</th>
+<th>Named fallback</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Voiceover, one narrator</td>
+<td><code>fal-ai/elevenlabs/tts/multilingual-v2</code></td>
+<td><code>fal-ai/elevenlabs/tts/turbo-v2.5</code> — same schema, faster, flatter.</td>
+</tr>
+<tr>
+<td>Voiceover, heavy performance</td>
+<td><code>fal-ai/elevenlabs/tts/eleven-v3</code></td>
+<td><code>fal-ai/elevenlabs/tts/multilingual-v2</code>, when v3's missing controls matter more than its delivery.</td>
+</tr>
+<tr>
+<td>Two or more speakers</td>
+<td><code>fal-ai/elevenlabs/text-to-dialogue/eleven-v3</code></td>
+<td><code>fal-ai/elevenlabs/tts/multilingual-v2</code> per line, concatenated in the sandbox.</td>
+</tr>
+<tr>
+<td>Voice swap</td>
+<td><code>fal-ai/elevenlabs/voice-changer</code></td>
+<td>Transcribe with <code>fal-ai/elevenlabs/speech-to-text/scribe-v2</code>, re-speak the exact transcript through <code>multilingual-v2</code>. Loses the original timing; say so.</td>
+</tr>
+<tr>
+<td>Dub</td>
+<td><code>fal-ai/elevenlabs/dubbing</code></td>
+<td>Transcribe with <code>scribe-v2</code>, translate the text, re-speak through <code>multilingual-v2</code> with <code>language_code</code> set to the target.</td>
+</tr>
+<tr>
+<td>Sound effect</td>
+<td><code>fal-ai/elevenlabs/sound-effects/v2</code></td>
+<td><code>sonilo/v1.1/text-to-sound-effects</code> — required above 22 s, up to 180 s.</td>
+</tr>
+<tr>
+<td>Music</td>
+<td><code>fal-ai/elevenlabs/music</code></td>
+<td><code>fal-ai/minimax-music/v2.6</code> for a song with written lyrics; <code>fal-ai/lyria3/pro</code> for a one-line prompt with no length control.</td>
+</tr>
+<tr>
+<td>Transcript, word timings</td>
+<td><code>fal-ai/elevenlabs/speech-to-text/scribe-v2</code></td>
+<td><code>fal-ai/elevenlabs/speech-to-text</code> — v1 Scribe, same <code>words</code> shape.</td>
+</tr>
+<tr>
+<td>Transcript, plain text</td>
+<td><code>nvidia/nemotron-asr-multilingual/asr</code></td>
+<td><code>fal-ai/cohere-transcribe</code>, then <code>fal-ai/wizper</code>.</td>
+</tr>
+<tr>
+<td>Cleaning a noisy recording</td>
+<td><code>fal-ai/elevenlabs/audio-isolation</code></td>
+<td>none — on failure, report and continue on the raw audio.</td>
+</tr>
+</tbody>
+</table>
+<p><code>eleven-v3</code> earns its "heavy performance" row only when the <strong>delivery is the
+content</strong> — the script carries acting directions, emotional turns or laughs
+that a flat read would lose. A plain narration, however funny the words, stays
+on <code>fal-ai/elevenlabs/tts/multilingual-v2</code> at registry settings. Performance
+controls shape a read; they are never a channel for sounding like a particular
+person (see <strong>Whose voice</strong> above).</p>
+<p>Burning captions into video is <strong>not</strong> this skill. Produce the transcript here
+(send <code>diarize: false</code> and <code>tag_audio_events: false</code>) and filter <code>words</code> to
+<code>type == "word"</code>; the "Caption cues" rule in <code>fal-motion-graphics</code> groups them
+into lines on the <code>fal-video-production</code> and <code>video-compositing</code> paths
+(<code>reels-creator</code> keeps its own caption rules). Inside <code>fal-video-production</code>, stage 8 burns them as the <code>fal-motion-graphics</code>
+Caption block in its one encode; a standalone caption job goes to
+<code>video-compositing</code>, which burns the captions and any other text owed on that
+file in one pass.</p>
+<h2>Per-endpoint parameters</h2>
+<p>Fetch the schema for a route before its first call of a session.</p>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Inputs</th>
+<th>Gotchas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fal-ai/elevenlabs/tts/multilingual-v2</code>, <code>fal-ai/elevenlabs/tts/turbo-v2.5</code> (identical)</td>
+<td><code>text</code>*, <code>voice</code>, <code>stability</code> 0–1 d0.5, <code>similarity_boost</code> 0–1 d0.75, <code>style</code> 0–1 d0, <code>speed</code> <strong>0.7–1.2</strong> d1, <code>timestamps</code> d false, <code>previous_text</code>, <code>next_text</code>, <code>language_code</code> (639-1), <code>apply_text_normalization</code> auto/on/off</td>
+<td>No output-format field — always MP3. Set <code>apply_text_normalization: "on"</code> for prices, dates, units, model numbers; <code>auto</code> decides for itself and reads <code>$1,299</code> inconsistently.</td>
+</tr>
+<tr>
+<td><code>fal-ai/elevenlabs/tts/eleven-v3</code></td>
+<td><code>text</code>* (<strong>max 5000 chars</strong>), <code>voice</code>, <code>stability</code>, <code>timestamps</code>, <code>language_code</code>, <code>apply_text_normalization</code></td>
+<td><strong>No <code>speed</code>, <code>style</code>, <code>similarity_boost</code>, <code>previous_text</code> or <code>next_text</code>.</strong> Carry performance in the text with <code>[excited]</code>, <code>[whispers]</code>, <code>[laughs]</code>, <code>[sighs]</code>. With no continuity fields, never chunk a v3 script — stay under 5000 chars or route to <code>multilingual-v2</code>.</td>
+</tr>
+<tr>
+<td><code>fal-ai/elevenlabs/text-to-dialogue/eleven-v3</code></td>
+<td><code>inputs</code>* — array of <code>{text, voice}</code> turns; <code>stability</code> (rounds to 0.0/0.5/1.0), <code>use_speaker_boost</code>, <code>seed</code>, <code>language_code</code></td>
+<td>No speed, no per-turn timing. <code>voice</code> per block takes a name or an ID.</td>
+</tr>
+<tr>
+<td><code>fal-ai/elevenlabs/voice-changer</code></td>
+<td><code>audio_url</code>*, <code>voice</code>, <code>remove_background_noise</code> d false, <code>seed</code>, <code>output_format</code> d <code>mp3_44100_128</code></td>
+<td>Enable noise removal only on audibly noisy source; on a clean take it thins the voice.</td>
+</tr>
+<tr>
+<td><code>fal-ai/elevenlabs/dubbing</code></td>
+<td><code>target_lang</code>* (639-1), <code>video_url</code> <strong>or</strong> <code>audio_url</code> (video wins if both sent), <code>source_lang</code> (auto), <code>num_speakers</code> 1–50 (auto), <code>highest_resolution</code> d true</td>
+<td>Output field is <code>video</code> in both cases — for an audio-only job, demux the audio out of it rather than expecting an <code>audio</code> field.</td>
+</tr>
+<tr>
+<td><code>fal-ai/elevenlabs/sound-effects/v2</code></td>
+<td><code>text</code>* (max 450 chars), <code>duration_seconds</code> <strong>0.5–22</strong> (omit = model chooses), <code>prompt_influence</code> 0–1 d0.3, <code>loop</code> d false, <code>output_format</code></td>
+<td>Raise <code>prompt_influence</code> to ~0.7 for a literal named sound; leave low for ambience. <code>loop: true</code> for anything running under a longer scene.</td>
+</tr>
+<tr>
+<td><code>sonilo/v1.1/text-to-sound-effects</code></td>
+<td><code>prompt</code>*, <code>duration</code> int <strong>1–180</strong> d8, <code>audio_format</code> d <strong><code>aac</code></strong></td>
+<td>Override <code>audio_format</code> to match Delivery — <code>aac</code> is nobody's request.</td>
+</tr>
+<tr>
+<td><code>fal-ai/elevenlabs/music</code></td>
+<td><code>prompt</code> (max 4100) and/or <code>composition_plan</code>, <code>music_length_ms</code> <strong>3000–600000</strong>, <code>force_instrumental</code> d false, <code>respect_sections_durations</code> d true, <code>output_format</code></td>
+<td><code>music_length_ms</code> and <code>force_instrumental</code> apply only alongside <code>prompt</code>, not <code>composition_plan</code>. Set <code>force_instrumental: true</code> for a bed under narration — left false it can arrive with vocals.</td>
+</tr>
+<tr>
+<td><code>fal-ai/minimax-music/v2.6</code></td>
+<td><code>prompt</code>* 10–2000, <code>lyrics</code> max 3500 with <code>[Verse]</code>/<code>[Chorus]</code> tags (required unless instrumental), <code>lyrics_optimizer</code> d false, <code>is_instrumental</code>, <code>audio_setting</code></td>
+<td><strong>No length field at all</strong> — never promise a duration on this route.</td>
+</tr>
+<tr>
+<td><code>fal-ai/lyria3/pro</code></td>
+<td><code>prompt</code>* (max 5000), <code>image_url</code></td>
+<td><code>negative_prompt</code> exists but is deprecated and does nothing. No length control.</td>
+</tr>
+<tr>
+<td><code>fal-ai/elevenlabs/speech-to-text/scribe-v2</code></td>
+<td><code>audio_url</code>*, <code>language_code</code> (<strong>ISO 639-3</strong>: <code>eng</code>, <code>spa</code>, <code>deu</code>), <code>diarize</code> d <strong>true</strong>, <code>tag_audio_events</code> d <strong>true</strong>, <code>keyterms</code> ≤100 (+30% price)</td>
+<td>Both defaults are on and both pollute a clean transcript — set them false unless asked for speaker labels or <code>[laughter]</code>. Returns <code>words[]</code> of <code>{text, start, end, type, speaker_id}</code>; <code>type</code> is <code>word</code>, <code>spacing</code> or <code>audio_event</code>, so <strong>filter to <code>type == "word"</code> before using timings</strong>. Put names and jargon in <code>keyterms</code>.</td>
+</tr>
+<tr>
+<td><code>fal-ai/elevenlabs/speech-to-text</code></td>
+<td>as above, minus <code>keyterms</code></td>
+<td>Same <code>words[]</code> shape. Drop-in when scribe-v2 errors.</td>
+</tr>
+<tr>
+<td><code>wizper</code></td>
+<td><code>audio_url</code>*, <code>task</code> transcribe/translate, <code>language</code> (639-1, d <code>en</code>, null to auto-detect), <code>max_segment_len</code> 10–29, <code>merge_chunks</code></td>
+<td><code>chunk_level</code> is a <strong>const <code>"segment"</code></strong> — wizper cannot return word timings whatever the name suggests.</td>
+</tr>
+<tr>
+<td><code>nvidia/nemotron-asr-multilingual/asr</code></td>
+<td><code>audio_url</code>*, <code>language</code> d <code>auto</code>, <code>acceleration</code> none/regular/high/full</td>
+<td>Returns one <code>output</code> string. No timings.</td>
+</tr>
+<tr>
+<td><code>cohere-transcribe</code></td>
+<td><code>audio_url</code>*, <code>language</code> d <code>en</code>, <code>punctuation</code>, <code>max_new_tokens</code> 1–1014 d256</td>
+<td>Its <code>timings</code> field is <strong>server performance metrics, not word timings.</strong> Never parse it as alignment.</td>
+</tr>
+<tr>
+<td><code>fal-ai/elevenlabs/audio-isolation</code></td>
+<td><code>audio_url</code> or <code>video_url</code></td>
+<td>No options.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Delivery mapping.</strong> <code>MP3 128k</code> → <code>mp3_44100_128</code> / sonilo <code>mp3</code> / MiniMax
+<code>{format: "mp3", bitrate: 128000}</code>. <code>MP3 192k</code> → <code>mp3_44100_192</code> / <code>mp3</code> /
+<code>bitrate: 256000</code>. <code>WAV / PCM 44.1k</code> → <code>pcm_44100</code> / <code>wav</code> /
+<code>{format: "pcm", sample_rate: 44100}</code>. The ElevenLabs TTS endpoints have no
+format field and always return MP3 at 128 kbps — convert in the sandbox if WAV
+was asked for. <code>MP3 192k</code> is <strong>unachievable</strong> on those routes: never re-encode
+128 kbps upward to fake it (bits invented, quality lost — see the guardrails);
+deliver the 128 kbps file and say so in the delivery line.</p>
+<h2>Step 1 — Normalise the input</h2>
+<p>If a video was handed over and the job needs audio, demux and read the source
+duration in one sandbox pass:</p>
+<pre><code>ffmpeg -i INPUT -vn -ac 1 -ar 44100 -c:a pcm_s16le source.wav
+ffprobe -loglevel error -show_entries format=duration -of default=nk=1:nw=1 INPUT
+</code></pre>
+<p><strong>A sandbox file is not a URL.</strong> Upload <code>source.wav</code> and pass the returned URL as
+<code>audio_url</code>; a local path fails the request. Inputs that are not the clean case:</p>
+<ul>
+<li><strong>Noise or music under speech</strong>, for Voice swap or Transcript: run
+  <code>fal-ai/elevenlabs/audio-isolation</code> first and route the isolated audio onward.</li>
+<li><strong>More than one speaker, for Voice swap:</strong> <code>voice-changer</code> collapses every
+  speaker into the one target voice. Confirm that is wanted, or split on
+  <code>speaker_id</code> boundaries from a <code>diarize: true</code> scribe-v2 pass and swap only the
+  intended speaker's segments.</li>
+<li><strong>Music under speech, for Dub:</strong> dubbing rebuilds the speech and the bed
+  survives unevenly. Isolate, dub the voice, re-lay the original bed in the sandbox.</li>
+<li><strong>Silence or no audio stream:</strong> stop and say so. Do not run on an empty file.</li>
+</ul>
+<h2>Step 2 — Write the script to length</h2>
+<p>Voiceover with a Length target only. <code>No target</code> skips to Step 3.</p>
+<p>Length comes from the word count and nothing else. One mechanism, deliberately:</p>
+<ol>
+<li>Establish <code>RATE</code> in words per second for the chosen voice. Measured for
+   <code>Brian</code> on <code>multilingual-v2</code> at <code>speed: 1.0</code> in English: <strong>2.82 w/s</strong>
+   (56 words → 19.83 s). A starting estimate only — voice, language and
+   <code>stability</code> all move it. Store each observed value as <code>rate_wps</code>.</li>
+<li>Budget <code>WORDS = round(TARGET_SECONDS * RATE)</code>, minus ~4% headroom for the
+   trailing breath ElevenLabs adds.</li>
+<li>Write the script to that budget and count it before submitting.</li>
+</ol>
+<p>Three things that are <strong>not</strong> the mechanism and are barred as substitutes:</p>
+<ul>
+<li><strong>Time-stretching.</strong> <code>atempo</code>, <code>rubberband</code> and every post-hoc stretch damage a
+  voice, and that damage is the first thing anyone notices.</li>
+<li><strong><code>speed</code>.</strong> A performance setting, not a fitting lever: it sits in the
+  registry so every clip matches, and it does not exist on <code>eleven-v3</code>.</li>
+<li><strong>Trimming the tail.</strong> A cut final consonant reads as a broken edit.</li>
+</ul>
+<p>Padding runs one way only: if the finished audio is <em>shorter</em> than the window,
+append digital silence. Never pad by slowing the read.</p>
+<h2>Step 3 — Submit</h2>
+<p>For a multi-part voiceover on <code>multilingual-v2</code> or <code>turbo-v2.5</code>, send one request
+per part with <code>previous_text</code> and <code>next_text</code> carrying the adjacent parts
+verbatim so the prosody joins, then concatenate in the sandbox with a fixed
+0.35 s of silence between parts. Assemble in a script with one variable per part,
+so a re-run is provably identical.</p>
+<p><strong>Unless the caller supplied a window per part — then return the parts and stop.</strong>
+A caller that gave you a start time or a target duration for each part is placing
+the audio itself against something you cannot see, usually video it has already
+cut. Concatenating with a fixed 0.35 s gap and padding a short part with trailing
+silence both <em>destroy</em> that placement: the caller wanted gaps of its own size, in
+its own positions. So when per-part windows arrive, hand back <strong>one file per part,
+unconcatenated and unpadded</strong>, plus each part's measured duration, and let the
+caller lay them out. Say in the hand-off that the parts are unjoined and that
+placement is theirs. This is what <code>fal-video-production</code> stage 5 needs; getting a
+single welded file back is how a thirty-second ad ended up with its speech pooled
+in the first eighteen seconds.</p>
+<h2>Step 4 — Verify</h2>
+<p>Run only the checks for the job that ran; a check belonging to another job is
+<code>n/a</code>, not a failure.</p>
+<ol>
+<li><strong>Every job:</strong> <code>ffprobe</code> the delivered file — non-zero, decodes, not silent.
+   A mean volume below about −60 dB from <code>ffmpeg -af volumedetect</code> is an empty
+   render: re-run once, then report.</li>
+<li><strong>Voiceover with a Length target: aim short, then pad to exact.</strong></li>
+</ol>
+<p><strong>Do not try to hit the target with words.</strong> Measured on three renders at
+   identical settings, the same endpoint produced 2.93, 3.19 and 3.04 words per
+   second — a ±4% spread, about ±0.8 s on a 20 s read — and <code>multilingual-v2</code>
+   exposes no <code>seed</code>, so that variance is not controllable. Chasing a ±2%
+   window inside ±4% noise is a loop that pays repeatedly and lands by luck.</p>
+<p>Instead, budget for <strong>95% of the target</strong> — <code>WORDS = floor(0.95 × TARGET ×
+   RATE)</code> — accept any take that comes in <strong>at or under</strong> the target, and append
+   digital silence to reach it exactly. Silence is free, deterministic, and
+   inaudible under a music bed or a hard cut. The result is exactly the target
+   length with a read that finishes a beat early, which is what a real voiceover
+   session delivers anyway.</p>
+<p><strong>Only rewrite when the take overruns</strong>, since silence cannot fix long.
+   Adjust by <code>(target − measured) × RATE</code> words — <strong>target minus measured</strong>, so a
+   long take loses words and a short one gains them. Getting that subtraction the
+   wrong way round makes every correction move away from the target; an earlier
+   draft of this skill had it inverted. Update <code>rate_wps</code> with the newly observed
+   rate and regenerate. <strong>Two rewrites maximum.</strong></p>
+<p>Still overrunning after two: deliver the closest take <strong>that does not exceed
+   the target</strong>, even if that means an earlier, shorter one, and say how much
+   silence was added. An overrun truncates in a fixed slot; short does not. Never
+   time-stretch, and never trim the tail mid-word.
+3. <strong>Voiceover, any:</strong> if the script holds names, numbers or jargon, transcribe
+   the output with <code>scribe-v2</code> and confirm those tokens survived. Misread numbers
+   are the commonest defect and the easiest to skim past.
+4. <strong>Voice swap:</strong> transcribe <strong>both</strong> source and result with <code>scribe-v2</code>, filter
+   to <code>type == "word"</code>, normalise case and punctuation, compare the sequences.
+   <strong>They must match — the words are exactly what a voice swap must not change.</strong>
+   Below ~98% agreement the model re-spoke rather than converted: re-run once
+   with <code>remove_background_noise: true</code>, then take the transcribe-and-re-speak
+   fallback and say the timing has changed.
+5. <strong>Dub:</strong> confirm the returned <code>target_lang</code> is what was asked for, transcribe
+   the result and confirm the detected language agrees, and confirm the duration
+   is within 2% of the source.
+6. <strong>Sound effect:</strong> duration within 0.2 s of <code>duration_seconds</code>. With
+   <code>loop: true</code>, confirm the first and last 100 ms match in level so the seam is
+   inaudible.
+7. <strong>Music:</strong> duration within 5% of <code>music_length_ms</code>. On <code>fal-ai/minimax-music/v2.6</code>
+   this is <code>n/a</code> — that route has no length control, so report the duration you
+   got rather than implying it was requested.
+8. <strong>Transcript:</strong> confirm <code>words[]</code> is non-empty and <code>start</code> values rise
+   monotonically. A route that returned text but no <code>words[]</code> when word timings
+   were asked for has failed, not partly succeeded — take the fallback.</p>
+<h2>Step 5 — Deliver</h2>
+<p>Hand back the audio, plus <code>.txt</code> and <code>.json</code> for a Transcript job. State in one
+line: endpoint, voice, measured duration against target, language. Update
+<code>audio/voices.json</code> before finishing.</p>
+<h2>Cloning a voice from a supplied sample</h2>
+<p>Mechanics only. <strong>Whose voice</strong> (above) has already decided whether this
+section may run at all — a sample does not open what that gate closed, and the
+gate never needed a sample to close it.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>Endpoint</th>
+<th>Shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Persistent clone</td>
+<td><code>fal-ai/minimax/voice-clone</code> → <code>fal-ai/minimax/speech-2.8-hd</code></td>
+<td><code>audio_url</code> ≥10 s returns <code>custom_voice_id</code>, which goes in <code>voice_setting.voice_id</code>. <strong>The ID is deleted if unused for 7 days.</strong></td>
+</tr>
+<tr>
+<td>One-shot clone</td>
+<td><code>resemble-ai/chatterboxhd/text-to-speech</code></td>
+<td><code>audio_url</code> on the TTS call itself; no stored ID, and it overrides <code>voice</code>.</td>
+</tr>
+<tr>
+<td>Reference clone</td>
+<td><code>fal-ai/qwen-3-tts/clone-voice/1.7b</code></td>
+<td><code>audio_url</code> up to 300 s plus <code>reference_text</code> of what the sample says, which improves the match.</td>
+</tr>
+</tbody>
+</table>
+<p><code>fal-ai/minimax/speech-2.8-hd</code> defaults <code>output_format</code> to <strong><code>hex</code></strong>, returning
+bytes instead of a link — send <code>output_format: "url"</code>. It also returns
+<code>duration_ms</code>, so Step 4's length check needs no <code>ffprobe</code> there.</p>
+<p>Record consent as <code>"consent": "owner"</code> or <code>"consent": "written permission from
+&lt;name&gt;"</code> — the
+two forms <strong>Whose voice</strong> admits, and nothing else. An empty
+<code>consent</code> on a cloned voice blocks the run.</p>
+<h2>Guardrails</h2>
+<ul>
+<li>Never leave <code>voice</code> unset. The silent <code>Rachel</code> default is indistinguishable
+  from a decision, and it is not one.</li>
+<li>Never invent a voice ID. If a user-supplied ID 422s, ask for a corrected ID —
+  <strong>unless the value named a real person</strong>, in which case the 422 is the
+  impersonation limit surfacing late, not a typo: apply <strong>Whose voice</strong>, and
+  never answer that 422 by requesting a voice ID or an audio sample of the
+  person.</li>
+<li>Never choose or tune a voice for resemblance to a real person — shopping the
+  preset list for the closest match, steering <code>stability</code>/<code>style</code>, or writing
+  v3 performance cues toward how someone in particular sounds are all the
+  request <strong>Whose voice</strong> refuses, whatever the mechanism.</li>
+<li>Never fit speech by stretching, trimming or re-speeding. Rewrite the words.</li>
+<li>Never imply a duration parameter where none exists — <code>multilingual-v2</code>,
+  <code>turbo-v2.5</code>, <code>eleven-v3</code>, <code>text-to-dialogue</code> and <code>fal-ai/minimax-music/v2.6</code> have no
+  length field.</li>
+<li>Never estimate transcript timings from word count or duration. If no route
+  returns <code>words[]</code>, report that word timings are unavailable.</li>
+<li>Never translate inside a Voiceover job. That is the Dub route, chosen
+  explicitly by the user.</li>
+<li>Never resubmit a failed generation more than once before switching route.</li>
+<li>Send <code>diarize: false</code> and <code>tag_audio_events: false</code> on a transcript headed
+  for captions (except <code>reels-creator</code>, whose own caption code filters the words). Both
+  default to <code>true</code>, and the caption burn wants clean words.</li>
+<li>Do not re-encode a delivered file twice; each pass costs quality no later step
+  recovers.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

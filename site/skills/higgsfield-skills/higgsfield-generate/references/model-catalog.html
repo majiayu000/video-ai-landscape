@@ -80,7 +80,7 @@
 <main class="md"><h1>Model Catalog</h1>
 <p>The full lineup of generation models available through Higgsfield. Each entry has its own sweet spot — pick the one that matches your brief. For the actual <code>--model</code> ID to pass to <code>higgsfield generate create</code>, run <code>higgsfield model list --json</code> and look up by display name.</p>
 <p>Preferred defaults for examples and quick-start guidance in this repo:
-- <strong>Images/design/text:</strong> <code>gpt_image_2_5</code> (general/high-fidelity) and <code>nano_banana_flash</code> (Nano Banana 2, character/cartoon). The id <code>nano_banana_2</code> resolves to Nano Banana Pro.
+- <strong>Images/design/text:</strong> <code>gpt_image_2_6</code> (general/high-fidelity) and <code>nano_banana_flash</code> (Nano Banana 2, character/cartoon). The id <code>nano_banana_2</code> resolves to Nano Banana Pro.
 - <strong>Video:</strong> <code>seedance_2_5</code> (SOTA all-purpose video).
 - <strong>Character/stylized image work:</strong> <code>text2image_soul_v2</code>.
 - <strong>Ads/UGC/product demos:</strong> <code>marketing_studio_video</code> or <code>marketing_studio_image</code>.
@@ -188,9 +188,19 @@
 <td>High-fidelity image generation and editing. Used by <code>higgsfield-product-photoshoot</code> under the hood.</td>
 </tr>
 <tr>
+<td>GPT Image 2.6 Sunburst (<code>gpt_image_2_6</code>)</td>
+<td>OpenAI</td>
+<td><strong>Default high-fidelity image generation.</strong> General images, reference-guided editing, design, typography, native animated GIF and SVG output. Raster formats: PNG/JPEG/WebP. SVG takes no references.</td>
+</tr>
+<tr>
+<td>GPT Image 2.6 Flare (<code>gpt_image_2_6_flare</code>)</td>
+<td>OpenAI</td>
+<td>Separately selectable Flare model with the same format controls. Use when explicitly requested; do not send a <code>variant</code> parameter.</td>
+</tr>
+<tr>
 <td>GPT Image 2.5 (<code>gpt_image_2_5</code>)</td>
 <td>OpenAI</td>
-<td><strong>Default high-fidelity image generation.</strong> Graphic design, UI, banners, typography, and on-image text. Reference-guided editing with Flare/Sunburst variants and quality tiers through <code>max</code>.</td>
+<td>Earlier image generation and editing model with Flare/Sunburst variants. Use when the user names it; check its live controls separately.</td>
 </tr>
 <tr>
 <td>Grok Imagine</td>
@@ -285,9 +295,9 @@
 <td>Ultra-realistic, top-tier cinematic quality. Quality tiers basic/high/ultra. Format set is constrained — verify accepted aspect ratio and duration before submitting.</td>
 </tr>
 <tr>
-<td>Google Veo 3</td>
+<td>Gemini Omni Flash 1.1 (<code>gemini_omni_flash_1_1</code>)</td>
 <td>Google</td>
-<td>Reliable cinematic with broad creative range and audio support.</td>
+<td>Reference-driven video with native audio. Use <code>reference-to-video</code> mode and explicit reference flags; inspect the live schema for other modes.</td>
 </tr>
 <tr>
 <td>Minimax Hailuo</td>
@@ -334,7 +344,7 @@
 <p>Also available but not profiled here — use them when the user names them, and check params with <code>higgsfield model get &lt;id&gt;</code> first:</p>
 <ul>
 <li><strong>Image:</strong> <code>grok_image_2_0</code>, <code>seedream_5_0_flash</code>, <code>openai_hazel</code>.</li>
-<li><strong>Video:</strong> <code>minimax_h3</code>, <code>minimax_h3_max</code>, <code>wan3_0</code>, <code>wan3_0_prime</code>, <code>gemini_omni_flash_1_1</code>, <code>seedance_2_0_mini</code>, <code>flux_3_video</code>, <code>flux_3_video_edit</code>, <code>kling_video_edit</code>, <code>happy_horse_video</code>.</li>
+<li><strong>Video:</strong> <code>minimax_h3</code>, <code>minimax_h3_max</code>, <code>wan3_0</code>, <code>wan3_0_prime</code>, <code>seedance_2_0_mini</code>, <code>flux_3_video</code>, <code>flux_3_video_edit</code>, <code>kling_video_edit</code>, <code>happy_horse_video</code>.</li>
 <li><strong>Audio (TTS):</strong> <code>inworld_text_to_speech</code>, <code>qwen_audio_tts</code>, <code>text2speech_v2</code>.</li>
 </ul>
 <hr />
@@ -403,7 +413,7 @@
 </table>
 <hr />
 <h2>Picking flow</h2>
-<p>Match by intent, not surface keyword. When two could apply, the higher entry wins. Only the models listed under <strong>Auto-pick</strong> are chosen without being asked; every other model is used only when the user names it or explicitly asks for what it offers (cheaper, faster, a specific look). When the user names a model, use it and keep using it for follow-ups on the same work.</p>
+<p>Match by intent and requested deliverable. Explicit model choices and specialized workflow pins take priority. Otherwise, a standalone animated GIF or SVG uses <code>gpt_image_2_6</code> before the subject/style rules below. Set the output format before submitting; do not start a video or conversion pipeline for a native GIF. When the user names a model, keep it for follow-ups and verify its requested format support. Only the models listed under <strong>Auto-pick</strong> are chosen without being asked; every other model is used only when named or when the user explicitly asks for what it offers.</p>
 <h3>Image — auto-pick</h3>
 <ol>
 <li><strong>Brand product visual (Pinterest pin, lifestyle, hero banner, ad pack, virtual try-on, restyle)</strong> → use <code>higgsfield-product-photoshoot</code> instead. NOT this skill.</li>
@@ -415,13 +425,25 @@
 <li><strong>Locations / environments / no-people scenes</strong> → Soul Location.</li>
 <li><strong>Logo, icon, vector-like illustration, brand mark, controlled-palette graphic</strong> → Recraft V4.1. Use <code>--model_type vector</code> for vector-style output.</li>
 <li><strong>Cartoon or illustrated characters, heavily textured photos</strong> → Nano Banana 2 (<code>nano_banana_flash</code>).</li>
-<li><strong>Default for everything else</strong> → GPT Image 2.5. General generation, editing, design, UI, banners, product concepts, anything with on-image text.</li>
+<li><strong>Default for everything else</strong> → GPT Image 2.6. General generation, editing, design, UI, banners, product concepts, anything with on-image text.</li>
 </ol>
 <h3>Image — only when asked</h3>
 <ul>
 <li><strong>Cheaper or faster:</strong> Nano Banana 2 Lite (<code>nano_banana_2_lite</code>) for quick reference edits; Z Image for fast drafts.</li>
-<li><strong>Named by the user:</strong> Nano Banana Pro, Soul Cast, Soul Cinema Studio, Seedream 5.0 Lite, Seedream 4.5, Flux 2, Flux Kontext Max, Kling O1 Image, Grok Image, GPT Image 2, Cinema Studio Image 2.5, Auto, and the unprofiled models listed above.</li>
+<li><strong>Named by the user:</strong> GPT Image 2.6 Flare, GPT Image 2.5, Nano Banana Pro, Soul Cast, Soul Cinema Studio, Seedream 5.0 Lite, Seedream 4.5, Flux 2, Flux Kontext Max, Kling O1 Image, Grok Image, GPT Image 2, Cinema Studio Image 2.5, Auto, and the unprofiled models listed above.</li>
 </ul>
+<h3>GPT Image 2.6 formats</h3>
+<p>Inspect <code>higgsfield model get gpt_image_2_6 --json</code> (or <code>gpt_image_2_6_flare</code>) for the current controls. Both models accept <code>--output_format png|jpeg|webp|gif|svg</code>; omitting it produces PNG. Select the requested format before the first job. An animation description in <code>--prompt</code> alone still produces a PNG.</p>
+<ul>
+<li><strong>Animated GIF:</strong> <code>--output_format gif</code>. Optional <code>--size</code>, <code>--frame_count</code>, and <code>--frame_duration_ms</code> control the animation; defaults are <code>288x288</code>, 9 frames and 200 ms per frame. Preserve requested values and validate limits against the live schema. References are allowed.</li>
+<li><strong>SVG:</strong> <code>--output_format svg</code>, with no <code>--image</code> or <code>--image-references</code>. For editing/vectorizing an existing reference, report this restriction and resolve a compatible workflow instead of silently discarding the reference. Deliver the returned SVG URL unchanged; a raster preview is not the SVG file.</li>
+<li><strong>Flare:</strong> select <code>gpt_image_2_6_flare</code> as the model ID, not <code>--variant flare</code> on Sunburst or GPT Image 2.5.</li>
+</ul>
+<pre><code class="language-bash">higgsfield generate create gpt_image_2_6 --prompt &quot;A cute cat blinking in a seamless loop&quot; --output_format gif --size 288x288 --frame_count 9 --frame_duration_ms 200 --wait
+higgsfield generate create gpt_image_2_6 --prompt &quot;A simple clean vector cat icon&quot; --output_format svg --wait
+higgsfield generate create gpt_image_2_6_flare --prompt &quot;A simple clean vector coffee cup icon&quot; --output_format svg --wait
+</code></pre>
+<p>Keep explicit MP4/video requests on the video route. Requests to write a GIF/SVG prompt only return text without starting generation. After a successful submission, wait for that job and use its actual result URL; do not create extra variants merely to repair a reply.</p>
 <h3>Video — auto-pick</h3>
 <ol>
 <li><strong>All advertising / commercial video (UGC, unboxing, TV spot, product showcase, branded ad)</strong> → Marketing Studio. See <code>marketing-modes.md</code>.</li>
@@ -440,7 +462,7 @@
 <h3>3D — pick this default</h3>
 <ol>
 <li><strong>Create an actual 3D mesh/model/GLB from one or more object/product reference images</strong> → Multi-Image to 3D (<code>multi_image_to_3d</code>). Pass 1–4 repeated <code>--image</code> flags. Use <code>--should_texture true</code> for textured assets; use rigging/animation flags only when the user explicitly wants a rigged or animated asset.</li>
-<li><strong>Create a picture that merely looks like a 3D render</strong> → use an image model instead, usually GPT Image 2.5 or Nano Banana 2 (<code>nano_banana_flash</code>) depending on the brief.</li>
+<li><strong>Create a picture that merely looks like a 3D render</strong> → use an image model instead, usually GPT Image 2.6 or Nano Banana 2 (<code>nano_banana_flash</code>) depending on the brief.</li>
 </ol>
 <h3>Audio — pick this default</h3>
 <ol>
@@ -458,7 +480,7 @@
 <li><strong>Do not treat audio generation as an audio media input.</strong> <code>seed_audio</code>, <code>mirelo_text_to_audio</code>, and <code>sonilo_music</code> create audio from text. <code>--audio</code> is for reference audio on video models like Seedance 2.0 or an alias for <code>audio_references</code> on Seed Audio.</li>
 <li><strong>Audio on Seedance 2.0</strong>: reference audio comes through the media inputs with role <code>audio</code>. Native audio generation is a separate <code>generate_audio</code> flag, on by default.</li>
 <li><strong>Prompt-only models reject reference media.</strong> Z Image, Recraft V4.1, Soul Cast, Soul Location, and some Wan configs are prompt-only; pass no media flags to them. Virality Predictor is different: it returns text but requires a video input.</li>
-<li><strong>Route branded product visuals through <code>higgsfield-product-photoshoot</code></strong> — its prompt enhancer adds 10 mode-specific templates on top of GPT Image 2. Direct GPT Image 2.5 generation here is the right call for everything that isn't a product photoshoot.</li>
+<li><strong>Route branded product visuals through <code>higgsfield-product-photoshoot</code></strong> — its prompt enhancer adds 10 mode-specific templates on top of GPT Image 2. Direct GPT Image 2.6 generation here is the right call for everything that isn't a product photoshoot.</li>
 <li><strong>Cinema Studio ids</strong> (<code>cinematic_studio_video_4_0</code>, <code>cinematic_studio_3_0</code>) do not appear in <code>higgsfield model list</code>; check them with <code>higgsfield model get &lt;id&gt;</code>. Prefer 4.0 when the user asks for Cinema Studio without a version.</li>
 <li><strong>When the user names a specific model, use it.</strong> The auto-picks cover the common intents — the rest of the catalog exists for users who know what they want.</li>
 </ul>

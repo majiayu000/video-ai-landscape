@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>product-intake · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="product-intake · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/ugc/references/product-intake">
+<meta property="og:type" content="website">
+<meta property="og:title" content="product-intake · fal 社区 Skills">
+<meta property="og:description" content="product-intake · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/ugc/references/product-intake">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="product-intake · fal 社区 Skills">
+<meta name="twitter:description" content="product-intake · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/ugc/references/product-intake.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Product intake for UGC</h1>
+<p>Fill this card once before scripting or prompting. Every script line, prompt
+and claim draws from it, so the product looks and behaves the same in every
+clip.</p>
+<h2>Canonical product line</h2>
+<p>One sentence, reused verbatim in every prompt:</p>
+<pre><code class="language-text">[brand/name], [type], [size/volume], [color + finish], [shape/silhouette],
+[closure/cap/opening], [visible text on the product, exactly as printed]
+</code></pre>
+<p>Example: "<BRAND> 750 ml stainless steel water bottle, matte sage green,
+straight cylinder with rounded shoulders, brushed steel screw cap with a carry
+loop, white vertical text '<BRAND>' and '750 ml'."</p>
+<h2>Usage mechanics</h2>
+<p>How a person physically uses it, in order. These become the demo beats and
+keep hands and motion plausible.</p>
+<ul>
+<li>Hold: grip, size in hand, one or two hands.</li>
+<li>Open/close: twist, flip, pull, press; direction and number of turns.</li>
+<li>Use: pour, apply, wear, plug in, fold; what changes on screen.</li>
+<li>Result the camera can see: condensation, texture, fit in a bag, sound.</li>
+</ul>
+<p>For software, record the screen flow instead: the starting screen, the clicks or
+inputs in order, and the visible result.</p>
+<p>Ask only for mechanics you cannot see in the product photo or screenshots.</p>
+<h2>Claim allowlist</h2>
+<p>Only these may appear as spoken or written claims:</p>
+<ul>
+<li>Claims the user supplied word for word that are observable, or that the
+  user confirms are substantiated (<code>fal-script-writer</code> Step 3). A health,
+  safety, medical, financial, environmental, superlative or comparative claim,
+  or any number, rating or performance figure (a size, volume or count printed on the product is an observation; a printed performance, health or safety figure ("SPF 50", "24 h cold") still needs substantiation), without that confirmation stays
+  out, even verbatim. The product's own unaltered label may stay visible; an
+  unsubstantiated printed figure is never spoken, captioned, zoomed on or
+  framed as a claim, and is left out of the canonical line's text field.</li>
+<li>Observations that are true of the real product: shown in media the user
+  supplied, or confirmed by the user ("it fits the cup holder" only if a
+  supplied photo shows it or the user says so). A generated shot can
+  illustrate how the product is used, including a usage step the camera sees
+  (pouring, opening, holding); a fit, capacity, temperature, texture, colour or consistency shown on screen
+  (fit in a bag, condensation) is an observation and needs the same supplied
+  media or user confirmation; it never proves a claim.</li>
+</ul>
+<p>Everything else (durations, temperatures, health, savings, "best", reviews,
+ratings) stays out unless the user supplies it and it passes the first
+bullet. If the user asks for a claim
+without proof, write the visible alternative and say why.</p>
+<h2>Identity</h2>
+<ul>
+<li>Product: one approved product image is the reference for every shot; never
+  redraw the logo or label from text.</li>
+<li>Creator: one approved creator image for all clips. A generated creator is a
+  host, not a customer: no first-person usage history ("I've used this for
+  months"), no "my results", no reported feelings ("I love this"). Present
+  tense, demonstrative ("here's", "watch", "you just…").</li>
+<li>Tell the user when the creator is AI-generated, so they can apply their
+  platform's AI and ad disclosure rules.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

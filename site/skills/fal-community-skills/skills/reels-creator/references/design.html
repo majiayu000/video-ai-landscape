@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>design · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="design · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/design">
+<meta property="og:type" content="website">
+<meta property="og:title" content="design · fal 社区 Skills">
+<meta property="og:description" content="design · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/reels-creator/references/design">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="design · fal 社区 Skills">
+<meta name="twitter:description" content="design · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/reels-creator/references/design.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Design: free, never slop</h1>
+<p>Every video gets its own look. This page doesn't hand you a palette, a font or a motion style. It lists what reads as cheap, what makes a scene "cool", and a method that finds a look the user will pick.</p>
+<h2>1. Freedom</h2>
+<ul>
+<li><strong>Derive the look from the subject and the audience</strong>, not from the last video. A science explainer, a cooking reel and a news recap should not share a palette or a font.</li>
+<li><strong>Mixing looks in one video is welcome when the reason is clear:</strong> for example, light pastel scenes with stroke boxes for structure, and black cinematic scenes with real footage for proof.</li>
+<li><strong>Brands use their own system:</strong> their real fonts, colours and marks, verified on the brand's own site (licensed faces only with files the user supplies). Never draw a logo by hand: use its official paths (<code>textkit.mark()</code>).</li>
+<li><strong>Any technique in §5 is available; none is required.</strong> Don't tie a video to a single animation style or design.</li>
+</ul>
+<h2>2. The text budget</h2>
+<p>The words on screen are the voice's shadow, not a second script. Too much text is the first thing that makes a scene look cheap.</p>
+<ul>
+<li><strong>One idea per scene.</strong> The headline, if there is one, is a single line of at most six words.</li>
+<li><strong>Labels name things</strong> (≤ 3 words each) and appear on the word that says them (word times from <code>wordtimes.py</code>). A label the voice never says is a candidate to cut.</li>
+<li><strong>No sentences on screen</strong>, except a quoted claim with its source.</li>
+<li><strong>Visible words at any moment:</strong></li>
+<li>16:9: aim for ≤ 12, hard ceiling 20;</li>
+<li>9:16: aim for ≤ 8, ceiling 12;</li>
+<li>captions and the one-line source footnote don't count.</li>
+<li><strong>Numbers may be big.</strong> A number the voice says can fill a third of the frame. That is often the best scene.</li>
+<li><strong>Every number gets a dated source line</strong> (<code>who.int · Oct 2026</code>), small, in one corner, set once per scene.</li>
+<li><strong>Text over a host clip never touches the face or the hair.</strong> On a 9:16 talking head, the plain area below the captions (often the shirt) is the clean ground.</li>
+</ul>
+<h2>3. Tells: the AI-slop look</h2>
+<p>Never ship:
+- coloured accent bars on a card's left or top edge (border-left / border-top), or "callout" boxes;
+- a grid of white or grey cards with hairline borders on a grey ground, the dashboard look. A card is fine when it is a real object (a widget, a phone, a ticket, a window on footage), not a container for bullet text;
+- uppercase, letter-spaced mono "eyebrow" labels over headings;
+- bento grids that exist to fill space, and three-icon feature rows;
+- gradient blobs, decorative glows, and glass with no light source;
+- text that fades and rises in, line after line, as the scene's only motion;
+- emoji or stock icons with mismatched strokes;
+- rolling odometer strips on every number (half digits show in paused frames);
+- floating corner badges, "NEW" stickers, pulsing dots;
+- template transitions: zoom blur, glitch, page curl, cube spin, a swipe wipe between every scene;
+- drop shadows on everything, and three different corner radii in one frame;
+- a centred title over three cards (a slide, not a scene);
+- labels off-centre in their boxes (the bar is ±2 px, measured by <code>check.py</code>);
+- flat clip-art drawings in two saturated colours, and full-bleed split colour blocks.</p>
+<h2>4. Cooler = the object explains</h2>
+<p>A scene is cool when the thing itself moves to make the point, so the voice needs no help. Ask of every scene: <strong>what is the one thing that moves, and what does its movement say?</strong></p>
+<p>Moves that work:
+- <strong>Footage that proves the number.</strong> A score on a chart flies into a window that opens on the footage it scored: this score <em>is</em> this video. The footage then docks into a card while the next fact arrives, so the result keeps its place.
+- <strong>A duration you watch.</strong> A stopwatch counts while a clip plays: a speed claim becomes a length of time, not a number you read.
+- <strong>The layout is the argument.</strong> A box spans only the columns it covers, so its width says what it does.
+- <strong>No half-empty frame.</strong> A box holds the middle alone, then slides aside when its partner draws on.
+- <strong>Handovers.</strong> Consecutive animation scenes hand over by a circle reveal of the next ground from the point of interest. After a host shot or b-roll, the scene just cuts in.
+  - The reveal lives inside the incoming scene: its first frame shows the previous scene's last ground, and its own ground opens as a circle.
+  - host_reel only hard-cuts, and the cut is invisible because the two frames match.</p>
+<p>More directions that fit this rule:
+- a bar that <em>is</em> the thing it counts (stacked clips, coins, GPUs);
+- a map region lighting up as it's named;
+- a timeline that becomes the next scene's ground;
+- a price that physically shrinks next to the one it beats;
+- a UI the viewer knows (a terminal, a phone, a player) doing the real thing.</p>
+<h2>5. Techniques catalogue (techniques, not a style)</h2>
+<p>Borrow freely and adapt to the look:
+- <strong>Studio motion techniques:</strong> squircle morphs, colour reveals, flip faces, word-pop line launches, slanted band masks, velocity-matched zoom cuts, card tilt-and-rise, radial gauges, counters with centred bars, rack focus, and a physical object for one moment.
+- <strong>The measured house curve:</strong> arrivals leave at full speed and land softly (cubic-bezier 0.085, 0.648, 0, 1, 0.55–0.85 s); exits into a cut accelerate to the last frame.
+- <strong>Premium rhythm:</strong> one loud thing on a quiet ground, one idea per shot, a pace that breathes.
+- <strong>Words that perform their meaning</strong> ("cut" cuts, "slide" slides), used once, not on every word.
+- <strong>Real footage inside the design:</strong> frame sequences in rounded windows (<code>textkit.seq</code>), docked cards, masks that follow an object.
+- <strong>Generated plates:</strong> an H3 Max abstract plate or a FLUX 3 Max real-world shot as a scene's ground, with the design drawn on top.</p>
+<h2>6. Method</h2>
+<ol>
+<li><strong>Scene list first.</strong> Per scene: its line, its one idea, its one moving object, its ground. This is cheap, so show it with the script.</li>
+<li><strong>Directions.</strong> Make 2–3 directions as stills on the same two scenes, picking the hardest ones, on one sheet with short labels (A, B, C, one line each).
+   - The directions differ in look, not just colour.
+   - Never re-propose a rejected direction.</li>
+<li><strong>The user picks or mixes.</strong> Then make a short motion test of the same two scenes with the real voice (<code>preview_mux.py</code>) before building the rest.</li>
+<li><strong>Build every scene.</strong> Send stills of each scene's key moments (<code>check.mjs</code>) before the full render.</li>
+<li><strong>After any rejection, stills come first again.</strong> Never go straight to a full render.</li>
+</ol>
+<h2>7. Type</h2>
+<ul>
+<li><strong>Faces:</strong> brand fonts first. Otherwise one display face with character and one text face, plus one mono only when it carries data.</li>
+<li>Check licences: OFL faces (Geist, Inter, Space Grotesk…) are safe to load in the local workspace; licensed brand faces only with the user's files and OK.</li>
+<li>Load fonts with <code>@font-face</code> in the page's <code>fonts.css</code>, verify them with <code>assertFonts</code>, and check glyph coverage with <code>check.py</code>.</li>
+<li><strong>Sizes:</strong> judge them on the final frame, at phone size.</li>
+<li>At 1920 × 1080: body ≥ 34 px, labels ≥ 24 px, the source line ≥ 20 px.</li>
+<li>At 1080 × 1920: body ≥ 44 px, labels ≥ 30 px.</li>
+<li><strong>Figures:</strong> tabular for anything that counts. Use the real minus, real quotes and real apostrophes when the face has them; <code>check.py</code> tells you when it doesn't.</li>
+<li><strong>Brand names keep their own case:</strong> avoid label styles that force uppercase.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

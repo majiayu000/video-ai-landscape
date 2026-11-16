@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>production-guide · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/photo-editing/references/production-guide">
+<meta property="og:type" content="website">
+<meta property="og:title" content="production-guide · fal 社区 Skills">
+<meta property="og:description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/photo-editing/references/production-guide">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="production-guide · fal 社区 Skills">
+<meta name="twitter:description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/photo-editing/references/production-guide.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Photo editing</h1>
+<p>Deterministic photo edits run with a local Python script, not through a
+generative model. They are pixel-exact, repeatable, and effectively free — a
+model run would re-synthesize the whole image and drift everything the user
+didn't ask to change.</p>
+<h2>Routing</h2>
+<p>Classify the request first. The test: <strong>could a darkroom or Photoshop slider do
+it?</strong> → local workspace. <strong>Does it require inventing new image content?</strong> → generative
+edit model.</p>
+<table>
+<thead>
+<tr>
+<th>Request</th>
+<th>Route</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Brightness, exposure, contrast, saturation, white balance</td>
+<td>Local Python</td>
+</tr>
+<tr>
+<td>Color grading, black &amp; white / monochrome, LUT-style looks, vignette</td>
+<td>Local Python</td>
+</tr>
+<tr>
+<td>Crop, resize, rotate, straighten, flip</td>
+<td>Local Python</td>
+</tr>
+<tr>
+<td>Format conversion (png/jpg/webp), compression, metadata strip</td>
+<td>Local Python</td>
+</tr>
+<tr>
+<td>Watermarks, text overlays, borders, compositing images together</td>
+<td>Local Python</td>
+</tr>
+<tr>
+<td>Sharpen, mild blur (incl. background blur via mask)</td>
+<td>Local Python</td>
+</tr>
+<tr>
+<td>Background removal / matting</td>
+<td>Bria model (see below)</td>
+</tr>
+<tr>
+<td>Change objects, faces, expressions ("make him smile", "remove the person")</td>
+<td>Edit model</td>
+</tr>
+<tr>
+<td>Inpainting, outpainting, style transfer ("make it a painting")</td>
+<td>Edit model</td>
+</tr>
+<tr>
+<td>Upscaling, restoration, deblur/denoise beyond mild</td>
+<td>Dedicated model (upscaler/restoration), never PIL resize-up</td>
+</tr>
+</tbody>
+</table>
+<p>Mixed requests split: "make it black and white and add our logo" is all
+local workspace; "remove the guy in the back and crop to square" is an edit model for
+the removal, then local workspace for the crop.</p>
+<h2>Masks come from Bria, everything after is local workspace</h2>
+<p>The local workspace has <strong>no matting library</strong> — do not attempt segmentation with
+opencv (GrabCut etc.); quality is unacceptable. For anything that needs a
+subject/background split, run <code>fal-ai/bria/background/remove</code> (single job per
+image, no batch; completes in seconds). It returns a transparent-PNG cutout —
+the alpha channel <strong>is</strong> your mask.</p>
+<p>The hybrid recipe for selective edits ("grade the background monochrome",
+"blur everything behind her", "replace the background with white"):</p>
+<ol>
+<li>Bria → cutout URL.</li>
+<li>One local Python script: download original + cutout, extract
+   <code>mask = cutout.split()[-1]</code>, apply the adjustment to the full frame, then
+   <code>Image.composite(foreground, adjusted, mask)</code> (or paste the cutout over a
+   new background).</li>
+<li>Write the final image to the project output folder and inspect it.</li>
+</ol>
+<p>If the user only asked to remove the background, the Bria output alone is the
+answer — no local workspace step needed.</p>
+<h2>Working in the local workspace</h2>
+<ul>
+<li>Check local dependencies first: Pillow and numpy; optional image libraries
+  depend on the requested operation. Do not assume they are preinstalled.</li>
+<li><strong>One script per pipeline.</strong> Download inputs, do every step, write the final
+  file to the project output folder. Don't round-trip
+  intermediate steps through separate tool calls.</li>
+<li>Return the inspected output file through the client's supported file interface.</li>
+</ul>
+<p>Key Pillow moves (write real code around these; don't guess at APIs):</p>
+<ul>
+<li>Load with <code>ImageOps.exif_transpose(Image.open(...))</code> — always, or phone
+  photos come out rotated.</li>
+<li>Tonal: <code>ImageEnhance.Brightness/Contrast/Color/Sharpness</code>,
+  <code>ImageOps.autocontrast</code>, <code>Image.point</code> for curves/levels.</li>
+<li>B&amp;W with control: mix channels via numpy (e.g. luminosity weights) rather
+  than <code>convert("L")</code> when the user cares about the look.</li>
+<li>Geometry: <code>crop</code>, <code>resize(..., Image.LANCZOS)</code>, <code>rotate(angle, expand=True)</code>.</li>
+<li>Compositing: convert to RGBA, <code>Image.alpha_composite</code> / <code>Image.composite</code>
+  with a mask; <code>ImageDraw</code> + <code>ImageFont</code> for text.</li>
+<li>HEIC/HEIF input (iPhone photos): <code>pillow_heif.register_heif_opener()</code>
+  before <code>Image.open</code> (<code>pip install -q "pillow-heif&gt;=1.3.0"</code> if missing).</li>
+<li>RAW input (CR2/NEF/ARW/DNG): decode with <code>rawpy</code> (<code>pip install -q rawpy</code>
+  if missing) — never grade the embedded JPEG thumbnail Pillow shows you.
+  <code>raw.postprocess(use_camera_wb=True, no_auto_bright=True, output_bps=16)</code>
+  is the neutral import; keep the result 16-bit/float through the whole
+  pipeline and convert once at export.</li>
+</ul>
+<h2>Measure like a colorist — scopes, not eyes</h2>
+<p>You can see the user's attached images, but only coarsely — vision gives you
+semantic reads (subject, composition, "looks backlit"), not fine tonal or
+color measurement. Never estimate numbers by eye. Files you create in the
+local workspace need both visual inspection and quantitative checks. So
+every quantitative decision comes from measured numbers, which is also how
+professionals grade: by histogram and scopes, not by squinting. Print your
+scopes.</p>
+<ul>
+<li><strong>Before editing</strong>, run a quick measurement pass and print: per-channel
+  p1/p50/p99, mean luminance, % of pixels clipped at 0 and 255, per-channel
+  means (a gray-world imbalance = the cast direction), mean saturation.</li>
+<li><strong>Decide from the numbers</strong>, not vibes: R mean 6% above G → cool it by that
+  factor; p99 at 0.82 → there's highlight headroom to stretch; 3% clipped
+  blacks → lift before you S-curve.</li>
+<li><strong>After editing, re-measure</strong> and print before/after side by side. Confirm
+  the targets moved as intended and nothing new clipped (&gt;0.5% is a smell)
+  BEFORE delivering the output file.</li>
+</ul>
+<p>The measurement pass may be its own small Python process when the numbers
+decide which aesthetic moves to make; the edit itself stays one script.</p>
+<h2>Grading like Lightroom: normalize, then grade</h2>
+<p>For "fix the colors and make it moody / cinematic / film-look" asks, work in
+two passes inside one script — a neutral baseline first, the look second.
+Do the math in float32 numpy arrays in [0, 1]; convert to uint8 once at the
+end (repeated 8-bit round-trips cause banding).</p>
+<ol>
+<li><strong>Normalize</strong> to a clean baseline:
+   - White balance: gray-world (scale each channel to the common mean) or
+     white-patch (scale so the ~99th percentile is neutral).
+   - Exposure/contrast: percentile stretch (clip at ~p1/p99, rescale), or
+     <code>skimage.exposure.equalize_adapthist</code> (CLAHE, <code>clip_limit≈0.01</code>) for
+     flat or backlit shots.</li>
+<li><strong>Grade</strong> on top of the normalized base:
+   - Tone curves: <code>np.interp</code> over a few control points per channel — S-curve
+     for punch, lifted blacks for matte film looks.
+   - Split-toning: shift shadow and highlight hues separately, weighted by a
+     smooth luminance mask.
+   - HSL-panel moves (targeted hue/sat shifts): <code>cv2.cvtColor</code> to HSV, adjust
+     the hue range, convert back.
+   - <code>.cube</code> LUTs: <code>pillow_lut.load_cube_file</code> → pass to <code>Image.filter</code> for
+     any named film/teal-orange style look (<code>pip install -q pillow-lut</code> if
+     missing).</li>
+<li><strong>Match a reference look</strong>: when the user attaches a photo with the look
+   they want, <code>skimage.exposure.match_histograms(img, ref, channel_axis=-1)</code>
+   is the 80% answer in one line — follow with a gentle tone curve to taste.</li>
+</ol>
+<p>Show the result and iterate — grading is subjective, so expect a round or two
+of "warmer", "less contrast" refinements on the same normalized base.</p>
+<h2>Quality rules</h2>
+<ul>
+<li>Preserve the input resolution unless the user asked to resize.</li>
+<li>Output PNG whenever transparency is involved; otherwise match the input
+  format, JPEG at <code>quality=95</code> to avoid visible recompression.</li>
+<li>Change only what was asked — no bonus auto-enhance, no re-encoding pipelines
+  that touch untargeted pixels.</li>
+</ul>
+<h2>Defaults for ambiguous asks</h2>
+<ul>
+<li><strong>"Remove the background"</strong> → Bria. Deliver the transparent PNG; offer a
+  composite (solid color / new scene) as the follow-up.</li>
+<li><strong>"Enhance / fix this photo"</strong> → deterministic first (auto-contrast, white
+  balance, gentle sharpen in one script). If the real problem is detail,
+  damage, or faces, say so and offer an upscaler/restoration model instead.</li>
+<li><strong>"Retouch"</strong> → tonal cleanup is local workspace; blemish/skin/object retouching is
+  an edit model.</li>
+<li>Genuinely unclear whether they want a look change or a content change → ask,
+  one short question, before running anything.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

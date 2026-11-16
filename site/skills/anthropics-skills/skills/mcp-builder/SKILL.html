@@ -110,9 +110,17 @@ Error messages should guide agents toward solutions with specific suggestions an
 <ul>
 <li><strong>MCP Best Practices</strong>: <a href="./reference/mcp_best_practices.html">📋 View Best Practices</a> - Core guidelines</li>
 </ul>
-<p><strong>For TypeScript (recommended):</strong>
-- <strong>TypeScript SDK</strong>: Use WebFetch to load <code>https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/README.md</code>
-- <a href="./reference/node_mcp_server.html">⚡ TypeScript Guide</a> - TypeScript patterns and examples</p>
+<p><strong>For TypeScript (recommended):</strong></p>
+<p>The TypeScript SDK has two major versions. Pick one before writing code:
+- <strong>v2</strong> (<code>@modelcontextprotocol/server</code>): the current stable release. Use it for new servers.
+- <strong>v1</strong> (<code>@modelcontextprotocol/sdk</code>): receives bug and security fixes only. Use it only when the project's <code>package.json</code> already depends on <code>@modelcontextprotocol/sdk</code>, or migrate that project with <code>npx @modelcontextprotocol/codemod@latest v1-to-v2 .</code></p>
+<p>If the project already uses v1, tell the user once, in a sentence or two, that v2 (<code>@modelcontextprotocol/server</code>) is the current stable release, that v1 receives only bug and security fixes, and that <code>npx @modelcontextprotocol/codemod@latest v1-to-v2 .</code> migrates the project. Then continue with v1 unless the user asks to migrate.</p>
+<p>Don't mix the two in one project: v1 code samples (imports from <code>@modelcontextprotocol/sdk/...</code>) don't apply to v2.</p>
+<ul>
+<li><strong>TypeScript SDK (v2)</strong>: Use WebFetch to load <code>https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/README.md</code>; the full docs index is <code>https://ts.sdk.modelcontextprotocol.io/v2/llms.txt</code></li>
+<li><a href="./reference/node_mcp_server_v2.html">⚡ TypeScript Guide (v2)</a> - TypeScript patterns and examples</li>
+<li>For v1 projects only: <code>https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/v1.x/README.md</code> and the <a href="./reference/node_mcp_server.html">TypeScript Guide (v1)</a></li>
+</ul>
 <p><strong>For Python:</strong>
 - <strong>Python SDK</strong>: Use WebFetch to load <code>https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md</code>
 - <a href="./reference/python_mcp_server.html">🐍 Python Guide</a> - Python patterns and examples</p>
@@ -125,7 +133,7 @@ Prioritize comprehensive API coverage. List endpoints to implement, starting wit
 <h3>Phase 2: Implementation</h3>
 <h4>2.1 Set Up Project Structure</h4>
 <p>See language-specific guides for project setup:
-- <a href="./reference/node_mcp_server.html">⚡ TypeScript Guide</a> - Project structure, package.json, tsconfig.json
+- <a href="./reference/node_mcp_server_v2.html">⚡ TypeScript Guide (v2)</a> - Project structure, package.json, tsconfig.json (<a href="./reference/node_mcp_server.html">v1</a> for existing v1 projects)
 - <a href="./reference/python_mcp_server.html">🐍 Python Guide</a> - Module organization, dependencies</p>
 <h4>2.2 Implement Core Infrastructure</h4>
 <p>Create shared utilities:
@@ -168,6 +176,7 @@ Prioritize comprehensive API coverage. List endpoints to implement, starting wit
 <h4>3.2 Build and Test</h4>
 <p><strong>TypeScript:</strong>
 - Run <code>npm run build</code> to verify compilation
+- v2 projects: run the self-check script from the <a href="./reference/node_mcp_server_v2.html#verify-your-server">v2 guide</a> against the built server
 - Test with MCP Inspector: <code>npx @modelcontextprotocol/inspector</code></p>
 <p><strong>Python:</strong>
 - Verify syntax: <code>python -m py_compile your_server.py</code>
@@ -222,7 +231,8 @@ Prioritize comprehensive API coverage. List endpoints to implement, starting wit
 <h3>SDK Documentation (Load During Phase 1/2)</h3>
 <ul>
 <li><strong>Python SDK</strong>: Fetch from <code>https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md</code></li>
-<li><strong>TypeScript SDK</strong>: Fetch from <code>https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/README.md</code></li>
+<li><strong>TypeScript SDK (v2)</strong>: Fetch from <code>https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/README.md</code>; full docs index at <code>https://ts.sdk.modelcontextprotocol.io/v2/llms.txt</code></li>
+<li><strong>TypeScript SDK (v1, existing v1 projects only)</strong>: Fetch from <code>https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/v1.x/README.md</code></li>
 </ul>
 <h3>Language-Specific Implementation Guides (Load During Phase 2)</h3>
 <ul>
@@ -235,13 +245,20 @@ Prioritize comprehensive API coverage. List endpoints to implement, starting wit
 <p>Quality checklist</p>
 </li>
 <li>
-<p><a href="./reference/node_mcp_server.html">⚡ TypeScript Implementation Guide</a> - Complete TypeScript guide with:</p>
+<p><a href="./reference/node_mcp_server_v2.html">⚡ TypeScript Implementation Guide (SDK v2)</a> - Complete TypeScript guide for <code>@modelcontextprotocol/server</code> with:</p>
 </li>
-<li>Project structure</li>
-<li>Zod schema patterns</li>
-<li>Tool registration with <code>server.registerTool</code></li>
-<li>Complete working examples</li>
-<li>Quality checklist</li>
+<li>Project setup and the server factory</li>
+<li>Tool design: Zod 4 schemas, output formats, pagination, errors</li>
+<li>A complete example serving stdio and Streamable HTTP, plus bearer auth</li>
+<li>Resources, prompts, and notifications</li>
+<li>A self-check script to verify the built server</li>
+<li>Links to SDK examples for advanced features</li>
+<li>
+<p>A v1 → v2 translation table, migration steps, and a quality checklist</p>
+</li>
+<li>
+<p><a href="./reference/node_mcp_server.html">⚡ TypeScript Implementation Guide (SDK v1)</a> - The equivalent guide for existing <code>@modelcontextprotocol/sdk</code> projects</p>
+</li>
 </ul>
 <h3>Evaluation Guide (Load During Phase 4)</h3>
 <ul>

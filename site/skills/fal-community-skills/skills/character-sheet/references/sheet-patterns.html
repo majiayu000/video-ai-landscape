@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sheet-patterns · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="sheet-patterns · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/character-sheet/references/sheet-patterns">
+<meta property="og:type" content="website">
+<meta property="og:title" content="sheet-patterns · fal 社区 Skills">
+<meta property="og:description" content="sheet-patterns · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/character-sheet/references/sheet-patterns">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="sheet-patterns · fal 社区 Skills">
+<meta name="twitter:description" content="sheet-patterns · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/character-sheet/references/sheet-patterns.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Character sheet patterns (production-proven)</h1>
+<h2>1. Full AAA design sheet (16:9, three-zone layout)</h2>
+<p>The worked master — swap the character, keep the structure (hero left / turnaround center / details right, name texts in quotes, closing style + negative tail):</p>
+<pre><code>Ultra-detailed 16:9 fantasy character design sheet, official AAA fantasy RPG
+character bible, clean editorial layout, elegant ivory background with minimal
+luxury UI. Character name &quot;NEFRA&quot;, title &quot;Desert Oracle&quot;, subtitle &quot;A wandering
+oracle from the endless dunes, she reads the flow of fate and guides lost souls.&quot;
+
+Left panel features a full-body hero illustration of a petite desert priestess
+with warm bronze skin, short platinum-white bob hair, golden amber eyes and a
+calm mysterious expression. She wears an elegant white-and-gold desert
+ceremonial outfit featuring flowing silk veils, asymmetrical layered skirts,
+ornate golden jewelry, engraved belts, arm cuffs, anklets and delicate
+embroidered patterns. She stands barefoot while holding an ornate
+crescent-shaped oracle staff decorated with gold filigree, gemstones and
+hanging charms. The overall silhouette feels graceful, sacred and lightweight.
+
+Center panel includes professional turnaround views (Front, Side, Back),
+perfectly consistent anatomy, hairstyle, costume and proportions, shown in
+neutral pose.
+
+Right panel includes a large head close-up, multiple facial expressions,
+close-up panels of the oracle staff, fabric embroidery, jewelry, belts, arm
+ornaments, anklets and embroidered pattern details. Include accessory panels
+featuring necklace, headpiece, earrings, bracelets and waist ornaments. Add a
+refined color palette featuring ivory, sand beige, warm gold, bronze, cream,
+light brown, charcoal and metallic gold.
+
+Style: official fantasy RPG character sheet, premium game artbook
+illustration, anime realism, elegant fantasy costume design, intricate gold
+ornaments, production-ready concept art, clean composition, no watermark, no
+logo, no extra limbs, no deformed anatomy.
+</code></pre>
+<p>Why it works: every wardrobe item is NAMED (veils, layered skirts, arm cuffs, anklets…) — named items survive across views and downstream calls; the palette swatch panel doubles as the color-grade anchor.</p>
+<h2>2. Clean 4-column turnaround reference (no text — video identity ref)</h2>
+<pre><code>Create a professional character reference sheet of [the character / the person
+in the attached image]. Arrange into four vertical columns, each representing
+one viewing angle. Each column contains a full-body view on top and a matching
+close-up portrait directly beneath it. Columns (left to right): Column 1:
+front view (full body above, front portrait below). Column 2: left profile
+(full body facing left) with portrait facing left below. Column 3: right
+profile (full body facing right) with portrait facing right below. Column 4:
+back view, with matching portrait below. Maintain even spacing and framing
+around the character. Clean silhouette, consistent alignment, and clean panel
+separation. No text. Thin borders. Flat lighting.
+</code></pre>
+<p>Use this variant when the sheet will be a reference image (Image N) for video models — text and decoration on the sheet can leak into video frames; flat lighting keeps the identity readable under any scene light.</p>
+<h2>3. Expression sheet</h2>
+<pre><code>Create a character expression sheet showing [character] displaying 12
+different emotions arranged in grid format: happy smile, sad tears, angry
+frown, shocked surprise, smug grin, embarrassed blush, confused tilt, sleepy
+yawn, excited sparkle eyes, nervous sweat, bored deadpan, laughing joy.
+</code></pre>
+<h2>4. From an existing photo/render (edit mode)</h2>
+<p>Attach the image and scope the edit: "Create a professional character reference sheet of the person in the attached image. Keep the facial features, hair, and outfit exactly the same as Image 1 in every view." — edit endpoints (identity from the upload) beat text re-description every time. For angle-only variants of one render, a multi-angle edit model (96 poses) is cheaper than a full sheet.</p>
+<h2>Downstream binding (how other calls consume the sheet)</h2>
+<ul>
+<li>Scoped reference clause (video): "Use Image N (the sheet's position in the reference list) only for the character's final identity, wardrobe, and props." — scoping prevents the sheet's layout/background from bleeding into the scene.</li>
+<li>Inline anchor parenthetical (text-only calls): paste the anchor into the prompt where the character first appears — <code>a desert oracle (character reference "NEFRA": dark skin, white bobbed hair with straight bangs, golden eyes, black-and-gold headband with tasseled gold earrings, white bandeau top with translucent shawl, layered slit skirt with gold plates, gold armlets, collar and anklets, barefoot, golden crescent staff with glowing orb)</code> — the parenthetical IS the sheet in words; reuse it verbatim in every shot.</li>
+<li>Strict-identity clause (photoreal): "Use the provided reference photo as the STRICT ONLY visual reference for [the subject]. Maintain her exact appearance with zero deviation."</li>
+<li>Token permanence: never paraphrase anchor tokens between calls; "golden amber eyes" must not become "yellow eyes".</li>
+<li>Midjourney route: <code>--cref [sheet url] --cw 75</code> (raise to 90 + "exact same outfit" if clothing drifts).</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

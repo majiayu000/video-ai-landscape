@@ -78,7 +78,7 @@
 <meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/higgsfield-skills/">higgsfield-skills</a><span class="crumb">/</span><span class="crumb">INSTALL.md</span><button onclick="t()">🌓</button></nav>
 <main class="md"><h1>Install Higgsfield Skills</h1>
-<p>Eight skills ship in this repo:</p>
+<p>These skills ship in this repo:</p>
 <ul>
 <li><strong><code>higgsfield-generate</code></strong> — image and video generation, 30+ models, plus Marketing Studio (branded ads with avatars, products, hooks, and settings) and Virality Predictor scoring</li>
 <li><strong><code>higgsfield-soul-id</code></strong> — train a face-faithful Soul Character</li>
@@ -86,7 +86,8 @@
 <li><strong><code>higgsfield-brandkit</code></strong> — complete visual identities, editable logo systems, brand applications, and PPTX/PDF brandbooks</li>
 <li><strong><code>higgsfield-marketplace-cards</code></strong> — marketplace main, secondary, and A+ style product cards with backend prompt enhancement</li>
 <li><strong><code>higgsfield-websites</code></strong> — build, edit, and deploy full-stack websites, apps, and browser games (React 19 + TanStack Start on Cloudflare) via <code>higgsfield website …</code></li>
-<li><strong><code>higgsfield-video-explainer</code></strong> — complete narrated explainers with live style-preset selection</li>
+<li><strong><code>higgsfield-faceless-video</code></strong> — narrated faceless videos with live style-preset selection</li>
+<li><strong><code>higgsfield-video-explainer</code></strong> — compatibility entry for explainers</li>
 <li><strong><code>higgsfield-youtube-thumbnail</code></strong> — truthful YouTube thumbnails and vertical video covers with controlled variants</li>
 </ul>
 <p>They chain: <code>higgsfield-soul-id</code> returns a Soul ID consumable by <code>higgsfield-generate</code> (Soul models and identity-aware Marketing Studio jobs). <code>higgsfield-brandkit</code> coordinates Recraft, Seedream, GPT Image, and local deterministic tools into one approved visual system. <code>higgsfield-product-photoshoot</code> is the single entry point for professional brand product visuals; <code>higgsfield-marketplace-cards</code> is the marketplace product card pipeline. Both use backend prompt enhancement before submitting image jobs. <code>higgsfield-websites</code> chains with <code>higgsfield-generate</code> to embed bespoke hero images, video loops, and OG assets in a site.</p>
@@ -152,6 +153,7 @@ cd skills
 <td><code>cd skills &amp;&amp; git pull &amp;&amp; ./setup</code></td>
 </tr>
 </tbody>
-</table></main>
+</table>
+<p>For a custom skills directory, run <code>./setup --host codex --target-dir &lt;directory&gt;</code>. The default Codex destination is <code>~/.agents/skills</code>.</p></main>
 <footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
 <script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

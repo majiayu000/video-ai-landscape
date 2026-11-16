@@ -88,7 +88,7 @@
 </blockquote>
 <p><strong>Expected behavior:</strong></p>
 <ul>
-<li>Picks <code>gpt_image_2_5</code> (default), or a faster option (<code>z_image</code>, <code>nano_banana_2_lite</code>) because the user said "quick".</li>
+<li>Picks <code>gpt_image_2_6</code> (default), or a faster option (<code>z_image</code>, <code>nano_banana_2_lite</code>) because the user said "quick".</li>
 <li>Does NOT pick a Soul model (no face mentioned).</li>
 <li>Submits via <code>higgsfield generate create &lt;model&gt; --prompt "..." --wait</code> (one-shot create+poll, no separate <code>wait</code> step).</li>
 <li>Stays silent until done (no "checking status..." spam).</li>
@@ -231,7 +231,7 @@
 <li>Detects user_language = <code>ru</code>.</li>
 <li>Replies in Russian for status, questions, summary.</li>
 <li>Keeps technical flags English (<code>--model nano_banana_flash</code>, <code>--aspect_ratio 16:9</code>).</li>
-<li>Picks <code>gpt_image_2_5</code> (default).</li>
+<li>Picks <code>gpt_image_2_6</code> (default).</li>
 </ul>
 <p><strong>Score:</strong></p>
 <ul>
@@ -306,18 +306,18 @@
 </blockquote>
 <p><strong>Expected behavior:</strong></p>
 <ul>
-<li>Routes to <code>higgsfield-video-explainer</code>, not generic video generation.</li>
+<li>Routes to <code>higgsfield-faceless-video</code> (or the compatible explainer entry), not generic video generation.</li>
 <li>Runs <code>higgsfield preset list video-explainer --json</code> and shows current preview links.</li>
 <li>Waits for style selection, then resolves its UUID with <code>higgsfield preset resolve video-explainer</code>.</li>
 <li>Lets the user choose one voice and creates six Russian <code>seed_audio</code> narration jobs first.</li>
-<li>Creates six matching 10-second <code>gemini_omni</code> clips second, all with the resolved style key.</li>
-<li>Builds ordered <code>blocks.json</code> pairs and finishes with one <code>explainer_video</code> generation job.</li>
+<li>Creates six matching 10-second clips with a supported video model and the chosen style.</li>
+<li>Assembles the ordered pairs with the bundled script and verifies the final MP4.</li>
 </ul>
 <p><strong>Score:</strong></p>
 <ul>
 <li>Pass: live preset and voice selection, six matched audio/video blocks, final assembled MP4.</li>
 <li>Partial: correct block pipeline but chooses a requested option without showing it or loses a block pairing.</li>
-<li>Fail: embeds a preset list, fabricates an ID, uses <code>video_explainer</code>, or returns loose clips.</li>
+<li>Fail: embeds a preset list, fabricates an ID, uses a retired server-side assembler, or returns loose clips.</li>
 </ul>
 <hr />
 <h2>Scenario 13 — Playable browser game</h2>
@@ -361,6 +361,91 @@
 <li>Fail: uses the Marketing Studio metadata kit, self-approves a mark, produces only raster logos, or skips palette/logo/type selection.</li>
 </ul>
 <hr />
+<h2>Scenario 15 — Native animated GIF</h2>
+<p><strong>User request:</strong></p>
+<blockquote>
+<p>generate a gif of a cute cat</p>
+</blockquote>
+<p><strong>Expected behavior:</strong></p>
+<ul>
+<li>Uses <code>higgsfield-generate</code> with <code>gpt_image_2_6</code> and <code>--output_format gif</code> on the first submission.</li>
+<li>Uses live GIF defaults unless the user specifies size, frame count or frame duration; preserves explicit values.</li>
+<li>Does not submit PNG drafts, use a video model, or create a conversion pipeline.</li>
+<li>Waits for the single job and returns the exact CLI result URL unchanged.</li>
+</ul>
+<p><strong>Score:</strong></p>
+<ul>
+<li>Pass: one native GIF job, correct format flag, actual result URL.</li>
+<li>Fail: PNG output, video/conversion route, extra unsolicited jobs, or a fabricated URL.</li>
+</ul>
+<hr />
+<h2>Scenario 16 — Standalone SVG icon</h2>
+<p><strong>User request:</strong></p>
+<blockquote>
+<p>Generate an SVG icon of a cute cat.</p>
+</blockquote>
+<p><strong>Expected behavior:</strong></p>
+<ul>
+<li>Uses <code>gpt_image_2_6</code> with <code>--output_format svg</code>, before the generic icon/cartoon model rules.</li>
+<li>Sends no <code>--image</code> or <code>--image-references</code>; SVG takes no references.</li>
+<li>Returns the actual SVG result URL, not a raster preview renamed to <code>.svg</code>.</li>
+<li>Keeps complete brand identity work on the existing brandkit workflow (Scenario 14).</li>
+</ul>
+<p><strong>Score:</strong></p>
+<ul>
+<li>Pass: one native SVG job, no references, exact SVG result URL.</li>
+<li>Fail: wrong format, unsupported references, or an unsolicited brandkit workflow.</li>
+</ul>
+<hr />
+<h2>Scenario 17 — Explicit GPT Image 2.6 Flare</h2>
+<p><strong>User request:</strong></p>
+<blockquote>
+<p>Generate an SVG coffee cup icon using GPT Image 2.6 Flare.</p>
+</blockquote>
+<p><strong>Expected behavior:</strong></p>
+<ul>
+<li>Uses model <code>gpt_image_2_6_flare</code> with <code>--output_format svg</code> and no reference images.</li>
+<li>Does not use <code>--variant flare</code> on <code>gpt_image_2_6</code> or <code>gpt_image_2_5</code>.</li>
+<li>Returns the exact CLI result URL.</li>
+</ul>
+<p><strong>Score:</strong></p>
+<ul>
+<li>Pass: separate Flare model ID and native SVG output.</li>
+<li>Fail: changed model, legacy variant parameter, or raster output.</li>
+</ul>
+<hr />
+<h2>Scenario 18 — Explicit MP4 remains video</h2>
+<p><strong>User request:</strong></p>
+<blockquote>
+<p>Generate a four-second MP4 video of a cute cat, not a GIF.</p>
+</blockquote>
+<p><strong>Expected behavior:</strong></p>
+<ul>
+<li>Uses the video route with <code>seedance_2_5</code> and <code>--duration 4</code>.</li>
+<li>Does not substitute a GIF image job because the subject could be animated.</li>
+</ul>
+<p><strong>Score:</strong></p>
+<ul>
+<li>Pass: one video job with the requested duration.</li>
+<li>Fail: GIF/image route or an unsolicited format change.</li>
+</ul>
+<hr />
+<h2>Scenario 19 — GIF prompt only</h2>
+<p><strong>User request:</strong></p>
+<blockquote>
+<p>Write a prompt for a GIF of a cute cat. Do not generate anything.</p>
+</blockquote>
+<p><strong>Expected behavior:</strong></p>
+<ul>
+<li>Returns prompt text only.</li>
+<li>Does not submit image/video generation, upload media, or create a conversion pipeline.</li>
+</ul>
+<p><strong>Score:</strong></p>
+<ul>
+<li>Pass: text only, no generation.</li>
+<li>Fail: any submitted generation job.</li>
+</ul>
+<hr />
 <h2>Round template (copy when recording results)</h2>
 <pre><code>Round: &lt;N&gt;
 Date: &lt;YYYY-MM-DD&gt;
@@ -375,6 +460,11 @@ Scenario 11: ...
 Scenario 12: ...
 Scenario 13: ...
 Scenario 14: ...
+Scenario 15: ...
+Scenario 16: ...
+Scenario 17: ...
+Scenario 18: ...
+Scenario 19: ...
 
 Aggregate: &lt;P pass / Q partial / F fail&gt;
 Time-to-result mean: &lt;Ns&gt;

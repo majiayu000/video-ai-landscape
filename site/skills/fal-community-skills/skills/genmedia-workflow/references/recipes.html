@@ -77,73 +77,7 @@
 <meta name="twitter:description" content="recipes · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
 <meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/genmedia-workflow/references/recipes.md</span><button onclick="t()">🌓</button></nav>
-<main class="md"><h1>Workflow recipes</h1>
-<h2>Multi-scene cinematic video</h2>
-<p>Input: concept, style, duration, aspect ratio.</p>
-<pre><code class="language-text">1. Planner creates N scenes with start frame prompt, end frame edit prompt, and motion prompt.
-2. Generate start frames in parallel.
-3. Edit start frames into end frames in parallel.
-4. Run image-to-video for each scene with start and end frames if schema supports it.
-5. Download clips.
-6. Merge clips if a suitable utility endpoint is selected and verified.
-7. Return clip manifest in playback order.
-</code></pre>
-<p>Use <code>storytelling</code> and <code>cinematography</code> references for shot language.</p>
-<h2>Product campaign</h2>
-<p>Input: product reference, brand tone, deliverables.</p>
-<pre><code class="language-text">1. Upload product reference.
-2. Generate or edit hero image while preserving product identity.
-3. Create platform variants: square, vertical, wide, PDP.
-4. Create one product reveal clip from the approved hero frame.
-5. Add controlled text only through a utility endpoint or external design step.
-6. Download all assets and return a campaign manifest.
-</code></pre>
-<p>Use <code>commercial</code> for product prompt rules.</p>
-<h2>Character continuity sequence</h2>
-<p>Input: approved character reference, scene list.</p>
-<pre><code class="language-text">1. Use character anchor and uploaded reference.
-2. Generate approved still for each scene or expression.
-3. Run image-to-video per shot from approved stills.
-4. Reject clips with face, hair, wardrobe, or age drift.
-5. Return shot order and local clip paths.
-</code></pre>
-<p>Use <code>character-design</code> for anchor and prompt patterns.</p>
-<h2>Narrated documentary</h2>
-<p>Input: topic, runtime, voice direction, visual style.</p>
-<pre><code class="language-text">1. Planner creates scene table with narration, visual prompt, and duration.
-2. Generate TTS or upload voiceover.
-3. Generate images or clips per scene.
-4. Join each scene's audio and video.
-5. Add subtitles.
-6. Download final scene files or merged output.
-</code></pre>
-<p>Keep narration, subtitles, and visuals aligned by duration.</p>
-<h2>Dataset generator</h2>
-<p>Input: task definition and target count.</p>
-<pre><code class="language-text">1. Planner creates N diverse prompt pairs.
-2. Generate original images in parallel.
-3. Apply edit or transformation in parallel.
-4. Generate captions or metadata from actual outputs.
-5. Return triplets: original, transformed, caption.
-</code></pre>
-<p>Keep variation controlled and track every seed or schema parameter if used.</p>
-<h2>Style exploration</h2>
-<p>Input: reference asset and target style family.</p>
-<pre><code class="language-text">1. Build a variation matrix with one changed axis per row.
-2. Run image edit or generation nodes in parallel.
-3. Download all variants.
-4. Return a selection table with style axis, endpoint, output path, and notes.
-</code></pre>
-<p>Use systematic variation before random shotgun variation unless the user asks
-for broad ideation.</p>
-<h2>Social media batch</h2>
-<p>Input: master creative, target platforms.</p>
-<pre><code class="language-text">1. Generate or choose master asset.
-2. Resize or crop for each platform.
-3. Add platform-safe text externally or through text utility.
-4. Compress for web delivery.
-5. Return outputs grouped by platform and aspect ratio.
-</code></pre>
-<p>Do not rely on generated in-image text for final ad copy.</p></main>
+<main class="md"><h1>Compatibility reference</h1>
+<p>Read the <a href="../../fal-workflow/references/recipes.html">canonical workflow reference</a> for the maintained guidance.</p></main>
 <footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
 <script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

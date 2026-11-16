@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>production-guide · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/h3-cinematic-prompter/references/production-guide">
+<meta property="og:type" content="website">
+<meta property="og:title" content="production-guide · fal 社区 Skills">
+<meta property="og:description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/fal-community-skills/skills/h3-cinematic-prompter/references/production-guide">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="production-guide · fal 社区 Skills">
+<meta name="twitter:description" content="production-guide · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">skills/h3-cinematic-prompter/references/production-guide.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>H3 Cinematic Prompter</h1>
+<h2>Mandatory entry behavior</h2>
+<p>Turn the user's material into a finished prompt ready to paste into MiniMax
+Hailuo H3 on fal. Write the prompt only. Do not submit, poll, or promise a
+video file.</p>
+<p>Detect the mode without asking:</p>
+<ul>
+<li>If a first-frame image is present, use <code>i2va</code>.</li>
+<li>Otherwise, use <code>t2va</code>.</li>
+</ul>
+<p>If the request concerns expanding, outpainting, resizing, or padding an image,
+do not claim the attachment for this workflow. Route it to an image-expansion
+workflow.</p>
+<p>Resolve missing creative details yourself unless one choice would materially
+change the user's intent. If duration is missing, apply the Defaults. If it is
+invalid, replace it with the nearest legal integer and state the adjustment
+before the prompt.</p>
+<h2>Contract invariants</h2>
+<ol>
+<li>Set duration <code>D</code> to an integer satisfying <code>5 &lt;= D &lt;= 15</code> seconds.</li>
+<li>Emit exactly these three headers, once each, in this order:
+   <code>integrated_multimodal_description:</code>, <code>overall_soundscape:</code>,
+   <code>non_diegetic_music:</code>. Emit no fourth field.</li>
+<li>In <code>i2va</code>, begin the description value with this byte-exact line:
+   <code>For the target video, at 0.00 seconds into the target video, &lt;Picture 1&gt; (from [Shot 1]) is fully referenced.</code>
+   In <code>t2va</code>, omit it entirely.</li>
+<li>Open Shot 1 with <code>[Shot 1] Live-action, cinematic,</code>. Give Shot 1 no
+   timestamp. Number shots contiguously from 1.</li>
+<li>Open every later shot with <code>[Shot N] At MM:SS.mmm,</code>. Make timestamps
+   absolute, zero-padded, strictly increasing, on the half-second grid
+   (<code>.000</code> or <code>.500</code>), and <code>&lt; D</code>.</li>
+<li>Wrap every spoken utterance as <code>&lt;d&gt;[Language] line text&lt;/d&gt;</code>. Use the
+   language actually spoken.</li>
+<li>On first speech, identify a speaker with a descriptor phrase ending in
+   vocal qualities plus contiguous ID <code>(S1)</code>, <code>(S2)</code>, and so on. On later
+   speech, use only the bare ID. Never assign an ID to a nonspeaker.</li>
+<li>Default to <code>non_diegetic_music: N/A</code>, byte-exact. Depart only when the user
+   authorizes music or a discrete visible hinge requires score; state that
+   reason before the prompt.</li>
+<li>When formal camera qualifiers are used, amplitude is <code>small</code> or <code>large</code>
+   and speed is <code>slow</code> or <code>fast</code>. <code>medium amplitude</code> and <code>medium speed</code> are
+   forbidden; both occur zero times in 21,524 records.</li>
+<li>Treat shot type as a composition, never a pick-list. Build
+    <code>[SIZE? + MOVE? + ANGLE? + TIME-OF-DAY? + OTHER?] + shot</code>; normally use
+    one or two production-meaningful modifiers.</li>
+</ol>
+<p>Read <a href="format-spec.html">format-spec.md</a> before drafting whenever the
+request includes dialogue, an image, music, or an existing prompt to repair.
+Read <a href="camera-and-craft.html">camera-and-craft.md</a> for multi-shot work,
+screenplay condensation, thin premises, or deliberate camera direction. Read
+<a href="examples.html">examples.md</a> only when a worked pattern is useful.</p>
+<h2>Workflow</h2>
+<h3>Step 1 — Fix the duration and mode</h3>
+<p>Set <code>D</code> and detect <code>t2va</code> or <code>i2va</code>. Never ask which mode. In <code>i2va</code>, make the
+first described state coincide with the supplied frame; do not invent an
+earlier action or refer to Picture 1 again.</p>
+<h3>Step 2 — Expand a thin premise before prompting</h3>
+<p>Construct a miniature scene that answers four questions:</p>
+<ol>
+<li>Where and when: one concrete place and one lighting condition.</li>
+<li>Who: one to three characters, each with one visible identity cue.</li>
+<li>What changes: one objective meets one obstacle, turns at a visible hinge,
+   and ends in a visible consequence.</li>
+<li>What is heard: one environmental bed plus action-caused foreground sounds.</li>
+</ol>
+<p>Limit this scene to the shot budget before writing prose. Add only
+production-facing connective detail; do not invent story-changing biography,
+props, or behavior.</p>
+<h3>Step 3 — Compute the shot budget</h3>
+<p>Use <code>M(D)</code> as the default and <code>P(D)</code> as the ceiling:</p>
+<table>
+<thead>
+<tr>
+<th>D</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+<th>10</th>
+<th>11</th>
+<th>12</th>
+<th>13</th>
+<th>14</th>
+<th>15</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M(D)</td>
+<td>1</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>3</td>
+<td>3</td>
+<td>3</td>
+<td>3</td>
+</tr>
+<tr>
+<td>P(D)</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>3</td>
+<td>3</td>
+<td>3</td>
+<td>3</td>
+<td>3</td>
+<td>3</td>
+<td>4</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<p>Set <code>S = M(D)</code>. Permit <code>S &lt;= P(D)</code> only for a montage, pursuit, or instantly
+readable insert. Reduce <code>S</code> for sustained verbal pressure. Assign one dramatic
+function to each shot. Cut only when information, power, location, action
+phase, or point of view changes. Keep every shot span at least 2 seconds;
+reserve 2–2.5 seconds for simple inserts or reactions.</p>
+<p><strong>Worked 15-second timeline:</strong> <code>D=15</code>, so <code>M(15)=3</code>, <code>P(15)=4</code>; choose three
+beats at <code>00:00</code>, <code>00:05.500</code>, and <code>00:11.000</code>, yielding spans of 5.5, 5.5,
+and 4 seconds. The final beat begins at <code>11/15=73%</code>, leaving time for the
+consequence to read.</p>
+<h3>Step 4 — Compute the dialogue budget</h3>
+<p>Let <code>U = D - B</code>, where <code>B</code> is seconds reserved for entrances, physical
+business, pauses, and reactions. Enforce <code>dialogue_words &lt;= floor(2.5 * U)</code>.
+Allow up to <code>3 * U</code> only inside an intentionally dialogue-dominant span. Also
+enforce each shot's words <code>&lt;= floor(2.5 * that shot's usable speech seconds)</code>.</p>
+<p>Prefer short lines. If dialogue fails either test, trim lines first, then drop
+whole turns. Preserve the initiating line, scene-changing answer, and final
+consequence before greetings, repetition, exposition, or spectator reactions.
+Never cut a necessary shot merely to preserve excess dialogue.</p>
+<h3>Step 5 — Draft picture, motion, and cuts</h3>
+<p>After the required Shot 1 prefix, establish place, lighting, subjects, spatial
+relations, and immediate action. For later shots, state what the cut lands on
+and why that view matters. Carry a subject, prop, eyeline, sound, movement, or
+objective across each cut. Translate internal states into visible behavior.</p>
+<p>Compose shot modifiers by slot. Motivate every move and angle. If a move uses
+formal qualifiers, choose only one legal amplitude and at most one legal speed;
+do not duplicate speed in both the move adjective and formal slot.</p>
+<h3>Step 6 — Write sound and music</h3>
+<p>Write <code>overall_soundscape</code> in one or two sentences: continuous environmental
+bed first, then a short screen-order sequence of material-specific sounds
+caused by visible actions. Put diegetic music in the soundscape by default.
+Use silence by naming what stops, what remains, and what returns.</p>
+<p>Keep <code>non_diegetic_music: N/A</code> unless invariant 8 permits a score. If permitted,
+describe the smallest sufficient palette and tie its onset or change to the
+visible hinge. Keep it subordinate to speech.</p>
+<h3>Step 7 — Emit and validate</h3>
+<p>Return the three-field prompt as plain text. A carefully specified H3 prompt
+should be sent with prompt expansion turned off because expansion costs timing
+precision.</p>
+<p>Run this validator against the draft:</p>
+<ul>
+<li>[ ] <code>D</code> is an integer and <code>5 &lt;= D &lt;= 15</code>.</li>
+<li>[ ] Header sequence equals the three required headers; header count is 3.</li>
+<li>[ ] <code>i2va</code> has the byte-exact preamble; <code>t2va</code> has no preamble.</li>
+<li>[ ] Shot 1 has the exact opener and no timestamp.</li>
+<li>[ ] Shot numbers equal <code>1..S</code> with no gaps.</li>
+<li>[ ] Every later timestamp matches <code>MM:SS.(000|500)</code> and <code>0 &lt; t &lt; D</code>.</li>
+<li>[ ] Later timestamps strictly increase; every shot span is at least 2 seconds.</li>
+<li>[ ] <code>S &lt;= P(D)</code> and every shot has one distinct dramatic function.</li>
+<li>[ ] Every utterance has one complete language-tagged <code>&lt;d&gt;</code> span.</li>
+<li>[ ] Speaker IDs start at S1, are contiguous, and use full descriptor once.</li>
+<li>[ ] Dialogue passes both whole-clip and per-shot word formulas.</li>
+<li>[ ] Neither forbidden medium qualifier occurs.</li>
+<li>[ ] Every shot type is slot-composed; every move, angle, and cut is motivated.</li>
+<li>[ ] Soundscape is 1–2 sentences, screen-ordered, and causally audible.</li>
+<li>[ ] Music equals <code>N/A</code>, or its permitted reason was stated.</li>
+<li>[ ] No claim of submission, generation completion, or output file appears.</li>
+</ul>
+<h2>Defaults</h2>
+<ul>
+<li><strong>Duration:</strong> 10 seconds.</li>
+<li><strong>Mode:</strong> Detect from image presence.</li>
+<li><strong>Shots:</strong> <code>M(D)</code>.</li>
+<li><strong>Dialogue:</strong> None unless speech is necessary to the causal spine.</li>
+<li><strong>Music:</strong> <code>N/A</code>.</li>
+<li><strong>Transition:</strong> A clean cut that names its landing view.</li>
+</ul>
+<h2>Consistency and guardrails</h2>
+<ul>
+<li>Preserve user-supplied story facts; invent only what makes them shootable.</li>
+<li>Keep <code>i2va</code> subjects, wardrobe, props, light, and location consistent with
+  the reference; minimize invention outside the frame.</li>
+<li>Do not claim word-accurate speech, lip-sync, or speaker-identity fidelity.</li>
+<li>Keep every timestamp below requested duration; output may run slightly long,
+  but that overshoot is not timing headroom.</li>
+<li>Prefer one causal micro-scene over disconnected coverage.</li>
+</ul></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

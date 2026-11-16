@@ -77,54 +77,26 @@
 <meta name="twitter:description" content="runway-dev-characters · Runway 官方 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
 <meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/runwayml-skills/">runwayml-skills</a><span class="crumb">/</span><span class="crumb">skills/runway-dev-characters/SKILL.md</span><button onclick="t()">🌓</button></nav>
-<main class="md"><div class="meta"><div class="m-name">runway-dev-characters</div><div class="m-desc">Build, modify, debug, or verify Runway Characters integrations: inspect preset or custom avatars with MCP, manage live Sessions via SDK, and connect the application UI. Use with +runway-dev. UI says Characters; MCP/API use avatars. Not for avatar video generation endpoints.</div><div class="m-src">源文件：<a href="https://github.com/runwayml/skills/blob/main/skills/runway-dev-characters/SKILL.md" target="_blank" rel="noopener">runwayml/skills/skills/runway-dev-characters/SKILL.md</a></div></div><h1>Runway Dev — Characters</h1>
-<blockquote>
-<p><strong>Companion:</strong> Use <code>+runway-dev</code> for shared guidance when available. If it is not installed, inspect the workspace, probe <code>RUNWAYML_API_SECRET</code> without printing it, and read the Characters docs linked by <code>llms.txt</code>. Encourage connecting Dev MCP to inspect or manage characters and knowledge documents. If the user declines or cannot connect, continue integration from current docs and an existing character ID.</p>
-</blockquote>
-<h2>Goal</h2>
-<p>Keep a Characters integration and its live Session lifecycle correct across the application's backend and UI. Verify changes end-to-end when safe.</p>
-<h2>Terminology</h2>
-<ul>
-<li>Dev Portal <strong>Characters</strong> = API <strong>avatars</strong> (<code>list_avatars</code>, <code>get_avatar</code>).</li>
-<li><strong>Character ID</strong> = avatar UUID.</li>
-<li><strong>live Session</strong> = realtime conversation via <code>POST /v1/realtime_sessions</code>.</li>
-<li>Fallback preset when the user wants a default: <code>influencer</code> (<code>{ type: 'runway-preset', presetId: 'influencer' }</code>).</li>
-</ul>
-<h2>No character specified</h2>
+<main class="md"><div class="meta"><div class="m-name">runway-dev-characters</div><div class="m-desc">Use when building or maintaining a Runway Characters integration, including avatar discovery or management, realtime Sessions, knowledge, and the call interface. Follow current Characters and SDK docs. Do not use for generating avatar videos from text or audio.</div><div class="m-src">源文件：<a href="https://github.com/runwayml/skills/blob/main/skills/runway-dev-characters/SKILL.md" target="_blank" rel="noopener">runwayml/skills/skills/runway-dev-characters/SKILL.md</a></div></div><h1>Runway Characters</h1>
+<p>The Developer Portal calls these <strong>Characters</strong>; the API and SDK use <strong>Avatars</strong>. A realtime <strong>Session</strong> is one live conversation. Consult <code>runway-dev</code> for account setup and shared credential guidance when installed.</p>
+<h2>Workflow</h2>
 <ol>
-<li>Ask whether the user wants an existing character, a preset, or a custom character from an image. Do not branch into avatar-video generation unless requested.</li>
-<li>For a custom character, ask the user to supply the image and use <code>create_avatar</code> according to its live MCP tool schema. If the user wants a default instead, use preset <code>influencer</code>.</li>
-<li>Implement the Session lifecycle behind the server boundary: create once, poll <code>NOT_READY</code> until <code>READY</code>, consume connection credentials once, and return only the connection fields the client needs.</li>
-<li>Connect the application's call UI with the current Avatar SDK, then end or cancel the Session during teardown so it does not keep running.</li>
-<li>For end-to-end verification, connect one Session successfully and cleanly end it.</li>
+<li>Inspect the app's call experience and server architecture. Ask whether it should use an existing Character, a documented preset, or a newly created custom Avatar only when that choice is not already clear.</li>
+<li>When live account state or a user's Character matters, use Dev MCP to inspect the available Avatars and their state. Do not substitute a different Avatar or guess a preset ID. If a custom Avatar is requested, use its reference image and current API/MCP schema.</li>
+<li>Follow the current <a href="https://docs.dev.runwayml.com/characters/integration/">Characters integration guide</a> and <a href="https://docs.dev.runwayml.com/_llms-txt/characters.txt">SDK documentation</a>. Check the <code>@runwayml/avatars-react</code> README for current React components, hooks, and styles; use <code>@runwayml/avatars</code> for a non-React web client.</li>
+<li>Create Sessions server-side with <code>@runwayml/sdk</code>. Keep <code>RUNWAYML_API_SECRET</code> on the server. Follow the current Session readiness and credential-consumption flow; expose only the one-time connection fields the browser SDK needs. Never send the API secret to the browser.</li>
+<li>Handle permission, connecting, active, failed, and ended states in the app UI. End or cancel a Session during teardown according to the current SDK/API guidance. If single-use credentials have already been consumed and connection fails, create a new Session rather than reusing them.</li>
+<li>Run local checks. A live Session may incur usage; only open one for verification when requested or approved.</li>
 </ol>
-<h2>Character specified</h2>
-<ol>
-<li><code>get_avatar</code> for status and attached knowledge document ids.</li>
-<li>Use that character id; do not substitute another avatar.</li>
-<li>If status is <code>PROCESSING</code>, poll until <code>READY</code> or stop on <code>FAILED</code>.</li>
-</ol>
-<h2>MCP tools</h2>
+<h2>Live data and knowledge</h2>
+<p>Use the available MCP tools to inspect live Avatars with <code>list_avatars</code> and <code>get_avatar</code>, and knowledge documents with <code>list_avatar_knowledge_documents</code> and <code>get_avatar_knowledge_document</code>. <code>create_avatar</code>, <code>update_avatar</code>, and <code>delete_avatar</code> manage Avatars; the corresponding <code>*_avatar_knowledge_document</code> tools manage knowledge documents. After creating an Avatar, check it with <code>get_avatar</code> until its state is <code>READY</code> or <code>FAILED</code>. Read the existing record and current tool contract before changing it, and confirm destructive deletes with the user. If MCP is unavailable, continue app code that can be implemented from docs and existing IDs, and pause only the step that requires live account state.</p>
+<h2>Current docs</h2>
 <ul>
-<li><code>list_avatars</code> / <code>get_avatar</code> — inspect custom avatars in project.</li>
-<li><code>create_avatar</code> / <code>update_avatar</code> / <code>delete_avatar</code> — manage custom characters; confirm destructive changes before applying them.</li>
-<li><code>list_avatar_knowledge_documents</code> / <code>get_avatar_knowledge_document</code> — inspect attached knowledge.</li>
-<li><code>create_avatar_knowledge_document</code> / <code>update_avatar_knowledge_document</code> / <code>delete_avatar_knowledge_document</code> — manage domain knowledge when requested; confirm deletion first.</li>
-</ul>
-<h2>Application UI</h2>
-<ul>
-<li>Follow the current Avatar SDK README rather than copying component APIs from memory.</li>
-<li>In React, use <code>@runwayml/avatars-react</code> with its stylesheet. Keep session creation and credential consumption on the server; browser code receives only one-time connection fields.</li>
-<li>Use the packaged call component for standard UI or the SDK hooks for a custom experience. Handle microphone permission, connecting, active, error, and ended states.</li>
-<li>A failed connection needs a new Session because consumed credentials cannot be reused.</li>
-</ul>
-<h2>Knowledge</h2>
-<p>Use the MCP knowledge-document tools above for live state and CRUD. Inspect attached documents before updating them, keep content focused and structured, and do not delete knowledge without confirmation.</p>
-<h2>Docs</h2>
-<ul>
-<li>https://docs.dev.runwayml.com/llms.txt</li>
-<li>Characters: https://docs.dev.runwayml.com/_llms-txt/characters.txt</li>
-<li>Avatar SDK: https://github.com/runwayml/avatar-sdk-react</li>
+<li><a href="https://docs.dev.runwayml.com/characters/">Characters overview</a></li>
+<li><a href="https://docs.dev.runwayml.com/characters/integration/">Build an integration</a></li>
+<li><a href="https://docs.dev.runwayml.com/characters/concepts/">Session concepts and lifecycle</a></li>
+<li><a href="https://docs.dev.runwayml.com/_llms-txt/characters.txt">Characters documentation set</a></li>
+<li><a href="https://github.com/runwayml/avatar-sdk-react">React SDK</a></li>
 </ul></main>
 <footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
 <script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

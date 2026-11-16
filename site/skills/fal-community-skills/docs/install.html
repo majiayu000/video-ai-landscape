@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>install · fal 社区 Skills</title><style>
+  :root { color-scheme: light; --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b;
+    --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --accent:#2a78d6; --code-bg:rgba(11,11,11,.05); }
+  :root:where(:not([data-theme="light"])) { @media (prefers-color-scheme: dark) {
+    color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7;
+    --grid:#2c2c2a; --border:rgba(255,255,255,.10); --accent:#3987e5; --code-bg:rgba(255,255,255,.07); } }
+  :root[data-theme="dark"] { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19;
+    --ink:#fff; --ink2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --accent:#3987e5; --code-bg:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); line-height:1.7; font-size:15px;
+    font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .topbar { position:sticky; top:0; z-index:10; display:flex; gap:16px; align-items:center;
+    padding:10px 24px; background:color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--grid); font-size:13px; }
+  .topbar a { color:var(--ink2); text-decoration:none; } .topbar a:hover { color:var(--accent); }
+  .topbar .crumb { color:var(--muted); }
+  .topbar button { margin-left:auto; border:1px solid var(--border); background:var(--surface);
+    color:var(--ink2); border-radius:8px; padding:5px 11px; font-size:12.5px; cursor:pointer; }
+  main { max-width:880px; margin:0 auto; padding:36px 24px 90px; }
+  .meta { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; margin-bottom:28px; font-size:13.5px; }
+  .meta .m-name { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .meta .m-tag { display:inline-block; font-size:11px; color:var(--accent); border:1px solid
+    color-mix(in srgb, var(--accent) 35%, transparent); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:2px; }
+  .meta .m-desc { color:var(--ink2); white-space:pre-line; }
+  .meta .m-src { margin-top:8px; font-size:12px; color:var(--muted); }
+  .meta .m-src a { color:var(--muted); }
+  .md h1 { font-size:26px; line-height:1.3; margin:10px 0 16px; }
+  .md h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--grid); }
+  .md h3 { font-size:16px; margin:24px 0 8px; }
+  .md p, .md li { color:var(--ink); }
+  .md a { color:var(--accent); }
+  .md code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12.5px;
+    background:var(--code-bg); padding:1.5px 6px; border-radius:5px; }
+  .md pre { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; line-height:1.55; }
+  .md pre code { background:none; padding:0; font-size:12.5px; white-space:pre; }
+  .md blockquote { margin:14px 0; padding:2px 18px; border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 10px 10px 0; color:var(--ink2); }
+  .md table { border-collapse:collapse; width:100%; font-size:13.5px; margin:14px 0; display:block; overflow-x:auto; }
+  .md th, .md td { border:1px solid var(--grid); padding:7px 12px; text-align:left; vertical-align:top; }
+  .md th { background:var(--code-bg); font-size:12px; }
+  .md hr { border:none; border-top:1px solid var(--grid); margin:30px 0; }
+  .md img { max-width:100%; }
+  h2.list-head { font-size:17px; margin:30px 0 12px; border:none; }
+  .filelist { list-style:none; padding:0; margin:0; }
+  .filelist li { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 17px; margin-bottom:8px; }
+  .filelist a { color:var(--accent); text-decoration:none; font-weight:600; font-size:14px; }
+  .filelist a:hover { text-decoration:underline; }
+  .filelist .d { display:block; color:var(--ink2); font-size:12.5px; margin-top:3px; }
+  .filelist .plain a { color:var(--ink2); font-weight:500; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .gh { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .card .gh a { color:var(--muted); }
+  .card p { font-size:13px; color:var(--ink2); margin:0 0 10px; }
+  .card a.go { display:inline-block; font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 60px; font-size:12px; color:var(--muted); }
+</style><meta name="description" content="install · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<link rel="canonical" href="https://video-vendor-skills.pages.dev/skills/fal-community-skills/docs/install">
+<meta property="og:type" content="website">
+<meta property="og:title" content="install · fal 社区 Skills">
+<meta property="og:description" content="install · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta property="og:url" content="https://video-vendor-skills.pages.dev/skills/fal-community-skills/docs/install">
+<meta property="og:image" content="https://video-vendor-skills.pages.dev/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 视频厂商 CLI / Skill / MCP · 报告首页预览">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="install · fal 社区 Skills">
+<meta name="twitter:description" content="install · fal 社区 Skills。AI 视频厂商 CLI / Skill / MCP 调研资料，保留原文、来源链接与快照口径。">
+<meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
+<body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/fal-community-skills/">fal-community-skills</a><span class="crumb">/</span><span class="crumb">docs/install.md</span><button onclick="t()">🌓</button></nav>
+<main class="md"><h1>Installation and validation</h1>
+<p>These instructions become available from <code>main</code> after the PR merges. They do not
+publish a release or marketplace listing. During review, clone the PR branch
+instead of <code>main</code>. Generation is billed to the user's fal account.</p>
+<h2>One command: project skills</h2>
+<p>Requirements: Git with GitHub SSH access and Python 3.10+. Run from the project root.
+The installer uses only Python's standard library. It verifies the committed
+registry and installs every skill with its references, scripts and assets.
+It refuses to overwrite existing skills. Restart the agent after installation.</p>
+<p>Codex:</p>
+<pre><code class="language-sh">fal_skills_tmp=$(mktemp -d) &amp;&amp; git clone --depth 1 git@github.com:fal-ai-community/skills.git &quot;$fal_skills_tmp&quot; &amp;&amp; python3 &quot;$fal_skills_tmp/scripts/install.py&quot; --agent codex
+</code></pre>
+<p>Claude Code:</p>
+<pre><code class="language-sh">fal_skills_tmp=$(mktemp -d) &amp;&amp; git clone --depth 1 git@github.com:fal-ai-community/skills.git &quot;$fal_skills_tmp&quot; &amp;&amp; python3 &quot;$fal_skills_tmp/scripts/install.py&quot; --agent claude
+</code></pre>
+<p>Cursor:</p>
+<pre><code class="language-sh">fal_skills_tmp=$(mktemp -d) &amp;&amp; git clone --depth 1 git@github.com:fal-ai-community/skills.git &quot;$fal_skills_tmp&quot; &amp;&amp; python3 &quot;$fal_skills_tmp/scripts/install.py&quot; --agent cursor
+</code></pre>
+<p>Keep the printed temporary clone for inspection, or remove that directory after
+installation. The installed files are independent copies. Run <code>genmedia setup</code>
+after installing the <a href="https://github.com/fal-ai-community/genmedia-cli">genmedia CLI</a>
+for terminal model execution. Keep API keys out of skill files and shell history.</p>
+<p>For a single skill, add <code>--skill NAME</code>. Install its named dependency skills too,
+or use the complete bundle. To test without changing agent discovery folders,
+add <code>--destination /an/empty/test/folder</code>. For upgrades, review and remove or move
+only the previously installed fal folders first. The installer never overwrites
+an existing skill or edits agent settings.</p>
+<h2>Claude Code plugin</h2>
+<p>The canonical repository also exposes a CLI-based Claude plugin:</p>
+<pre><code class="language-text">/plugin marketplace add git@github.com:fal-ai-community/skills.git
+/plugin install fal-ai@fal-community
+</code></pre>
+<p>For review without installation: <code>claude plugin validate /path/to/skills --strict</code>.
+For local loading: <code>claude --plugin-dir /path/to/skills</code>. These paths use genmedia;
+the MCP profile below is an alternative for hosts with OAuth support.</p>
+<h2>MCP plugin bundles</h2>
+<p>From a reviewed checkout:</p>
+<pre><code class="language-sh">python3 -m venv .venv
+.venv/bin/pip install -r requirements-dev.txt
+.venv/bin/python scripts/build-packages.py --profile claude --output /tmp/fal-claude-review
+.venv/bin/python scripts/build-packages.py --profile codex --output /tmp/fal-codex-review
+.venv/bin/python scripts/build-packages.py --profile cursor --output /tmp/fal-cursor-review
+.venv/bin/python scripts/build-packages.py --profile grok --output /tmp/fal-grok-review
+</code></pre>
+<p>Each output must be empty or absent. Codex, Cursor and Grok default to a hybrid
+bundle with six entry points: <code>fal-media</code> plus the five outcome workflows. Local
+files contain stable production checks. The router fetches current model contracts,
+prices and specialist guidance through the connected fal tools only when needed.
+It reuses guidance for the current task and preserves its returned version for
+reference reads. If guidance is unavailable, local checks remain available; an
+unsupported stage is reported instead of replaced with guessed tools or models.</p>
+<p>CLI and Claude builds retain the full library by default. To build all 36 skills
+for another MCP host, add <code>--bundle full</code>. <code>--bundle hybrid</code> also works for Claude.
+Terminal-only builds require the full library. All 36 source skills, terminal
+plans, references and helper code stay in the community repository.</p>
+<p>Hybrid bundles include the six <code>SKILL.md</code> files, native manifests, a hash registry
+and a source lock. They do not install local runtime dependencies. Do not maintain
+copies manually. For the existing Codex/Grok repositories, copy only <code>skills/</code>
+and <code>skills-source.lock.json</code> from the matching profile. The lock records the
+source commit, bundle type and exact entry points. Preserve their existing
+manifests, connector mapping, logos and evals. Their sync scripts enforce this rule.</p>
+<p>Claude: validate the generated bundle, then load with
+<code>claude --plugin-dir /tmp/fal-claude-review</code>. Complete the fal OAuth browser flow
+when the MCP connection requests it. No API key belongs in the package.</p>
+<p>Cursor: Plugins settings → add a plugin from its GitHub repository URL, using
+<a href="https://github.com/fal-ai-community/fal-grok-plugin">fal-grok-plugin</a> after its
+companion PR merges. The <code>.cursor-plugin</code> manifest and <code>mcp.json</code> configure OAuth.</p>
+<p>Grok Bot/Build: use the same Grok package only in a host that accepts its existing
+<code>.grok-plugin</code> or <code>.cursor-plugin</code> format. No universal Grok install URI or CLI was
+established from the inspected public documentation. Do not advertise one-click
+Grok installation until a host owner validates it. The bundle build and integrity
+checks are available now; native install/authentication remains a manual check.</p>
+<p>Codex: project skill installation above works without plugin publication.
+The Codex build is skills-only by default. It does not embed a connector
+registration from the maintainer's account. A distributor with its own registered
+connector may pass <code>--codex-app-id</code> explicitly. Registration and access remain
+separate from public skill installation. Use the public genmedia CLI for terminal
+execution, or connect fal through a supported MCP host. See the
+<a href="https://developers.openai.com/plugins/build/plugins">official package guide</a>.</p>
+<h2>Verification limits</h2>
+<p>Automated tests use isolated destinations and fake model submissions. Live schema
+reads verify candidate contracts without paid generation. Tests do not prove
+visual quality, model output fidelity, marketplace acceptance, OAuth in each host,
+or a fluent speaker's approval of a localized asset. Those checks need separate
+runtime trials; do not label a dry run as a rendered creative result.</p></main>
+<footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
+<script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

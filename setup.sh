@@ -16,12 +16,12 @@ clone() {
   echo "✓ $dir @ $sha"
 }
 
-clone https://github.com/higgsfield-ai/skills.git            higgsfield-skills      f83af0bc1d937c8119099a11f8ebbf5e6fb99819
-clone https://github.com/runwayml/skills.git                 runwayml-skills        e3dffc1
+clone https://github.com/higgsfield-ai/skills.git            higgsfield-skills      27000402070db19d958789d05b3b52b6f4718d7c
+clone https://github.com/runwayml/skills.git                 runwayml-skills        6e98d3f3540705331acd748d75427f4bd7c90ce1
 clone https://github.com/runwayml/runway-mcp-plugin.git      runway-mcp-plugin      f56e77a
-clone https://github.com/AtlasCloudAI/atlas-cloud-skills.git atlascloud-skills      5ce115e6ede3f950490c375c4c5b94b60c0775ee
-clone https://github.com/fal-ai-community/skills.git         fal-community-skills   9ca8504
-clone https://github.com/elevenlabs/plugin.git               elevenlabs-plugin      c7eef3cbcf1ff3ef12066a4e8ea964749d8e94be
-clone https://github.com/anthropics/skills.git               anthropics-skills      dbd4588f9e1033efb41dad4bef2f7947c8993d44
+clone https://github.com/AtlasCloudAI/atlas-cloud-skills.git atlascloud-skills      73c64139da34bff3394e2251a6501a305d73323c
+clone https://github.com/fal-ai-community/skills.git         fal-community-skills   ca79376d624d244e601f9182fa80b5bf66efec9c
+clone https://github.com/elevenlabs/plugin.git               elevenlabs-plugin      9650905958df9e29255f890f2e968b0047fcf944
+clone https://github.com/anthropics/skills.git               anthropics-skills      1780c5e5a552fd4d1c9d6a7b0cab26b0c2bef064
 
 echo "完成。下一步: uv run --with markdown python build_skills_site.py"
