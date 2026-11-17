@@ -50,8 +50,12 @@ GitHub 中的 HTML 以源码展示；下载后用浏览器打开。部署 `site/
 
 ```bash
 cp index.html site/
+python3 check_site.py
 ~/.bun/bin/wrangler pages deploy site --project-name=video-vendor-skills --branch=main --commit-dirty=true
+python3 check_site.py --live https://video-vendor-skills.pages.dev
 ```
+
+只发布已提交的站点时，也可在 Actions 选择 `main` 分支并勾选 `publish_only`。这个入口检查 `site/`、直接上传，随后检查 Higgsfield 页面返回了实际的流程图页面。需要配置 `CLOUDFLARE_API_TOKEN` 和 `CLOUDFLARE_ACCOUNT_ID`。
 
 ## 全文搜索
 
@@ -63,7 +67,7 @@ npx -y pagefind --site site
 
 ## 自动更新（CI）
 
-`.github/workflows/refresh.yml` 每周一检查 7 个厂商仓库上游是否有新提交：有则把 `setup.sh` 的 pinned SHA 前移、重建站点、自动提交；若配置了 `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` 两个 Actions secret 还会自动部署。可在 Actions 页手动触发（可勾选强制重建）。
+`.github/workflows/refresh.yml` 每周一检查 7 个厂商仓库上游是否有新提交：有则把 `setup.sh` 的 pinned SHA 前移、重建站点、自动提交；若配置了 `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` 两个 Actions secret 还会自动部署。可在 Actions 页手动触发，勾选 `force` 强制重建。
 
 ## 快照信息
 
