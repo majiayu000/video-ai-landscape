@@ -92,7 +92,7 @@
 </ul>
 <h2>Steps</h2>
 <ol>
-<li><strong>(Optional) Upload your product photo</strong> — if you have a real shot to base it on, ask the agent to upload it → maps to <code>atlas_upload_media</code>, returns an <code>image_url</code>.</li>
+<li><strong>(Optional) Upload your product photo</strong> — if you have a real shot to base it on, ask the agent to upload it → maps to <code>atlas_get_upload_url</code> on the hosted connector (<code>atlas_upload_media</code> on a local server), returns the URL to pass as <code>image_url</code>.</li>
 <li><strong>Tighten the brief</strong> — ask the agent to expand your product spec into a hero-shot prompt (surface, lighting, angle, background) → maps to <code>atlas_chat</code>.</li>
 <li><strong>Render the hero</strong> — ask for a 1:1 or 4:5 studio shot, soft shadow, seamless background → maps to <code>atlas_generate_image</code> with Seedream 4.5 (pass <code>image_url</code> if you uploaded one).</li>
 <li><strong>Pick &amp; polish</strong> — generate 2–3 angles, choose the winner, ask for a tighter crop variant.<blockquote>

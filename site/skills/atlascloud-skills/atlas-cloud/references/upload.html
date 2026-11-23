@@ -302,13 +302,15 @@ while true; do
   fi
 done
 </code></pre>
-<h2>From the hosted MCP server (WorkBuddy / Codex): <code>atlas_get_upload_url</code></h2>
-<p>The hosted server cannot read files on your machine, and in that setup there is no
-API key — you are authenticated by OAuth. So instead of the endpoints above, use the
-MCP tool <code>atlas_get_upload_url</code>:</p>
+<h2>From the hosted MCP server: <code>atlas_get_upload_url</code></h2>
+<p>This applies to every client connected to <code>https://mcp.atlascloud.ai/mcp</code> (Codex, Claude Code,
+Cursor, ChatGPT, Claude, WorkBuddy, ...). The hosted server cannot read files on your machine, and
+in that setup there is no API key — you are authenticated by OAuth. So instead of the endpoints
+above, use the MCP tool <code>atlas_get_upload_url</code>:</p>
 <ol>
 <li>Call <code>atlas_get_upload_url</code> (optionally with <code>filename_hint</code>). It returns
-   <code>upload_url</code>, <code>expires_at</code>, <code>max_bytes</code> and a ready-to-run <code>curl_example</code>.</li>
+   <code>upload_url</code>, <code>expires_at</code>, <code>max_bytes</code> (and <code>max_video_bytes</code> when videos have their own
+   limit) and a ready-to-run <code>curl_example</code>.</li>
 <li>POST the raw bytes, file name (with extension) in the <code>X-Atlas-Filename</code> header:</li>
 </ol>
 <p><code>bash
@@ -317,13 +319,30 @@ MCP tool <code>atlas_get_upload_url</code>:</p>
      -H "X-Atlas-Filename: product.jpg" \
      --data-binary @"/path/to/product.jpg"</code></p>
 <ol start="3">
-<li>The JSON response has <code>url</code>. Pass it as <code>image_url</code> (or the audio URL parameter)
-   to <code>atlas_generate_image</code>, <code>atlas_generate_video</code> or <code>atlas_quick_generate</code>.</li>
+<li>The JSON response has <code>url</code> (and <code>asset_id</code> when the file was saved to the user's Asset
+   Library). Pass the <code>url</code> as <code>image_url</code> (or the model's video / audio URL parameter) to
+   <code>atlas_generate_image</code>, <code>atlas_generate_video</code>, <code>atlas_generate_audio</code>,
+   <code>atlas_transcribe_audio</code> or <code>atlas_quick_generate</code>.</li>
 </ol>
 <p>One <code>upload_url</code> serves several files until it expires (about 10 minutes). Uploads are
-free; nothing is billed until a generation is submitted. Files over <code>max_bytes</code> (32 MB by
-default) are rejected with HTTP 413 — host those elsewhere and pass the public link. If
-the tool is missing from your tool list, the server you are connected to predates it:
+free; nothing is billed until a generation is submitted.</p>
+<p><strong>Size limits</strong>: 32 MB per file by default. When uploads are saved to the user's Asset Library
+(accounts with the Asset Library activated), the limits are 50 MB for images and audio and
+100 MB for video and 3D files; the ticket's <code>max_bytes</code> / <code>max_video_bytes</code> give the values
+that apply. Larger files are rejected with HTTP 413 — host those elsewhere and pass the public
+link.</p>
+<p><strong>Asset Library uploads</strong>: the returned <code>url</code> is a short-lived signed link (about 15 minutes). If
+it has expired before the generation runs, call <code>atlas_use_assets</code> with the <code>asset_id</code> for a
+fresh one. A file the user uploaded earlier does not need uploading again: find it with
+<code>atlas_search_assets</code> and pass <code>asset://&lt;asset_id&gt;</code> (or the URL from <code>atlas_use_assets</code>).</p>
+<p><strong>Other routes on the hosted server</strong>:</p>
+<ul>
+<li>Files attached in a ChatGPT chat: <code>atlas_import_chat_files</code> stores them and returns URLs.</li>
+<li>When you cannot read the file yourself (it is only on the user's device, you cannot run
+  commands, or the upload failed), apps that show Atlas cards offer <code>atlas_open_upload_card</code>: it
+  opens a card where the user picks the file. Use it only as that fallback.</li>
+</ul>
+<p>If none of these tools is in your tool list, the server you are connected to predates them:
 fall back to a public URL.</p></main>
 <footer>AI 视频厂商 CLI / Skill / MCP 全景对比 · 技能库 · <a href="/" style="color:var(--muted)">返回报告</a></footer>
 <script>function t(){const r=document.documentElement;const d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';}</script></body></html>

@@ -93,7 +93,7 @@
 </tr>
 <tr>
 <td><strong>Edit</strong> an existing document</td>
-<td><code>unzip</code> → edit <code>word/document.xml</code> → <code>zip</code> (docx-js cannot open existing files)</td>
+<td>unpack → edit <code>word/document.xml</code> → <code>zip</code> (docx-js cannot open existing files)</td>
 </tr>
 <tr>
 <td><strong>Read</strong> content</td>
@@ -130,11 +130,10 @@ ls page-*.jpg   # then Read the images
 <p><code>pdftoppm</code> zero-pads page numbers to the width of the page count (<code>page-01.jpg</code>…<code>page-12.jpg</code>).</p>
 <h2>Editing existing documents</h2>
 <p>Legacy <code>.doc</code> files must be converted first: <code>python scripts/office/soffice.py --headless --convert-to docx file.doc</code>.</p>
-<pre><code class="language-bash">unzip -q doc.docx -d unpacked/
-find unpacked -type l -delete   # strip symlink entries — docx from external parties is untrusted
+<pre><code class="language-bash">python3 -c &quot;import sys,zipfile; zipfile.ZipFile(sys.argv[1]).extractall('unpacked')&quot; doc.docx   # not unzip, which restores symlinks — docx from external parties is untrusted
 python scripts/merge_runs.py unpacked/   # coalesce fragmented runs so text is findable
 # edit unpacked/word/document.xml in place — do NOT reformat or pretty-print
-(cd unpacked &amp;&amp; rm -f ../out.docx &amp;&amp; zip -XrD ../out.docx .)
+(cd unpacked &amp;&amp; rm -f ../out.docx &amp;&amp; zip -XrDy ../out.docx .)
 python scripts/office/validate.py out.docx --original doc.docx   # XSD checks; --auto-repair fixes common issues
 # redlining? add --author &quot;&lt;the name you redlined under&gt;&quot; to check every edit is tracked
 </code></pre>

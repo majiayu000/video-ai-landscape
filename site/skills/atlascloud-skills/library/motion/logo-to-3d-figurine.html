@@ -93,12 +93,12 @@
 </ul>
 <h2>Steps</h2>
 <ol>
-<li><strong>Upload the logo</strong> — ask the agent to upload your logo file so it becomes a URL → maps to <code>atlas_upload_media</code>. (Need a logo first? Run the <a href="../visual/brand-logo-concepts.html">Brand Logo &amp; Wordmark Concepts</a> recipe.)</li>
+<li><strong>Upload the logo</strong> — ask the agent to upload your logo file so it becomes a URL → maps to <code>atlas_get_upload_url</code> on the hosted connector (<code>atlas_upload_media</code> on a local server). (Need a logo first? Run the <a href="../visual/brand-logo-concepts.html">Brand Logo &amp; Wordmark Concepts</a> recipe.)</li>
 <li><strong>Make the figurine still</strong> — "Turn this logo into a collectible vinyl figurine on a round base, studio lighting, on a desk, packaging blister behind it." → maps to <code>atlas_generate_image</code> (edit) with <strong>Nano Banana Pro</strong>.<blockquote>
 <p>Tip: ask the agent to <code>atlas_search_docs</code> for the edit model first so it pulls the live input-image field name and size options.</p>
 </blockquote>
 </li>
-<li><strong>Upload the figurine still</strong> — same <code>atlas_upload_media</code> step on the new render.</li>
+<li><strong>Upload the figurine still</strong> — same upload step on the new render.</li>
 <li><strong>Animate the turntable</strong> — drive a clean 360° spin → maps to <code>atlas_generate_video</code>. Try <strong>Kling effects</strong> for a ready-made reveal, or <strong>Seedance 2.5 i2v</strong> (<code>seedance-2.0-fast</code> draft → full render) for a custom orbit.</li>
 <li><strong>Polish</strong> — ask the agent for an ffmpeg loop (seamless start/end) and an optional logo lockup card at the end.</li>
 </ol>

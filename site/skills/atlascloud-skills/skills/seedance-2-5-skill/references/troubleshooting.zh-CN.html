@@ -78,7 +78,7 @@
 <meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/seedance-2-5-skill/references/troubleshooting.zh-CN.md</span><button onclick="t()">🌓</button></nav>
 <main class="md"><h1>问题排查</h1>
-<p>默认只修复失败的镜头或接缝，不要因为一个问题重启整条序列。</p>
+<p>默认只修复失败的镜头或接缝，不要因为一个问题重启整条序列。下面凡是要重新生成的修法都是新的计费任务：先告诉用户要重跑什么、花多少钱，等用户同意。</p>
 <h2>身份与参考图问题</h2>
 <table>
 <thead>
@@ -174,9 +174,9 @@
 <td>修复或替换 <code>audio.references</code>；不要期待脚本静默移除输入音频</td>
 </tr>
 <tr>
-<td>重试后输出音频仍失败</td>
+<td>输出没有音频</td>
 <td>Seedance 未返回音频流或报告音频生成失败</td>
-<td>检查请求并让该片段以 <code>generate_audio:true</code> 重生成，不要静默降级为无声视频</td>
+<td>这一段已经扣过费。检查请求、告诉用户，用户同意后再以 <code>generate_audio:true</code> 重生成该片段；不要静默降级为无声视频</td>
 </tr>
 <tr>
 <td>原生音频末尾有爆音</td>

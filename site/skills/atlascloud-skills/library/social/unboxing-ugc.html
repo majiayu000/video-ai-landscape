@@ -92,7 +92,7 @@
 </ul>
 <h2>Steps</h2>
 <ol>
-<li><strong>Upload the product hero</strong> — point the agent at your product photo. → <code>atlas_upload_media</code>.</li>
+<li><strong>Upload the product hero</strong> — point the agent at your product photo. → <code>atlas_get_upload_url</code> on the hosted connector (<code>atlas_upload_media</code> on a local server).</li>
 <li><strong>Write UGC hooks</strong> — "Give me 3 first-person unboxing hooks + a 2-line voiceover for <product>, casual creator tone." → <code>atlas_chat</code> with <strong>Claude</strong>.</li>
 <li><strong>Stage a realistic UGC frame</strong> — "Place this product in a hand against a cozy bedroom desk, phone-camera look, 9:16." → <code>atlas_generate_image</code> (edit) with <strong>Nano Banana Pro</strong>.<blockquote>
 <p>Tip: ask the agent to <code>atlas_search_docs</code> for the edit model first to confirm the live image-input field name and aspect-ratio options.</p>

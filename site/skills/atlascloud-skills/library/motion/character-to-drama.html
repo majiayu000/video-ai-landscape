@@ -94,7 +94,7 @@
 <h2>Steps</h2>
 <ol>
 <li><strong>Build the character sheet</strong> — run the <a href="../visual/character-sheet.html">Character Reference Sheet</a> recipe to get multi-pose, multi-expression reference images of your character.</li>
-<li><strong>Upload the references</strong> — ask the agent to upload the sheet (or your best 1–3 frames) so they become URLs → maps to <code>atlas_upload_media</code>.</li>
+<li><strong>Upload the references</strong> — ask the agent to upload the sheet (or your best 1–3 frames) so they become URLs → maps to <code>atlas_get_upload_url</code> on the hosted connector (<code>atlas_upload_media</code> on a local server).</li>
 <li><strong>Write the shot list</strong> — "Turn this logline into 4 shots with camera, blocking, and emotion for each." → maps to <code>atlas_chat</code> with <strong>Claude</strong>.</li>
 <li><strong>Block each shot cheaply</strong> — feed the reference + a shot prompt → maps to <code>atlas_generate_video</code> with <strong>Seedance 2.5 reference-to-video</strong> (<code>seedance-2.0-fast</code> first).<blockquote>
 <p>Tip: ask the agent to <code>atlas_search_docs</code> for the model first — reference-to-video expects specific reference-image fields and counts.</p>

@@ -96,7 +96,7 @@ submit → poll flow. What changes is the model and its input fields:</p>
 </tr>
 <tr>
 <td>Music / songs</td>
-<td><code>suno/chirp-v5</code>, <code>minimax/music-2.6</code></td>
+<td><code>suno/chirp-v6</code>, <code>minimax/music-2.6</code></td>
 <td><code>prompt</code> and/or <code>lyrics</code></td>
 </tr>
 <tr>
@@ -165,7 +165,7 @@ urls = run_audio_task(&quot;bytedance/seed-audio-1.0&quot;, text=&quot;Welcome t
 print(&quot;audio url:&quot;, urls[0])
 
 # --- Music generation ---
-urls = run_audio_task(&quot;suno/chirp-v5&quot;, prompt=&quot;upbeat synthwave song about coding at night&quot;)
+urls = run_audio_task(&quot;suno/chirp-v6&quot;, prompt=&quot;upbeat synthwave song about coding at night&quot;)
 print(&quot;song url:&quot;, urls[0])
 
 # --- Speech-to-text ---
@@ -210,7 +210,7 @@ async function runAudioTask(model: string, params: Record&lt;string, unknown&gt;
 // TTS
 console.log(await runAudioTask(&quot;bytedance/seed-audio-1.0&quot;, { text: &quot;Welcome to Atlas Cloud.&quot; }));
 // Music
-console.log(await runAudioTask(&quot;suno/chirp-v5&quot;, { prompt: &quot;gentle acoustic morning jingle&quot; }));
+console.log(await runAudioTask(&quot;suno/chirp-v6&quot;, { prompt: &quot;gentle acoustic morning jingle&quot; }));
 // Speech-to-text
 console.log(await runAudioTask(&quot;bytedance/seed-asr-2.0&quot;, { audio_url: &quot;https://example.com/interview.mp3&quot; }));
 </code></pre>
@@ -226,7 +226,7 @@ curl -s -X POST &quot;https://api.atlascloud.ai/api/v1/model/generateAudio&quot;
 curl -s -X POST &quot;https://api.atlascloud.ai/api/v1/model/generateAudio&quot; \
   -H &quot;Authorization: Bearer $ATLASCLOUD_API_KEY&quot; \
   -H &quot;Content-Type: application/json&quot; \
-  -d '{&quot;model&quot;: &quot;suno/chirp-v5&quot;, &quot;prompt&quot;: &quot;upbeat synthwave song about coding at night&quot;}'
+  -d '{&quot;model&quot;: &quot;suno/chirp-v6&quot;, &quot;prompt&quot;: &quot;upbeat synthwave song about coding at night&quot;}'
 
 # --- Speech-to-text: submit ---
 curl -s -X POST &quot;https://api.atlascloud.ai/api/v1/model/generateAudio&quot; \

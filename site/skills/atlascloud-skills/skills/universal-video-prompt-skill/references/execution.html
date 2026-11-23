@@ -113,7 +113,9 @@ restart the execution session.</p>
 <h2>Billable task state machine</h2>
 <p>Generation costs money. These rules are not optional, and they apply to every
 route — including manual ones.</p>
-<ol>
+<ol start="0">
+<li><strong>Every paid submission needs the user's yes to its quoted cost</strong> — the first
+   one, each further stage, and every retry.</li>
 <li><strong>Record the prediction ID and logical stage the moment you submit.</strong> Before
    anything else. An unrecorded ID is a paid job you cannot recover.</li>
 <li><strong><code>starting</code> / <code>queued</code> / <code>pending</code> / <code>processing</code> are active.</strong> Poll the same
@@ -125,8 +127,8 @@ route — including manual ones.</p>
    finishes — a truncated video reads as <code>moov atom not found</code> and a partially
    written file will fail the same way if inspected mid-download. Re-fetch from the
    stored output URL rather than resubmitting the job.
-4. <strong><code>failed</code> / <code>timeout</code> / <code>canceled</code> are terminal failures.</strong> A new task is an
-   explicit retry decision — report the previous ID and the added cost first.
+4. <strong><code>failed</code> / <code>timeout</code> / <code>canceled</code> are terminal failures.</strong> A new task is the
+   user's decision — report the previous ID and the added cost, and wait for their yes.
 5. <strong>These are not failure:</strong> a zero or missing processing-time field, a delayed
    output, a local polling timeout, a stopped turn, or a transient status-query
    error. Preserve the ID and resume polling.
@@ -148,10 +150,13 @@ is still running on the provider's side.</p>
 <ul>
 <li><strong>Chained stages must run in order</strong> — the next segment needs the real tail of
   the previous one.</li>
-<li><strong>Independent shots can run concurrently.</strong> Cuts are assembled in the edit, so
-  there is no dependency between them.</li>
+<li><strong>Independent shots can run concurrently</strong> once the user has approved their
+  combined cost. Cuts are assembled in the edit, so there is no dependency
+  between them.</li>
 <li><strong>Generate one representative pass before fanning out.</strong> A quality gate on one
-  shot is much cheaper than discovering a spec problem across twelve.</li>
+  shot is much cheaper than discovering a spec problem across twelve. The
+  representative pass and the fan-out are separate paid steps: quote each and
+  wait for the user's yes.</li>
 </ul>
 <h2>What execution does not fix</h2>
 <ul>

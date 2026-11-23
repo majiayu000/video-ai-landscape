@@ -95,7 +95,7 @@ patch job.</p>
 </ul>
 <h2>Steps</h2>
 <ol>
-<li><strong>Upload the source photo</strong> — "Upload this image and give me the URL." → maps to <code>atlas_upload_media</code>; keep the <code>download_url</code>.</li>
+<li><strong>Upload the source photo</strong> — "Upload this image and give me the URL." → maps to <code>atlas_get_upload_url</code> on the hosted connector (<code>atlas_upload_media</code> on a local server); keep the returned URL.</li>
 <li><strong>Write a precise instruction</strong> — describe exactly what to add or remove and what must stay untouched. Flux Kontext follows localized edit instructions well.</li>
 <li><strong>Run the edit</strong> — "Remove the [object] and reconstruct the background behind it." → maps to <code>atlas_generate_image</code> with <strong>Flux Kontext (edit)</strong>, passing the uploaded URL as the input image.<blockquote>
 <p>Tip: ask the agent to <code>atlas_search_docs</code> for Flux Kontext first to confirm the live input-image field and any guidance/strength params.</p>

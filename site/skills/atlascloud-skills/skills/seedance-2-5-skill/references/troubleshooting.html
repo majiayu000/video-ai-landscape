@@ -78,7 +78,9 @@
 <meta name="twitter:image" content="https://video-vendor-skills.pages.dev/social-card.png"></head>
 <body><nav class="topbar"><a href="/">← 对比报告</a><span class="crumb">/</span><a href="/skills/">技能库</a><span class="crumb">/</span><a href="/skills/atlascloud-skills/">atlascloud-skills</a><span class="crumb">/</span><span class="crumb">skills/seedance-2-5-skill/references/troubleshooting.md</span><button onclick="t()">🌓</button></nav>
 <main class="md"><h1>Troubleshooting</h1>
-<p>Fix the failed shot or seam rather than restarting a complete sequence.</p>
+<p>Fix the failed shot or seam rather than restarting a complete sequence. Every
+fix below that regenerates something is a new paid generation: tell the user
+what you would rerun and its cost, and wait for their yes.</p>
 <h2>Identity and reference problems</h2>
 <table>
 <thead>
@@ -174,9 +176,9 @@
 <td>Fix or replace <code>audio.references</code>; do not expect silent removal of the input audio</td>
 </tr>
 <tr>
-<td>Output audio fails after retries</td>
+<td>Output audio is missing</td>
 <td>Seedance returned no audio stream or reported audio-generation failure</td>
-<td>Inspect the request and rerun that segment with <code>generate_audio:true</code> rather than silently falling back to silent video</td>
+<td>The segment was already billed. Inspect the request, tell the user, and only after their yes rerun that segment with <code>generate_audio:true</code>; never fall back silently to silent video</td>
 </tr>
 <tr>
 <td>Native audio ends with a click</td>

@@ -148,8 +148,9 @@ rather than guessed.</p>
 <p>⚠️ <strong>The model page contradicts itself on duration.</strong> Header text says <code>5-15s</code>,
 the "Why Choose" section says <code>5s or 10s</code>, the parameter table says
 <code>8 (default), 5-10</code>. The parameter table also omits <code>16:9</code> from <code>ratio</code> while the
-playground offers it. <strong>Submission is the only authority</strong> — 15s and 16:9 both
-work. Do not trust a parameter table over a live test.</p>
+playground offers it. 15s and 16:9 both work. To check a value, ask for a quote
+(the generation tool without <code>confirmed</code>): the quote validates it against the
+live schema and spends nothing. Never submit a paid job just to test a value.</p>
 <h3>Bias layer</h3>
 <table>
 <thead>
@@ -395,10 +396,14 @@ documented enumeration was <strong>narrower</strong> than what submission accept
 </tr>
 </tbody>
 </table>
-<p><strong>Treat this as a hard rule, not a caution:</strong> a documented enumeration is a
-hypothesis. The only authority is a submission. Cheap to test — a rejected
-submission creates no task and costs nothing, so testing the value you actually
-want is strictly better than designing around the table.</p>
+<p><strong>Treat this as a hard rule, not a caution:</strong> for a value outside the published
+table, the quote's error decides, never a real submission. Ask for the value you
+actually want in a quote (the generation tool without <code>confirmed</code>): the Atlas
+MCP server validates every parameter against the model's live schema at that
+step, so a value outside the schema's enumeration is rejected with an error and
+nothing is spent. Take that error as the answer and use a supported value.
+Never test by submitting a real job — if the value is accepted, it runs and is
+billed.</p>
 <p>The failure this prevents is asymmetric and invisible: believing a too-narrow
 table silently degrades the spec, the run succeeds, and nothing in the output
 indicates that a better configuration was available.</p>
@@ -462,11 +467,12 @@ indicates that a better configuration was available.</p>
 <h3>Compile notes</h3>
 <ul>
 <li><strong>Second confirmed case of a wrong parameter table on this platform.</strong> Both Kling
-  tiers document <code>5 or 10</code>; Turbo accepts 15. Treat every documented enumeration as
-  a hypothesis until submitted.</li>
-<li>⚠️ The Pro tier was <strong>降级 to 10s on the basis of that same table without
-  testing 15s</strong> — an avoidable mistake, and the exact error this file warns
-  against. Pro's real ceiling is still unverified.</li>
+  tiers document <code>5 or 10</code>; Turbo accepts 15. Before designing around a
+  documented enumeration, ask for the value you want in a quote; a rejection
+  there is final.</li>
+<li>⚠️ The Pro tier was <strong>downgraded to 10s on the basis of that same table
+  without asking for 15s in a quote</strong> — an avoidable mistake, and the exact
+  error this file warns against. Pro's real ceiling is still unverified.</li>
 <li>Resolution appears fixed at 720p, which makes this the lowest-resolution option
   in a mixed comparison. Note it rather than trying to match the others.</li>
 <li>No auto-storyboard switch to disable here.</li>

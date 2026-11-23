@@ -95,13 +95,14 @@
 <p>绝不要让任何人把 key 粘到对话里。指引他设置到提交进程或宿主的安全环境设置中，然后刷新或重启执行会话。</p>
 <h2>计费任务状态机</h2>
 <p>生成要花钱。以下规则不可省，对每条路线都适用——包括手动跑的。</p>
-<ol>
+<ol start="0">
+<li><strong>每一次计费提交都要用户先同意报价</strong>——第一次、后面每个阶段、每次重试都一样</li>
 <li><strong>提交的当下就记下 prediction ID 和逻辑阶段。</strong> 先于一切。没记下的 ID 是一个你找不回来的付费任务</li>
 <li><strong><code>starting</code> / <code>queued</code> / <code>pending</code> / <code>processing</code> 都是进行中。</strong> 轮询同一个 ID，<strong>绝不为同一阶段再提交一次</strong></li>
 <li><strong><code>completed</code> / <code>succeeded</code> 是成功终态。</strong> 下载并检查产物，再启动依赖它的阶段。</li>
 </ol>
 <p><strong>任务 completed 不等于本地文件可用。</strong> 下载完成后要核实——截断的视频会报 <code>moov atom not found</code>，而下载中途去检查也会报同一个错。<strong>从已存的产物 URL 重新拉取，不要重新提交任务。</strong>
-4. <strong><code>failed</code> / <code>timeout</code> / <code>canceled</code> 是失败终态。</strong> 新任务属于显式重试决定——先报告旧 ID 和额外成本
+4. <strong><code>failed</code> / <code>timeout</code> / <code>canceled</code> 是失败终态。</strong> 要不要重试由用户决定——先报告旧 ID 和额外成本，等用户同意
 5. <strong>以下都不是失败：</strong> 处理时间为零或缺失、产物延迟、本地轮询超时、进程中止、状态查询临时报错。保住 ID 继续轮
 6. <strong><code>continue</code> 意思是继续现有任务</strong>，永远不是"可以重试了"。所需输入阶段还在进行中时，不要提交视频请求</p>
 <p>状态查询是只读的，<strong>绝不能用生成调用来代替</strong>——那种替换是把轮询循环变成计费事故的方式。</p>
@@ -112,8 +113,8 @@
 <h2>顺序</h2>
 <ul>
 <li><strong>接龙的阶段必须按顺序跑</strong> —— 下一段需要上一段真实的尾帧</li>
-<li><strong>互相独立的镜头可以并发。</strong> 切点在剪辑台上完成，所以它们之间没有依赖</li>
-<li><strong>散开之前先跑一条代表性的。</strong> 在一个镜头上设质量门，远比在十二个镜头上发现 spec 有问题便宜</li>
+<li><strong>互相独立的镜头可以并发</strong>，前提是用户已经同意了它们的总费用。切点在剪辑台上完成，所以它们之间没有依赖</li>
+<li><strong>散开之前先跑一条代表性的。</strong> 在一个镜头上设质量门，远比在十二个镜头上发现 spec 有问题便宜。代表性的那条和后面铺开的是两个单独计费的步骤：各自先报价，等用户同意</li>
 </ul>
 <h2>执行解决不了的事</h2>
 <ul>

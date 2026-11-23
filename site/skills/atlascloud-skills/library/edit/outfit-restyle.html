@@ -95,7 +95,7 @@ profile refreshes, and fashion mood exploration.</p>
 </ul>
 <h2>Steps</h2>
 <ol>
-<li><strong>Upload the portrait</strong> — "Upload this portrait and return the URL." → maps to <code>atlas_upload_media</code>; keep the <code>download_url</code>.</li>
+<li><strong>Upload the portrait</strong> — "Upload this portrait and return the URL." → maps to <code>atlas_get_upload_url</code> on the hosted connector (<code>atlas_upload_media</code> on a local server); keep the returned URL.</li>
 <li><strong>(Optional) Turn a vibe into specifics</strong> — "Describe an 'old-money autumn' outfit: garments, fabrics, colors." → maps to <code>atlas_chat</code> with <strong>Claude</strong>.</li>
 <li><strong>Restyle the outfit</strong> — "Change the clothing to [outfit], keep the face, hairstyle, pose, and background unchanged." → maps to <code>atlas_generate_image</code> with <strong>Seedream 4.5 (edit)</strong>, passing the uploaded URL as the input image.<blockquote>
 <p>Tip: ask the agent to <code>atlas_search_docs</code> for the model first so it pulls the live edit schema and identity-preservation guidance.</p>
