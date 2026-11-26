@@ -10,6 +10,10 @@ on:
         description: "跳过变更检测，强制重建"
         type: boolean
         default: false
+      publish_only:
+        description: "直接发布 main 已提交的 site/，不重建厂商快照"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -50,11 +54,14 @@ jobs:
           EOF
 
       - uses: astral-sh/setup-uv@v5
+        if: inputs.publish_only != true
 
       - name: 按 pinned SHA 克隆厂商仓库
+        if: inputs.publish_only != true
         run: ./setup.sh
 
       - name: 检测上游更新
+        if: inputs.publish_only != true
         id: upstream
         run: |
           changed=""
@@ -69,7 +76,7 @@ jobs:
           echo "changed=${changed# }" >> "$GITHUB_OUTPUT"
 
       - name: 更新 setup.sh 到新 SHA 并检出
-        if: steps.upstream.outputs.changed != '' || inputs.force == true
+        if: inputs.publish_only != true && (steps.upstream.outputs.changed != '' || inputs.force == true)
         run: |
           for d in ${{ steps.upstream.outputs.changed }}; do
             newsha=$(git -C "$d" ls-remote origin HEAD | cut -f1)
@@ -80,7 +87,7 @@ jobs:
           done
 
       - name: 重建站点
-        if: steps.upstream.outputs.changed != '' || inputs.force == true
+        if: inputs.publish_only != true && (steps.upstream.outputs.changed != '' || inputs.force == true)
         run: |
           uv run --with markdown python build_skills_site.py
           uv run --with markdown python gen_appendix.py
@@ -88,8 +95,12 @@ jobs:
           cp index.html site/index.html
           npx -y pagefind --site site
 
+      - name: 检查部署目录
+        if: inputs.publish_only == true || steps.upstream.outputs.changed != '' || inputs.force == true
+        run: python3 check_site.py
+
       - name: 提交快照更新
-        if: steps.upstream.outputs.changed != '' || inputs.force == true
+        if: inputs.publish_only != true && (steps.upstream.outputs.changed != '' || inputs.force == true)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -97,13 +108,36 @@ jobs:
           git diff --cached --quiet || git commit -m "chore: refresh vendor snapshot (${REPOS})"
           git push
 
+      - name: 确认发布配置
+        if: inputs.publish_only == true || steps.upstream.outputs.changed != '' || inputs.force == true
+        id: publish
+        env:
+          PUBLISH_ONLY: ${{ inputs.publish_only }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [[ "$GITHUB_REF" != "refs/heads/main" ]]; then
+            if [[ "$PUBLISH_ONLY" == "true" ]]; then
+              echo "::error::请选择 main 分支发布。"
+              exit 1
+            fi
+          elif [[ -n "$CLOUDFLARE_API_TOKEN" && -n "$CLOUDFLARE_ACCOUNT_ID" ]]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          elif [[ "$PUBLISH_ONLY" == "true" ]]; then
+            echo "::error::Cloudflare Pages 发布需要配置 CLOUDFLARE_API_TOKEN 和 CLOUDFLARE_ACCOUNT_ID。"
+            exit 1
+          else
+            echo "::notice::未配置完整的 Cloudflare Pages 凭据，本次仅更新仓库快照。"
+          fi
+
       - name: 部署到 Cloudflare Pages
-        if: env.CLOUDFLARE_API_TOKEN != '' && (steps.upstream.outputs.changed != '' || inputs.force == true)
+        if: steps.publish.outputs.ready == 'true'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy site --project-name=video-vendor-skills --branch=main --commit-dirty=true
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: 核验公开研究页
+        if: steps.publish.outputs.ready == 'true'
+        run: python3 check_site.py --live https://video-vendor-skills.pages.dev
